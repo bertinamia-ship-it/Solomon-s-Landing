@@ -348,8 +348,8 @@ function initHeroSlider() {
         showSlide(currentSlide);
     }
 
-    // Cambiar de slide cada 6 segundos
-    setInterval(nextSlide, 6000);
+    // Cambiar de slide cada 4 segundos
+    setInterval(nextSlide, 4000);
 }
 
 // ============================================
@@ -1253,7 +1253,7 @@ function initMenuHeroSlider() {
     if (heroSlides.length === 0) return;
 
     let currentSlide = 0;
-    const slideInterval = 6000; // 6 segundos por slide
+    const slideInterval = 4000; // 4 segundos por slide
 
     function showSlide(index) {
         // Remover active de todos
@@ -1289,7 +1289,7 @@ function initAllHeroSliders() {
         if (heroSlides.length === 0) return;
 
         let currentSlide = 0;
-        const slideInterval = 6000; // 6 segundos por slide
+        const slideInterval = 4000; // 4 segundos por slide
 
         function showSlide(index) {
             // Remover active de todos
