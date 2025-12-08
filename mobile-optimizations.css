@@ -21,20 +21,50 @@
 
 /* Large Mobile & Tablets (max-width: 900px) */
 @media (max-width: 900px) {
+    /* ============================================
+       DISABLE PROBLEMATIC ANIMATIONS ON MOBILE
+       ============================================ */
+    
+    /* Hide snowflakes in header on mobile - too distracting */
+    header > div[style*="pointer-events: none"] {
+        display: none !important;
+    }
+    
+    /* Disable navbar gradient animation on mobile */
+    header[style*="gradientShift"] {
+        animation: none !important;
+        background: linear-gradient(135deg, rgba(22, 91, 51, 0.95) 0%, rgba(196, 30, 58, 0.95) 50%, rgba(22, 91, 51, 0.95) 100%) !important;
+    }
+    
+    /* Hide snowflakes in hero sections on mobile */
+    .snowflakes {
+        display: none !important;
+    }
+    
+    /* ============================================
+       MOBILE MENU IMPROVEMENTS
+       ============================================ */
+    
     /* Mostrar botón hamburguesa solo en móviles */
     .mobile-menu-toggle {
-        display: flex;
+        display: flex !important;
         flex-direction: column;
         justify-content: space-around;
-        width: 32px;
-        height: 28px;
+        width: 36px;
+        height: 30px;
         background: transparent;
         border: none;
         cursor: pointer;
-        padding: 0;
+        padding: 4px;
         z-index: 1001;
         position: relative;
         margin-left: auto;
+        border-radius: 4px;
+        transition: background 0.3s ease;
+    }
+    
+    .mobile-menu-toggle:hover {
+        background: rgba(255, 255, 255, 0.1);
     }
 
     .mobile-menu-toggle span {
@@ -49,7 +79,7 @@
     }
 
     .mobile-menu-toggle.active span:nth-child(1) {
-        transform: rotate(45deg) translateY(10px);
+        transform: rotate(45deg) translateY(11px);
     }
 
     .mobile-menu-toggle.active span:nth-child(2) {
@@ -58,33 +88,30 @@
     }
 
     .mobile-menu-toggle.active span:nth-child(3) {
-        transform: rotate(-45deg) translateY(-10px);
-    }
-
-    /* Header Actions - Hide on Mobile */
-    .header-actions {
-        display: none !important;
+        transform: rotate(-45deg) translateY(-11px);
     }
 
     /* Mostrar overlay solo en móviles */
     .mobile-nav-overlay {
-        display: block;
+        display: block !important;
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.5);
+        background: rgba(0, 0, 0, 0.6);
         backdrop-filter: blur(5px);
         z-index: 999;
         opacity: 0;
         pointer-events: none;
         transition: opacity 0.3s ease;
+        visibility: hidden;
     }
 
     .mobile-nav-overlay.active {
         opacity: 1;
         pointer-events: auto;
+        visibility: visible;
     }
 
     /* Convertir navegación en menú lateral SOLO en móviles */
@@ -104,11 +131,13 @@
         transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 1000;
         overflow-y: auto;
-        box-shadow: -5px 0 25px rgba(0, 0, 0, 0.3);
+        box-shadow: -5px 0 25px rgba(0, 0, 0, 0.5);
+        visibility: hidden;
     }
 
     nav.active {
         right: 0;
+        visibility: visible;
     }
 
     nav ul {
@@ -156,10 +185,28 @@
         justify-content: space-between;
         grid-template-columns: auto auto;
         gap: 1rem;
+        align-items: center;
+    }
+    
+    /* Ensure logo stays visible */
+    .logo {
+        order: 1;
+        z-index: 1002;
+    }
+    
+    /* Hamburger button positioning */
+    .mobile-menu-toggle {
+        order: 2;
+        z-index: 1002;
+    }
+    
+    /* Hide nav by default, show when active */
+    nav {
+        order: 3;
     }
 
     .header-actions {
-        gap: 1.5rem;
+        display: none !important;
     }
 }
 
@@ -212,6 +259,21 @@
 
 /* Standard Mobile (max-width: 768px) */
 @media (max-width: 768px) {
+    /* ============================================
+       OPTIMIZE IMAGES FOR MOBILE - FASTER LOADING
+       ============================================ */
+    
+    /* Reduce image quality/size on mobile for faster loading */
+    .hero-slide {
+        background-size: cover !important;
+        background-attachment: scroll !important; /* Improve performance */
+    }
+    
+    /* Lazy load hero images - only load first slide initially */
+    .hero-slide:not(.active) {
+        background-image: none !important;
+    }
+    
     /* Hero Sections - Better Mobile Experience */
     #hero,
     #menu-hero,
