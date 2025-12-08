@@ -6,7 +6,8 @@
     <meta name="description" content="Make a reservation at Solomon's Landing - Cabo San Lucas Marina Restaurant">
     <title>Make a Reservation | Solomon's Landing</title>
     <link rel="stylesheet" href="performance.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=2">
+    <link rel="stylesheet" href="mobile-optimizations.css?v=2">
     <link rel="stylesheet" href="holiday-theme.css?v=3">
     <link rel="stylesheet" href="reservations-enhanced.css">
     <link rel="stylesheet" href="chatbot.css">
@@ -29,6 +30,17 @@
                 <div class="logo">
                     <a href="index.html"><img src="logo solomons.png" alt="Solomon's Landing Logo" loading="lazy"></a>
                 </div>
+                
+                <!-- Mobile Menu Toggle -->
+                <button class="mobile-menu-toggle" aria-label="Toggle navigation menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                
+                <!-- Mobile Overlay -->
+                <div class="mobile-nav-overlay"></div>
+                
                 <nav>
                     <ul>
                         <li><a href="index.html" style="color: white;">Home</a></li>

@@ -20,7 +20,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Montserrat:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=5">
+    <link rel="stylesheet" href="mobile-optimizations.css?v=3">
     <link rel="stylesheet" href="holiday-theme.css?v=3">
     <link rel="stylesheet" href="chatbot.css">
     
@@ -46,6 +47,17 @@
                         <img src="logo solomons.png" alt="Solomon's Landing Logo" loading="lazy">
                     </a>
                 </div>
+                
+                <!-- Mobile Menu Toggle -->
+                <button class="mobile-menu-toggle" aria-label="Toggle navigation menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                
+                <!-- Mobile Overlay -->
+                <div class="mobile-nav-overlay"></div>
+                
                 <nav>
                     <ul>
                         <li><a href="index.html" class="active" style="color: var(--holiday-gold); font-weight: 700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);">Home</a></li>
@@ -101,109 +113,109 @@
                 </div>
 
                 <!-- Perks Carousel Inside Hero -->
-                <div class="features-scroll-container" style="position: relative; width: 100%; max-width: 1200px; margin: 0 auto; overflow: hidden; background: rgba(255, 255, 255, 0.12); padding: 25px 0; border-radius: 20px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);">
+                <div class="features-scroll-container" style="position: relative; width: 100%; max-width: 1200px; margin: 0 auto; overflow: hidden; background: transparent; padding: 25px 0; border-radius: 20px;">
                     <div class="features-scroll-track" style="display: flex; gap: 0.75rem; justify-content: flex-start; flex-wrap: nowrap; will-change: transform;">
                         <!-- Feature 1 -->
-                        <div class="feature-mini-card" style="min-width: 120px; background: linear-gradient(135deg, rgba(255, 107, 107, 0.7), rgba(255, 159, 64, 0.7)); backdrop-filter: blur(20px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 6px 25px rgba(255, 107, 107, 0.5); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.6);">
-                            <div style="font-size: 2rem; margin-bottom: 0.4rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🦞</div>
-                            <h4 style="color: var(--white); font-size: 0.8rem; font-weight: 700; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">Fresh Seafood</h4>
+                        <div class="feature-mini-card" style="min-width: 120px; background: transparent; backdrop-filter: blur(10px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.4);">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.4rem; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));">🦞</div>
+                            <h4 style="color: var(--white); font-size: 0.85rem; font-weight: 800; margin: 0; text-shadow: 2px 2px 6px rgba(0,0,0,0.7), 0 0 10px rgba(255,255,255,0.3);">Fresh Seafood</h4>
                         </div>
                         <!-- Feature 2 -->
-                        <div class="feature-mini-card" style="min-width: 120px; background: linear-gradient(135deg, rgba(106, 176, 255, 0.7), rgba(34, 193, 195, 0.7)); backdrop-filter: blur(20px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 6px 25px rgba(106, 176, 255, 0.5); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.6);">
-                            <div style="font-size: 2rem; margin-bottom: 0.4rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🌊</div>
-                            <h4 style="color: var(--white); font-size: 0.8rem; font-weight: 700; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">Marina Views</h4>
+                        <div class="feature-mini-card" style="min-width: 120px; background: transparent; backdrop-filter: blur(10px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.4);">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.4rem; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));">🌊</div>
+                            <h4 style="color: var(--white); font-size: 0.85rem; font-weight: 800; margin: 0; text-shadow: 2px 2px 6px rgba(0,0,0,0.7), 0 0 10px rgba(255,255,255,0.3);">Marina Views</h4>
                         </div>
                         <!-- Feature 3 -->
-                        <div class="feature-mini-card" style="min-width: 120px; background: linear-gradient(135deg, rgba(72, 219, 251, 0.7), rgba(0, 184, 217, 0.7)); backdrop-filter: blur(20px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 6px 25px rgba(72, 219, 251, 0.5); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.6);">
-                            <div style="font-size: 2rem; margin-bottom: 0.4rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🌍</div>
-                            <h4 style="color: var(--white); font-size: 0.8rem; font-weight: 700; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">International</h4>
+                        <div class="feature-mini-card" style="min-width: 120px; background: transparent; backdrop-filter: blur(10px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.4);">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.4rem; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));">🌍</div>
+                            <h4 style="color: var(--white); font-size: 0.85rem; font-weight: 800; margin: 0; text-shadow: 2px 2px 6px rgba(0,0,0,0.7), 0 0 10px rgba(255,255,255,0.3);">International</h4>
                         </div>
                         <!-- Feature 4 -->
-                        <div class="feature-mini-card" style="min-width: 120px; background: linear-gradient(135deg, rgba(253, 121, 168, 0.7), rgba(255, 82, 146, 0.7)); backdrop-filter: blur(20px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 6px 25px rgba(253, 121, 168, 0.5); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.6);">
-                            <div style="font-size: 2rem; margin-bottom: 0.4rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🍣</div>
-                            <h4 style="color: var(--white); font-size: 0.8rem; font-weight: 700; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">Premium Sushi</h4>
+                        <div class="feature-mini-card" style="min-width: 120px; background: transparent; backdrop-filter: blur(10px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.4);">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.4rem; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));">🍣</div>
+                            <h4 style="color: var(--white); font-size: 0.85rem; font-weight: 800; margin: 0; text-shadow: 2px 2px 6px rgba(0,0,0,0.7), 0 0 10px rgba(255,255,255,0.3);">Premium Sushi</h4>
                         </div>
                         <!-- Feature 5 - FREE PARKING -->
-                        <div class="feature-mini-card" style="min-width: 120px; background: linear-gradient(135deg, rgba(251, 200, 51, 0.75), rgba(255, 159, 64, 0.75)); backdrop-filter: blur(20px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 8px 30px rgba(251, 200, 51, 0.6); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.7); animation: pulse-gold 2s ease-in-out infinite;">
-                            <div style="font-size: 2rem; margin-bottom: 0.4rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🅿️</div>
-                            <h4 style="color: var(--white); font-size: 0.8rem; font-weight: 700; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">FREE Parking</h4>
+                        <div class="feature-mini-card" style="min-width: 120px; background: transparent; backdrop-filter: blur(10px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 10px 30px rgba(255, 201, 60, 0.4); flex-shrink: 0; border: 2px solid rgba(255, 201, 60, 0.8); animation: pulse-gold 2s ease-in-out infinite;">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.4rem; filter: drop-shadow(0 3px 6px rgba(255,201,60,0.6));">🅿️</div>
+                            <h4 style="color: var(--white); font-size: 0.85rem; font-weight: 800; margin: 0; text-shadow: 2px 2px 6px rgba(0,0,0,0.7), 0 0 15px rgba(255,201,60,0.6);">FREE Parking</h4>
                         </div>
                         <!-- Feature 6 -->
-                        <div class="feature-mini-card" style="min-width: 120px; background: linear-gradient(135deg, rgba(165, 94, 234, 0.7), rgba(138, 43, 226, 0.7)); backdrop-filter: blur(20px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 6px 25px rgba(165, 94, 234, 0.5); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.6);">
-                            <div style="font-size: 2rem; margin-bottom: 0.4rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🐾</div>
-                            <h4 style="color: var(--white); font-size: 0.8rem; font-weight: 700; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">Pet Friendly</h4>
+                        <div class="feature-mini-card" style="min-width: 120px; background: transparent; backdrop-filter: blur(10px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.4);">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.4rem; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));">🐾</div>
+                            <h4 style="color: var(--white); font-size: 0.85rem; font-weight: 800; margin: 0; text-shadow: 2px 2px 6px rgba(0,0,0,0.7), 0 0 10px rgba(255,255,255,0.3);">Pet Friendly</h4>
                         </div>
                         <!-- Feature 7 -->
-                        <div class="feature-mini-card" style="min-width: 120px; background: linear-gradient(135deg, rgba(255, 118, 117, 0.7), rgba(240, 98, 146, 0.7)); backdrop-filter: blur(20px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 6px 25px rgba(255, 118, 117, 0.5); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.6);">
-                            <div style="font-size: 2rem; margin-bottom: 0.4rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🍹</div>
-                            <h4 style="color: var(--white); font-size: 0.8rem; font-weight: 700; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">Craft Cocktails</h4>
+                        <div class="feature-mini-card" style="min-width: 120px; background: transparent; backdrop-filter: blur(10px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.4);">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.4rem; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));">🍹</div>
+                            <h4 style="color: var(--white); font-size: 0.85rem; font-weight: 800; margin: 0; text-shadow: 2px 2px 6px rgba(0,0,0,0.7), 0 0 10px rgba(255,255,255,0.3);">Craft Cocktails</h4>
                         </div>
                         <!-- Feature 8 -->
-                        <div class="feature-mini-card" style="min-width: 120px; background: linear-gradient(135deg, rgba(255, 193, 7, 0.7), rgba(255, 152, 0, 0.7)); backdrop-filter: blur(20px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 6px 25px rgba(255, 193, 7, 0.5); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.6);">
-                            <div style="font-size: 2rem; margin-bottom: 0.4rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">⭐</div>
-                            <h4 style="color: var(--white); font-size: 0.8rem; font-weight: 700; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">30+ Years</h4>
+                        <div class="feature-mini-card" style="min-width: 120px; background: transparent; backdrop-filter: blur(10px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.4);">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.4rem; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));">⭐</div>
+                            <h4 style="color: var(--white); font-size: 0.85rem; font-weight: 800; margin: 0; text-shadow: 2px 2px 6px rgba(0,0,0,0.7), 0 0 10px rgba(255,255,255,0.3);">30+ Years</h4>
                         </div>
                         <!-- Feature 9 -->
-                        <div class="feature-mini-card" style="min-width: 120px; background: linear-gradient(135deg, rgba(102, 187, 106, 0.7), rgba(76, 175, 80, 0.7)); backdrop-filter: blur(20px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 6px 25px rgba(102, 187, 106, 0.5); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.6);">
-                            <div style="font-size: 2rem; margin-bottom: 0.4rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🌿</div>
-                            <h4 style="color: var(--white); font-size: 0.8rem; font-weight: 700; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">Organic</h4>
+                        <div class="feature-mini-card" style="min-width: 120px; background: transparent; backdrop-filter: blur(10px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.4);">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.4rem; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));">🌿</div>
+                            <h4 style="color: var(--white); font-size: 0.85rem; font-weight: 800; margin: 0; text-shadow: 2px 2px 6px rgba(0,0,0,0.7), 0 0 10px rgba(255,255,255,0.3);">Organic</h4>
                         </div>
                         <!-- Feature 10 -->
-                        <div class="feature-mini-card" style="min-width: 120px; background: linear-gradient(135deg, rgba(139, 195, 74, 0.7), rgba(124, 179, 66, 0.7)); backdrop-filter: blur(20px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 6px 25px rgba(139, 195, 74, 0.5); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.6);">
-                            <div style="font-size: 2rem; margin-bottom: 0.4rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🥑</div>
-                            <h4 style="color: var(--white); font-size: 0.8rem; font-weight: 700; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">Avocado Oil</h4>
+                        <div class="feature-mini-card" style="min-width: 120px; background: transparent; backdrop-filter: blur(10px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.4);">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.4rem; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));">🥑</div>
+                            <h4 style="color: var(--white); font-size: 0.85rem; font-weight: 800; margin: 0; text-shadow: 2px 2px 6px rgba(0,0,0,0.7), 0 0 10px rgba(255,255,255,0.3);">Avocado Oil</h4>
                         </div>
                         
                         <!-- DUPLICATE SET FOR SEAMLESS LOOP -->
                         <!-- Feature 1 (duplicate) -->
-                        <div class="feature-mini-card" style="min-width: 120px; background: linear-gradient(135deg, rgba(255, 107, 107, 0.7), rgba(255, 159, 64, 0.7)); backdrop-filter: blur(20px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 6px 25px rgba(255, 107, 107, 0.5); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.6);">
-                            <div style="font-size: 2rem; margin-bottom: 0.4rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🦞</div>
-                            <h4 style="color: var(--white); font-size: 0.8rem; font-weight: 700; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">Fresh Seafood</h4>
+                        <div class="feature-mini-card" style="min-width: 120px; background: transparent; backdrop-filter: blur(10px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.4);">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.4rem; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));">🦞</div>
+                            <h4 style="color: var(--white); font-size: 0.85rem; font-weight: 800; margin: 0; text-shadow: 2px 2px 6px rgba(0,0,0,0.7), 0 0 10px rgba(255,255,255,0.3);">Fresh Seafood</h4>
                         </div>
                         <!-- Feature 2 (duplicate) -->
-                        <div class="feature-mini-card" style="min-width: 120px; background: linear-gradient(135deg, rgba(106, 176, 255, 0.7), rgba(34, 193, 195, 0.7)); backdrop-filter: blur(20px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 6px 25px rgba(106, 176, 255, 0.5); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.6);">
-                            <div style="font-size: 2rem; margin-bottom: 0.4rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🌊</div>
-                            <h4 style="color: var(--white); font-size: 0.8rem; font-weight: 700; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">Marina Views</h4>
+                        <div class="feature-mini-card" style="min-width: 120px; background: transparent; backdrop-filter: blur(10px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.4);">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.4rem; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));">🌊</div>
+                            <h4 style="color: var(--white); font-size: 0.85rem; font-weight: 800; margin: 0; text-shadow: 2px 2px 6px rgba(0,0,0,0.7), 0 0 10px rgba(255,255,255,0.3);">Marina Views</h4>
                         </div>
                         <!-- Feature 3 (duplicate) -->
-                        <div class="feature-mini-card" style="min-width: 120px; background: linear-gradient(135deg, rgba(72, 219, 251, 0.7), rgba(0, 184, 217, 0.7)); backdrop-filter: blur(20px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 6px 25px rgba(72, 219, 251, 0.5); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.6);">
-                            <div style="font-size: 2rem; margin-bottom: 0.4rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🌍</div>
-                            <h4 style="color: var(--white); font-size: 0.8rem; font-weight: 700; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">International</h4>
+                        <div class="feature-mini-card" style="min-width: 120px; background: transparent; backdrop-filter: blur(10px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.4);">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.4rem; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));">🌍</div>
+                            <h4 style="color: var(--white); font-size: 0.85rem; font-weight: 800; margin: 0; text-shadow: 2px 2px 6px rgba(0,0,0,0.7), 0 0 10px rgba(255,255,255,0.3);">International</h4>
                         </div>
                         <!-- Feature 4 (duplicate) -->
-                        <div class="feature-mini-card" style="min-width: 120px; background: linear-gradient(135deg, rgba(253, 121, 168, 0.7), rgba(255, 82, 146, 0.7)); backdrop-filter: blur(20px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 6px 25px rgba(253, 121, 168, 0.5); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.6);">
-                            <div style="font-size: 2rem; margin-bottom: 0.4rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🍣</div>
-                            <h4 style="color: var(--white); font-size: 0.8rem; font-weight: 700; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">Premium Sushi</h4>
+                        <div class="feature-mini-card" style="min-width: 120px; background: transparent; backdrop-filter: blur(10px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.4);">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.4rem; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));">🍣</div>
+                            <h4 style="color: var(--white); font-size: 0.85rem; font-weight: 800; margin: 0; text-shadow: 2px 2px 6px rgba(0,0,0,0.7), 0 0 10px rgba(255,255,255,0.3);">Premium Sushi</h4>
                         </div>
                         <!-- Feature 5 - FREE PARKING (duplicate) -->
-                        <div class="feature-mini-card" style="min-width: 120px; background: linear-gradient(135deg, rgba(251, 200, 51, 0.75), rgba(255, 159, 64, 0.75)); backdrop-filter: blur(20px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 8px 30px rgba(251, 200, 51, 0.6); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.7); animation: pulse-gold 2s ease-in-out infinite;">
-                            <div style="font-size: 2rem; margin-bottom: 0.4rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🅿️</div>
-                            <h4 style="color: var(--white); font-size: 0.8rem; font-weight: 700; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">FREE Parking</h4>
+                        <div class="feature-mini-card" style="min-width: 120px; background: transparent; backdrop-filter: blur(10px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 10px 30px rgba(255, 201, 60, 0.4); flex-shrink: 0; border: 2px solid rgba(255, 201, 60, 0.8); animation: pulse-gold 2s ease-in-out infinite;">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.4rem; filter: drop-shadow(0 3px 6px rgba(255,201,60,0.6));">🅿️</div>
+                            <h4 style="color: var(--white); font-size: 0.85rem; font-weight: 800; margin: 0; text-shadow: 2px 2px 6px rgba(0,0,0,0.7), 0 0 15px rgba(255,201,60,0.6);">FREE Parking</h4>
                         </div>
                         <!-- Feature 6 (duplicate) -->
-                        <div class="feature-mini-card" style="min-width: 120px; background: linear-gradient(135deg, rgba(165, 94, 234, 0.7), rgba(138, 43, 226, 0.7)); backdrop-filter: blur(20px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 6px 25px rgba(165, 94, 234, 0.5); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.6);">
-                            <div style="font-size: 2rem; margin-bottom: 0.4rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🐾</div>
-                            <h4 style="color: var(--white); font-size: 0.8rem; font-weight: 700; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">Pet Friendly</h4>
+                        <div class="feature-mini-card" style="min-width: 120px; background: transparent; backdrop-filter: blur(10px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.4);">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.4rem; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));">🐾</div>
+                            <h4 style="color: var(--white); font-size: 0.85rem; font-weight: 800; margin: 0; text-shadow: 2px 2px 6px rgba(0,0,0,0.7), 0 0 10px rgba(255,255,255,0.3);">Pet Friendly</h4>
                         </div>
                         <!-- Feature 7 (duplicate) -->
-                        <div class="feature-mini-card" style="min-width: 120px; background: linear-gradient(135deg, rgba(255, 118, 117, 0.7), rgba(240, 98, 146, 0.7)); backdrop-filter: blur(20px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 6px 25px rgba(255, 118, 117, 0.5); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.6);">
-                            <div style="font-size: 2rem; margin-bottom: 0.4rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🍹</div>
-                            <h4 style="color: var(--white); font-size: 0.8rem; font-weight: 700; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">Craft Cocktails</h4>
+                        <div class="feature-mini-card" style="min-width: 120px; background: transparent; backdrop-filter: blur(10px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.4);">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.4rem; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));">🍹</div>
+                            <h4 style="color: var(--white); font-size: 0.85rem; font-weight: 800; margin: 0; text-shadow: 2px 2px 6px rgba(0,0,0,0.7), 0 0 10px rgba(255,255,255,0.3);">Craft Cocktails</h4>
                         </div>
                         <!-- Feature 8 (duplicate) -->
-                        <div class="feature-mini-card" style="min-width: 120px; background: linear-gradient(135deg, rgba(255, 193, 7, 0.7), rgba(255, 152, 0, 0.7)); backdrop-filter: blur(20px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 6px 25px rgba(255, 193, 7, 0.5); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.6);">
-                            <div style="font-size: 2rem; margin-bottom: 0.4rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">⭐</div>
-                            <h4 style="color: var(--white); font-size: 0.8rem; font-weight: 700; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">30+ Years</h4>
+                        <div class="feature-mini-card" style="min-width: 120px; background: transparent; backdrop-filter: blur(10px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.4);">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.4rem; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));">⭐</div>
+                            <h4 style="color: var(--white); font-size: 0.85rem; font-weight: 800; margin: 0; text-shadow: 2px 2px 6px rgba(0,0,0,0.7), 0 0 10px rgba(255,255,255,0.3);">30+ Years</h4>
                         </div>
                         <!-- Feature 9 (duplicate) -->
-                        <div class="feature-mini-card" style="min-width: 120px; background: linear-gradient(135deg, rgba(102, 187, 106, 0.7), rgba(76, 175, 80, 0.7)); backdrop-filter: blur(20px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 6px 25px rgba(102, 187, 106, 0.5); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.6);">
-                            <div style="font-size: 2rem; margin-bottom: 0.4rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🌿</div>
-                            <h4 style="color: var(--white); font-size: 0.8rem; font-weight: 700; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">Organic</h4>
+                        <div class="feature-mini-card" style="min-width: 120px; background: transparent; backdrop-filter: blur(10px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.4);">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.4rem; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));">🌿</div>
+                            <h4 style="color: var(--white); font-size: 0.85rem; font-weight: 800; margin: 0; text-shadow: 2px 2px 6px rgba(0,0,0,0.7), 0 0 10px rgba(255,255,255,0.3);">Organic</h4>
                         </div>
                         <!-- Feature 10 (duplicate) -->
-                        <div class="feature-mini-card" style="min-width: 120px; background: linear-gradient(135deg, rgba(139, 195, 74, 0.7), rgba(124, 179, 66, 0.7)); backdrop-filter: blur(20px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 6px 25px rgba(139, 195, 74, 0.5); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.6);">
-                            <div style="font-size: 2rem; margin-bottom: 0.4rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🥑</div>
-                            <h4 style="color: var(--white); font-size: 0.8rem; font-weight: 700; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">Avocado Oil</h4>
+                        <div class="feature-mini-card" style="min-width: 120px; background: transparent; backdrop-filter: blur(10px); border-radius: 15px; padding: 1rem 0.75rem; text-align: center; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); flex-shrink: 0; border: 2px solid rgba(255, 255, 255, 0.4);">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.4rem; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));">🥑</div>
+                            <h4 style="color: var(--white); font-size: 0.85rem; font-weight: 800; margin: 0; text-shadow: 2px 2px 6px rgba(0,0,0,0.7), 0 0 10px rgba(255,255,255,0.3);">Avocado Oil</h4>
                         </div>
                     </div>
                 </div>
@@ -524,8 +536,8 @@
     </footer>
 
     <!-- Chatbot Scripts -->
-    <script src="chatbot.js"></script>
-    <script src="chatbot-init.js"></script>
+    <script src="chatbot.js?v=2"></script>
+    <script src="chatbot-init.js?v=2"></script>
 
     <!-- JavaScript -->
     <script src="app.js"></script>

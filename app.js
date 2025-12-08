@@ -1368,8 +1368,85 @@ function initPerksCarousel() {
         track.style.animationPlayState = 'paused';
     });
 
+
     track.parentElement.addEventListener('mouseleave', () => {
         track.style.animationPlayState = 'running';
     });
 }
+
+// ============================================
+// MOBILE MENU TOGGLE
+// ============================================
+function initMobileMenu() {
+    const menuToggle = document.querySelector('.mobile-menu-toggle');
+    const nav = document.querySelector('nav');
+    const overlay = document.querySelector('.mobile-nav-overlay');
+    const navLinks = document.querySelectorAll('nav a');
+    
+    if (!menuToggle || !nav || !overlay) return;
+    
+    // Toggle menu
+    menuToggle.addEventListener('click', () => {
+        menuToggle.classList.toggle('active');
+        nav.classList.toggle('active');
+        overlay.classList.toggle('active');
+        
+        // Prevent body scroll when menu is open
+        document.body.style.overflow = menuToggle.classList.contains('active') ? 'hidden' : '';
+    });
+    
+    // Close menu when overlay is clicked
+    overlay.addEventListener('click', () => {
+        menuToggle.classList.remove('active');
+        nav.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    });
+    
+    // Close menu when a link is clicked
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            menuToggle.classList.remove('active');
+            nav.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+    });
+    
+    // Close menu on escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && nav.classList.contains('active')) {
+            menuToggle.classList.remove('active');
+            nav.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+}
+
+// Initialize mobile menu
+initMobileMenu();
+
+// ============================================
+// SCROLL INDICATOR - Smooth scroll to content
+// ============================================
+function initScrollIndicator() {
+    const scrollIndicator = document.querySelector('.scroll-indicator');
+    if (scrollIndicator) {
+        scrollIndicator.addEventListener('click', () => {
+            const heroSection = scrollIndicator.closest('section');
+            if (heroSection) {
+                const nextSection = heroSection.nextElementSibling;
+                if (nextSection) {
+                    nextSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+    }
+}
+
+// Initialize scroll indicator
+initScrollIndicator();
+
+
 

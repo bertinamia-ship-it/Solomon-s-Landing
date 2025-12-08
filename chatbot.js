@@ -22,7 +22,9 @@ class RestaurantChatbot {
     // Predefined responses for common questions
     responses = {
         en: {
-            greeting: "Hello! 👋 Welcome to Solomon's Landing. How can I help you today?\n\nI can assist you with:\n• Making a reservation 📅\n• Directions to our restaurant 📍\n• Menu information 🍽️\n• Hours of operation ⏰\n• General questions ❓",
+            greeting: "Hello! 👋 Welcome to Solomon's Landing. How can I help you today?\n\nI can assist you with:\n• Making a reservation 📅\n• Catering services 🍽️\n• Directions to our restaurant 📍\n• Menu information 🍴\n• Hours of operation ⏰\n• General questions ❓",
+            
+            catering: "🎉 **Catering Services**\n\nWe offer professional catering for all types of events:\n\n• **Weddings** 💒\n• **Corporate Events** 🏢\n• **Private Parties** 🎊\n• **Special Celebrations** 🎈\n\nOur catering menu features:\n✨ Fresh seafood & sushi\n✨ International cuisine\n✨ Customizable menus\n✨ Professional service\n\n📱 **For catering inquiries, please contact:**\n**Phone/WhatsApp: +52 624-217-5935**\n\nOr visit our [catering page](/catering.html) for more details!",
             
             directions: "📍 We're located at the beautiful Cabo San Lucas Marina!\n\n**Address:**\nBlvd. Paseo de la Marina Centro\nCentro, Marina\n23450 Cabo San Lucas, B.C.S.\nMexico\n\n🗺️ [View our location page](/location.html) for detailed directions and parking information.",
             
@@ -50,14 +52,16 @@ class RestaurantChatbot {
             
             reservationComplete: "🎉 **Reservation Confirmed!**\n\nThank you for choosing Solomon's Landing!\n\nYou will receive a confirmation email shortly at the address you provided.\n\nWe're looking forward to serving you! 🍽️✨\n\nIs there anything else I can help you with?",
             
-            notUnderstood: "I'm not sure I understood that. Could you please rephrase?\n\nYou can ask me about:\n• Reservations\n• Location/Directions\n• Menu\n• Hours\n• Or type 'help' for options",
+            notUnderstood: "I'm not sure I understood that. Could you please rephrase?\n\nYou can ask me about:\n• Reservations\n• Catering Services\n• Location/Directions\n• Menu\n• Hours\n• Or type 'help' for options",
             
             goodbye: "Thank you for contacting Solomon's Landing! We hope to see you soon! 👋🌊",
             
-            help: "I can help you with:\n\n📅 **Reservations** - Type 'reservation' or 'book a table'\n📍 **Directions** - Type 'location' or 'how to get there'\n🍽️ **Menu** - Type 'menu' or 'food'\n⏰ **Hours** - Type 'hours' or 'when are you open'\n\nJust ask me anything!"
+            help: "I can help you with:\n\n📅 **Reservations** - Type 'reservation' or 'book a table'\n🍽️ **Catering** - Type 'catering' or 'events'\n📍 **Directions** - Type 'location' or 'how to get there'\n🍴 **Menu** - Type 'menu' or 'food'\n⏰ **Hours** - Type 'hours' or 'when are you open'\n\nJust ask me anything!"
         },
         es: {
-            greeting: "¡Hola! 👋 Bienvenido a Solomon's Landing. ¿Cómo puedo ayudarte hoy?\n\nPuedo asistirte con:\n• Hacer una reservación 📅\n• Indicaciones al restaurante 📍\n• Información del menú 🍽️\n• Horarios de operación ⏰\n• Preguntas generales ❓",
+            greeting: "¡Hola! 👋 Bienvenido a Solomon's Landing. ¿Cómo puedo ayudarte hoy?\n\nPuedo asistirte con:\n• Hacer una reservación 📅\n• Servicios de catering 🍽️\n• Indicaciones al restaurante 📍\n• Información del menú 🍴\n• Horarios de operación ⏰\n• Preguntas generales ❓",
+            
+            catering: "🎉 **Servicios de Catering**\n\n¡Ofrecemos catering profesional para todo tipo de eventos!\n\n• **Bodas** 💒\n• **Eventos Corporativos** 🏢\n• **Fiestas Privadas** 🎊\n• **Celebraciones Especiales** 🎈\n\nNuestro menú de catering incluye:\n✨ Mariscos frescos y sushi\n✨ Cocina internacional\n✨ Menús personalizables\n✨ Servicio profesional\n\n📱 **Para consultas de catering, contacta:**\n**Teléfono/WhatsApp: +52 624-217-5935**\n\nO visita nuestra [página de catering](/catering.html) para más detalles!",
             
             directions: "📍 ¡Estamos ubicados en la hermosa Marina de Cabo San Lucas!\n\n**Dirección:**\nBlvd. Paseo de la Marina Centro\nCentro, Marina\n23450 Cabo San Lucas, B.C.S.\nMéxico\n\n🗺️ [Ver nuestra página de ubicación](/location.html) para direcciones detalladas e información de estacionamiento.",
             
@@ -85,11 +89,11 @@ class RestaurantChatbot {
             
             reservationComplete: "🎉 **¡Reservación Confirmada!**\n\n¡Gracias por elegir Solomon's Landing!\n\nRecibirás un correo de confirmación en breve en la dirección que proporcionaste.\n\n¡Esperamos servirte pronto! 🍽️✨\n\n¿Hay algo más en lo que pueda ayudarte?",
             
-            notUnderstood: "No estoy seguro de haber entendido. ¿Podrías reformular tu pregunta?\n\nPuedes preguntarme sobre:\n• Reservaciones\n• Ubicación/Direcciones\n• Menú\n• Horarios\n• O escribe 'ayuda' para opciones",
+            notUnderstood: "No estoy seguro de haber entendido. ¿Podrías reformular tu pregunta?\n\nPuedes preguntarme sobre:\n• Reservaciones\n• Servicios de Catering\n• Ubicación/Direcciones\n• Menú\n• Horarios\n• O escribe 'ayuda' para opciones",
             
             goodbye: "¡Gracias por contactar a Solomon's Landing! ¡Esperamos verte pronto! 👋🌊",
             
-            help: "Puedo ayudarte con:\n\n📅 **Reservaciones** - Escribe 'reservación' o 'reservar mesa'\n📍 **Direcciones** - Escribe 'ubicación' o 'cómo llegar'\n🍽️ **Menú** - Escribe 'menú' o 'comida'\n⏰ **Horarios** - Escribe 'horarios' o 'cuándo abren'\n\n¡Pregúntame lo que necesites!"
+            help: "Puedo ayudarte con:\n\n📅 **Reservaciones** - Escribe 'reservación' o 'reservar mesa'\n🍽️ **Catering** - Escribe 'catering' o 'eventos'\n📍 **Direcciones** - Escribe 'ubicación' o 'cómo llegar'\n🍴 **Menú** - Escribe 'menú' o 'comida'\n⏰ **Horarios** - Escribe 'horarios' o 'cuándo abren'\n\n¡Pregúntame lo que necesites!"
         }
     };
 
@@ -237,6 +241,15 @@ class RestaurantChatbot {
             'ubicación', 'ubicacion', 'dónde', 'donde', 'dirección', 'direccion', 'cómo llegar', 'como llegar'
         ])) {
             return this.responses[lang].directions;
+        }
+        
+        // Catering
+        if (this.matchesKeywords(message, [
+            'catering', 'event', 'events', 'party', 'parties', 'wedding', 'corporate',
+            'celebration', 'private dining', 'grupo', 'grupos', 'evento', 'eventos', 
+            'fiesta', 'fiestas', 'boda', 'bodas', 'celebración', 'celebracion'
+        ])) {
+            return this.responses[lang].catering;
         }
         
         // Menu
