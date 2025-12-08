@@ -1,0 +1,138 @@
+/* ============================================
+   ESTILOS ADICIONALES PARA INDEX.HTML
+   Agregar estos estilos al final de styles.css
+   ============================================ */
+
+/* FEATURE CARDS (Why Choose Us Section) */
+.feature-card {
+    background: var(--white);
+    padding: 2.5rem 2rem;
+    border-radius: 14px;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(0, 74, 159, 0.06);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--yellow-sun), var(--orange-sun));
+    transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--yellow-sun);
+}
+
+.feature-card:hover::before {
+    left: 0;
+}
+
+.feature-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1.25rem;
+    display: inline-block;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feature-card:hover .feature-icon {
+    transform: scale(1.15) rotate(5deg);
+}
+
+.feature-card h3 {
+    color: var(--primary-color);
+    font-size: 1.35rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+}
+
+.feature-card p {
+    color: var(--text-light);
+    line-height: 1.7;
+    font-size: 0.975rem;
+    margin: 0;
+}
+
+/* ACTIVE NAV LINK */
+nav a.active {
+    color: var(--secondary-color);
+    border-bottom-color: var(--secondary-color);
+}
+
+/* LOCATION QUICK INFO - RESPONSIVE BUTTONS */
+@media (max-width: 768px) {
+    .feature-card {
+        padding: 2rem 1.5rem;
+    }
+
+    .feature-icon {
+        font-size: 3rem;
+    }
+
+    .feature-card h3 {
+        font-size: 1.2rem;
+    }
+
+    #location-quick .btn {
+        width: 100%;
+        max-width: 250px;
+    }
+}
+
+/* SMOOTH SCROLL OFFSET FOR FIXED HEADER */
+html {
+    scroll-padding-top: 100px;
+}
+
+/* IMPROVED HOVER EFFECTS FOR FOOTER LINKS */
+footer a:hover {
+    color: var(--sand);
+    transform: translateX(3px);
+}
+
+footer [href*="instagram"]:hover,
+footer [href*="facebook"]:hover,
+footer [href*="tripadvisor"]:hover {
+    opacity: 0.8;
+}
+
+/* ACCESSIBILITY IMPROVEMENTS */
+.btn:focus,
+.lang-btn:focus,
+.menu-tab:focus {
+    outline: 2px solid var(--yellow-sun);
+    outline-offset: 2px;
+}
+
+/* LOADING ANIMATION FOR MENU ITEMS */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.menu-item {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+.menu-item:nth-child(1) { animation-delay: 0.1s; }
+.menu-item:nth-child(2) { animation-delay: 0.2s; }
+.menu-item:nth-child(3) { animation-delay: 0.3s; }
+.menu-item:nth-child(4) { animation-delay: 0.4s; }
+.menu-item:nth-child(5) { animation-delay: 0.5s; }
+.menu-item:nth-child(6) { animation-delay: 0.6s; }

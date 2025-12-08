@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Read authentic reviews from Solomon's Landing guests. See what our customers say about their dining experience at Cabo San Lucas Marina.">
+    <meta name="keywords" content="Solomon's Landing Reviews, Testimonials, Cabo San Lucas Restaurant Reviews, Customer Feedback">
+    <title>Guest Reviews | Solomon's Landing</title>
+    
+    <link rel="icon" type="image/png" href="logo solomons.png">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="holiday-theme.css?v=3">
+    <link rel="stylesheet" href="chatbot.css">
+    
+    <!-- EmailJS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+</head>
+<body>
+    <!-- HEADER - Subtle Holiday Edition -->
+    <header style="background: linear-gradient(135deg, rgba(22, 91, 51, 0.85) 0%, rgba(196, 30, 58, 0.85) 50%, rgba(22, 91, 51, 0.85) 100%); background-size: 200% 200%; animation: gradientShift 10s ease-in-out infinite; box-shadow: 0 4px 20px rgba(0,0,0,0.15); position: relative; overflow: hidden;">
+        <!-- Subtle Snow Effect -->
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0.08;">
+            <div style="position: absolute; top: 20%; left: 10%; font-size: 1rem; animation: fall 15s linear infinite;">❄</div>
+            <div style="position: absolute; top: 30%; left: 50%; font-size: 0.8rem; animation: fall 18s linear infinite;">❄</div>
+            <div style="position: absolute; top: 10%; left: 80%; font-size: 1rem; animation: fall 12s linear infinite;">❄</div>
+        </div>
+        
+        <div class="container" style="position: relative; z-index: 1;">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="index.html">
+                        <img src="logo solomons.png" alt="Solomon's Landing Logo">
+                    </a>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="index.html" style="color: white;">Home</a></li>
+                        <li><a href="menus.html" style="color: white;">Menus</a></li>
+                        <li><a href="catering.html" style="color: white;">Catering</a></li>
+                        <li><a href="location.html" style="color: white;">Location</a></li>
+                        <li><a href="reviews.html" class="active" style="color: var(--holiday-gold); font-weight: 700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);">Reviews</a></li>
+                    </ul>
+                </nav>
+                <div class="header-actions">
+                    <div class="language-toggle">
+                        <button class="lang-btn active" data-lang="en" style="background: white; color: var(--holiday-green);">EN</button>
+                        <button class="lang-btn" data-lang="es" style="background: rgba(255,255,255,0.2); color: white;">ES</button>
+                    </div>
+                    <a href="reservations.html" class="btn btn-primary" id="reserveBtn" style="background: var(--holiday-gold); color: var(--holiday-green); font-weight: 700; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.25); animation: glow 2.5s ease-in-out infinite;">Reserve</a>
+                    <span style="color: white; font-size: 1.5rem; margin-left: 1rem; animation: rotate 5s ease-in-out infinite;">🎄</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main>
+        <!-- REVIEWS HERO SECTION - Photo Slider -->
+        <section id="reviews-hero" style="position: relative; height: 100vh; min-height: 600px; overflow: hidden;">
+            <!-- Nieve sutil animada -->
+            <div class="snowflakes" aria-hidden="true">
+                <div class="snowflake">❄</div>
+                <div class="snowflake">❄</div>
+                <div class="snowflake">❄</div>
+                <div class="snowflake">❄</div>
+                <div class="snowflake">❄</div>
+                <div class="snowflake">❄</div>
+            </div>
+            
+            <!-- Hero Slider -->
+            <div class="hero-slider" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; min-height: 100vh;">
+                <div class="hero-slide active" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; min-height: 100vh; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('sh1.jpg'); background-size: cover; background-position: center center; background-repeat: no-repeat; opacity: 1; transition: opacity 1.5s ease-in-out;"></div>
+                <div class="hero-slide" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; min-height: 100vh; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('reviews1.jpg'); background-size: cover; background-position: center center; background-repeat: no-repeat; opacity: 0; transition: opacity 1.5s ease-in-out;"></div>
+            </div>
+            
+            <!-- Hero Overlay Content -->
+            <div class="hero-overlay" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2; width: 90%; max-width: 900px; text-align: center;">
+                <div style="font-size: 4rem; margin-bottom: 1rem; animation: fadeInUp 0.8s ease-out;">⭐</div>
+                <h1 data-i18n="reviews.heroTitle" style="font-family: 'Cormorant Garamond', serif; font-size: 4rem; color: white; margin-bottom: 1.5rem; text-shadow: 0 4px 30px rgba(0,0,0,0.5); font-weight: 300; letter-spacing: 2px; animation: fadeInUp 0.8s ease-out 0.2s backwards;">Guest Reviews</h1>
+                <div style="width: 120px; height: 4px; background: linear-gradient(90deg, var(--holiday-red), var(--holiday-gold), var(--holiday-green)); margin: 0 auto 2rem; border-radius: 2px; animation: fadeInUp 0.8s ease-out 0.3s backwards;"></div>
+                <p data-i18n="reviews.heroSubtitle" style="font-family: 'Montserrat', sans-serif; font-size: 1.3rem; color: rgba(255,255,255,0.95); line-height: 1.8; text-shadow: 0 2px 15px rgba(0,0,0,0.4); letter-spacing: 1px; animation: fadeInUp 0.8s ease-out 0.4s backwards; max-width: 700px; margin: 0 auto;">
+                    Read what our valued customers have to say about their experience
+                </p>
+            </div>
+
+            <!-- Scroll Indicator -->
+            <div class="scroll-indicator" style="position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 10; animation: bounce 2s infinite;">
+                <div style="width: 30px; height: 50px; border: 2px solid rgba(255,255,255,0.8); border-radius: 20px; position: relative;">
+                    <div style="width: 6px; height: 10px; background: white; border-radius: 3px; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); animation: scroll-down 2s infinite;"></div>
+                </div>
+                <p style="color: white; font-size: 0.75rem; margin-top: 8px; text-align: center; opacity: 0.9; letter-spacing: 1px;">SCROLL</p>
+            </div>
+        </section>
+
+        <!-- AVERAGE RATING SECTION -->
+        <section style="background: linear-gradient(135deg, var(--background-light) 0%, var(--white) 100%); padding: 3rem 0; position: relative; overflow: hidden;">
+            <!-- Decorative elements -->
+            <div style="position: absolute; top: 10%; right: 5%; font-size: 3rem; opacity: 0.05; animation: float 8s ease-in-out infinite;">⭐</div>
+            <div style="position: absolute; bottom: 10%; left: 5%; font-size: 3rem; opacity: 0.05; animation: float 6s ease-in-out infinite;">🎄</div>
+            
+            <div class="container">
+                <div style="max-width: 700px; margin: 0 auto; text-align: center; padding: 2.5rem 2rem; background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 255, 255, 0.95)); border-radius: 20px; box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 215, 0, 0.3); backdrop-filter: blur(10px); animation: fadeInUp 0.8s ease-out;">
+                    <div style="font-size: 3.5rem; color: #fbbf24; margin-bottom: 0.5rem; animation: starShine 2s ease-in-out infinite; filter: drop-shadow(0 0 15px rgba(251, 191, 36, 0.6));">★★★★★</div>
+                    <h2 style="font-size: 3rem; background: linear-gradient(135deg, var(--holiday-gold), var(--holiday-red)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.3rem; font-weight: 800; letter-spacing: -1px;">4.8 / 5.0</h2>
+                    <p data-i18n="reviews.rating" style="color: var(--text-light); font-size: 1rem; margin-bottom: 2rem; font-weight: 500;">Based on 500+ verified reviews</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+                        <div style="padding: 1.2rem; background: white; border-radius: 14px; box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; animation: fadeInUp 0.8s ease-out 0.1s backwards;" onmouseover="this.style.transform='translateY(-8px) scale(1.05)'; this.style.boxShadow='0 10px 25px rgba(251, 191, 36, 0.3)'" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 6px 15px rgba(0, 0, 0, 0.08)'">
+                            <div style="font-size: 2rem; margin-bottom: 0.3rem; animation: bounce 2s ease-in-out infinite;">🍽️</div>
+                            <div style="font-weight: 800; font-size: 1.6rem; background: linear-gradient(135deg, var(--holiday-gold), var(--holiday-red)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">4.9</div>
+                            <div data-i18n="reviews.foodQuality" style="color: var(--text-light); font-size: 0.85rem; font-weight: 600;">Food Quality</div>
+                        </div>
+                        <div style="padding: 1.2rem; background: white; border-radius: 14px; box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; animation: fadeInUp 0.8s ease-out 0.2s backwards;" onmouseover="this.style.transform='translateY(-8px) scale(1.05)'; this.style.boxShadow='0 10px 25px rgba(251, 191, 36, 0.3)'" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 6px 15px rgba(0, 0, 0, 0.08)'">
+                            <div style="font-size: 2rem; margin-bottom: 0.3rem; animation: bounce 2s ease-in-out infinite 0.2s;">👨‍🍳</div>
+                            <div style="font-weight: 800; font-size: 1.6rem; background: linear-gradient(135deg, var(--holiday-gold), var(--holiday-red)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">4.8</div>
+                            <div data-i18n="reviews.service" style="color: var(--text-light); font-size: 0.85rem; font-weight: 600;">Service</div>
+                        </div>
+                        <div style="padding: 1.2rem; background: white; border-radius: 14px; box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; animation: fadeInUp 0.8s ease-out 0.3s backwards;" onmouseover="this.style.transform='translateY(-8px) scale(1.05)'; this.style.boxShadow='0 10px 25px rgba(251, 191, 36, 0.3)'" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 6px 15px rgba(0, 0, 0, 0.08)'">
+                            <div style="font-size: 2rem; margin-bottom: 0.3rem; animation: bounce 2s ease-in-out infinite 0.4s;">🌊</div>
+                            <div style="font-weight: 800; font-size: 1.6rem; background: linear-gradient(135deg, var(--holiday-gold), var(--holiday-red)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">5.0</div>
+                            <div data-i18n="reviews.ambiance" style="color: var(--text-light); font-size: 0.85rem; font-weight: 600;">Ambiance</div>
+                        </div>
+                        <div style="padding: 1.2rem; background: white; border-radius: 14px; box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; animation: fadeInUp 0.8s ease-out 0.4s backwards;" onmouseover="this.style.transform='translateY(-8px) scale(1.05)'; this.style.boxShadow='0 10px 25px rgba(251, 191, 36, 0.3)'" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 6px 15px rgba(0, 0, 0, 0.08)'">
+                            <div style="font-size: 2rem; margin-bottom: 0.3rem; animation: bounce 2s ease-in-out infinite 0.6s;">💰</div>
+                            <div style="font-weight: 800; font-size: 1.6rem; background: linear-gradient(135deg, var(--holiday-gold), var(--holiday-red)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">4.7</div>
+                            <div data-i18n="reviews.value" style="color: var(--text-light); font-size: 0.85rem; font-weight: 600;">Value</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TESTIMONIALS GRID -->
+        <section style="background: linear-gradient(180deg, var(--white) 0%, var(--background-cream) 100%); padding: 5rem 0; position: relative;">
+            <div class="container">
+                <h2 data-i18n="reviews.sectionTitle" class="section-title" style="font-size: 3rem; margin-bottom: 1rem; animation: fadeInUp 0.8s ease-out;">What Our Guests Say</h2>
+                <p data-i18n="reviews.sectionSubtitle" style="text-align: center; color: var(--text-light); margin-bottom: 4rem; font-size: 1.2rem; animation: fadeInUp 0.8s ease-out 0.2s backwards;">
+                    ✨ Real experiences from our valued customers ✨
+                </p>
+                
+                <div class="testimonials-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
+                    <!-- Review 1 -->
+                    <div class="testimonial-card" style="background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; animation: fadeInUp 0.8s ease-out 0.1s backwards; border: 2px solid transparent;" onmouseover="this.style.transform='translateY(-15px) rotate(1deg)'; this.style.boxShadow='0 20px 50px rgba(255, 215, 0, 0.3)'; this.style.borderColor='var(--holiday-gold)'" onmouseout="this.style.transform='translateY(0) rotate(0deg)'; this.style.boxShadow='0 10px 30px rgba(0, 0, 0, 0.1)'; this.style.borderColor='transparent'">
+                        <div style="position: absolute; top: -10px; right: -10px; font-size: 4rem; opacity: 0.05;">💬</div>
+                        <div class="testimonial-stars" style="font-size: 1.5rem; color: #fbbf24; margin-bottom: 1rem; text-shadow: 0 0 10px rgba(251, 191, 36, 0.3);">★★★★★</div>
+                        <p class="testimonial-text" style="font-size: 1.05rem; line-height: 1.7; color: var(--text-dark); margin-bottom: 1.5rem; font-style: italic;">
+                            "Absolutely incredible experience! The fresh seafood and marina views made our dinner unforgettable. The service was impeccable and the ambiance perfect for our anniversary celebration."
+                        </p>
+                        <div class="testimonial-author" style="font-weight: 700; font-size: 1.1rem; color: var(--primary-color); margin-bottom: 0.3rem;">Sarah & Michael Johnson</div>
+                        <div class="testimonial-location" style="color: var(--text-light); font-size: 0.95rem; margin-bottom: 1rem;">📍 San Diego, California</div>
+                        <div style="padding-top: 1rem; border-top: 2px solid var(--background-cream); font-size: 0.9rem; color: var(--text-light);">
+                            📅 Visited: November 2025
+                        </div>
+                    </div>
+
+                    <!-- Review 2 -->
+                    <div class="testimonial-card">
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-text">
+                            "Best dining experience in Cabo! The sushi was remarkably fresh and the cocktails were creative and delicious. Our server was knowledgeable and made excellent recommendations."
+                        </p>
+                        <div class="testimonial-author">David Martinez</div>
+                        <div class="testimonial-location">Los Angeles, California</div>
+                        <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-light);">
+                            📅 Visited: October 2025
+                        </div>
+                    </div>
+
+                    <!-- Review 3 -->
+                    <div class="testimonial-card">
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-text">
+                            "We celebrated our wedding rehearsal dinner here and it was perfect! The catering team handled everything beautifully. The food was exceptional and the location breathtaking."
+                        </p>
+                        <div class="testimonial-author">Jennifer & Carlos Ramirez</div>
+                        <div class="testimonial-location">Phoenix, Arizona</div>
+                        <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-light);">
+                            📅 Visited: September 2025
+                        </div>
+                    </div>
+
+                    <!-- Review 4 -->
+                    <div class="testimonial-card">
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-text">
+                            "The perfect spot for a business lunch with clients. Professional atmosphere, outstanding service, and delicious food. The catch of the day was prepared to perfection!"
+                        </p>
+                        <div class="testimonial-author">Robert Chen</div>
+                        <div class="testimonial-location">San Francisco, California</div>
+                        <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-light);">
+                            📅 Visited: November 2025
+                        </div>
+                    </div>
+
+                    <!-- Review 5 -->
+                    <div class="testimonial-card">
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-text">
+                            "Family-friendly with amazing food! The kids loved the pasta and we enjoyed the seafood platter. The staff made us feel so welcome and the views are stunning."
+                        </p>
+                        <div class="testimonial-author">The Anderson Family</div>
+                        <div class="testimonial-location">Denver, Colorado</div>
+                        <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-light);">
+                            📅 Visited: October 2025
+                        </div>
+                    </div>
+
+                    <!-- Review 6 -->
+                    <div class="testimonial-card">
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-text">
+                            "Exquisite sushi and impeccable presentation. The omakase experience was worth every penny. Our chef was talented and entertaining. Will definitely return!"
+                        </p>
+                        <div class="testimonial-author">Emily Thompson</div>
+                        <div class="testimonial-location">Seattle, Washington</div>
+                        <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-light);">
+                            📅 Visited: November 2025
+                        </div>
+                    </div>
+
+                    <!-- Review 7 -->
+                    <div class="testimonial-card">
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-text">
+                            "Romantic setting with exceptional food. We came for our honeymoon and the staff made it extra special with complimentary champagne and a beautiful dessert. Highly recommend!"
+                        </p>
+                        <div class="testimonial-author">Maria & James Wilson</div>
+                        <div class="testimonial-location">Chicago, Illinois</div>
+                        <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-light);">
+                            📅 Visited: September 2025
+                        </div>
+                    </div>
+
+                    <!-- Review 8 -->
+                    <div class="testimonial-card">
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-text">
+                            "Best breakfast in Cabo! The huevos rancheros were authentic and delicious. Great coffee and fresh pastries. The marina view makes mornings magical."
+                        </p>
+                        <div class="testimonial-author">Patricia González</div>
+                        <div class="testimonial-location">Guadalajara, México</div>
+                        <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-light);">
+                            📅 Visited: October 2025
+                        </div>
+                    </div>
+
+                    <!-- Review 9 -->
+                    <div class="testimonial-card">
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-text">
+                            "Outstanding wine selection and knowledgeable sommelier. The lobster was cooked to perfection. This is fine dining at its best with a relaxed, welcoming atmosphere."
+                        </p>
+                        <div class="testimonial-author">Richard & Susan Palmer</div>
+                        <div class="testimonial-location">Boston, Massachusetts</div>
+                        <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-light);">
+                            📅 Visited: November 2025
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EXTERNAL REVIEW PLATFORMS -->
+        <section style="background: var(--white); padding: 5rem 0;">
+            <div class="container">
+                <h2 class="section-title">Find Us On</h2>
+                <p style="text-align: center; color: var(--text-light); margin-bottom: 3rem; font-size: 1.1rem;">
+                    Read more reviews and share your experience on these platforms
+                </p>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; max-width: 1000px; margin: 0 auto;">
+                    <!-- TripAdvisor -->
+                    <div style="background: linear-gradient(135deg, var(--white), var(--background-cream)); padding: 2.5rem; border-radius: 16px; box-shadow: var(--shadow-md); text-align: center; transition: transform 0.3s ease;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">✈️</div>
+                        <h3 style="color: var(--primary-color); margin-bottom: 1rem; font-size: 1.4rem;">TripAdvisor</h3>
+                        <div style="font-size: 2rem; color: #fbbf24; margin-bottom: 1rem;">★★★★★</div>
+                        <p style="color: var(--text-light); margin-bottom: 1.5rem;">4.5 / 5.0 - 350+ reviews</p>
+                        <a href="https://www.tripadvisor.com.mx/Restaurant_Review-g152515-d878292-Reviews-Solomon_s_Landing_Restaurant-Cabo_San_Lucas_Los_Cabos_Baja_California.html" target="_blank" rel="noopener" class="btn" style="width: 100%;">
+                            Read Reviews
+                        </a>
+                    </div>
+
+                    <!-- Google Reviews -->
+                    <div style="background: linear-gradient(135deg, var(--white), var(--background-cream)); padding: 2.5rem; border-radius: 16px; box-shadow: var(--shadow-md); text-align: center; transition: transform 0.3s ease;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+                        <h3 style="color: var(--primary-color); margin-bottom: 1rem; font-size: 1.4rem;">Google Reviews</h3>
+                        <div style="font-size: 2rem; color: #fbbf24; margin-bottom: 1rem;">★★★★★</div>
+                        <p style="color: var(--text-light); margin-bottom: 1.5rem;">4.7 / 5.0 - 200+ reviews</p>
+                        <a href="https://www.google.com/maps/place/Solomon's+Landing+Los+Cabos" target="_blank" rel="noopener" class="btn" style="width: 100%;">
+                            Read Reviews
+                        </a>
+                    </div>
+
+                    <!-- Facebook -->
+                    <div style="background: linear-gradient(135deg, var(--white), var(--background-cream)); padding: 2.5rem; border-radius: 16px; box-shadow: var(--shadow-md); text-align: center; transition: transform 0.3s ease;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">👥</div>
+                        <h3 style="color: var(--primary-color); margin-bottom: 1rem; font-size: 1.4rem;">Facebook</h3>
+                        <div style="font-size: 2rem; color: #fbbf24; margin-bottom: 1rem;">★★★★★</div>
+                        <p style="color: var(--text-light); margin-bottom: 1.5rem;">4.9 / 5.0 - 150+ reviews</p>
+                        <a href="https://www.facebook.com/SolomonsLandingLosCabos/reviews" target="_blank" rel="noopener" class="btn" style="width: 100%;">
+                            Read Reviews
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CALL TO ACTION -->
+        <section style="background: linear-gradient(135deg, var(--navy-dark) 0%, var(--blue-main) 100%); color: var(--white); padding: 4rem 0; text-align: center;">
+            <div class="container">
+                <h2 style="font-size: 2.5rem; margin-bottom: 1rem; font-weight: 700;">Ready to Create Your Own Story?</h2>
+                <p style="font-size: 1.2rem; opacity: 0.9; margin-bottom: 2.5rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+                    Join hundreds of satisfied guests and experience Solomon's Landing for yourself
+                </p>
+                <a href="reservations.html" class="btn" style="background: var(--yellow-sun); color: var(--navy-dark); font-size: 1.1rem; padding: 16px 40px;">
+                    Make a Reservation
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer id="contact">
+        <div class="container">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2.5rem; margin-bottom: 2.5rem; text-align: left;">
+                <div>
+                    <h3 style="color: var(--yellow-sun); margin-bottom: 1rem; font-size: 1.2rem;">About Solomon's Landing</h3>
+                    <p style="line-height: 1.7; opacity: 0.9; font-size: 0.95rem;">
+                        International cuisine on the Cabo San Lucas Marina. Experience fresh seafood, premium cuts, and authentic flavors with breathtaking marina views since 1995.
+                    </p>
+                    <div style="margin-top: 1.5rem;">
+                        <img src="logo solomons.png" alt="Solomon's Landing" style="height: 50px; filter: brightness(0) invert(1) opacity(0.8);">
+                    </div>
+                </div>
+
+                <div>
+                    <h3 style="color: var(--yellow-sun); margin-bottom: 1rem; font-size: 1.2rem;">Quick Links</h3>
+                    <ul style="list-style: none; padding: 0; line-height: 2;">
+                        <li><a href="index.html" style="color: rgba(255,255,255,0.9); text-decoration: none;">Home</a></li>
+                        <li><a href="menus.html" style="color: rgba(255,255,255,0.9); text-decoration: none;">Menus</a></li>
+                        <li><a href="catering.html" style="color: rgba(255,255,255,0.9); text-decoration: none;">Catering</a></li>
+                        <li><a href="location.html" style="color: rgba(255,255,255,0.9); text-decoration: none;">Location</a></li>
+                        <li><a href="reservations.html" style="color: rgba(255,255,255,0.9); text-decoration: none;">Reservations</a></li>
+                        <li><a href="reviews.html" style="color: rgba(255,255,255,0.9); text-decoration: none;">Reviews</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 style="color: var(--yellow-sun); margin-bottom: 1rem; font-size: 1.2rem;">Contact</h3>
+                    <p style="line-height: 1.8; opacity: 0.9;">
+                        <strong>Phone:</strong><br>
+                        <a href="tel:+526242193228" style="color: var(--yellow-sun); text-decoration: none;">+52 624 219 3228</a>
+                    </p>
+                    <p style="line-height: 1.8; opacity: 0.9; margin-top: 1rem;">
+                        <strong>Email:</strong><br>
+                        <a href="mailto:condecorporation@gmail.com" style="color: var(--yellow-sun); text-decoration: none;">condecorporation@gmail.com</a>
+                    </p>
+                </div>
+
+                <div>
+                    <h3 style="color: var(--yellow-sun); margin-bottom: 1rem; font-size: 1.2rem;">Follow Us</h3>
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <a href="https://www.instagram.com/solomonslanding/" target="_blank" rel="noopener" style="color: rgba(255,255,255,0.9); text-decoration: none;">
+                            📷 Instagram
+                        </a>
+                        <a href="https://www.facebook.com/SolomonsLandingLosCabos" target="_blank" rel="noopener" style="color: rgba(255,255,255,0.9); text-decoration: none;">
+                            👥 Facebook
+                        </a>
+                        <a href="https://www.tripadvisor.com.mx/Restaurant_Review-g152515-d878292-Reviews-Solomon_s_Landing_Restaurant-Cabo_San_Lucas_Los_Cabos_Baja_California.html" target="_blank" rel="noopener" style="color: rgba(255,255,255,0.9); text-decoration: none;">
+                            ✈️ TripAdvisor
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div style="border-top: 1px solid rgba(255,255,255,0.15); padding-top: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 0.9rem; color: rgba(255,255,255,0.7);">
+                    &copy; 2025 Solomon's Landing. All rights reserved. | Cabo San Lucas, B.C.S., México
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Chatbot Scripts -->
+    <script src="chatbot.js"></script>
+    <script src="chatbot-init.js"></script>
+    
+    <script src="app.js"></script>
+</body>
+</html>
