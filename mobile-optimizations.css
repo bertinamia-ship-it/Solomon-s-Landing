@@ -34,6 +34,7 @@
         padding: 0;
         z-index: 1001;
         position: relative;
+        margin-left: auto;
     }
 
     .mobile-menu-toggle span {
@@ -44,6 +45,7 @@
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
         transform-origin: center;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     }
 
     .mobile-menu-toggle.active span:nth-child(1) {
@@ -59,6 +61,11 @@
         transform: rotate(-45deg) translateY(-10px);
     }
 
+    /* Header Actions - Hide on Mobile */
+    .header-actions {
+        display: none !important;
+    }
+
     /* Mostrar overlay solo en móviles */
     .mobile-nav-overlay {
         display: block;
@@ -71,15 +78,18 @@
         backdrop-filter: blur(5px);
         z-index: 999;
         opacity: 0;
+        pointer-events: none;
         transition: opacity 0.3s ease;
     }
 
     .mobile-nav-overlay.active {
         opacity: 1;
+        pointer-events: auto;
     }
 
     /* Convertir navegación en menú lateral SOLO en móviles */
     nav {
+        display: block !important;
         position: fixed;
         top: 0;
         right: -100%;
@@ -144,6 +154,8 @@
 
     .header-content {
         justify-content: space-between;
+        grid-template-columns: auto auto;
+        gap: 1rem;
     }
 
     .header-actions {
@@ -151,8 +163,76 @@
     }
 }
 
+/* ============================================
+   TABLET / iPAD OPTIMIZATIONS (768px - 900px)
+   ============================================ */
+@media (min-width: 769px) and (max-width: 900px) {
+    /* Use 2-column grid for cards on tablets */
+    .info-cards-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 1.5rem;
+    }
+
+    .menu-items {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+
+    .directions-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Typography - Slightly larger than mobile */
+    .hero-overlay h1 {
+        font-size: 3rem !important;
+    }
+
+    .hero-overlay p {
+        font-size: 1.2rem !important;
+    }
+
+    .section-title {
+        font-size: 2.25rem !important;
+    }
+
+    /* Logo - Medium size for tablets */
+    .logo img {
+        height: 65px;
+    }
+
+    header.scrolled .logo img {
+        height: 55px;
+    }
+
+    /* Nav sidebar slightly wider on tablets */
+    nav {
+        width: 320px;
+    }
+}
+
 /* Standard Mobile (max-width: 768px) */
 @media (max-width: 768px) {
+    /* Hero Sections - Better Mobile Experience */
+    #hero,
+    #menu-hero,
+    #reservations-hero,
+    #catering-hero,
+    #location-hero,
+    #reviews-hero {
+        height: auto !important;
+        min-height: 65vh !important;
+        max-height: none !important;
+    }
+
+    .hero-overlay {
+        padding: 3rem 1.5rem !important;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+
     /* Typography Adjustments */
     .hero-overlay h1 {
         font-size: 2.5rem !important;
@@ -297,10 +377,67 @@
     .menu-items {
         grid-template-columns: 1fr;
         gap: 1.5rem;
+        padding: 0 0.5rem;
     }
 
     .menu-item {
         padding: 1.75rem 1.5rem;
+        max-width: 100%;
+    }
+
+    .menu-item-name {
+        font-size: 1.2rem !important;
+    }
+
+    .menu-item-price {
+        font-size: 1.3rem !important;
+    }
+
+    .menu-item-description {
+        font-size: 0.95rem !important;
+        line-height: 1.6;
+    }
+
+    /* Location Page - Info Cards Grid */
+    .info-cards-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.25rem;
+        padding: 0 0.5rem;
+    }
+
+    .info-card {
+        padding: 1.75rem 1.5rem !important;
+    }
+
+    .info-card h3 {
+        font-size: 1.25rem !important;
+    }
+
+    .info-card p,
+    .info-card a {
+        font-size: 1rem !important;
+    }
+
+    /* Location - Directions Grid */
+    .directions-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.25rem;
+        padding: 0 0.5rem;
+    }
+
+    .direction-card {
+        padding: 1.75rem 1.5rem !important;
+    }
+
+    /* Map Container */
+    .map-container {
+        min-height: 350px !important;
+        margin: 0 -20px;
+        border-radius: 0;
+    }
+
+    .map-container iframe {
+        height: 350px !important;
     }
 
     /* Contact Section */
