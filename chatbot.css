@@ -45,7 +45,7 @@
 .chatbot-assistant::before {
     content: '👋';
     font-size: 32px;
-    animation: wave 1.5s ease-in-out infinite;
+    animation: wave 3s ease-in-out infinite;
     display: block;
 }
 
