@@ -163,11 +163,9 @@
     <!-- Stylesheets - Async Load Non-Critical -->
     <link rel="stylesheet" href="styles.css?v=7">
     <link rel="stylesheet" href="enhanced-design.css?v=1">
-    <link rel="stylesheet" href="mobile-optimizations.css?v=5" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="mobile-iphone-optimizations.css?v=2" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="mobile-iphone-ultra.css?v=1" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="mobile-fixed.css?v=10" media="(max-width: 768px)">
     <link rel="stylesheet" href="holiday-theme.css?v=3" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="chatbot.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="chatbot-fixed.css?v=10" media="print" onload="this.media='all'">
     
     <!-- Scripts - Deferred for Performance -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js" defer></script>
@@ -687,7 +685,7 @@
 
     <!-- JavaScript -->
     <script src="app.js"></script>
-    <script src="mobile-menu.js"></script>
+    <script src="mobile-menu-fixed.js?v=10"></script>
     <script src="mobile-image-optimizer.js"></script>
     
     <!-- Inicializar Supabase -->
