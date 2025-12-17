@@ -6,46 +6,53 @@
 
 @media only screen and (max-width: 768px) {
     
-    /* ========================================
-       HAMBURGER MENU - FUNCIONAL
-       ======================================== */
+    /* HEADER - Compacto y limpio */
+    header {
+        padding: 10px 15px !important;
+        min-height: 60px !important;
+    }
     
-    /* Botón hamburguesa - VISIBLE y GRANDE */
+    header .container {
+        padding: 0 !important;
+    }
+    
+    header .header-content {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+    }
+    
+    /* LOGO - Tamaño proporcional */
+    header .logo img {
+        height: 40px !important;
+        width: auto !important;
+    }
+    
+    /* HAMBURGER - Simple y funcional */
     .mobile-menu-toggle {
         display: flex !important;
         flex-direction: column;
         justify-content: space-around;
-        width: 50px !important;
-        height: 50px !important;
-        background: rgba(255, 255, 255, 0.15) !important;
-        border: 2px solid rgba(255, 255, 255, 0.4) !important;
-        border-radius: 8px !important;
-        padding: 12px !important;
+        width: 36px !important;
+        height: 30px !important;
+        background: transparent !important;
+        border: none !important;
+        padding: 4px !important;
         cursor: pointer !important;
         z-index: 2000 !important;
-        position: relative !important;
-        transition: all 0.3s ease !important;
     }
     
-    .mobile-menu-toggle:active {
-        transform: scale(0.95) !important;
-        background: rgba(255, 255, 255, 0.25) !important;
-    }
-    
-    /* Líneas del hamburger - BLANCAS y GRUESAS */
     .mobile-menu-toggle span {
         display: block !important;
         width: 100% !important;
         height: 3px !important;
-        background: #FFFFFF !important;
+        background: white !important;
         border-radius: 3px !important;
         transition: all 0.3s ease !important;
-        transform-origin: center !important;
     }
     
-    /* Animación X cuando está activo */
     .mobile-menu-toggle.active span:nth-child(1) {
-        transform: translateY(8px) rotate(45deg) !important;
+        transform: translateY(9px) rotate(45deg) !important;
     }
     
     .mobile-menu-toggle.active span:nth-child(2) {
@@ -53,23 +60,22 @@
     }
     
     .mobile-menu-toggle.active span:nth-child(3) {
-        transform: translateY(-8px) rotate(-45deg) !important;
+        transform: translateY(-9px) rotate(-45deg) !important;
     }
     
-    /* NAVEGACIÓN - Side menu que se desliza */
+    /* NAV - Menú lateral */
     header nav {
         position: fixed !important;
         top: 0 !important;
         right: -100% !important;
-        width: 85% !important;
-        max-width: 350px !important;
+        width: 280px !important;
         height: 100vh !important;
         background: linear-gradient(180deg, rgba(22, 91, 51, 0.98) 0%, rgba(196, 30, 58, 0.98) 100%) !important;
-        backdrop-filter: blur(10px) !important;
-        padding: 80px 20px 20px !important;
+        backdrop-filter: blur(20px) !important;
+        padding: 80px 0 20px !important;
         overflow-y: auto !important;
         z-index: 1999 !important;
-        transition: right 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+        transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
         box-shadow: -5px 0 20px rgba(0, 0, 0, 0.3) !important;
     }
     
@@ -77,48 +83,41 @@
         right: 0 !important;
     }
     
-    /* Links del menú - VERTICALES */
     header nav ul {
         flex-direction: column !important;
         gap: 0 !important;
-        align-items: stretch !important;
         padding: 0 !important;
     }
     
     header nav ul li {
         width: 100% !important;
-        margin: 0 !important;
     }
     
     header nav ul li a {
         display: block !important;
-        padding: 18px 20px !important;
+        padding: 16px 24px !important;
         font-size: 16px !important;
         color: white !important;
-        text-decoration: none !important;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-        transition: all 0.3s ease !important;
     }
     
-    header nav ul li a:active,
     header nav ul li a.active {
-        background: rgba(255, 255, 255, 0.15) !important;
-        color: var(--holiday-gold, #FFD700) !important;
-        border-left: 4px solid var(--holiday-gold, #FFD700) !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+        border-left: 4px solid #FFD700 !important;
     }
     
-    /* Overlay oscuro */
+    /* OVERLAY */
     .mobile-nav-overlay {
         position: fixed !important;
         top: 0 !important;
         left: 0 !important;
         width: 100% !important;
         height: 100% !important;
-        background: rgba(0, 0, 0, 0.7) !important;
+        background: rgba(0, 0, 0, 0.6) !important;
         opacity: 0 !important;
         visibility: hidden !important;
         z-index: 1998 !important;
-        transition: opacity 0.4s ease, visibility 0.4s ease !important;
+        transition: all 0.3s ease !important;
     }
     
     .mobile-nav-overlay.active {
@@ -126,108 +125,77 @@
         visibility: visible !important;
     }
     
-    /* Esconder header actions en móvil */
+    /* ESCONDER botones de header */
     .header-actions {
         display: none !important;
     }
     
-    /* NAVBAR - MUY delgado */
-    header {
-        padding: 6px 12px !important;
-        min-height: auto !important;
-        height: auto !important;
+    /* HERO - Altura correcta */
+    #hero,
+    .hero-section {
+        height: 60vh !important;
+        min-height: 400px !important;
     }
     
-    header .logo {
-        height: 35px !important;
-        max-height: 35px !important;
-    }
-    
-    /* Navegación móvil más compacta */
-    header nav {
-        padding: 10px !important;
-    }
-    
-    header nav a {
-        padding: 10px 15px !important;
-        font-size: 14px !important;
-    }
-    
-    /* HERO - Botones MUCHO más pequeños */
-    .hero-section .btn,
-    .hero-section button,
-    .hero-content .btn,
-    .hero-content button,
-    .hero-section a.btn,
-    .hero-content a.btn {
-        padding: 10px 18px !important;
-        font-size: 13px !important;
-        min-width: auto !important;
-        width: auto !important;
-        display: inline-block !important;
-        margin: 5px !important;
-    }
-    
-    /* TEXTOS - Más pequeños */
+    /* HERO - Textos */
     .hero-content h1,
-    #hero h1,
-    .hero-section h1 {
+    #hero h1 {
         font-size: 2rem !important;
-        line-height: 1.3 !important;
+        line-height: 1.2 !important;
         margin-bottom: 1rem !important;
     }
     
     .hero-content p,
-    #hero p,
-    .hero-section p {
+    #hero p {
         font-size: 1rem !important;
-        line-height: 1.6 !important;
+        line-height: 1.5 !important;
         margin-bottom: 1.5rem !important;
     }
     
-    /* IMÁGENES - Optimizadas para móvil */
+    /* HERO - Botones */
+    .hero-content .btn,
+    #hero .btn {
+        padding: 12px 24px !important;
+        font-size: 14px !important;
+        margin: 8px !important;
+    }
+    
+    /* IMÁGENES - Responsive */
     img {
         max-width: 100% !important;
         height: auto !important;
-        display: block !important;
     }
     
-    /* Hero images - más pequeñas y optimizadas */
     .hero-section img,
     #hero img {
         width: 100% !important;
         height: auto !important;
-        max-height: 400px !important;
+        max-height: 350px !important;
         object-fit: cover !important;
-        object-position: center !important;
     }
     
-    /* Gallery/grid images */
-    .gallery img,
-    .grid img,
-    .menu-item img,
-    .dish-card img {
-        width: 100% !important;
-        height: 200px !important;
-        object-fit: cover !important;
-        border-radius: 8px !important;
-    }
-    
-    /* Cards - stack vertical */
-    .cards,
+    /* CARDS - Vertical stack */
     .grid,
-    .menu-grid,
+    .cards,
     .features {
         display: flex !important;
         flex-direction: column !important;
-        gap: 1rem !important;
+        gap: 1.5rem !important;
     }
     
     .card,
-    .menu-item,
-    .dish-card {
+    .feature-item {
         width: 100% !important;
         margin: 0 !important;
+    }
+    
+    /* SECTIONS - Padding reducido */
+    section {
+        padding: 3rem 1rem !important;
+    }
+    
+    .container {
+        padding: 0 20px !important;
     }
         line-height: 1.2 !important;
         margin-bottom: 10px !important;
@@ -434,24 +402,16 @@
         right: 15px !important;
     }
     
-    .chatbot-speech-bubble {
-        display: none !important; /* Ocultar en móvil para no molestar */
-    }
 }
 
-/* iPhone específico - Ajustes extra */
-@media only screen and (max-width: 430px) {
-    .hero-content h1 {
-        font-size: 1.6rem !important;
-    }
-}
-
+/* iPhone pequeño */
 @media only screen and (max-width: 375px) {
-    .hero-content h1 {
-        font-size: 1.5rem !important;
+    header .logo img {
+        height: 35px !important;
     }
     
-    header {
-        padding: 8px 12px !important;
+    .hero-content h1,
+    #hero h1 {
+        font-size: 1.75rem !important;
     }
 }
