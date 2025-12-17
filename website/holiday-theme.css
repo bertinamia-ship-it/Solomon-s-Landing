@@ -216,6 +216,8 @@ section {
 }
 
 /* Responsive para móviles */
+/* COMENTADO - mobile-override.css controla móvil */
+/*
 @media (max-width: 768px) {
     .snowflake {
         font-size: 0.8rem !important;
@@ -230,6 +232,7 @@ section {
         padding: 3rem 0;
     }
 }
+*/
 
 /* ============================================
    MENU TABS - HOLIDAY STYLE
@@ -388,6 +391,8 @@ header .btn-primary:hover {
 }
 
 /* Responsive Menu Hero */
+/* COMENTADO - mobile-override.css controla móvil */
+/*
 @media (max-width: 768px) {
     #menu-hero {
         height: 70vh !important;
@@ -407,6 +412,7 @@ header .btn-primary:hover {
         font-size: 1rem !important;
     }
 }
+*/
 
 /* ============================================
    TESTIMONIAL CARDS - ENHANCED DESIGN
