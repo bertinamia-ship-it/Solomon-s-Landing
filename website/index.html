@@ -168,8 +168,10 @@
     <link rel="stylesheet" href="styles.css?v=20">
     <link rel="stylesheet" href="enhanced-design.css?v=20">
     <link rel="stylesheet" href="chatbot.css?v=20">
-    <link rel="stylesheet" href="mobile-fix.css?v=21" media="(max-width: 768px)">
     <link rel="stylesheet" href="holiday-theme.css?v=20" media="print" onload="this.media='all'">
+    
+    <!-- MOBILE OVERRIDE - Carga AL FINAL con máxima prioridad -->
+    <link rel="stylesheet" href="mobile-override.css?v=22" media="(max-width: 768px)">
     
     <!-- Scripts - Deferred for Performance -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js" defer></script>
