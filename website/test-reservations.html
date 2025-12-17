@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba - Sistema de Reservaciones</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        .status {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 0.5rem 0;
+            width: 100%;
+            font-weight: 600;
+        }
+        button:hover { background: #5568d3; }
+        .result {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-family: monospace;
+            font-size: 14px;
+            max-height: 300px;
+            overflow: auto;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 0.5rem 0;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        label {
+            display: block;
+            margin-top: 1rem;
+            font-weight: 600;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Prueba del Sistema</h1>
+        <p style="color: #666; margin-bottom: 2rem;">Solomon's Landing - Reservaciones</p>
+
+        <!-- Test 1: Conexión Supabase -->
+        <div>
+            <h3>1️⃣ Probar Supabase</h3>
+            <button onclick="testSupabase()">Verificar 24 Mesas</button>
+            <div id="supabase-result"></div>
+        </div>
+
+        <hr style="margin: 2rem 0;">
+
+        <!-- Test 2: Disponibilidad -->
+        <div>
+            <h3>2️⃣ Verificar Disponibilidad</h3>
+            <label>Fecha:</label>
+            <input type="date" id="test-date" value="2025-12-20">
+            
+            <label>Hora:</label>
+            <input type="time" id="test-time" value="19:00">
+            
+            <label>Personas:</label>
+            <select id="test-guests">
+                <option>2</option>
+                <option selected>4</option>
+                <option>6</option>
+                <option>8</option>
+            </select>
+            
+            <button onclick="testAvailability()">Verificar Disponibilidad</button>
+            <div id="availability-result"></div>
+        </div>
+
+        <hr style="margin: 2rem 0;">
+
+        <!-- Test 3: Crear Reservación Completa -->
+        <div>
+            <h3>3️⃣ Crear Reservación de Prueba</h3>
+            <label>Nombre:</label>
+            <input type="text" id="test-name" value="Juan Pérez">
+            
+            <label>Email:</label>
+            <input type="email" id="test-email" value="juan@example.com">
+            
+            <label>Teléfono:</label>
+            <input type="tel" id="test-phone" value="+52 624 123 4567">
+            
+            <button onclick="createTestReservation()">Crear Reservación + Hold</button>
+            <div id="reservation-result"></div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
+    <script src="reservation-system.js"></script>
+
+    <script>
+        // Inicializar
+        window.addEventListener('DOMContentLoaded', () => {
+            SupabaseAPI.init();
+            showStatus('supabase-result', '✅ Supabase inicializado', 'info');
+        });
+
+        // Test 1: Supabase
+        async function testSupabase() {
+            try {
+                const tables = await SupabaseAPI.getAllTables();
+                
+                if (tables.length === 24) {
+                    showStatus('supabase-result', 
+                        `✅ ¡Éxito! Se encontraron ${tables.length} mesas:\n` +
+                        `- ${tables.filter(t => t.capacity === 6).length} mesas de 6 personas\n` +
+                        `- ${tables.filter(t => t.capacity === 4).length} mesas de 4 personas\n` +
+                        `- ${tables.filter(t => t.capacity === 2).length} mesa de 2 personas`,
+                        'success'
+                    );
+                } else {
+                    showStatus('supabase-result', 
+                        `⚠️ Se esperaban 24 mesas, se encontraron ${tables.length}`,
+                        'error'
+                    );
+                }
+            } catch (error) {
+                showStatus('supabase-result', `❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Test 2: Disponibilidad
+        async function testAvailability() {
+            try {
+                const date = document.getElementById('test-date').value;
+                const time = document.getElementById('test-time').value;
+                const guests = parseInt(document.getElementById('test-guests').value);
+
+                const result = await SupabaseAPI.checkAvailability(date, time, guests);
+
+                if (result.available) {
+                    showStatus('availability-result',
+                        `✅ ¡Disponible!\n` +
+                        `Mesa asignada: #${result.tableNumber}\n` +
+                        `Capacidad: ${result.capacity} personas`,
+                        'success'
+                    );
+                } else {
+                    showStatus('availability-result',
+                        `❌ No disponible\nRazón: ${result.reason}`,
+                        'error'
+                    );
+                }
+            } catch (error) {
+                showStatus('availability-result', `❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Test 3: Crear Reservación
+        async function createTestReservation() {
+            try {
+                showStatus('reservation-result', '⏳ Creando reservación...', 'info');
+
+                const formData = {
+                    name: document.getElementById('test-name').value,
+                    email: document.getElementById('test-email').value,
+                    phone: document.getElementById('test-phone').value,
+                    date: document.getElementById('test-date').value,
+                    time: document.getElementById('test-time').value,
+                    partySize: parseInt(document.getElementById('test-guests').value),
+                    specialRequests: 'Reservación de prueba'
+                };
+
+                const result = await ReservationSystem.createReservation(formData);
+
+                if (result.success) {
+                    showStatus('reservation-result',
+                        `✅ ¡Reservación creada!\n\n` +
+                        `Código: ${result.reservation.confirmationCode}\n` +
+                        `Mesa: #${result.reservation.tableNumber}\n` +
+                        `Hold: $${result.payment.amount} USD\n\n` +
+                        `ClientSecret: ${result.payment.clientSecret.substring(0, 30)}...`,
+                        'success'
+                    );
+                } else {
+                    showStatus('reservation-result',
+                        `❌ Error: ${result.error}`,
+                        'error'
+                    );
+                }
+            } catch (error) {
+                showStatus('reservation-result', `❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Helper
+        function showStatus(elementId, message, type) {
+            const el = document.getElementById(elementId);
+            el.innerHTML = `<div class="status ${type}">${message.replace(/\n/g, '<br>')}</div>`;
+        }
+    </script>
+</body>
+</html>

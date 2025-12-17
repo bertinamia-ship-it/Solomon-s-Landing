@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Optimizado para Reservaciones -->
+    <meta name="description" content="Reserve your table at Solomon's Landing Cabo San Lucas Marina. Easy online reservations for oceanfront dining. Book now for sunset views, romantic dinners, special occasions. | Reserva tu mesa con vista al mar en la Marina de Cabo.">
+    
+    <meta name="keywords" content="reservations cabo san lucas, reservaciones cabo san lucas, book table cabo, reservar mesa cabo, restaurant reservations cabo, Solomon's Landing reservations, online booking cabo san lucas, reservas online cabo, oceanfront table cabo, mesa frente al mar, sunset dinner reservation cabo, reservacion cena atardecer, romantic dinner booking cabo, cena romantica reserva, cabo marina reservations, reservaciones marina cabo, group reservations cabo, reservaciones grupos, private dining cabo, special occasions cabo, birthday dinner cabo, anniversary reservation cabo, reserve restaurant cabo, make reservation los cabos">
+    
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="googlebot" content="index, follow">
+    
+    <!-- Hreflang Tags -->
+    <link rel="alternate" hreflang="es-MX" href="https://solomonslanding.com/reservations.html" />
+    <link rel="alternate" hreflang="en-US" href="https://solomonslanding.com/reservations.html" />
+    <link rel="alternate" hreflang="x-default" href="https://solomonslanding.com/reservations.html" />
+    
+    <link rel="canonical" href="https://solomonslanding.com/reservations.html">
+    
+    <title>Make a Reservation | Solomon's Landing Cabo San Lucas | Book Your Table Online | Reservaciones Marina</title>
+    <link rel="stylesheet" href="performance.css">
+    <link rel="stylesheet" href="styles.css?v=7">
+    <link rel="stylesheet" href="enhanced-design.css?v=1">
+    <link rel="stylesheet" href="mobile-complete.css?v=1">
+    <link rel="stylesheet" href="mobile-iphone-ultra.css?v=1">
+    <link rel="stylesheet" href="holiday-theme.css?v=3">
+    <link rel="stylesheet" href="reservations-enhanced.css">
+    <link rel="stylesheet" href="chatbot.css">
+    
+    <!-- EmailJS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+</head>
+<body>
+    <!-- HEADER -->
+    <header style="background: linear-gradient(135deg, rgba(22, 91, 51, 0.85) 0%, rgba(196, 30, 58, 0.85) 50%, rgba(22, 91, 51, 0.85) 100%); background-size: 200% 200%; animation: gradientShift 30s ease-in-out infinite; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; padding: 0.5rem 0;">
+        
+        <div class="container">
+            <div class="header-content" style="display: flex; align-items: center; justify-content: space-between; padding: 0;">
+                <div class="logo">
+                    <a href="index.html"><img src="logo solomons.png" alt="Solomon's Landing Logo" loading="lazy" style="height: 50px;"></a>
+                </div>
+                
+                <!-- Mobile Menu Toggle -->
+                <button class="mobile-menu-toggle" aria-label="Toggle navigation menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                
+                <nav>
+                    <ul style="display: flex; gap: 1.8rem; list-style: none; margin: 0; padding: 0;">
+                        <li><a href="index.html" style="color: white;">Home</a></li>
+                        <li><a href="menus.html" style="color: white;">Menus</a></li>
+                        <li><a href="reviews.html" style="color: white;">Reviews</a></li>
+                        <li><a href="catering.html" style="color: white;">Catering</a></li>
+                        <li><a href="location.html" style="color: white;">Location</a></li>
+                        <li><a href="reservations.html" class="active" style="color: var(--holiday-gold); font-weight: 700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);">Reserve</a></li>
+                    </ul>
+                </nav>
+                <div class="header-actions">
+                    <div class="language-toggle">
+                        <button class="lang-btn active" data-lang="en" style="background: white; color: var(--holiday-green);">EN</button>
+                        <button class="lang-btn" data-lang="es" style="background: rgba(255,255,255,0.2); color: white;">ES</button>
+                    </div>
+                    <span style="color: white; font-size: 1.5rem; margin-left: 1rem; animation: rotate 5s ease-in-out infinite;">🎄</span>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Overlay -->
+        <div class="mobile-nav-overlay"></div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main>
+        <!-- RESERVATIONS HERO SECTION - Photo Slider -->
+        <section id="reservations-hero" style="position: relative; height: 100vh; min-height: 600px; overflow: hidden;">
+            <!-- Nieve sutil animada -->
+            <div class="snowflakes" aria-hidden="true">
+                <div class="snowflake">❄</div>
+                <div class="snowflake">❄</div>
+                <div class="snowflake">❄</div>
+                <div class="snowflake">❄</div>
+                <div class="snowflake">❄</div>
+                <div class="snowflake">❄</div>
+            </div>
+            
+            <!-- Hero Slider -->
+            <div class="hero-slider" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+                <div class="hero-slide active" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/sh1'); background-size: cover; background-position: center center; background-repeat: no-repeat; opacity: 1; transition: opacity 1.5s ease-in-out;"></div>
+                <div class="hero-slide" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/sh2'); background-size: cover; background-position: center center; background-repeat: no-repeat; opacity: 0; transition: opacity 1.5s ease-in-out; will-change: opacity;"></div>
+                <div class="hero-slide" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/sh3'); background-size: cover; background-position: center center; background-repeat: no-repeat; opacity: 0; transition: opacity 1.5s ease-in-out; will-change: opacity;"></div>
+            </div>
+            
+            <!-- Hero Overlay Content -->
+            <div class="hero-overlay" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2; width: 90%; max-width: 900px; text-align: center;">
+                <div style="font-size: 4rem; margin-bottom: 1rem; animation: fadeInUp 0.8s ease-out;">📅</div>
+                <h1 data-i18n="reservations.heroTitle" style="font-family: 'Cormorant Garamond', serif; font-size: 4rem; color: white; margin-bottom: 1.5rem; text-shadow: 0 4px 30px rgba(0,0,0,0.5); font-weight: 300; letter-spacing: 2px; animation: fadeInUp 0.8s ease-out 0.2s backwards;">Make a Reservation</h1>
+
+            <!-- Scroll Indicator -->
+            <div class="scroll-indicator" style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 100; animation: bounce 2s infinite; cursor: pointer;">
+                <div style="width: 35px; height: 55px; border: 3px solid rgba(255,255,255,0.9); border-radius: 25px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                    <div style="width: 8px; height: 12px; background: white; border-radius: 4px; position: absolute; top: 10px; left: 50%; transform: translateX(-50%); animation: scroll-down 2s infinite; box-shadow: 0 2px 5px rgba(0,0,0,0.2);"></div>
+                </div>
+                <p style="color: white; font-size: 0.85rem; margin-top: 10px; text-align: center; opacity: 1; letter-spacing: 1.5px; font-weight: 600; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">SCROLL</p>
+            </div>
+                <div style="width: 120px; height: 4px; background: linear-gradient(90deg, var(--holiday-red), var(--holiday-gold), var(--holiday-green)); margin: 0 auto 2rem; border-radius: 2px; animation: fadeInUp 0.8s ease-out 0.3s backwards;"></div>
+                <p data-i18n="reservations.heroSubtitle" style="font-family: 'Montserrat', sans-serif; font-size: 1.3rem; color: rgba(255,255,255,0.95); line-height: 1.8; text-shadow: 0 2px 15px rgba(0,0,0,0.4); letter-spacing: 1px; animation: fadeInUp 0.8s ease-out 0.4s backwards; max-width: 700px; margin: 0 auto;">
+                    Reserve your table and enjoy an unforgettable dining experience
+                </p>
+            </div>
+        </section>
+
+        <!-- Reservation Form Section -->
+        <section id="reservation-form-section">
+            <div class="container">
+                <!-- OpenTable Presence Badge (No link) -->
+                <div class="opentable-badge">
+                    <p style="color: #1F2937; font-size: 1.2rem; margin-bottom: 0.75rem; font-weight: 600;">
+                        ✓ También estamos en <strong style="color: #1A4D6D; font-size: 1.3rem;">OpenTable</strong>
+                    </p>
+                    <p style="color: #6B7280; font-size: 1rem; line-height: 1.6;">
+                        ¡Pero preferimos reservaciones directas para servirte mejor!
+                    </p>
+                </div>
+
+                <!-- Request Form -->
+                <div class="reservation-form-wrapper">
+                    <h2 class="section-title" data-i18n="reservations.formTitle">Reserva Tu Mesa</h2>
+                    <p style="text-align: center; color: #6B7280; margin-bottom: 3rem; font-size: 1.1rem; line-height: 1.8;">
+                        <span data-i18n="reservations.formDescription">Llena el formulario y te confirmaremos tu reservación por correo en menos de 2 horas</span>
+                    </p>
+
+                    <div class="reservation-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,250,252,0.95)); padding: 3rem; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.15); border: 1px solid rgba(255,215,0,0.3);">
+                        <form id="reservationForm">
+                            <!-- Nombre -->
+                            <div class="form-group" style="margin-bottom: 1.8rem;">
+                                <label for="name" style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.6rem; font-size: 0.95rem;"><span data-i18n="form.name">Nombre Completo</span> <span class="required" style="color: #dc2626;">*</span></label>
+                                <input type="text" id="name" name="name" data-i18n-placeholder="form.namePlaceholder" placeholder="Juan Pérez" required style="width: 100%; padding: 0.9rem 1.2rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; transition: all 0.3s; background: white;" onfocus="this.style.borderColor='#fbbf24'; this.style.boxShadow='0 0 0 3px rgba(251,191,36,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+                            </div>
+                            
+                            <!-- Idioma -->
+                            <div class="form-group" style="margin-bottom: 1.8rem;">
+                                <label for="language" style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.6rem; font-size: 0.95rem;">Idioma / Language <span class="required" style="color: #dc2626;">*</span></label>
+                                <select id="language" name="language" required style="width: 100%; padding: 0.9rem 1.2rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; background: white url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e') no-repeat right 1rem center; background-size: 1.2rem; appearance: none; cursor: pointer; transition: all 0.3s;" onfocus="this.style.borderColor='#fbbf24'; this.style.boxShadow='0 0 0 3px rgba(251,191,36,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+                                    <option value="">Seleccionar / Select...</option>
+                                    <option value="es">🇲🇽 Español</option>
+                                    <option value="en">🇺🇸 English</option>
+                                </select>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="form-group" style="margin-bottom: 1.8rem;">
+                                <label for="email" style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.6rem; font-size: 0.95rem;"><span data-i18n="form.email">Email</span> <span class="required" style="color: #dc2626;">*</span></label>
+                                <input type="email" id="email" name="email" data-i18n-placeholder="form.emailPlaceholder" placeholder="juan@ejemplo.com" required style="width: 100%; padding: 0.9rem 1.2rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; transition: all 0.3s; background: white;" onfocus="this.style.borderColor='#fbbf24'; this.style.boxShadow='0 0 0 3px rgba(251,191,36,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+                            </div>
+
+                            <!-- Teléfono -->
+                            <div class="form-group" style="margin-bottom: 1.8rem;">
+                                <label for="phone" style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.6rem; font-size: 0.95rem;" data-i18n="form.phone">Teléfono</label>
+                                <input type="tel" id="phone" name="phone" data-i18n-placeholder="form.phonePlaceholder" placeholder="+52 624 123 4567" style="width: 100%; padding: 0.9rem 1.2rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; transition: all 0.3s; background: white;" onfocus="this.style.borderColor='#fbbf24'; this.style.boxShadow='0 0 0 3px rgba(251,191,36,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+                            </div>
+
+                            <!-- Fecha y Hora -->
+                            <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-bottom: 1.8rem;">
+                                <div class="form-group">
+                                    <label for="date" style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.6rem; font-size: 0.95rem;"><span data-i18n="form.date">Fecha</span> <span class="required" style="color: #dc2626;">*</span></label>
+                                    <input type="date" id="date" name="date" required style="width: 100%; padding: 0.9rem 1.2rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; transition: all 0.3s; background: white;" onfocus="this.style.borderColor='#fbbf24'; this.style.boxShadow='0 0 0 3px rgba(251,191,36,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="time" style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.6rem; font-size: 0.95rem;"><span data-i18n="form.time">Hora</span> <span class="required" style="color: #dc2626;">*</span></label>
+                                    <select id="time" name="time" required style="width: 100%; padding: 0.9rem 1.2rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; background: white url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e') no-repeat right 1rem center; background-size: 1.2rem; appearance: none; cursor: pointer; transition: all 0.3s;" onfocus="this.style.borderColor='#fbbf24'; this.style.boxShadow='0 0 0 3px rgba(251,191,36,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+                                        <option value="">Seleccionar hora...</option>
+                                        <option value="12:00">12:00 PM</option>
+                                        <option value="12:30">12:30 PM</option>
+                                        <option value="13:00">1:00 PM</option>
+                                        <option value="13:30">1:30 PM</option>
+                                        <option value="14:00">2:00 PM</option>
+                                        <option value="14:30">2:30 PM</option>
+                                        <option value="15:00">3:00 PM</option>
+                                        <option value="15:30">3:30 PM</option>
+                                        <option value="16:00">4:00 PM</option>
+                                        <option value="16:30">4:30 PM</option>
+                                        <option value="17:00">5:00 PM</option>
+                                        <option value="17:30">5:30 PM</option>
+                                        <option value="18:00">6:00 PM</option>
+                                        <option value="18:30">6:30 PM</option>
+                                        <option value="19:00">7:00 PM</option>
+                                        <option value="19:30">7:30 PM</option>
+                                        <option value="20:00">8:00 PM</option>
+                                        <option value="20:30">8:30 PM</option>
+                                        <option value="21:00">9:00 PM</option>
+                                        <option value="21:30">9:30 PM</option>
+                                        <option value="22:00">10:00 PM</option>
+                                        <option value="22:30">10:30 PM</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Número de Personas -->
+                            <div class="form-group" style="margin-bottom: 1.8rem;">
+                                <label for="guests" style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.6rem; font-size: 0.95rem;"><span data-i18n="form.guests">Número de Personas</span> <span class="required" style="color: #dc2626;">*</span></label>
+                                <select id="guests" name="guests" required style="width: 100%; padding: 0.9rem 1.2rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; background: white url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e') no-repeat right 1rem center; background-size: 1.2rem; appearance: none; cursor: pointer; transition: all 0.3s;" onfocus="this.style.borderColor='#fbbf24'; this.style.boxShadow='0 0 0 3px rgba(251,191,36,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+                                    <option value="" data-i18n="form.selectGuests">Seleccionar personas...</option>
+                                    <option value="1">1 Persona</option>
+                                    <option value="2">2 Personas</option>
+                                    <option value="3">3 Personas</option>
+                                    <option value="4">4 Personas</option>
+                                    <option value="5">5 Personas</option>
+                                    <option value="6">6 Personas</option>
+                                    <option value="7">7 Personas</option>
+                                    <option value="8">8 Personas</option>
+                                    <option value="9">9 Personas</option>
+                                    <option value="10">10+ Personas (Grupo)</option>
+                                </select>
+                            </div>
+
+                            <!-- Ocasión Especial -->
+                            <div class="form-group" style="margin-bottom: 1.8rem;">
+                                <label for="occasion" style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.6rem; font-size: 0.95rem;">Ocasión Especial (opcional)</label>
+                                <select id="occasion" name="occasion" style="width: 100%; padding: 0.9rem 1.2rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; background: white url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e') no-repeat right 1rem center; background-size: 1.2rem; appearance: none; cursor: pointer; transition: all 0.3s;" onfocus="this.style.borderColor='#fbbf24'; this.style.boxShadow='0 0 0 3px rgba(251,191,36,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+                                    <option value="">Ninguna</option>
+                                    <option value="birthday">🎂 Cumpleaños</option>
+                                    <option value="anniversary">💕 Aniversario</option>
+                                    <option value="proposal">💍 Propuesta de Matrimonio</option>
+                                    <option value="business">💼 Cena de Negocios</option>
+                                    <option value="celebration">🎉 Celebración</option>
+                                    <option value="other">✨ Otra Ocasión</option>
+                                </select>
+                            </div>
+
+                            <!-- Preferencia de Mesa -->
+                            <div class="form-group" style="margin-bottom: 1.8rem;">
+                                <label for="seating" style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.6rem; font-size: 0.95rem;">Preferencia de Mesa (opcional)</label>
+                                <select id="seating" name="seating" style="width: 100%; padding: 0.9rem 1.2rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; background: white url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e') no-repeat right 1rem center; background-size: 1.2rem; appearance: none; cursor: pointer; transition: all 0.3s;" onfocus="this.style.borderColor='#fbbf24'; this.style.boxShadow='0 0 0 3px rgba(251,191,36,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+                                    <option value="">Sin preferencia</option>
+                                    <option value="outdoor">🌊 Terraza con vista al mar</option>
+                                    <option value="indoor">🏠 Interior con clima</option>
+                                    <option value="bar">🍸 Cerca del bar</option>
+                                    <option value="quiet">🤫 Zona tranquila</option>
+                                </select>
+                            </div>
+
+                            <!-- Notas Adicionales -->
+                            <div class="form-group" style="margin-bottom: 2rem;">
+                                <label for="notes" style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.6rem; font-size: 0.95rem;" data-i18n="form.notes">Notas Adicionales (opcional)</label>
+                                <textarea id="notes" name="notes" data-i18n-placeholder="form.notesPlaceholder" placeholder="Alergias, requerimientos dietéticos..." style="width: 100%; padding: 0.9rem 1.2rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; transition: all 0.3s; background: white; min-height: 100px; resize: vertical; font-family: inherit;" onfocus="this.style.borderColor='#fbbf24'; this.style.boxShadow='0 0 0 3px rgba(251,191,36,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'"></textarea>
+                            </div>
+
+                            <button type="submit" class="btn-submit" data-i18n="form.reserveBtn" style="width: 100%; padding: 1.1rem 2rem; background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #1e293b; font-size: 1.1rem; font-weight: 700; border: none; border-radius: 12px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(251,191,36,0.4); text-transform: uppercase; letter-spacing: 0.5px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(251,191,36,0.5)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(251,191,36,0.4)'">🎄 Reservar Mesa Ahora</button>
+
+                            <div id="formMessage" class="form-message" style="margin-top: 1.5rem; padding: 1rem; border-radius: 10px; display: none;"></div>
+                        </form>
+
+                        <!-- Contact Information -->
+                        <div class="contact-info-section">
+                            <strong>¿Necesitas asistencia inmediata?</strong>
+                            <p style="color: #6B7280; font-size: 1.05rem; margin: 1rem 0;">
+                                Llámanos directamente: <a href="tel:+526242193228">+52 624 219 3228</a>
+                            </p>
+                            <p style="color: #9CA3AF; font-size: 0.95rem; margin-top: 0.75rem;">
+                                Abierto 7 días: 8:00 AM - 11:00 PM
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer id="contact">
+        <div class="container">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem; text-align: left;">
+                <div>
+                    <h3 style="color: var(--yellow-sun); margin-bottom: 1rem;">Contact</h3>
+                    <p>Phone: <a href="tel:+526242193228">+52 624 219 3228</a></p>
+                    <p>Email: <a href="mailto:contact@solomonslanding.com.mx">contact@solomonslanding.com.mx</a></p>
+                </div>
+                <div>
+                    <h3 style="color: var(--yellow-sun); margin-bottom: 1rem;">Location</h3>
+                    <p>Blvd. Paseo de la Marina Centro<br>Marina, 23450 Cabo San Lucas, B.C.S.</p>
+                </div>
+                <div>
+                    <h3 style="color: var(--yellow-sun); margin-bottom: 1rem;">Follow Us</h3>
+                    <p>
+                        <a href="https://www.instagram.com/solomonslanding/" target="_blank" rel="noopener">Instagram</a><br>
+                        <a href="https://www.facebook.com/SolomonsLandingLosCabos" target="_blank" rel="noopener">Facebook</a><br>
+                        <a href="https://www.tripadvisor.com.mx/Restaurant_Review-g152515-d878292-Reviews-Solomon_s_Landing_Restaurant-Cabo_San_Lucas_Los_Cabos_Baja_California.html" target="_blank" rel="noopener">TripAdvisor</a>
+                    </p>
+                </div>
+            </div>
+            <p style="margin-top: 1.5rem; font-size: 0.9rem; color: #999; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem;">
+                &copy; 2025 Solomon's Landing. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Chatbot Scripts -->
+    <script src="chatbot.js" defer></script>
+    <script src="chatbot-init.js" defer></script>
+    
+    <!-- Stripe.js -->
+    <script src="https://js.stripe.com/v3/"></script>
+    
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
+    
+    <!-- EmailJS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    
+    <!-- Sistema de Reservaciones Simple -->
+    <script>
+        // Inicializar EmailJS
+        emailjs.init('gCsJYvChpOqVACgUr');
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('reservationForm');
+            const messageDiv = document.getElementById('formMessage');
+            
+            // Enviar formulario
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const submitBtn = form.querySelector('.btn-submit');
+                const originalText = submitBtn.textContent;
+                submitBtn.disabled = true;
+                submitBtn.textContent = '📧 Enviando...';
+                messageDiv.textContent = '';
+                
+                try {
+                    const name = document.getElementById('name').value;
+                    const email = document.getElementById('email').value;
+                    const phone = document.getElementById('phone').value || 'No proporcionado';
+                    const date = document.getElementById('date').value;
+                    const time = document.getElementById('time').value;
+                    const guests = document.getElementById('guests').value;
+                    const notes = document.getElementById('notes').value || 'Ninguna';
+                    const language = document.getElementById('language').value; // Idioma seleccionado
+                    
+                    // Generar código de confirmación
+                    const confirmationCode = 'SL' + Date.now().toString().slice(-6);
+                    
+                    // Formatear fecha para mejor lectura
+                    const dateObj = new Date(date + 'T00:00:00');
+                    const formattedDate = dateObj.toLocaleDateString(language === 'es' ? 'es-MX' : 'en-US', { 
+                        weekday: 'long', 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    });
+                    
+                    // Crear URL de confirmación con idioma
+                    const confirmUrl = `${window.location.origin}/website/confirm-reservation.html?code=${confirmationCode}&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&date=${encodeURIComponent(formattedDate)}&time=${encodeURIComponent(time)}&guests=${guests}&lang=${language}`;
+                    
+                    // Enviar SOLO email al RESTAURANTE (siempre en español)
+                    await emailjs.send('service_u021fxi', 'template_ij3p83j', {
+                        to_email: 'solomonslanding@gmail.com',
+                        customer_name: name,
+                        customer_email: email,
+                        customer_phone: phone,
+                        reservation_date: formattedDate,
+                        reservation_time: time,
+                        party_size: guests,
+                        special_requests: notes,
+                        confirmation_code: confirmationCode,
+                        confirm_url: confirmUrl,
+                        customer_language: language === 'es' ? 'Español' : 'English'
+                    });
+                    
+                    // Mostrar éxito
+                    messageDiv.innerHTML = `
+                        <div style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; padding: 30px; border-radius: 15px; text-align: center; box-shadow: 0 10px 30px rgba(40, 167, 69, 0.3);">
+                            <div style="font-size: 60px; margin-bottom: 15px;">✅</div>
+                            <h2 style="margin: 0 0 15px 0; font-size: 28px; font-weight: bold;">¡Solicitud Recibida!</h2>
+                            <p style="font-size: 20px; margin: 15px 0; background: rgba(255,255,255,0.2); padding: 12px; border-radius: 8px;">
+                                <strong>Código: ${confirmationCode}</strong>
+                            </p>
+                            <p style="font-size: 16px; margin: 15px 0; line-height: 1.6;">
+                                📧 Hemos enviado una confirmación a:<br>
+                                <strong>${email}</strong>
+                            </p>
+                            <p style="font-size: 15px; margin: 15px 0; opacity: 0.95; line-height: 1.6;">
+                                📅 <strong>${formattedDate}</strong><br>
+                                🕐 <strong>${time}</strong><br>
+                                👥 <strong>${guests} personas</strong>
+                            </p>
+                            <div style="background: rgba(255,255,255,0.15); padding: 15px; border-radius: 8px; margin-top: 20px;">
+                                <p style="margin: 0; font-size: 14px; line-height: 1.5;">
+                                    ℹ️ Nuestro equipo confirmará tu reservación en breve.<br>
+                                    Si tienes preguntas, llámanos al:<br>
+                                    <strong>+52 624 219 3228</strong>
+                                </p>
+                            </div>
+                        </div>
+                    `;
+                    
+                    form.reset();
+                    window.scrollTo({ top: messageDiv.offsetTop - 100, behavior: 'smooth' });
+                    
+                } catch (error) {
+                    console.error('Error:', error);
+                    messageDiv.innerHTML = `
+                        <div style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; padding: 25px; border-radius: 12px; text-align: center;">
+                            <div style="font-size: 48px; margin-bottom: 10px;">⚠️</div>
+                            <h3 style="margin: 0 0 10px 0;">Error al Enviar</h3>
+                            <p style="margin: 10px 0;">No pudimos procesar tu solicitud.</p>
+                            <p style="margin: 15px 0; font-size: 15px;">
+                                Por favor llámanos directamente:<br>
+                                <strong style="font-size: 20px;">+52 624 219 3228</strong>
+                            </p>
+                        </div>
+                    `;
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
+                }
+            });
+        });
+    </script>
+    
+    <!-- Mobile Menu -->
+    <script src="mobile-menu.js"></script>
+    <script src="mobile-image-optimizer.js"></script>
+    
+    <script src="app.js" defer></script>
+</body>
+</html>

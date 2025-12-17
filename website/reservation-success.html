@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Reservación Confirmada! | Solomon's Landing</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .success-card {
+            background: white;
+            max-width: 600px;
+            width: 100%;
+            border-radius: 20px;
+            padding: 50px 40px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: bounce 1s ease-in-out;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        h1 {
+            color: #28a745;
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+        .code {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+            border: 2px dashed #667eea;
+        }
+        .code-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .code-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #667eea;
+            letter-spacing: 2px;
+        }
+        .info {
+            text-align: left;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            color: #666;
+            font-weight: 600;
+        }
+        .info-value {
+            color: #333;
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        .note {
+            font-size: 14px;
+            color: #666;
+            margin-top: 25px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="success-card">
+        <div class="icon">🎉</div>
+        <h1>¡Reservación Confirmada!</h1>
+        <p style="font-size: 18px; color: #666; margin-bottom: 10px;">
+            Tu pago ha sido autorizado exitosamente
+        </p>
+
+        <div class="code">
+            <div class="code-label">Código de Confirmación</div>
+            <div class="code-value" id="confirmationCode">-</div>
+        </div>
+
+        <div class="info">
+            <div class="info-row">
+                <span class="info-label">Estado del Pago:</span>
+                <span class="info-value" style="color: #28a745;">✅ Hold Autorizado</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Monto:</span>
+                <span class="info-value" id="amount">$0 USD</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Email de Confirmación:</span>
+                <span class="info-value" style="font-size: 14px;">Enviado a tu correo</span>
+            </div>
+        </div>
+
+        <div class="note">
+            <strong>💳 Sobre tu pago:</strong><br>
+            El monto ha sido autorizado (hold) pero NO se ha cobrado aún.<br>
+            Se liberará automáticamente cuando llegues al restaurante.<br>
+            Solo se cobrará si no te presentas a tu reservación.
+        </div>
+
+        <a href="index.html" class="btn">Volver al Inicio</a>
+    </div>
+
+    <script>
+        // Obtener código de confirmación de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        const sessionId = urlParams.get('session_id');
+
+        if (code) {
+            document.getElementById('confirmationCode').textContent = code;
+        }
+
+        // Obtener detalles de la sesión
+        if (sessionId) {
+            fetch(`http://localhost:3000/api/checkout/session/${sessionId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.amount_total) {
+                        document.getElementById('amount').textContent = `$${data.amount_total / 100} USD`;
+                    }
+                })
+                .catch(err => console.error('Error:', err));
+        }
+    </script>
+</body>
+</html>

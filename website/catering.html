@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Optimizado para Catering -->
+    <meta name="description" content="Professional Catering Services by Solomon's Landing in Los Cabos. Weddings, corporate events, private parties, beach events. Fresh seafood, premium steaks, authentic Mexican cuisine. | Servicio de catering profesional en Cabo para bodas, eventos corporativos y fiestas privadas.">
+    
+    <meta name="keywords" content="catering los cabos, catering cabo san lucas, wedding catering cabo, catering bodas cabo, corporate catering los cabos, catering corporativo cabo, private events cabo, eventos privados cabo, beach wedding catering, catering boda playa cabo, luxury catering cabo, seafood catering los cabos, catering mariscos, event catering cabo, banquet services cabo, servicio banquetes, party catering cabo, rehearsal dinner catering, corporate lunch catering, business event catering, special events catering cabo, beachfront catering, yacht catering cabo">
+    
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="googlebot" content="index, follow">
+    
+    <!-- Hreflang Tags -->
+    <link rel="alternate" hreflang="es-MX" href="https://solomonslanding.com/catering.html" />
+    <link rel="alternate" hreflang="en-US" href="https://solomonslanding.com/catering.html" />
+    <link rel="alternate" hreflang="x-default" href="https://solomonslanding.com/catering.html" />
+    
+    <link rel="canonical" href="https://solomonslanding.com/catering.html">
+    
+    <title>Catering Services | Solomon's Landing Los Cabos | Wedding & Corporate Event Catering | Servicio de Catering Cabo</title>
+    <link rel="stylesheet" href="styles.css?v=7">
+    <link rel="stylesheet" href="enhanced-design.css?v=1">
+    <link rel="stylesheet" href="mobile-complete.css?v=1">
+    <link rel="stylesheet" href="holiday-theme.css?v=3">
+    <link rel="stylesheet" href="mobile-iphone-ultra.css?v=1">
+    <link rel="stylesheet" href="chatbot.css">
+    
+    <!-- EmailJS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+</head>
+<body>
+    <!-- HEADER -->
+    <header style="background: linear-gradient(135deg, rgba(22, 91, 51, 0.85) 0%, rgba(196, 30, 58, 0.85) 50%, rgba(22, 91, 51, 0.85) 100%); background-size: 200% 200%; animation: gradientShift 30s ease-in-out infinite; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; padding: 0.5rem 0;">
+        
+        <div class="container">
+            <div class="header-content" style="display: flex; align-items: center; justify-content: space-between; padding: 0;">
+                <div class="logo">
+                    <a href="index.html"><img src="logo solomons.png" alt="Solomon's Landing Logo" loading="lazy" style="height: 50px;"></a>
+                </div>
+                
+                <!-- Mobile Menu Toggle -->
+                <button class="mobile-menu-toggle" aria-label="Toggle navigation menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                
+                <nav>
+                    <ul style="display: flex; gap: 1.8rem; list-style: none; margin: 0; padding: 0;">
+                        <li><a href="index.html" style="color: white;">Home</a></li>
+                        <li><a href="menus.html" style="color: white;">Menus</a></li>
+                        <li><a href="reviews.html" style="color: white;">Reviews</a></li>
+                        <li><a href="catering.html" class="active" style="color: var(--holiday-gold); font-weight: 700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);">Catering</a></li>
+                        <li><a href="location.html" style="color: white;">Location</a></li>
+                    </ul>
+                </nav>
+                <div class="header-actions" style="display: flex; align-items: center; gap: 0.8rem;">
+                    <div class="language-toggle" style="display: flex; gap: 0.4rem;">
+                        <button class="lang-btn active" data-lang="en" style="background: white; color: var(--holiday-green); padding: 0.4rem 0.7rem; border: none; border-radius: 5px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">EN</button>
+                        <button class="lang-btn" data-lang="es" style="background: rgba(255,255,255,0.2); color: white; padding: 0.4rem 0.7rem; border: none; border-radius: 5px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">ES</button>
+                    </div>
+                    <a href="reservations.html" class="btn btn-primary" id="reserveBtn" style="background: var(--holiday-gold); color: var(--holiday-green); font-weight: 700; padding: 0.5rem 1.3rem; border-radius: 50px; text-decoration: none; font-size: 0.9rem; box-shadow: 0 3px 10px rgba(255, 215, 0, 0.2);">🎄 Reserve</a>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Overlay -->
+        <div class="mobile-nav-overlay"></div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main>
+        <!-- CATERING HERO SECTION - Photo Slider Dinámico -->
+        <section id="catering-hero" style="position: relative; height: 100vh; max-height: 100vh; min-height: 100vh; overflow: hidden;">
+            <!-- Hero Slider -->
+            <div class="hero-slider" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+                <!-- Slide 1 - Catering 1 -->
+                <div class="hero-slide active" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/catering-1'); background-size: cover; background-position: center; opacity: 1; transition: opacity 1.5s ease-in-out;"></div>
+                
+                <!-- Slide 2 - Catering 4 -->
+                <div class="hero-slide" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/catering-4'); background-size: cover; background-position: center; opacity: 0; transition: opacity 1.5s ease-in-out;"></div>
+                
+                <!-- Slide 3 - Catering 6 -->
+                <div class="hero-slide" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/catering-6'); background-size: cover; background-position: center; opacity: 0; transition: opacity 1.5s ease-in-out;"></div>
+                
+                <!-- Slide 4 - Catering 3 -->
+                <div class="hero-slide" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/catering-3'); background-size: cover; background-position: center; opacity: 0; transition: opacity 1.5s ease-in-out;"></div>
+            </div>
+            
+            <!-- Hero Overlay Content -->
+            <div class="hero-overlay" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2; width: 90%; max-width: 1100px; text-align: center;">
+                <div style="background: rgba(0,0,0,0.4); backdrop-filter: blur(20px); padding: 4rem 3rem; border-radius: 25px; border: 2px solid rgba(255,215,0,0.3); box-shadow: 0 30px 80px rgba(0,0,0,0.6);">
+                    <div style="font-size: 4rem; margin-bottom: 1.5rem; animation: fadeInUp 0.8s ease-out;">🍽️✨</div>
+                    
+                    <h1 style="font-family: 'Cormorant Garamond', serif; font-size: 4.5rem; color: white; margin-bottom: 1.2rem; text-shadow: 0 4px 30px rgba(0,0,0,0.9); font-weight: 400; letter-spacing: 4px; line-height: 1.2; animation: fadeInUp 0.8s ease-out 0.2s backwards;">
+                        <span style="display: block; font-size: 1.8rem; color: var(--holiday-gold); font-weight: 300; letter-spacing: 3px; margin-bottom: 0.5rem;">Premium</span>
+                        Catering Services
+                    </h1>
+                    
+                    <div style="width: 150px; height: 4px; background: linear-gradient(90deg, var(--holiday-red), var(--holiday-gold), var(--holiday-green)); margin: 0 auto 2rem; border-radius: 2px; animation: fadeInUp 0.8s ease-out 0.3s backwards;"></div>
+                    
+                    <p style="font-family: 'Montserrat', sans-serif; font-size: 1.4rem; color: rgba(255,255,255,0.95); line-height: 1.8; text-shadow: 0 2px 20px rgba(0,0,0,0.8); letter-spacing: 0.5px; animation: fadeInUp 0.8s ease-out 0.4s backwards; max-width: 800px; margin: 0 auto 3rem; font-weight: 300;">
+                        Transform your special moments into unforgettable culinary experiences with our <strong style="color: var(--holiday-gold);">award-winning</strong> catering services
+                    </p>
+                    
+                    <!-- Stats Row -->\n                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-bottom: 3rem; animation: fadeInUp 0.8s ease-out 0.5s backwards;">
+                        <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 15px; border: 1px solid rgba(255,215,0,0.2);">
+                            <div style="font-size: 2.5rem; color: var(--holiday-gold); font-weight: 800; margin-bottom: 0.3rem;">20+</div>
+                            <div style="color: white; font-size: 0.95rem; font-weight: 500;">Years Experience</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 15px; border: 1px solid rgba(255,215,0,0.2);">
+                            <div style="font-size: 2.5rem; color: var(--holiday-gold); font-weight: 800; margin-bottom: 0.3rem;">500+</div>
+                            <div style="color: white; font-size: 0.95rem; font-weight: 500;">Events Catered</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 15px; border: 1px solid rgba(255,215,0,0.2);">
+                            <div style="font-size: 2.5rem; color: var(--holiday-gold); font-weight: 800; margin-bottom: 0.3rem;">200+</div>
+                            <div style="color: white; font-size: 0.95rem; font-weight: 500;">Max Capacity</div>
+                        </div>
+                    </div>
+                    
+                    <!-- CTA Buttons -->
+                    <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; animation: fadeInUp 0.8s ease-out 0.6s backwards;">
+                        <a href="#contact-catering" style="background: linear-gradient(135deg, var(--holiday-gold), #f59e0b); color: #1a1a1a; padding: 1.2rem 3rem; border-radius: 50px; text-decoration: none; font-weight: 800; font-size: 1.1rem; transition: all 0.3s ease; box-shadow: 0 8px 30px rgba(255, 215, 0, 0.4); text-transform: uppercase; letter-spacing: 1px;">
+                            📞 Get Free Quote
+                        </a>
+                        <a href="#catering-gallery" style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); color: white; padding: 1.2rem 3rem; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 1.1rem; transition: all 0.3s ease; border: 2px solid rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px;">
+                            📸 View Gallery
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scroll Indicator -->
+            <div class="scroll-indicator" style="position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); z-index: 100; animation: bounce 2s infinite; cursor: pointer;">
+                <div style="width: 35px; height: 55px; border: 3px solid rgba(255,255,255,0.9); border-radius: 25px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                    <div style="width: 8px; height: 12px; background: white; border-radius: 4px; position: absolute; top: 10px; left: 50%; transform: translateX(-50%); animation: scroll-down 2s infinite; box-shadow: 0 2px 5px rgba(0,0,0,0.2);"></div>
+                </div>
+                <p style="color: white; font-size: 0.85rem; margin-top: 10px; text-align: center; opacity: 1; letter-spacing: 1.5px; font-weight: 600; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">SCROLL</p>
+            </div>
+        </section>
+
+        <!-- Sección de Servicios de Catering con Fotos -->
+        <section id="catering" style="background: linear-gradient(to bottom, #ffffff 0%, #f8f9fa 100%); padding: 5rem 0;">
+            <div class="container">
+                <!-- Título Principal -->
+                <div style="text-align: center; margin-bottom: 4rem;">
+                    <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 3.5rem; color: var(--navy-dark); margin-bottom: 1rem; font-weight: 400;">Our Catering Services</h2>
+                    <div style="width: 100px; height: 3px; background: var(--holiday-gold); margin: 0 auto 1.5rem;"></div>
+                    <p style="font-size: 1.2rem; color: #64748b; max-width: 700px; margin: 0 auto;">Make your special event truly memorable with award-winning cuisine and exceptional service</p>
+                </div>
+
+                <!-- Servicio 1: Weddings & Celebrations -->
+                <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 3rem; margin-bottom: 5rem; align-items: center;">
+                    <div>
+                        <div style="background: var(--holiday-red); color: white; display: inline-block; padding: 0.5rem 1.5rem; border-radius: 50px; font-size: 0.85rem; font-weight: 700; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 1px;">💒 Weddings & Celebrations</div>
+                        <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; color: var(--navy-dark); margin-bottom: 1.5rem; line-height: 1.2;">Create Unforgettable Wedding Memories</h3>
+                        <p style="font-size: 1.1rem; color: #64748b; line-height: 1.8; margin-bottom: 2rem;">From intimate beach ceremonies to grand ballroom receptions, we specialize in creating magical wedding experiences. Our team works closely with you to design a custom menu that reflects your style and delights your guests.</p>
+                        <ul style="list-style: none; padding: 0; margin-bottom: 2rem;">
+                            <li style="padding: 0.8rem 0; border-bottom: 1px solid #e2e8f0; font-size: 1.05rem;">✨ <strong>Custom menu design</strong> tailored to your tastes</li>
+                            <li style="padding: 0.8rem 0; border-bottom: 1px solid #e2e8f0; font-size: 1.05rem;">🍾 <strong>Bar service</strong> & signature cocktails</li>
+                            <li style="padding: 0.8rem 0; border-bottom: 1px solid #e2e8f0; font-size: 1.05rem;">🎂 <strong>Wedding cakes</strong> & dessert stations</li>
+                            <li style="padding: 0.8rem 0; font-size: 1.05rem;">👨‍🍳 <strong>Professional staff</strong> for seamless service</li>
+                        </ul>
+                        <a href="#contact-catering" style="background: linear-gradient(135deg, var(--holiday-red), #d32f4a); color: white; padding: 1rem 2.5rem; border-radius: 50px; text-decoration: none; font-weight: 700; display: inline-block; box-shadow: 0 6px 20px rgba(196, 30, 58, 0.3);">Plan Your Dream Wedding →</a>
+                    </div>
+                    <div style="position: relative; height: 550px; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.2);">
+                        <img src="https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/catering-2" alt="Wedding Catering" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.8)); padding: 2rem; color: white;">
+                            <p style="font-size: 1.1rem; margin: 0; font-style: italic;">"The food was absolutely incredible! Our guests are still talking about it!"</p>
+                            <p style="font-size: 0.9rem; margin: 0.5rem 0 0 0; opacity: 0.8;">- Sarah & Michael, 2024</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Servicio 2: Corporate Events -->
+                <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 3rem; margin-bottom: 5rem; align-items: center;">
+                    <div style="position: relative; height: 550px; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.2);">
+                        <img src="https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/catering-5" alt="Corporate Catering" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div style="position: absolute; top: 2rem; left: 2rem; background: rgba(255,255,255,0.95); padding: 1.5rem; border-radius: 15px; max-width: 250px;">
+                            <div style="font-size: 2rem; color: var(--holiday-green); font-weight: 800; margin-bottom: 0.5rem;">50-200</div>
+                            <p style="margin: 0; color: #1a1a1a; font-weight: 600;">Guests Capacity</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="background: var(--holiday-green); color: white; display: inline-block; padding: 0.5rem 1.5rem; border-radius: 50px; font-size: 0.85rem; font-weight: 700; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 1px;">💼 Corporate Events</div>
+                        <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; color: var(--navy-dark); margin-bottom: 1.5rem; line-height: 1.2;">Impress Your Clients & Team</h3>
+                        <p style="font-size: 1.1rem; color: #64748b; line-height: 1.8; margin-bottom: 2rem;">Elevate your business events with professional catering that makes a lasting impression. Perfect for conferences, product launches, team building, and executive dinners.</p>
+                        <ul style="list-style: none; padding: 0; margin-bottom: 2rem;">
+                            <li style="padding: 0.8rem 0; border-bottom: 1px solid #e2e8f0; font-size: 1.05rem;">📊 <strong>Flexible service</strong> - breakfast, lunch, dinner</li>
+                            <li style="padding: 0.8rem 0; border-bottom: 1px solid #e2e8f0; font-size: 1.05rem;">⚡ <strong>Quick setup</strong> & professional presentation</li>
+                            <li style="padding: 0.8rem 0; border-bottom: 1px solid #e2e8f0; font-size: 1.05rem;">🥗 <strong>Dietary accommodations</strong> for all needs</li>
+                            <li style="padding: 0.8rem 0; font-size: 1.05rem;">💰 <strong>Corporate packages</strong> & volume discounts</li>
+                        </ul>
+                        <a href="#contact-catering" style="background: linear-gradient(135deg, var(--holiday-green), #1a7a42); color: white; padding: 1rem 2.5rem; border-radius: 50px; text-decoration: none; font-weight: 700; display: inline-block; box-shadow: 0 6px 20px rgba(22, 91, 51, 0.3);">Request Corporate Quote →</a>
+                    </div>
+                </div>
+
+                <!-- Servicio 3: Private Parties & Events -->
+                <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 3rem; margin-bottom: 3rem; align-items: center;">
+                    <div>
+                        <div style="background: var(--holiday-gold); color: #1a1a1a; display: inline-block; padding: 0.5rem 1.5rem; border-radius: 50px; font-size: 0.85rem; font-weight: 700; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 1px;">🎉 Private Events</div>
+                        <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; color: var(--navy-dark); margin-bottom: 1.5rem; line-height: 1.2;">Celebrate in Style</h3>
+                        <p style="font-size: 1.1rem; color: #64748b; line-height: 1.8; margin-bottom: 2rem;">Birthday parties, anniversaries, family reunions, or any special occasion - we bring the restaurant experience to your venue with personalized menus and exceptional service.</p>
+                        <ul style="list-style: none; padding: 0; margin-bottom: 2rem;">
+                            <li style="padding: 0.8rem 0; border-bottom: 1px solid #e2e8f0; font-size: 1.05rem;">🏖️ <strong>Any venue</strong> - beach, home, yacht, or villa</li>
+                            <li style="padding: 0.8rem 0; border-bottom: 1px solid #e2e8f0; font-size: 1.05rem;">🍤 <strong>Fresh seafood</strong> & premium ingredients</li>
+                            <li style="padding: 0.8rem 0; border-bottom: 1px solid #e2e8f0; font-size: 1.05rem;">🎨 <strong>Themed menus</strong> & custom decorations</li>
+                            <li style="padding: 0.8rem 0; font-size: 1.05rem;">🎵 <strong>Full-service coordination</strong> available</li>
+                        </ul>
+                        <a href="#contact-catering" style="background: linear-gradient(135deg, var(--holiday-gold), #f59e0b); color: #1a1a1a; padding: 1rem 2.5rem; border-radius: 50px; text-decoration: none; font-weight: 700; display: inline-block; box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);">Start Planning Your Party →</a>
+                    </div>
+                    <div style="position: relative; height: 550px; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.2);">
+                        <img src="https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/catering-3" alt="Private Party Catering" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gallery Section -->
+        <section id="catering-gallery" style="background: #1a1a1a; padding: 5rem 0; color: white;">
+            <div class="container">
+                <div style="text-align: center; margin-bottom: 4rem;">
+                    <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 3.5rem; margin-bottom: 1rem; font-weight: 400;">Our Work in Action</h2>
+                    <div style="width: 100px; height: 3px; background: var(--holiday-gold); margin: 0 auto 1.5rem;"></div>
+                    <p style="font-size: 1.2rem; color: rgba(255,255,255,0.7);">See the quality and elegance we bring to every event</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem;">
+                    <div style="position: relative; height: 400px; border-radius: 15px; overflow: hidden;">
+                        <img src="https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/catering-1" alt="Elegant event setup" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.9)); padding: 2rem;">
+                            <h4 style="font-size: 1.5rem; margin: 0 0 0.5rem 0;">Elegant Event Setups</h4>
+                            <p style="margin: 0; opacity: 0.9;">Professional presentation for every occasion</p>
+                        </div>
+                    </div>
+                    <div style="position: relative; height: 400px; border-radius: 15px; overflow: hidden;">
+                        <img src="https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/catering-4" alt="Gourmet dishes" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.9)); padding: 2rem;">
+                            <h4 style="font-size: 1.5rem; margin: 0 0 0.5rem 0;">Exquisite Presentation</h4>
+                            <p style="margin: 0; opacity: 0.9;">Every dish is a work of art</p>
+                        </div>
+                    </div>
+                    <div style="grid-column: span 2; position: relative; height: 450px; border-radius: 15px; overflow: hidden;">
+                        <img src="https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/catering-6" alt="Professional team" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.9)); padding: 3rem; text-align: center;">
+                            <h4 style="font-size: 2rem; margin: 0 0 0.8rem 0;">Our Dedicated Professional Team</h4>
+                            <p style="margin: 0; font-size: 1.1rem; opacity: 0.9;">Experienced staff ensuring every detail is perfect</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Form Section -->
+        <section id="contact-catering" style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%); padding: 5rem 0;">
+            <div class="container">
+                <div class="catering-content">
+                    <div class="catering-intro" style="text-align: center; margin-bottom: 3rem;">
+                        <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 3.5rem; color: var(--navy-dark); margin-bottom: 1rem;">Get Your Free Quote</h2>
+                        <div style="width: 100px; height: 3px; background: var(--holiday-gold); margin: 0 auto 1.5rem;"></div>
+                        <p style="font-size: 1.2rem; color: #64748b; max-width: 700px; margin: 0 auto;">Tell us about your event and we'll create a customized proposal just for you</p>
+                    </div>
+
+                    <div class="catering-form-card">
+                        <h3>Request a Catering Quote</h3>
+                        <form id="cateringForm">
+                            <div class="form-group">
+                                <label for="cateringName">Full Name <span class="required">*</span></label>
+                                <input type="text" id="cateringName" name="name" placeholder="Your name" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cateringEmail">Email <span class="required">*</span></label>
+                                <input type="email" id="cateringEmail" name="email" placeholder="your@email.com" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cateringPhone">Phone Number <span class="required">*</span></label>
+                                <input type="tel" id="cateringPhone" name="phone" placeholder="+52 624 123 4567" required>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="eventDate">Event Date <span class="required">*</span></label>
+                                    <input type="date" id="eventDate" name="date" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="guestCount">Number of Guests <span class="required">*</span></label>
+                                    <input type="number" id="guestCount" name="guests" min="20" placeholder="Minimum 20 guests" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="eventType">Event Type <span class="required">*</span></label>
+                                <select id="eventType" name="eventType" required>
+                                    <option value="">Select event type</option>
+                                    <option value="wedding">Wedding</option>
+                                    <option value="corporate">Corporate Event</option>
+                                    <option value="birthday">Birthday Party</option>
+                                    <option value="anniversary">Anniversary</option>
+                                    <option value="private">Private Party</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cateringMessage">Tell us about your event</label>
+                                <textarea id="cateringMessage" name="message" rows="5" placeholder="Menu preferences, dietary restrictions, special requests..."></textarea>
+                            </div>
+
+                            <button type="submit" class="btn-submit">Request Quote</button>
+
+                            <div id="cateringFormMessage" class="form-message"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer id="contact">
+        <div class="container">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem; text-align: left;">
+                <div>
+                    <h3 style="color: var(--yellow-sun); margin-bottom: 1rem;">Contact</h3>
+                    <p>Phone: <a href="tel:+526242193228">+52 624 219 3228</a></p>
+                    <p>Email: <a href="mailto:contact@solomonslanding.com.mx">contact@solomonslanding.com.mx</a></p>
+                </div>
+                <div>
+                    <h3 style="color: var(--yellow-sun); margin-bottom: 1rem;">Location</h3>
+                    <p>Blvd. Paseo de la Marina Centro<br>Marina, 23450 Cabo San Lucas, B.C.S.</p>
+                </div>
+                <div>
+                    <h3 style="color: var(--yellow-sun); margin-bottom: 1rem;">Follow Us</h3>
+                    <p>
+                        <a href="https://www.instagram.com/solomonslanding/" target="_blank" rel="noopener">Instagram</a><br>
+                        <a href="https://www.facebook.com/SolomonsLandingLosCabos" target="_blank" rel="noopener">Facebook</a><br>
+                        <a href="https://www.tripadvisor.com.mx/Restaurant_Review-g152515-d878292-Reviews-Solomon_s_Landing_Restaurant-Cabo_San_Lucas_Los_Cabos_Baja_California.html" target="_blank" rel="noopener">TripAdvisor</a>
+                    </p>
+                </div>
+            </div>
+            <p style="margin-top: 1.5rem; font-size: 0.9rem; color: #999; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem;">
+                &copy; 2025 Solomon's Landing. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Chatbot Scripts -->
+    <script src="chatbot.js"></script>
+    <script src="chatbot-init.js"></script>
+    
+    <!-- Mobile Menu -->
+    <script src="mobile-menu.js"></script>
+    
+    <!-- Mobile Image Optimizer -->
+    <script src="mobile-image-optimizer.js"></script>
+    
+    <script src="app.js"></script>
+    
+    <!-- EmailJS Initialization -->
+    <script>
+        // Initialize EmailJS with your public key
+        (function(){
+            emailjs.init('gCsJYvChpOqVACgUr');
+            console.log('✅ EmailJS initialized for catering quotes');
+        })();
+    </script>
+
+    <!-- Hero Slider Script -->
+    <script>
+        // Hero Slider Auto-rotation
+        (function() {
+            const slides = document.querySelectorAll('#catering-hero .hero-slide');
+            let currentSlide = 0;
+            
+            function showSlide(index) {
+                slides.forEach((slide, i) => {
+                    slide.style.opacity = i === index ? '1' : '0';
+                });
+            }
+            
+            function nextSlide() {
+                currentSlide = (currentSlide + 1) % slides.length;
+                showSlide(currentSlide);
+            }
+            
+            // Change slide every 5 seconds
+            setInterval(nextSlide, 5000);
+            
+            // Smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const href = this.getAttribute('href');
+                    if (href !== '#' && href.startsWith('#')) {
+                        e.preventDefault();
+                        const target = document.querySelector(href);
+                        if (target) {
+                            target.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    }
+                });
+            });
+        })();
+
+        // Catering Quote Form Handler
+        (function() {
+            const form = document.getElementById('cateringQuoteForm');
+            const messageDiv = document.getElementById('cateringFormMessage');
+            
+            if (form) {
+                form.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    // Get form data
+                    const formData = {
+                        from_name: document.getElementById('cateringName').value,
+                        from_email: document.getElementById('cateringEmail').value,
+                        phone: document.getElementById('cateringPhone').value,
+                        event_date: document.getElementById('eventDate').value,
+                        guest_count: document.getElementById('guestCount').value,
+                        event_type: document.getElementById('eventType').value,
+                        message: document.getElementById('cateringMessage').value || 'No additional details provided',
+                        to_email: 'bertinamia@gmail.com'
+                    };
+                    
+                    // Show loading message
+                    messageDiv.innerHTML = '<p style="color: var(--yellow-sun);">⏳ Sending quote request...</p>';
+                    messageDiv.style.display = 'block';
+                    
+                    try {
+                        // Send email using EmailJS
+                        await emailjs.send(
+                            'service_u021fxi', // Your service ID
+                            'template_catering_quote', // Template for catering quotes
+                            formData,
+                            'gCsJYvChpOqVACgUr' // Your public key
+                        );
+                        
+                        // Success message
+                        messageDiv.innerHTML = '<p style="color: #10b981;">✅ Quote request sent successfully! We\'ll contact you within 24 hours.</p>';
+                        form.reset();
+                        
+                        // Hide message after 5 seconds
+                        setTimeout(() => {
+                            messageDiv.style.display = 'none';
+                        }, 5000);
+                        
+                    } catch (error) {
+                        console.error('Error sending catering quote:', error);
+                        messageDiv.innerHTML = '<p style="color: #ef4444;">❌ Error sending request. Please try again or call us at +52 624 219 3228</p>';
+                    }
+                });
+            }
+        })();
+    </script>
+</body>
+</html>
