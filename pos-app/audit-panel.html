@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Auditoría - Solomon's Landing</title>
+    <link rel="stylesheet" href="restaurant-system.css">
+    <style>
+        .audit-panel {
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .audit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .audit-filters {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-group label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .audit-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 14px;
+            color: #666;
+            margin: 0 0 10px 0;
+        }
+
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        .audit-table-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .audit-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .audit-table thead {
+            background: #f3f4f6;
+        }
+
+        .audit-table th {
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #374151;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .audit-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+
+        .audit-table tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .action-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .action-create { background: #dbeafe; color: #1e40af; }
+        .action-update { background: #fef3c7; color: #92400e; }
+        .action-delete { background: #fee2e2; color: #991b1b; }
+        .action-login { background: #d1fae5; color: #065f46; }
+        .action-logout { background: #e5e7eb; color: #374151; }
+        .action-payment { background: #dcfce7; color: #166534; }
+        .action-discount { background: #fef9c3; color: #854d0e; }
+
+        .user-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 10px;
+            background: #f3f4f6;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .user-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 20px;
+        }
+
+        .pagination button {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination .page-info {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #9ca3af;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+
+        .spinner {
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #2563eb;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .detail-cell {
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .detail-cell:hover {
+            white-space: normal;
+            overflow: visible;
+        }
+
+        .export-menu {
+            position: relative;
+        }
+
+        .export-dropdown {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            margin-top: 5px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: none;
+            z-index: 10;
+        }
+
+        .export-dropdown.show {
+            display: block;
+        }
+
+        .export-dropdown button {
+            display: block;
+            width: 100%;
+            padding: 10px 20px;
+            border: none;
+            background: none;
+            text-align: left;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .export-dropdown button:hover {
+            background: #f3f4f6;
+        }
+    </style>
+</head>
+<body>
+    <div class="audit-panel">
+        <!-- Header -->
+        <div class="audit-header">
+            <div>
+                <h1>📊 Panel de Auditoría</h1>
+                <p style="color: #6b7280; margin: 5px 0 0 0;">
+                    Monitoreo completo de todas las acciones del sistema
+                </p>
+            </div>
+            <div class="export-menu">
+                <button class="btn btn-success" id="exportBtn">
+                    📥 Exportar
+                </button>
+                <div class="export-dropdown" id="exportDropdown">
+                    <button onclick="exportToCSV()">📄 Exportar a CSV</button>
+                    <button onclick="exportToExcel()">📊 Exportar a Excel</button>
+                    <button onclick="exportToPDF()">📕 Exportar a PDF</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="audit-stats">
+            <div class="stat-card">
+                <h3>Total de Acciones</h3>
+                <div class="value" id="totalActions">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Hoy</h3>
+                <div class="value" id="todayActions">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Esta Semana</h3>
+                <div class="value" id="weekActions">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Usuarios Activos</h3>
+                <div class="value" id="activeUsers">0</div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="audit-filters">
+            <div class="filter-grid">
+                <div class="filter-group">
+                    <label>Fecha Inicio</label>
+                    <input type="date" id="startDate">
+                </div>
+                <div class="filter-group">
+                    <label>Fecha Fin</label>
+                    <input type="date" id="endDate">
+                </div>
+                <div class="filter-group">
+                    <label>Usuario</label>
+                    <select id="userFilter">
+                        <option value="">Todos los usuarios</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Acción</label>
+                    <select id="actionFilter">
+                        <option value="">Todas las acciones</option>
+                        <option value="CREATE">Crear</option>
+                        <option value="UPDATE">Actualizar</option>
+                        <option value="DELETE">Eliminar</option>
+                        <option value="LOGIN">Login</option>
+                        <option value="LOGOUT">Logout</option>
+                        <option value="PAYMENT">Pago</option>
+                        <option value="DISCOUNT">Descuento</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Tabla</label>
+                    <select id="tableFilter">
+                        <option value="">Todas las tablas</option>
+                        <option value="orders">Órdenes</option>
+                        <option value="menu_items">Menú</option>
+                        <option value="tables">Mesas</option>
+                        <option value="sales">Ventas</option>
+                        <option value="users">Usuarios</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Buscar</label>
+                    <input type="text" id="searchText" placeholder="Buscar en detalles...">
+                </div>
+            </div>
+            <div class="filter-actions">
+                <button class="btn btn-secondary" onclick="clearFilters()">
+                    🔄 Limpiar Filtros
+                </button>
+                <button class="btn btn-primary" onclick="applyFilters()">
+                    🔍 Aplicar Filtros
+                </button>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="audit-table-container">
+            <div id="loadingState" class="loading">
+                <div class="spinner"></div>
+                <p>Cargando registros de auditoría...</p>
+            </div>
+
+            <div id="tableContent" style="display: none;">
+                <table class="audit-table">
+                    <thead>
+                        <tr>
+                            <th>Fecha/Hora</th>
+                            <th>Usuario</th>
+                            <th>Acción</th>
+                            <th>Tabla</th>
+                            <th>Detalles</th>
+                            <th>IP</th>
+                        </tr>
+                    </thead>
+                    <tbody id="auditTableBody">
+                    </tbody>
+                </table>
+
+                <div id="emptyState" class="empty-state" style="display: none;">
+                    <div class="empty-state-icon">📭</div>
+                    <h3>No hay registros</h3>
+                    <p>No se encontraron registros con los filtros aplicados</p>
+                </div>
+
+                <div class="pagination">
+                    <button id="prevPage" onclick="previousPage()">← Anterior</button>
+                    <span class="page-info" id="pageInfo">Página 1 de 1</span>
+                    <button id="nextPage" onclick="nextPage()">Siguiente →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="api-client.js"></script>
+    <script>
+        let currentPage = 1;
+        let totalPages = 1;
+        let currentFilters = {};
+        let allLogs = [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadUsers();
+            await loadAuditLogs();
+            setupEventListeners();
+            setDefaultDates();
+        });
+
+        function setDefaultDates() {
+            const today = new Date();
+            const weekAgo = new Date(today);
+            weekAgo.setDate(weekAgo.getDate() - 7);
+            
+            document.getElementById('endDate').valueAsDate = today;
+            document.getElementById('startDate').valueAsDate = weekAgo;
+        }
+
+        function setupEventListeners() {
+            document.getElementById('exportBtn').addEventListener('click', () => {
+                document.getElementById('exportDropdown').classList.toggle('show');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.export-menu')) {
+                    document.getElementById('exportDropdown').classList.remove('show');
+                }
+            });
+        }
+
+        async function loadUsers() {
+            try {
+                // Aquí deberías tener un endpoint para obtener usuarios
+                // Por ahora usaremos datos mock
+                const users = [
+                    { id: 1, name: 'Admin' },
+                    { id: 2, name: 'Manager' },
+                    { id: 3, name: 'Mesero 1' },
+                    { id: 4, name: 'Cocina' },
+                    { id: 5, name: 'Bar' }
+                ];
+
+                const select = document.getElementById('userFilter');
+                users.forEach(user => {
+                    const option = document.createElement('option');
+                    option.value = user.id;
+                    option.textContent = user.name;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading users:', error);
+            }
+        }
+
+        async function loadAuditLogs() {
+            try {
+                document.getElementById('loadingState').style.display = 'block';
+                document.getElementById('tableContent').style.display = 'none';
+
+                const response = await API.reports.getAuditLog(currentFilters);
+                allLogs = response.logs || [];
+
+                updateStatistics(allLogs);
+                renderTable(allLogs);
+
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('tableContent').style.display = 'block';
+            } catch (error) {
+                console.error('Error loading audit logs:', error);
+                document.getElementById('loadingState').innerHTML = `
+                    <p style="color: #ef4444;">Error al cargar registros de auditoría</p>
+                    <button class="btn btn-primary" onclick="loadAuditLogs()">Reintentar</button>
+                `;
+            }
+        }
+
+        function updateStatistics(logs) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const weekAgo = new Date(today);
+            weekAgo.setDate(weekAgo.getDate() - 7);
+
+            const todayLogs = logs.filter(log => {
+                const logDate = new Date(log.created_at);
+                logDate.setHours(0, 0, 0, 0);
+                return logDate.getTime() === today.getTime();
+            });
+
+            const weekLogs = logs.filter(log => {
+                const logDate = new Date(log.created_at);
+                return logDate >= weekAgo;
+            });
+
+            const uniqueUsers = new Set(logs.map(log => log.user_id)).size;
+
+            document.getElementById('totalActions').textContent = logs.length;
+            document.getElementById('todayActions').textContent = todayLogs.length;
+            document.getElementById('weekActions').textContent = weekLogs.length;
+            document.getElementById('activeUsers').textContent = uniqueUsers;
+        }
+
+        function renderTable(logs) {
+            const tbody = document.getElementById('auditTableBody');
+            const emptyState = document.getElementById('emptyState');
+
+            if (logs.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+
+            const itemsPerPage = 20;
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const paginatedLogs = logs.slice(startIndex, endIndex);
+
+            tbody.innerHTML = paginatedLogs.map(log => `
+                <tr>
+                    <td>${formatDateTime(log.created_at)}</td>
+                    <td>
+                        <div class="user-badge">
+                            <div class="user-avatar">${getUserInitials(log.username)}</div>
+                            ${log.username}
+                        </div>
+                    </td>
+                    <td>
+                        <span class="action-badge action-${log.action.toLowerCase()}">
+                            ${getActionIcon(log.action)} ${log.action}
+                        </span>
+                    </td>
+                    <td>${log.table_name || '-'}</td>
+                    <td class="detail-cell" title="${log.details || ''}">${log.details || '-'}</td>
+                    <td>${log.ip_address || '-'}</td>
+                </tr>
+            `).join('');
+
+            // Update pagination
+            totalPages = Math.ceil(logs.length / itemsPerPage);
+            document.getElementById('pageInfo').textContent = `Página ${currentPage} de ${totalPages}`;
+            document.getElementById('prevPage').disabled = currentPage === 1;
+            document.getElementById('nextPage').disabled = currentPage === totalPages;
+        }
+
+        function formatDateTime(dateString) {
+            const date = new Date(dateString);
+            const today = new Date();
+            const isToday = date.toDateString() === today.toDateString();
+
+            if (isToday) {
+                return 'Hoy ' + date.toLocaleTimeString('es-MX', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+            }
+
+            return date.toLocaleString('es-MX', {
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function getUserInitials(username) {
+            return username.charAt(0).toUpperCase();
+        }
+
+        function getActionIcon(action) {
+            const icons = {
+                CREATE: '✨',
+                UPDATE: '✏️',
+                DELETE: '🗑️',
+                LOGIN: '🔓',
+                LOGOUT: '🔒',
+                PAYMENT: '💰',
+                DISCOUNT: '🏷️'
+            };
+            return icons[action] || '📝';
+        }
+
+        function applyFilters() {
+            const filters = {
+                start_date: document.getElementById('startDate').value,
+                end_date: document.getElementById('endDate').value,
+                user_id: document.getElementById('userFilter').value,
+                action: document.getElementById('actionFilter').value,
+                table_name: document.getElementById('tableFilter').value
+            };
+
+            // Remove empty filters
+            currentFilters = Object.fromEntries(
+                Object.entries(filters).filter(([_, v]) => v)
+            );
+
+            currentPage = 1;
+            loadAuditLogs();
+        }
+
+        function clearFilters() {
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+            document.getElementById('userFilter').value = '';
+            document.getElementById('actionFilter').value = '';
+            document.getElementById('tableFilter').value = '';
+            document.getElementById('searchText').value = '';
+            
+            currentFilters = {};
+            currentPage = 1;
+            setDefaultDates();
+            loadAuditLogs();
+        }
+
+        function previousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTable(allLogs);
+            }
+        }
+
+        function nextPage() {
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderTable(allLogs);
+            }
+        }
+
+        function exportToCSV() {
+            const headers = ['Fecha/Hora', 'Usuario', 'Acción', 'Tabla', 'Detalles', 'IP'];
+            const rows = allLogs.map(log => [
+                formatDateTime(log.created_at),
+                log.username,
+                log.action,
+                log.table_name || '',
+                log.details || '',
+                log.ip_address || ''
+            ]);
+
+            let csv = headers.join(',') + '\n';
+            csv += rows.map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `audit_log_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        async function exportToExcel() {
+            try {
+                const params = new URLSearchParams(currentFilters);
+                window.open(`/api/export/audit-log?${params}`, '_blank');
+            } catch (error) {
+                console.error('Error exporting to Excel:', error);
+                alert('Error al exportar a Excel');
+            }
+        }
+
+        function exportToPDF() {
+            window.print();
+        }
+    </script>
+</body>
+</html>

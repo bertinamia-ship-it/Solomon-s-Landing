@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solomon's Landing - Staff Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #165b33 0%, #1a7a42 50%, #0f4c28 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+        
+        .login-container {
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+            max-width: 750px;
+            width: 100%;
+            overflow: hidden;
+            animation: slideIn 0.6s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .login-header {
+            background: linear-gradient(135deg, #165b33, #1a7a42);
+            padding: 5rem 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .login-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
+        .logo {
+            font-size: 8rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+        
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-15px) scale(1.05); }
+        }
+        
+        .restaurant-name {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.8rem;
+            font-family: 'Georgia', serif;
+            letter-spacing: 3px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+        
+        .subtitle {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 1.5rem;
+            position: relative;
+            z-index: 1;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+        
+        .login-body {
+            padding: 3.5rem 3rem;
+        }
+        
+        .welcome-text {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+        
+        .welcome-text h2 {
+            font-size: 2.2rem;
+            color: #165b33;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .welcome-text p {
+            color: #666;
+            font-size: 1.2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 2rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.8rem;
+            color: #333;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 1.5rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            font-size: 1.3rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #165b33;
+            background: white;
+            box-shadow: 0 0 0 5px rgba(22, 91, 51, 0.1);
+        }
+        
+        .login-button {
+            width: 100%;
+            padding: 1.6rem;
+            background: linear-gradient(135deg, #165b33, #1a7a42);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1.5rem;
+            box-shadow: 0 6px 20px rgba(22, 91, 51, 0.3);
+        }
+        
+        .login-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(22, 91, 51, 0.4);
+        }
+        
+        .login-button:active {
+            transform: translateY(0);
+        }
+        
+        .error-message {
+            background: #fee;
+            color: #c00;
+            padding: 1.2rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            display: none;
+            border-left: 4px solid #c00;
+        }
+        
+        .error-message.show {
+            display: block;
+            animation: shake 0.5s;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        .quick-access {
+            margin-top: 2.5rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e0e0e0;
+        }
+        
+        .quick-access p {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 1.2rem;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .user-roles {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.2rem;
+        }
+        
+        .role-button {
+            padding: 1.3rem;
+            background: #f8f9fa;
+            border: 3px solid #e0e0e0;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 1.2rem;
+            color: #666;
+            font-weight: 600;
+        }
+        
+        .role-button:hover {
+            border-color: #165b33;
+            background: rgba(22, 91, 51, 0.05);
+            color: #165b33;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(22, 91, 51, 0.2);
+        }
+        
+        .footer-link {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #e0e0e0;
+        }
+        
+        .footer-link a {
+            color: #666;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+        
+        .footer-link a:hover {
+            color: #165b33;
+        }
+        
+        /* iPad Optimizations */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .login-container {
+                max-width: 650px;
+            }
+            
+            .logo {
+                font-size: 9rem;
+            }
+            
+            .restaurant-name {
+                font-size: 4rem;
+            }
+        }
+        
+        #app {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: white;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-container" id="loginScreen">
+        <div class="login-header">
+            <div class="logo">🍽️</div>
+            <h1 class="restaurant-name">SOLOMON'S LANDING</h1>
+            <p class="subtitle">Staff Portal</p>
+        </div>
+        
+        <div class="login-body">
+            <div class="welcome-text">
+                <h2>Welcome Back</h2>
+                <p>Please sign in to access the system</p>
+            </div>
+            
+            <div class="error-message" id="errorMessage">
+                Invalid username or password
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        placeholder="Enter your username"
+                        autocomplete="username"
+                        required
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+                
+                <button type="submit" class="login-button">
+                    Sign In
+                </button>
+            </form>
+            
+            <div class="quick-access">
+                <p>Quick Access:</p>
+                <div class="user-roles">
+                    <div class="role-button" onclick="quickLogin('admin')">👑 Admin</div>
+                    <div class="role-button" onclick="quickLogin('meseros')">👨‍🍳 Servers</div>
+                    <div class="role-button" onclick="quickLogin('bar')">🍸 Bar</div>
+                    <div class="role-button" onclick="quickLogin('ipad1')">📱 iPad 1</div>
+                </div>
+            </div>
+            
+            <div class="footer-link">
+                <a href="../index.html">← Back to Main Website</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- POS System (Hidden until login) -->
+    <div id="app"></div>
+    
+    <!-- Load POS System Scripts -->
+    <link rel="stylesheet" href="restaurant-system.css?v=2001">
+    <link rel="stylesheet" href="restaurant-compact-v3.css?v=2001">
+    <script src="restaurant-system.js?v=2001"></script>
+    <script src="restaurant-ui.js?v=2001"></script>
+    
+    <script>
+        // Valid credentials
+        const validUsers = {
+            'admin': 'bertina123',
+            'meseros': 'bertina123',
+            'bar': 'bertina123',
+            'ipad1': 'bertina123',
+            'ipad2': 'bertina123',
+            'ipad3': 'bertina123',
+            'ipad4': 'bertina123',
+            'ipad5': 'bertina123',
+            'ipad6': 'bertina123',
+            'ipad7': 'bertina123',
+            'ipad8': 'bertina123',
+            'ipad9': 'bertina123',
+            'ipad10': 'bertina123'
+        };
+        
+        // Quick login function
+        function quickLogin(username) {
+            document.getElementById('username').value = username;
+            document.getElementById('password').value = 'bertina123';
+            document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+        }
+        
+        // Wait for scripts to load
+        function initializeApp() {
+            console.log('Initializing app...');
+            
+            // Handle login form submission
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const username = document.getElementById('username').value.trim().toLowerCase();
+                    const password = document.getElementById('password').value;
+                    const errorMessage = document.getElementById('errorMessage');
+                    
+                    console.log('Login attempt:', username);
+                    
+                    // Validate credentials
+                    if (validUsers[username] && validUsers[username] === password) {
+                        console.log('Login successful');
+                        
+                        // Hide error
+                        errorMessage.classList.remove('show');
+                        
+                        // Login to restaurant system
+                        if (typeof restaurantSystem !== 'undefined' && restaurantSystem.login(username, password)) {
+                            console.log('Restaurant system login successful');
+                            
+                            // Hide login screen
+                            document.getElementById('loginScreen').style.display = 'none';
+                            
+                            // Show app
+                            const appDiv = document.getElementById('app');
+                            appDiv.style.display = 'block';
+                            
+                            // Create dashboard in app div
+                            appDiv.innerHTML = '<div class="restaurant-dashboard active" id="restaurantDashboard"></div>';
+                            
+                            // Get user role
+                            const user = restaurantSystem.getCurrentUser();
+                            console.log('User role:', user.role);
+                            
+                            // Show appropriate dashboard
+                            if (typeof showDashboard === 'function') {
+                                showDashboard(user.role);
+                            } else {
+                                console.error('showDashboard function not found');
+                                alert('Error: Sistema no inicializado correctamente. Por favor recarga la página.');
+                            }
+                        } else {
+                            console.error('Failed to login to restaurant system');
+                            alert('Error al inicializar el sistema. Por favor recarga la página.');
+                        }
+                    } else {
+                        console.log('Invalid credentials');
+                        // Show error
+                        errorMessage.classList.add('show');
+                        
+                        // Clear password
+                        document.getElementById('password').value = '';
+                        document.getElementById('password').focus();
+                    }
+                });
+            }
+            
+            // Focus username on load
+            const usernameInput = document.getElementById('username');
+            if (usernameInput) {
+                usernameInput.focus();
+            }
+        }
+        
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeApp);
+        } else {
+            initializeApp();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Mermas - Solomon's Landing</title>
+    <link rel="stylesheet" href="restaurant-system.css">
+    <style>
+        .waste-container {
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .waste-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stat-card.danger {
+            border-left: 4px solid #ef4444;
+        }
+
+        .stat-card h3 {
+            font-size: 12px;
+            color: #6b7280;
+            text-transform: uppercase;
+            margin: 0 0 10px 0;
+        }
+
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        .stat-card .subtext {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 5px;
+        }
+
+        .quick-log {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 5px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .waste-table {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .waste-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .waste-table thead {
+            background: #f3f4f6;
+        }
+
+        .waste-table th {
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #374151;
+            text-transform: uppercase;
+        }
+
+        .waste-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+
+        .waste-table tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .reason-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .reason-spoiled { background: #fee2e2; color: #991b1b; }
+        .reason-preparation_error { background: #fed7aa; color: #9a3412; }
+        .reason-dropped { background: #fef3c7; color: #92400e; }
+        .reason-overproduction { background: #dbeafe; color: #1e40af; }
+        .reason-customer_complaint { background: #fce7f3; color: #9f1239; }
+        .reason-expired { background: #e5e7eb; color: #374151; }
+        .reason-quality_control { background: #e0e7ff; color: #3730a3; }
+        .reason-other { background: #f3f4f6; color: #6b7280; }
+
+        .area-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .area-kitchen { background: #dcfce7; color: #166534; }
+        .area-bar { background: #fef3c7; color: #854d0e; }
+        .area-storage { background: #e0e7ff; color: #3730a3; }
+    </style>
+</head>
+<body>
+    <div class="waste-container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <div>
+                <h1>🗑️ Control de Mermas</h1>
+                <p style="color: #6b7280; margin: 5px 0 0 0;">
+                    Registro y análisis de desperdicios
+                </p>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="waste-stats">
+            <div class="stat-card">
+                <h3>Hoy</h3>
+                <div class="value" id="statToday">0</div>
+                <div class="subtext">incidentes</div>
+            </div>
+            <div class="stat-card danger">
+                <h3>Costo Hoy</h3>
+                <div class="value" style="color: #ef4444;" id="statCostToday">$0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Esta Semana</h3>
+                <div class="value" id="statWeek">0</div>
+                <div class="subtext">incidentes</div>
+            </div>
+            <div class="stat-card danger">
+                <h3>Costo Semana</h3>
+                <div class="value" style="color: #ef4444;" id="statCostWeek">$0</div>
+            </div>
+        </div>
+
+        <!-- Quick Log Form -->
+        <div class="quick-log">
+            <h2 style="margin: 0 0 20px 0;">⚡ Registro Rápido</h2>
+            <form id="wasteForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Artículo *</label>
+                        <input type="text" id="itemName" required placeholder="Nombre del producto...">
+                    </div>
+                    <div class="form-group">
+                        <label>Cantidad *</label>
+                        <input type="number" step="0.01" min="0" id="quantity" required placeholder="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Unidad *</label>
+                        <select id="unit" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="kg">Kilogramos (kg)</option>
+                            <option value="g">Gramos (g)</option>
+                            <option value="l">Litros (l)</option>
+                            <option value="ml">Mililitros (ml)</option>
+                            <option value="pcs">Piezas (pcs)</option>
+                            <option value="platillos">Platillos</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Costo Estimado</label>
+                        <input type="number" step="0.01" min="0" id="cost" placeholder="0.00">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Razón *</label>
+                        <select id="reason" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="spoiled">🦠 Echado a perder</option>
+                            <option value="preparation_error">👨‍🍳 Error de preparación</option>
+                            <option value="dropped">💥 Se cayó/derramó</option>
+                            <option value="overproduction">📈 Sobreproducción</option>
+                            <option value="customer_complaint">😞 Queja del cliente</option>
+                            <option value="expired">📅 Caducado</option>
+                            <option value="quality_control">🔍 Control de calidad</option>
+                            <option value="other">📝 Otro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Área *</label>
+                        <select id="area" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="kitchen">🍳 Cocina</option>
+                            <option value="bar">🍹 Bar</option>
+                            <option value="storage">📦 Almacén</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label>Notas</label>
+                        <textarea id="notes" rows="2" placeholder="Detalles adicionales..."></textarea>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-danger" style="width: 100%;">
+                    ✅ Registrar Merma
+                </button>
+            </form>
+        </div>
+
+        <!-- Waste Log Table -->
+        <h2 style="margin-bottom: 15px;">📋 Historial de Mermas</h2>
+        <div class="waste-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fecha/Hora</th>
+                        <th>Artículo</th>
+                        <th>Cantidad</th>
+                        <th>Costo</th>
+                        <th>Razón</th>
+                        <th>Área</th>
+                        <th>Reportado por</th>
+                        <th>Notas</th>
+                    </tr>
+                </thead>
+                <tbody id="wasteTableBody">
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 40px; color: #9ca3af;">
+                            Cargando mermas...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="api-client.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadStats();
+            await loadWasteLogs();
+            setupFormHandler();
+        });
+
+        async function loadStats() {
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                const weekAgo = new Date();
+                weekAgo.setDate(weekAgo.getDate() - 7);
+
+                const response = await fetch(`/api/waste/stats?start_date=${weekAgo.toISOString().split('T')[0]}&end_date=${today}`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const data = await response.json();
+
+                if (data.status === 'ok') {
+                    const todayData = data.stats.daily_trend.find(d => d.date === today) || { incidents: 0, total_cost: 0 };
+                    const weekTotal = data.stats.overall;
+
+                    document.getElementById('statToday').textContent = todayData.incidents;
+                    document.getElementById('statCostToday').textContent = `$${parseFloat(todayData.total_cost || 0).toFixed(2)}`;
+                    document.getElementById('statWeek').textContent = weekTotal.total_incidents;
+                    document.getElementById('statCostWeek').textContent = `$${parseFloat(weekTotal.total_cost || 0).toFixed(2)}`;
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        async function loadWasteLogs() {
+            try {
+                const response = await fetch('/api/waste/logs?limit=50', {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const data = await response.json();
+
+                const tbody = document.getElementById('wasteTableBody');
+
+                if (!data.logs || data.logs.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="8" style="text-align: center; padding: 40px; color: #9ca3af;">
+                                No hay mermas registradas
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                tbody.innerHTML = data.logs.map(log => `
+                    <tr>
+                        <td>${formatDateTime(log.created_at)}</td>
+                        <td style="font-weight: 600;">${log.item_name}</td>
+                        <td>${parseFloat(log.quantity).toFixed(2)} ${log.unit}</td>
+                        <td style="color: #ef4444; font-weight: 600;">$${parseFloat(log.cost || 0).toFixed(2)}</td>
+                        <td>
+                            <span class="reason-badge reason-${log.reason}">
+                                ${getReasonLabel(log.reason)}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="area-badge area-${log.area}">
+                                ${getAreaLabel(log.area)}
+                            </span>
+                        </td>
+                        <td>${log.reported_by_name}</td>
+                        <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;">${log.notes || '-'}</td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading waste logs:', error);
+            }
+        }
+
+        function setupFormHandler() {
+            document.getElementById('wasteForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const data = {
+                    item_name: document.getElementById('itemName').value,
+                    quantity: parseFloat(document.getElementById('quantity').value),
+                    unit: document.getElementById('unit').value,
+                    cost: parseFloat(document.getElementById('cost').value) || 0,
+                    reason: document.getElementById('reason').value,
+                    area: document.getElementById('area').value,
+                    notes: document.getElementById('notes').value
+                };
+
+                try {
+                    const response = await fetch('/api/waste/log', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    const result = await response.json();
+
+                    if (result.status === 'ok') {
+                        alert('✅ Merma registrada exitosamente');
+                        document.getElementById('wasteForm').reset();
+                        await loadStats();
+                        await loadWasteLogs();
+                    } else {
+                        alert('❌ ' + result.message);
+                    }
+                } catch (error) {
+                    console.error('Error logging waste:', error);
+                    alert('Error al registrar merma');
+                }
+            });
+        }
+
+        function formatDateTime(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('es-MX', {
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function getReasonLabel(reason) {
+            const labels = {
+                spoiled: '🦠 Echado a perder',
+                preparation_error: '👨‍🍳 Error preparación',
+                dropped: '💥 Caído/derramado',
+                overproduction: '📈 Sobreproducción',
+                customer_complaint: '😞 Queja cliente',
+                expired: '📅 Caducado',
+                quality_control: '🔍 Control calidad',
+                other: '📝 Otro'
+            };
+            return labels[reason] || reason;
+        }
+
+        function getAreaLabel(area) {
+            const labels = {
+                kitchen: '🍳 Cocina',
+                bar: '🍹 Bar',
+                storage: '📦 Almacén'
+            };
+            return labels[area] || area;
+        }
+
+        // Refresh every minute
+        setInterval(() => {
+            loadStats();
+            loadWasteLogs();
+        }, 60000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,1034 @@
+// ============================================
+// RESTAURANT SYSTEM - UI HANDLER
+// ============================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    initRestaurantUI();
+});
+
+function initRestaurantUI() {
+    // Crear modal de login
+    createLoginModal();
+    
+    // Crear dashboard container
+    createDashboardContainer();
+    
+    // Event listeners
+    document.getElementById('restaurantLoginTrigger')?.addEventListener('click', showLoginModal);
+    
+    // Verificar si hay sesión activa
+    const user = restaurantSystem.getCurrentUser();
+    if (user) {
+        showDashboard(user.role);
+    }
+}
+
+// ============================================
+// LOGIN MODAL
+// ============================================
+
+function createLoginModal() {
+    const modal = document.createElement('div');
+    modal.className = 'restaurant-modal';
+    modal.id = 'restaurantLoginModal';
+    modal.innerHTML = `
+        <div class="restaurant-modal-content">
+            <h2>🔐 Sistema de Restaurante</h2>
+            <div class="restaurant-error" id="loginError">Usuario o contraseña incorrectos</div>
+            <input type="text" id="loginUsername" placeholder="Usuario (ej: ipad1, meseros, admin)" autocomplete="off">
+            <input type="password" id="loginPassword" placeholder="Contraseña">
+            <button onclick="handleLogin()">Iniciar Sesión</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    
+    // Cerrar modal al hacer click fuera
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            hideLoginModal();
+        }
+    });
+    
+    // Enter para login
+    document.getElementById('loginPassword').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            handleLogin();
+        }
+    });
+}
+
+function showLoginModal() {
+    document.getElementById('restaurantLoginModal').classList.add('active');
+    document.getElementById('loginUsername').focus();
+}
+
+function hideLoginModal() {
+    document.getElementById('restaurantLoginModal').classList.remove('active');
+    document.getElementById('loginError').classList.remove('show');
+    document.getElementById('loginUsername').value = '';
+    document.getElementById('loginPassword').value = '';
+}
+
+function handleLogin() {
+    const username = document.getElementById('loginUsername').value.trim().toLowerCase();
+    const password = document.getElementById('loginPassword').value;
+    
+    if (restaurantSystem.login(username, password)) {
+        hideLoginModal();
+        const user = restaurantSystem.getCurrentUser();
+        showDashboard(user.role);
+    } else {
+        document.getElementById('loginError').classList.add('show');
+    }
+}
+
+// ============================================
+// DASHBOARD CONTAINER
+// ============================================
+
+function createDashboardContainer() {
+    const dashboard = document.createElement('div');
+    dashboard.className = 'restaurant-dashboard';
+    dashboard.id = 'restaurantDashboard';
+    document.body.appendChild(dashboard);
+}
+
+function showDashboard(role) {
+    console.log('🔍 Mostrando dashboard para rol:', role); // DEBUG
+    
+    // Ocultar página principal
+    document.querySelector('main').style.display = 'none';
+    document.querySelector('header').style.display = 'none';
+    document.querySelector('footer').style.display = 'none';
+    document.querySelector('.chatbot-button').style.display = 'none';
+    
+    // Mostrar dashboard
+    const dashboard = document.getElementById('restaurantDashboard');
+    dashboard.classList.add('active');
+    
+    // Cargar interfaz según rol
+    if (role === 'ipad') {
+        console.log('✅ Cargando interfaz de iPad');
+        loadIPadInterface();
+    } else if (role === 'waiter') {
+        console.log('✅ Cargando interfaz de Meseros');
+        loadWaiterInterface();
+    } else if (role === 'bar') {
+        console.log('✅ Cargando interfaz de Bar');
+        loadBarInterface();
+    } else if (role === 'admin') {
+        console.log('✅ Cargando interfaz de Admin');
+        loadAdminInterface();
+    } else {
+        console.error('❌ Rol desconocido:', role);
+    }
+}
+
+function hideDashboard() {
+    document.querySelector('main').style.display = 'block';
+    document.querySelector('header').style.display = 'block';
+    document.querySelector('footer').style.display = 'block';
+    document.querySelector('.chatbot-button').style.display = 'flex';
+    document.getElementById('restaurantDashboard').classList.remove('active');
+    document.getElementById('restaurantDashboard').innerHTML = '';
+}
+
+function handleLogout() {
+    restaurantSystem.logout();
+    hideDashboard();
+}
+
+// ============================================
+// iPAD INTERFACE
+// ============================================
+
+// Polling interval for table closure detection
+let tablePollingInterval = null;
+
+function loadIPadInterface() {
+    const user = restaurantSystem.getCurrentUser();
+    const currentTable = sessionStorage.getItem('current_table');
+    const lang = restaurantSystem.getCurrentLanguage();
+    const t = (en, es) => lang === 'es' ? es : en;
+    
+    // Auto-assign table number based on iPad device (ipad1 = mesa 1, ipad2 = mesa 2, etc.)
+    const autoTableNumber = user.username.replace('ipad', '');
+    
+    // Clear any existing polling
+    if (tablePollingInterval) {
+        clearInterval(tablePollingInterval);
+        tablePollingInterval = null;
+    }
+    
+    // If there's an active table, start polling to detect closure
+    if (currentTable) {
+        tablePollingInterval = setInterval(() => {
+            const table = restaurantSystem.getTable(currentTable);
+            // If table no longer exists, it was closed - return to home
+            if (!table) {
+                sessionStorage.removeItem('current_table');
+                restaurantSystem.currentTable = null; // Clear system reference
+                clearInterval(tablePollingInterval);
+                tablePollingInterval = null;
+                loadIPadInterface(); // Reload to show home screen
+            }
+        }, 2000); // Check every 2 seconds
+    }
+    
+    const dashboard = document.getElementById('restaurantDashboard');
+    dashboard.innerHTML = `
+        <div class="dashboard-header" style="background: linear-gradient(135deg, #165b33, #1a7a42); padding: 1.5rem; display: none;">
+            <h1 style="display: none;">🍽️ ${user.device}</h1>
+            <div class="dashboard-user-info" style="display: none;">
+                <span>${user.username}</span>
+                <button class="btn-logout" onclick="handleLogout()">${t('Logout', 'Cerrar Sesión')}</button>
+            </div>
+        </div>
+        
+        <div class="dashboard-content" style="padding: 0; height: 100vh; overflow: hidden;">
+            <div class="ipad-interface" style="height: 100vh; background: linear-gradient(135deg, #fafafa, #ffffff);">
+                ${currentTable ? loadTableMenu(currentTable) : `
+                    <!-- Language Toggle - Fixed Top Right -->
+                    <div style="position: fixed; top: 20px; right: 20px; z-index: 1000; display: flex; gap: 10px;">
+                        <button onclick="restaurantSystem.setLanguage('en')" 
+                            style="padding: 12px 24px; border-radius: 30px; border: 2px solid #165b33; background: ${lang === 'en' ? '#165b33' : 'white'}; color: ${lang === 'en' ? 'white' : '#165b33'}; font-weight: bold; cursor: pointer; font-size: 1rem; transition: all 0.3s; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">EN</button>
+                        <button onclick="restaurantSystem.setLanguage('es')" 
+                            style="padding: 12px 24px; border-radius: 30px; border: 2px solid #165b33; background: ${lang === 'es' ? '#165b33' : 'white'}; color: ${lang === 'es' ? 'white' : '#165b33'}; font-weight: bold; cursor: pointer; font-size: 1rem; transition: all 0.3s; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">ES</button>
+                    </div>
+                    
+                    <div class="table-selector" style="max-width: 550px; margin: 0 auto; padding: 3rem 2rem; padding-top: 5rem;">
+                        <div style="text-align: center; margin-bottom: 2.5rem;">
+                            <div style="font-size: 5rem; margin-bottom: 1rem;">🍽️</div>
+                            <h2 style="font-size: 2.8rem; color: #165b33; margin-bottom: 0.5rem; font-weight: 700;">${t('Welcome!', '¡Bienvenido!')}</h2>
+                            <p style="color: #666; font-size: 1.2rem; margin-bottom: 0.5rem;">${t('Table', 'Mesa')} #${autoTableNumber}</p>
+                            <p style="color: #999; font-size: 1rem;">${t('Quick check-in to start ordering', 'Registro rápido para comenzar')}</p>
+                        </div>
+                        
+                        <div class="reservation-form">
+                            <input type="hidden" id="tableNumberInput" value="${autoTableNumber}">
+                            
+                            <div class="form-group">
+                                <label style="font-size: 1.1rem; font-weight: 600; color: #333; margin-bottom: 0.5rem; display: block;">${t('Last Name', 'Apellido')}</label>
+                                <input type="text" id="guestLastName" placeholder="${t('Your last name', 'Tu apellido')}" required
+                                    style="width: 100%; padding: 1.2rem; font-size: 1.2rem; border: 2px solid #ddd; border-radius: 12px;">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label style="font-size: 1.1rem; font-weight: 600; color: #333; margin-bottom: 0.5rem; display: block;">${t('Allergies or Celebrations', 'Alergias o Celebraciones')}</label>
+                                <textarea id="specialInfo" rows="3" 
+                                    placeholder="${t('Any allergies or special celebrations?', '¿Alguna alergia o celebración especial?')}"
+                                    style="width: 100%; padding: 1rem; font-size: 1rem; border: 2px solid #ddd; border-radius: 12px; resize: vertical;"></textarea>
+                                <small style="color: #999; font-size: 0.9rem; margin-top: 0.3rem; display: block;">${t('e.g., Peanut allergy, Birthday', 'ej. Alergia a cacahuates, Cumpleaños')}</small>
+                            </div>
+                        </div>
+                        
+                        <button class="btn-start-table" onclick="startTableSession()" 
+                            style="width: 100%; padding: 1.5rem; font-size: 1.4rem; background: linear-gradient(135deg, #165b33, #1a7a42); color: white; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; margin-top: 1.5rem; box-shadow: 0 4px 20px rgba(22, 91, 51, 0.3); transition: all 0.3s;">
+                            ${t('Start Ordering', 'Comenzar a Ordenar')} →
+                        </button>
+                    </div>
+                `}
+            </div>
+        </div>
+    `;
+}
+
+function startTableSession() {
+    const lang = restaurantSystem.getCurrentLanguage();
+    const tableNumber = document.getElementById('tableNumberInput').value;
+    const lastName = document.getElementById('guestLastName').value.trim();
+    const specialInfo = document.getElementById('specialInfo').value.trim();
+    
+    // Validaciones
+    if (!tableNumber) {
+        alert(lang === 'es' ? '❌ Por favor ingrese un número de mesa' : '❌ Please enter a table number');
+        return;
+    }
+    
+    if (!lastName) {
+        alert(lang === 'es' ? '❌ Por favor ingrese su apellido' : '❌ Please enter your last name');
+        return;
+    }
+    
+    // Información simplificada del comensal
+    const guestInfo = {
+        lastName,
+        specialInfo: specialInfo || (lang === 'es' ? 'Ninguna' : 'None')
+    };
+    
+    if (restaurantSystem.startTable(tableNumber, guestInfo)) {
+        sessionStorage.setItem('current_table', tableNumber); // Ensure sessionStorage is set
+        loadIPadInterface();
+    } else {
+        alert(lang === 'es' ? '❌ Esta mesa ya está activa. Por favor elija otro número.' : '❌ This table is already active. Please choose another number.');
+    }
+}
+
+function loadTableMenu(tableNumber) {
+    const table = restaurantSystem.getTable(tableNumber);
+    const menuData = getMenuData();
+    const lang = restaurantSystem.getCurrentLanguage();
+    const t = (en, es) => lang === 'es' ? es : en;
+    
+    const sessionTime = table.startTime ? Math.floor((new Date() - new Date(table.startTime)) / 60000) : 0;
+    
+    return `
+        <!-- 🎄 CHRISTMAS MENU HEADER -->
+        <div class="menu-header-christmas">
+            <div class="christmas-decoration">
+                <span class="snowflake">❄️</span>
+                <span class="snowflake">⭐</span>
+                <span class="snowflake">🎄</span>
+                <span class="snowflake">⭐</span>
+                <span class="snowflake">❄️</span>
+            </div>
+            
+            <div class="menu-title-section">
+                <h1 class="restaurant-name">Solomon's Landing</h1>
+                <p class="menu-subtitle">${t('Holiday Menu', 'Menú Navideño')}</p>
+            </div>
+            
+            <div class="table-badge">
+                <span class="table-icon">🍽️</span>
+                <span class="table-number">${t('Table', 'Mesa')} #${tableNumber}</span>
+            </div>
+            
+            <div class="session-info">
+                <div class="session-time">
+                    <span class="time-icon">⏱️</span>
+                    <span>${sessionTime} ${t('min', 'min')}</span>
+                </div>
+                <div class="session-total">
+                    <span class="total-label">${t('Total', 'Total')}</span>
+                    <span class="total-amount">${restaurantSystem.formatCurrency(table.total)}</span>
+                </div>
+            </div>
+            
+            <div class="christmas-lights">
+                <span class="light red">●</span>
+                <span class="light gold">●</span>
+                <span class="light green">●</span>
+                <span class="light red">●</span>
+                <span class="light gold">●</span>
+                <span class="light green">●</span>
+                <span class="light red">●</span>
+                <span class="light gold">●</span>
+            </div>
+        </div>
+
+        <!-- Category Navigation -->
+        <div class="menu-category-tabs">
+            ${menuData.categories.map((category, index) => `
+                <button class="category-tab ${index === 0 ? 'active' : ''}" 
+                        onclick="switchCategory(${index})"
+                        data-category="${index}">
+                    ${category.name}
+                </button>
+            `).join('')}
+        </div>
+        
+        <!-- Menu Content -->
+        <div class="menu-content-area">
+            ${menuData.categories.map((category, categoryIndex) => `
+                <div class="category-section ${categoryIndex === 0 ? 'active' : ''}" data-panel="${categoryIndex}">
+                    <div class="category-header">
+                        <h2 class="category-title">${category.name}</h2>
+                        <div class="category-divider"></div>
+                    </div>
+                    
+                    <!-- Group by subcategory if available -->
+                    ${(() => {
+                        const grouped = {};
+                        category.items.forEach(item => {
+                            const subcat = item.category || t('All Items', 'Todos los Platillos');
+                            if (!grouped[subcat]) grouped[subcat] = [];
+                            grouped[subcat].push(item);
+                        });
+                        
+                        return Object.keys(grouped).map(subcatName => `
+                            ${Object.keys(grouped).length > 1 ? `
+                                <div class="subcategory-header">
+                                    <h3 class="subcategory-name">${subcatName}</h3>
+                                </div>
+                            ` : ''}
+                            <div class="menu-items-list">
+                                ${grouped[subcatName].map(item => `
+                                    <div class="menu-item-card ${item.featured ? 'featured' : ''} ${item.new ? 'new-item' : ''}" 
+                                         id="item-${item.id}">
+                                        ${item.featured ? '<div class="featured-badge">⭐ ' + t('Featured', 'Destacado') + '</div>' : ''}
+                                        ${item.new ? '<div class="new-badge">🆕 ' + t('New', 'Nuevo') + '</div>' : ''}
+                                        ${item.icons ? `<div class="item-icons">${item.icons}</div>` : ''}
+                                        
+                                        <div class="item-info">
+                                            <div class="item-name-row">
+                                                <h4 class="item-name">${item.name}</h4>
+                                                <span class="item-price">${item.price}</span>
+                                            </div>
+                                            <p class="item-description">${item.description}</p>
+                                        </div>
+                                        
+                                        <div class="item-actions">
+                                            <div class="quantity-selector">
+                                                <button class="qty-decrease" onclick="updateQuantity(${item.id}, -1)">
+                                                    <span>−</span>
+                                                </button>
+                                                <div class="qty-value">
+                                                    <span id="qty-${item.id}">0</span>
+                                                </div>
+                                                <button class="qty-increase" onclick="updateQuantity(${item.id}, 1)">
+                                                    <span>+</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `).join('');
+                    })()}
+                </div>
+            `).join('')}
+        </div>
+        
+        <!-- Carrito Flotante Simplificado -->
+        <div class="floating-cart-modern" id="floatingCart" style="display: none;">
+            <div class="cart-content">
+                <div id="cartItems"></div>
+                <button class="btn-send-order-modern" onclick="placeOrder()">
+                    <span class="btn-icon">📤</span>
+                    <span class="btn-text">${t('Send Order', 'Enviar Pedido')}</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 📋 HISTORIAL DE PEDIDOS Y CUENTA - ABAJO -->
+        <div class="orders-history-modern">
+            <h3 class="history-title">📋 ${t('Your Orders & Bill', 'Tus Pedidos y Cuenta')}</h3>
+            
+            ${table.orders.length > 0 ? `
+                <div class="orders-timeline">
+                    ${table.orders.map((order, index) => `
+                        <div class="order-card-modern">
+                            <div class="order-header">
+                                <div class="order-number">${t('Order', 'Pedido')} #${index + 1}</div>
+                                <div class="order-time">🕐 ${restaurantSystem.formatTime(order.time)}</div>
+                                <div class="order-status">✓ ${t('Sent', 'Enviado')}</div>
+                            </div>
+                            <div class="order-items-list">
+                                ${order.items.map(item => `
+                                    <div class="order-item-row">
+                                        <div class="item-qty">${item.quantity}x</div>
+                                        <div class="item-name">${item.name}</div>
+                                        <div class="item-price">${restaurantSystem.formatCurrency(item.adjustedPrice * item.quantity)}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="order-footer">
+                                <div>${t('Order Total', 'Total Pedido')}:</div>
+                                <div class="order-total-amount">${restaurantSystem.formatCurrency(order.items.reduce((sum, item) => sum + (item.adjustedPrice * item.quantity), 0))}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <!-- TOTAL FINAL Y BOTÓN PEDIR CUENTA -->
+                <div class="final-bill-section">
+                    <div class="final-total">
+                        <span class="final-total-label">${t('TOTAL TO PAY', 'TOTAL A PAGAR')}:</span>
+                        <span class="final-total-amount">${restaurantSystem.formatCurrency(table.total)}</span>
+                    </div>
+                    <button class="btn-request-bill-bottom" onclick="requestBill()">
+                        💳 ${t('Request Bill', 'Pedir Cuenta')}
+                    </button>
+                </div>
+            ` : `
+                <div class="no-orders">
+                    <p>🍽️ ${t('No orders yet', 'Aún no has ordenado')}</p>
+                    <p>${t('Start browsing the menu above', 'Comienza explorando el menú arriba')}</p>
+                </div>
+            `}
+        </div>
+    `;
+}
+
+// Función para pedir la cuenta
+function requestBill() {
+    const user = restaurantSystem.getCurrentUser();
+    const tableNumber = sessionStorage.getItem('current_table');
+    const table = restaurantSystem.getTable(tableNumber);
+    const lang = restaurantSystem.getCurrentLanguage();
+    
+    if (!table || table.orders.length === 0) {
+        alert(lang === 'es' ? '⚠️ No hay pedidos para facturar' : '⚠️ No orders to bill');
+        return;
+    }
+    
+    // Marcar mesa como "solicitó cuenta"
+    table.billRequested = true;
+    table.billRequestTime = Date.now();
+    restaurantSystem.updateTable(tableNumber, table);
+    
+    // Notificación visual
+    const confirmMsg = lang === 'es' ? 
+        '✅ Cuenta solicitada!\n\nTu mesero traerá la cuenta pronto.\n\nTotal: ' + restaurantSystem.formatCurrency(table.total) :
+        '✅ Bill requested!\n\nYour waiter will bring the bill soon.\n\nTotal: ' + restaurantSystem.formatCurrency(table.total);
+    
+    alert(confirmMsg);
+    
+    // Actualizar UI para mostrar que se pidió cuenta
+    loadIPadInterface();
+}
+
+// Carrito temporal
+let currentCart = {};
+
+// Cambiar categoría
+function switchCategory(categoryIndex) {
+    // Actualizar tabs
+    document.querySelectorAll('.category-tab').forEach((tab, index) => {
+        tab.classList.toggle('active', index === categoryIndex);
+    });
+    
+    // Actualizar sections
+    document.querySelectorAll('.category-section').forEach((section, index) => {
+        section.classList.toggle('active', index === categoryIndex);
+    });
+}
+
+// Quick Add
+function quickAdd(itemId) {
+    updateQuantity(itemId, 1);
+}
+
+// Toggle cart detail
+function toggleCartDetail() {
+    const cartDetail = document.getElementById('cartDetail');
+    const isVisible = cartDetail.style.display !== 'none';
+    cartDetail.style.display = isVisible ? 'none' : 'block';
+}
+
+function updateQuantity(itemId, change) {
+    if (!currentCart[itemId]) {
+        currentCart[itemId] = 0;
+    }
+    
+    currentCart[itemId] = Math.max(0, currentCart[itemId] + change);
+    
+    const qtyElement = document.getElementById(`qty-${itemId}`);
+    if (qtyElement) {
+        qtyElement.textContent = currentCart[itemId];
+        
+        // Animar el cambio
+        qtyElement.parentElement.parentElement.style.transform = 'scale(1.1)';
+        setTimeout(() => {
+            qtyElement.parentElement.parentElement.style.transform = 'scale(1)';
+        }, 200);
+    }
+    
+    // Actualizar carrito flotante
+    updateFloatingCart();
+}
+
+function updateFloatingCart() {
+    const menuData = getMenuData();
+    let total = 0;
+    let itemCount = 0;
+    let cartHTML = '';
+    
+    Object.keys(currentCart).forEach(itemId => {
+        const qty = currentCart[itemId];
+        if (qty > 0) {
+            const item = findMenuItem(parseInt(itemId), menuData);
+            if (item) {
+                itemCount += qty;
+                const itemTotal = item.price * qty;
+                total += itemTotal;
+                
+                cartHTML += `
+                    <div class="cart-item">
+                        <span class="cart-item-qty">${qty}x</span>
+                        <span class="cart-item-name">${item.name}</span>
+                        <span class="cart-item-price">${restaurantSystem.formatCurrency(itemTotal)}</span>
+                    </div>
+                `;
+            }
+        }
+    });
+    
+    const floatingCart = document.getElementById('floatingCart');
+    const cartCount = document.getElementById('cartCount');
+    const cartTotal = document.getElementById('cartTotal');
+    const cartItems = document.getElementById('cartItems');
+    
+    if (floatingCart && cartCount && cartTotal) {
+        if (itemCount > 0) {
+            floatingCart.style.display = 'block';
+            cartCount.textContent = itemCount;
+            cartTotal.textContent = restaurantSystem.formatCurrency(total);
+            if (cartItems) {
+                cartItems.innerHTML = cartHTML;
+            }
+        } else {
+            floatingCart.style.display = 'none';
+        }
+    }
+}
+
+function placeOrder() {
+    const tableNumber = sessionStorage.getItem('current_table');
+    const menuData = getMenuData();
+    const items = [];
+    
+    Object.keys(currentCart).forEach(itemId => {
+        const qty = currentCart[itemId];
+        if (qty > 0) {
+            const item = findMenuItem(parseInt(itemId), menuData);
+            if (item) {
+                items.push({
+                    id: item.id,
+                    name: item.name,
+                    price: item.price,
+                    quantity: qty,
+                    description: item.description
+                });
+            }
+        }
+    });
+    
+    if (items.length === 0) {
+        alert('❌ Por favor seleccione al menos un platillo');
+        return;
+    }
+    
+    const result = restaurantSystem.addOrder(tableNumber, items);
+    
+    if (result.success) {
+        // Mostrar mensaje de éxito
+        alert(`✅ ¡Pedido enviado exitosamente!\n\n${items.length} platillo(s) por ${restaurantSystem.formatCurrency(result.order.total)}\n\nTu pedido llegará pronto a cocina.`);
+        
+        // Limpiar carrito
+        currentCart = {};
+        
+        // Recargar interfaz para mostrar el nuevo pedido
+        loadIPadInterface();
+    } else {
+        alert('❌ Error al enviar el pedido. Por favor intente nuevamente.');
+    }
+}
+
+// ============================================
+// HELPER FUNCTIONS
+// ============================================
+
+function findMenuItem(id, menuData) {
+    for (const category of menuData.categories) {
+        const item = category.items.find(item => item.id === id);
+        if (item) return item;
+    }
+    return null;
+}
+
+// ============================================
+// MESEROS INTERFACE
+// ============================================
+
+function loadWaiterInterface() {
+    const user = restaurantSystem.getCurrentUser();
+    const tables = restaurantSystem.getAllTables();
+    
+    const dashboard = document.getElementById('restaurantDashboard');
+    dashboard.innerHTML = `
+        <div class="dashboard-header">
+            <h1>👨‍🍳 Panel de Meseros</h1>
+            <div class="dashboard-user-info">
+                <span>${user.device}</span>
+                <button class="btn-logout" onclick="handleLogout()">Cerrar Sesión</button>
+            </div>
+        </div>
+        
+        <div class="dashboard-content">
+            <h2 style="color: var(--primary-color); margin-bottom: 2rem;">Mesas Activas</h2>
+            <div class="tables-grid">
+                ${Object.values(tables).map(table => `
+                    <div class="table-card">
+                        <div class="table-number">Mesa #${table.number}</div>
+                        <div class="table-info">📱 Dispositivo: ${table.device}</div>
+                        <div class="table-info">⏰ Inicio: ${restaurantSystem.formatTime(table.startTime)}</div>
+                        <div class="table-info">🍽️ Pedidos: ${table.orders.length}</div>
+                        <div class="table-total">Total: ${restaurantSystem.formatCurrency(table.total)}</div>
+                        <button onclick="viewTableDetails(${table.number})" style="width: 100%; margin-top: 1rem; padding: 0.75rem; background: var(--primary-color); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Ver Detalles</button>
+                        <button onclick="closeTableConfirm(${table.number})" style="width: 100%; margin-top: 0.5rem; padding: 0.75rem; background: #c41e3a; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Cerrar Mesa</button>
+                    </div>
+                `).join('') || '<p style="text-align: center; color: var(--text-light); font-size: 1.2rem;">No hay mesas activas</p>'}
+            </div>
+        </div>
+    `;
+    
+    // Auto-refresh cada 30 segundos
+    setTimeout(() => {
+        if (document.getElementById('restaurantDashboard').classList.contains('active')) {
+            loadWaiterInterface();
+        }
+    }, 30000);
+}
+
+function viewTableDetails(tableNumber) {
+    const table = restaurantSystem.getTable(tableNumber);
+    if (!table) return;
+    
+    const lang = restaurantSystem.getCurrentLanguage();
+    const t = (en, es) => lang === 'es' ? es : en;
+    const dashboard = document.getElementById('restaurantDashboard');
+    const guestInfo = table.guestInfo || {};
+    
+    dashboard.innerHTML = `
+        <div class="dashboard-header">
+            <button onclick="loadWaiterInterface()" style="background: rgba(0,102,204,0.1); border: 2px solid var(--primary-color); color: var(--primary-color); padding: 0.8rem 1.5rem; border-radius: 10px; cursor: pointer; font-weight: 700;">
+                ← ${t('Back to Tables', 'Volver a Mesas')}
+            </button>
+            <h1>📋 ${t('Table Details #', 'Detalles de Mesa #')}${tableNumber}</h1>
+        </div>
+        
+        <div class="dashboard-content">
+            <!-- Información del Cliente -->
+            <div class="guest-info-card">
+                <h2>👥 ${t('Guest Information', 'Información del Comensal')}</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">${t('Last Name:', 'Apellido:')}</span>
+                        <span class="info-value">${guestInfo.lastName || t('Not specified', 'No especificado')}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">${t('Start Time:', 'Hora de Inicio:')}</span>
+                        <span class="info-value">${restaurantSystem.formatTime(table.startTime)}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">${t('Device:', 'Dispositivo:')}</span>
+                        <span class="info-value">${table.device}</span>
+                    </div>
+                </div>
+                
+                <!-- Alergias y Celebraciones Combined -->
+                <div class="special-info">
+                    <div class="allergy-section ${guestInfo.specialInfo && guestInfo.specialInfo !== 'None' && guestInfo.specialInfo !== 'Ninguna' ? 'has-allergies' : ''}">
+                        <h3>⚠️ ${t('Allergies / Celebrations', 'Alergias / Celebraciones')}</h3>
+                        <p>${guestInfo.specialInfo || t('None', 'Ninguna')}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pedidos -->
+            <div class="orders-detail-section">
+                <h2>🍽️ ${t('Orders', 'Pedidos')} (${table.orders.length})</h2>
+                
+                ${table.orders.length > 0 ? `
+                    <div class="orders-timeline">
+                        ${table.orders.map((order, index) => `
+                            <div class="order-detail-card">
+                                <div class="order-header-detail">
+                                    <span class="order-number">${t('Order', 'Pedido')} #${index + 1}</span>
+                                    <span class="order-time">⏰ ${restaurantSystem.formatTime(order.time)}</span>
+                                </div>
+                                <div class="order-items-detail">
+                                    ${order.items.map(item => `
+                                        <div class="item-row-detail">
+                                            <span class="item-qty">${item.quantity}x</span>
+                                            <span class="item-name">${item.name}</span>
+                                            <span class="item-price">${restaurantSystem.formatCurrency(item.adjustedPrice * item.quantity)}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                <div class="order-subtotal">
+                                    <span>${t('Subtotal:', 'Subtotal:')}</span>
+                                    <span>${restaurantSystem.formatCurrency(order.total)}</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                ` : `<p class="no-orders-yet">${t('No orders yet for this table.', 'Aún no se han realizado pedidos en esta mesa.')}</p>`}
+            </div>
+            
+            <!-- Total y Acciones -->
+            <div class="table-actions-section">
+                <div class="total-display">
+                    <span class="total-label">${t('TABLE TOTAL:', 'TOTAL MESA:')}</span>
+                    <span class="total-amount">${restaurantSystem.formatCurrency(table.total)}</span>
+                </div>
+                <button class="btn-close-table" onclick="closeTableConfirm(${tableNumber})">
+                    ✅ ${t('Close Table & Charge', 'Cerrar Mesa y Cobrar')}
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+function closeTableConfirm(tableNumber) {
+    const lang = restaurantSystem.getCurrentLanguage();
+    const table = restaurantSystem.getTable(tableNumber);
+    const message = lang === 'es' 
+        ? `¿Cerrar Mesa #${tableNumber}?\n\nCliente: ${table.guestInfo?.lastName || 'N/A'}\nTotal: ${restaurantSystem.formatCurrency(table.total)}\n\nEsta acción no se puede deshacer.`
+        : `Close Table #${tableNumber}?\n\nGuest: ${table.guestInfo?.lastName || 'N/A'}\nTotal: ${restaurantSystem.formatCurrency(table.total)}\n\nThis action cannot be undone.`;
+    
+    if (confirm(message)) {
+        restaurantSystem.closeTable(tableNumber);
+        loadWaiterInterface();
+    }
+}
+
+// ============================================
+// BAR INTERFACE (Similar a Meseros)
+// ============================================
+
+function loadBarInterface() {
+    loadWaiterInterface(); // Por ahora usa la misma interfaz
+}
+
+// ============================================
+// ADMIN INTERFACE
+// ============================================
+
+function loadAdminInterface() {
+    const user = restaurantSystem.getCurrentUser();
+    const stats = restaurantSystem.getStats();
+    const todayStats = restaurantSystem.getTodayStats();
+    const tables = restaurantSystem.getAllTables();
+    const currentAdjustment = restaurantSystem.getPriceAdjustment();
+    
+    const dashboard = document.getElementById('restaurantDashboard');
+    dashboard.innerHTML = `
+        <div class="dashboard-header">
+            <h1>👑 Panel de Administrador</h1>
+            <div class="dashboard-user-info">
+                <span>${user.device}</span>
+                <button class="btn-logout" onclick="handleLogout()">Cerrar Sesión</button>
+            </div>
+        </div>
+        
+        <div class="dashboard-content">
+            <!-- Estadísticas -->
+            <div class="admin-controls">
+                <div class="admin-card">
+                    <h3>💰 Ventas Totales</h3>
+                    <div class="stat-value">${restaurantSystem.formatCurrency(stats.totalSales)}</div>
+                    <div class="stat-label">Acumulado</div>
+                </div>
+                <div class="admin-card">
+                    <h3>📊 Ventas Hoy</h3>
+                    <div class="stat-value">${restaurantSystem.formatCurrency(todayStats.sales)}</div>
+                    <div class="stat-label">${todayStats.tables} mesas</div>
+                </div>
+                <div class="admin-card">
+                    <h3>🍽️ Mesas Activas</h3>
+                    <div class="stat-value">${Object.keys(tables).length}</div>
+                    <div class="stat-label">En este momento</div>
+                </div>
+            </div>
+            
+            <!-- Ajuste de Precios -->
+            <div class="price-adjustment">
+                <h3>💵 Ajuste de Precios del Menú</h3>
+                <p style="color: var(--text-light); margin-bottom: 1.5rem;">Actual: ${currentAdjustment > 0 ? '+' : ''}${currentAdjustment}%</p>
+                <div class="price-buttons">
+                    <button class="${currentAdjustment === 0 ? 'active' : ''}" onclick="adjustPrices(0)">Normal (0%)</button>
+                    <button class="${currentAdjustment === 5 ? 'active' : ''}" onclick="adjustPrices(5)">+5%</button>
+                    <button class="${currentAdjustment === 10 ? 'active' : ''}" onclick="adjustPrices(10)">+10%</button>
+                    <button class="${currentAdjustment === 15 ? 'active' : ''}" onclick="adjustPrices(15)">+15%</button>
+                </div>
+            </div>
+            
+            <!-- Mesas Activas -->
+            <h2 style="color: var(--primary-color); margin-bottom: 2rem;">Mesas Activas</h2>
+            <div class="tables-grid">
+                ${Object.values(tables).map(table => `
+                    <div class="table-card">
+                        <div class="table-number">Mesa #${table.number}</div>
+                        <div class="table-info">📱 ${table.device}</div>
+                        <div class="table-info">⏰ ${restaurantSystem.formatTime(table.startTime)}</div>
+                        <div class="table-info">🍽️ ${table.orders.length} pedidos</div>
+                        <div class="table-total">${restaurantSystem.formatCurrency(table.total)}</div>
+                        <button onclick="viewTableDetails(${table.number})" style="width: 100%; margin-top: 1rem; padding: 0.75rem; background: var(--primary-color); color: white; border: none; border-radius: 8px; cursor: pointer;">Ver Detalles</button>
+                    </div>
+                `).join('') || '<p style="text-align: center; color: var(--text-light);">No hay mesas activas</p>'}
+            </div>
+        </div>
+    `;
+    
+    // Auto-refresh cada 30 segundos
+    setTimeout(() => {
+        if (document.getElementById('restaurantDashboard').classList.contains('active')) {
+            loadAdminInterface();
+        }
+    }, 30000);
+}
+
+function adjustPrices(percentage) {
+    if (restaurantSystem.adjustMenuPrices(percentage)) {
+        alert(`✅ Precios ajustados a ${percentage > 0 ? '+' : ''}${percentage}%`);
+        loadAdminInterface();
+    }
+}
+
+// ============================================
+// MENU DATA
+// ============================================
+
+function getMenuData() {
+    const lang = restaurantSystem.getCurrentLanguage();
+    const priceAdjustment = restaurantSystem.getPriceAdjustment();
+    
+    const adjustPrice = (priceStr) => {
+        // Handle price ranges like "$75-$95"
+        if (priceStr.includes('-')) {
+            const [min, max] = priceStr.split('-');
+            const minPrice = parseFloat(min.replace('$', ''));
+            const maxPrice = parseFloat(max.replace('$', ''));
+            const adjMin = Math.round(minPrice * (1 + priceAdjustment / 100));
+            const adjMax = Math.round(maxPrice * (1 + priceAdjustment / 100));
+            return `$${adjMin}-$${adjMax}`;
+        }
+        const price = parseFloat(priceStr.replace('$', ''));
+        if (isNaN(price)) return priceStr;
+        const adjusted = price * (1 + priceAdjustment / 100);
+        return '$' + Math.round(adjusted);
+    };
+    
+    const t = (obj) => obj[lang] || obj.en;
+    
+    // COMPLETE MENU from app.js sampleMenus - ALL ITEMS - Solomon's Landing
+    return {
+        categories: [
+            {
+                name: t({en: "🌅 Breakfast", es: "🌅 Desayuno"}),
+                items: [
+                    // A FRESH START
+                    { id: 1, name: t({en: "Seasonal Fruit", es: "Fruta de Temporada"}), price: adjustPrice("$210"), description: t({en: "With yogurt and granola", es: "Con yogurt y granola"}), category: t({en: "A Fresh Start", es: "Un Comienzo Fresco"}) },
+                    { id: 2, name: t({en: "Açaí Bowl", es: "Bowl de Açaí"}), price: adjustPrice("$315"), description: t({en: "Topped with mango, strawberry, blueberry, banana, pecans and coconut", es: "Cubierto con mango, fresa, arándano, plátano, nueces y coco"}), category: t({en: "A Fresh Start", es: "Un Comienzo Fresco"}) },
+                    { id: 3, name: t({en: "Avocado Toast", es: "Tostada de Aguacate"}), price: adjustPrice("$265"), description: t({en: "Homemade seeded bread with light goat cheese spread, avocado with lemon, poached eggs with toasted pepitas and sesame seeds", es: "Pan artesanal con semillas con queso de cabra ligero, aguacate con limón, huevos pochados con pepitas tostadas y ajonjolí"}), category: t({en: "A Fresh Start", es: "Un Comienzo Fresco"}), icons: "🥑" },
+                    // SOMETHING SWEET
+                    { id: 4, name: t({en: "Pancakes", es: "Hot Cakes"}), price: adjustPrice("$210"), description: t({en: "Buttermilk pancakes with clarified butter served with real Canadian maple syrup, berries and homemade whipped cream", es: "Hot cakes de suero de leche con mantequilla clarificada servidos con jarabe de maple canadiense real, frutos rojos y crema batida casera"}), category: t({en: "Something Sweet", es: "Algo Dulce"}) },
+                    { id: 5, name: t({en: "Banana Pecan Pancakes", es: "Hot Cakes de Plátano y Nuez"}), price: adjustPrice("$220"), description: t({en: "Buttermilk pancakes with clarified butter, pecans, banana and homemade whipped cream, served with real Canadian maple syrup", es: "Hot cakes de suero de leche con mantequilla clarificada, nueces, plátano y crema batida casera, servidos con jarabe de maple canadiense real"}), category: t({en: "Something Sweet", es: "Algo Dulce"}) },
+                    { id: 6, name: t({en: "French Toast", es: "Pan Francés"}), price: adjustPrice("$210"), description: t({en: "Served with real Canadian maple syrup, berries and homemade whipped cream", es: "Servido con jarabe de maple canadiense real, frutos rojos y crema batida casera"}), category: t({en: "Something Sweet", es: "Algo Dulce"}) },
+                    { id: 7, name: t({en: "French Toast Stuffed", es: "Pan Francés Relleno"}), price: adjustPrice("$265"), description: t({en: "Cream cheese, strawberry, and banana. Featured on Food Network's Triple D - an all time favorite signature dish", es: "Queso crema, fresa y plátano. Presentado en Triple D de Food Network - platillo firma favorito de todos los tiempos"}), featured: true, category: t({en: "Something Sweet", es: "Algo Dulce"}), icons: "⭐" },
+                    { id: 8, name: t({en: "Belgian Waffle", es: "Waffle Belga"}), price: adjustPrice("$210"), description: t({en: "Crispy Belgian waffle served with real Canadian maple syrup and homemade whipped cream", es: "Waffle belga crujiente servido con jarabe de maple canadiense real y crema batida casera"}), category: t({en: "Something Sweet", es: "Algo Dulce"}) },
+                    { id: 9, name: t({en: "Solomon's Waffle", es: "Waffle Solomon's"}), price: adjustPrice("$265"), description: t({en: "Crispy Belgian waffle with vanilla bean ice cream, mixed berries and hazelnut sauce on top", es: "Waffle belga crujiente con helado de vainilla, frutos rojos mixtos y salsa de avellana encima"}), category: t({en: "Something Sweet", es: "Algo Dulce"}) },
+                    // CHEF'S SPECIALTIES
+                    { id: 10, name: t({en: "Chilaquiles", es: "Chilaquiles"}), price: adjustPrice("$230"), description: t({en: "Choice of red or green sauce. Add organic eggs (+$25) or organic chicken (+$55)", es: "A elegir salsa roja o verde. Agregar huevos orgánicos (+$25) o pollo orgánico (+$55)"}), category: t({en: "Chef's Specialties", es: "Especialidades del Chef"}) },
+                    { id: 11, name: t({en: "Barbacoa Burrito", es: "Burrito de Barbacoa"}), price: adjustPrice("$290"), description: t({en: "Flour tortilla filled with barbacoa, pinto beans, Monterrey cheese, and egg. Served with organic salad, goat cheese & passion fruit vinaigrette", es: "Tortilla de harina rellena de barbacoa, frijoles pintos, queso Monterrey y huevo. Servido con ensalada orgánica, queso de cabra y vinagreta de maracuyá"}), featured: true, category: t({en: "Chef's Specialties", es: "Especialidades del Chef"}), icons: "⭐" },
+                    { id: 12, name: t({en: "Barbacoa Sope", es: "Sope de Barbacoa"}), price: adjustPrice("$290"), description: t({en: "Barbacoa sope with eggs to your liking, pickled red onion and avocado on top, sitting in a pool of two sauces", es: "Sope de barbacoa con huevos al gusto, cebolla roja encurtida y aguacate encima, en un pool de dos salsas"}), new: true, category: t({en: "Chef's Specialties", es: "Especialidades del Chef"}), icons: "🆕" },
+                    // EGG DISHES
+                    { id: 13, name: t({en: "Eggs to Your Liking", es: "Huevos al Gusto"}), price: adjustPrice("$190"), description: t({en: "Served with crispy hash browns made with avocado oil and refried beans. Choice of tortillas or homemade seeded toast", es: "Servidos con papas hash browns crujientes hechas con aceite de aguacate y frijoles refritos. A elegir tortillas o pan artesanal con semillas"}), category: t({en: "Egg Dishes", es: "Platillos con Huevo"}) },
+                    { id: 14, name: t({en: "Mediterranean Omelette", es: "Omelette Mediterráneo"}), price: adjustPrice("$270"), description: t({en: "Onion, kalamata olives, cherry tomato, basil & goat cheese. Served with organic salad & passion fruit vinaigrette", es: "Cebolla, aceitunas kalamata, tomate cherry, albahaca y queso de cabra. Servido con ensalada orgánica y vinagreta de maracuyá"}), category: t({en: "Egg Dishes", es: "Platillos con Huevo"}) },
+                    { id: 15, name: t({en: "Green Fisherman", es: "Pescador Verde"}), price: adjustPrice("$265"), description: t({en: "Spinach, mushroom, onion, Monterrey cheese, green sauce & avocado", es: "Espinaca, champiñones, cebolla, queso Monterrey, salsa verde y aguacate"}), category: t({en: "Egg Dishes", es: "Platillos con Huevo"}) },
+                    { id: 16, name: t({en: "Italian Omelette", es: "Omelette Italiano"}), price: adjustPrice("$270"), description: t({en: "Egg crepe stuffed with Monterrey cheese and Italian sausage in a pool of homemade marinara sauce", es: "Crepa de huevo rellena de queso Monterrey y salchicha italiana en un pool de salsa marinara casera"}), new: true, category: t({en: "Egg Dishes", es: "Platillos con Huevo"}), icons: "🆕" },
+                    { id: 17, name: t({en: "The Baja Omelette", es: "Omelette Baja"}), price: adjustPrice("$300"), description: t({en: "Bacon, artisanal chorizo, cheddar, mushrooms, onion, sour cream & avocado. Served with crispy hash browns & refried beans", es: "Tocino, chorizo artesanal, cheddar, champiñones, cebolla, crema ácida y aguacate. Servido con papas hash browns y frijoles refritos"}), category: t({en: "Egg Dishes", es: "Platillos con Huevo"}) },
+                    { id: 18, name: t({en: "Rancheros", es: "Rancheros"}), price: adjustPrice("$245"), description: t({en: "Sunny side up eggs over pinto beans on lightly fried corn tortilla topped with ranchero sauce, farm cheese and avocado", es: "Huevos estrellados sobre frijoles pintos en tortilla de maíz ligeramente frita cubiertos con salsa ranchera, queso ranchero y aguacate"}), category: t({en: "Egg Dishes", es: "Platillos con Huevo"}) },
+                    { id: 19, name: t({en: "Breakfast Fajitas", es: "Fajitas de Desayuno"}), price: adjustPrice("$310"), description: t({en: "Two sunny-side-up eggs with flank steak, peppers, onion, tomato & avocado", es: "Dos huevos estrellados con arrachera, pimientos, cebolla, tomate y aguacate"}), category: t({en: "Egg Dishes", es: "Platillos con Huevo"}) },
+                    { id: 20, name: t({en: "Eggs Benedict", es: "Huevos Benedictinos"}), price: adjustPrice("$300"), description: t({en: "Poached eggs and Canadian bacon on homemade English muffin topped with hollandaise sauce, served with asparagus and crispy hash browns", es: "Huevos pochados y tocino canadiense en muffin inglés casero cubierto con salsa holandesa, servido con espárragos y papas hash browns"}), category: t({en: "Egg Dishes", es: "Platillos con Huevo"}) },
+                    { id: 21, name: t({en: "The Breakfast Sandwich", es: "El Sandwich de Desayuno"}), price: adjustPrice("$310"), description: t({en: "Homemade artisanal basil bread with chipotle dressing, arugula in truffle oil, sun-dried tomato, grilled cheese, black forest ham, avocado & egg", es: "Pan artesanal de albahaca casero con aderezo de chipotle, arúgula en aceite de trufa, tomate seco, queso a la parrilla, jamón selva negra, aguacate y huevo"}), category: t({en: "Egg Dishes", es: "Platillos con Huevo"}) },
+                    { id: 22, name: t({en: "Breakfast Burrito", es: "Burrito de Desayuno"}), price: adjustPrice("$245"), description: t({en: "Eggs, bacon, jack cheese and potatoes. Served with pico de gallo, guacamole and ranchero sauce", es: "Huevos, tocino, queso jack y papas. Servido con pico de gallo, guacamole y salsa ranchera"}), category: t({en: "Egg Dishes", es: "Platillos con Huevo"}) }
+                ]
+            },
+            {
+                name: t({en: "🍽️ Lunch", es: "🍽️ Comida"}),
+                items: [
+                    // STARTERS
+                    { id: 23, name: t({en: "Guacamole", es: "Guacamole"}), price: adjustPrice("$255"), description: t({en: "Served with pico de gallo and baked corn tortilla chips", es: "Servido con pico de gallo y totopos horneados"}), category: t({en: "Starters", es: "Entradas"}), icons: "🥑" },
+                    { id: 24, name: t({en: "Seafood Guacamole", es: "Guacamole de Mariscos"}), price: adjustPrice("$385"), description: t({en: "Guacamole, cooked shrimp, seared blackened tuna and Magdalena Bay scallops (seasonal) with farm fresh cheese and baked corn tortilla chips", es: "Guacamole, camarón cocido, atún sellado ennegrecido y callos de hacha de Bahía Magdalena (de temporada) con queso ranchero fresco y totopos horneados"}), category: t({en: "Starters", es: "Entradas"}), icons: "🦐" },
+                    { id: 25, name: t({en: "Calamari", es: "Calamares"}), price: adjustPrice("$255"), description: t({en: "Calamari steak strips sautéed crispy in panko, served with cocktail and marinara sauce", es: "Tiras de filete de calamar salteadas crujientes en panko, servidas con salsa coctel y marinara"}), category: t({en: "Starters", es: "Entradas"}), icons: "🦑" },
+                    { id: 26, name: t({en: "Solomon's Ceviche", es: "Ceviche Solomon's"}), price: adjustPrice("$335"), description: t({en: "Salmon, tuna & white fish in Mexican-Asian fusion sauce with mango, cucumber, red onion, cilantro, avocado, mint & fried chile de árbol", es: "Salmón, atún y pescado blanco en salsa fusión mexicana-asiática con mango, pepino, cebolla morada, cilantro, aguacate, menta y chile de árbol frito"}), featured: true, category: t({en: "Starters", es: "Entradas"}), icons: "⭐🐟" },
+                    { id: 27, name: t({en: "Shrimp Cocktail", es: "Cóctel de Camarón"}), price: adjustPrice("$325"), description: t({en: "Cooked shrimp with cocktail and clamato sauce, tomato, onion, cucumber, chili, cilantro, green olives, lemon and avocado", es: "Camarón cocido con salsa coctel y clamato, tomate, cebolla, pepino, chile, cilantro, aceitunas verdes, limón y aguacate"}), category: t({en: "Starters", es: "Entradas"}), icons: "🦐" },
+                    { id: 28, name: t({en: "Tortilla Soup", es: "Sopa de Tortilla"}), price: adjustPrice("$190"), description: t({en: "Traditional homemade tomato base, local cheese, avocado, sour cream, chile guajillo and corn tortilla strips", es: "Base tradicional de tomate casera, queso local, aguacate, crema ácida, chile guajillo y tiras de tortilla"}), category: t({en: "Starters", es: "Entradas"}), icons: "🍲" },
+                    { id: 29, name: t({en: "Crab Cakes", es: "Pastelitos de Cangrejo"}), price: adjustPrice("$365"), description: t({en: "Crab cakes in mango chipotle sauce with organic mixed salad, goat cheese, passion fruit dressing and homemade focaccia", es: "Pastelitos de cangrejo en salsa de mango chipotle con ensalada mixta orgánica, queso de cabra, vinagreta de maracuyá y focaccia casera"}), new: true, category: t({en: "Starters", es: "Entradas"}), icons: "🆕🦀" },
+                    // SALADS
+                    { id: 30, name: t({en: "Caesar Salad", es: "Ensalada César"}), price: adjustPrice("$220"), description: t({en: "Traditional homemade Caesar dressing, romaine lettuce and homemade garlic bread with parmesan. Add organic chicken (+$70) or shrimp (+$110)", es: "Aderezo César tradicional casero, lechuga romana y pan de ajo casero con parmesano. Agregar pollo orgánico (+$70) o camarón (+$110)"}), category: t({en: "Salads", es: "Ensaladas"}) },
+                    { id: 31, name: t({en: "House Salad", es: "Ensalada de la Casa"}), price: adjustPrice("$250"), description: t({en: "Mixed organic lettuce, avocado, grapes, orange slices, pistachios, gorgonzola and cherry tomatoes with raspberry balsamic vinaigrette", es: "Lechuga orgánica mixta, aguacate, uvas, rebanadas de naranja, pistaches, gorgonzola y tomates cherry con vinagreta balsámica de frambuesa"}), category: t({en: "Salads", es: "Ensaladas"}) },
+                    // BURGERS & PANINIS
+                    { id: 32, name: t({en: "Classic Burger", es: "Hamburguesa Clásica"}), price: adjustPrice("$290"), description: t({en: "8 oz. beef patty, cheddar, tomato, onion, lettuce, pickles. Choice of sweet potato fries, french fries, or organic salad", es: "Hamburguesa de 8 oz., cheddar, tomate, cebolla, lechuga, pepinillos. A elegir papas de camote, papas fritas o ensalada orgánica"}), category: t({en: "Burgers & Paninis", es: "Hamburguesas y Paninis"}), icons: "🍔" },
+                    { id: 33, name: t({en: "Western Burger", es: "Hamburguesa Western"}), price: adjustPrice("$315"), description: t({en: "8 oz. beef patty, cheddar, bacon, smoked BBQ sauce, breaded shallot rings. Choice of sweet potato fries, french fries, or organic salad", es: "Hamburguesa de 8 oz., cheddar, tocino, salsa BBQ ahumada, aros de chalota empanizados. A elegir papas de camote, papas fritas o ensalada orgánica"}), category: t({en: "Burgers & Paninis", es: "Hamburguesas y Paninis"}), icons: "🍔" },
+                    { id: 34, name: t({en: "Tuna Burger", es: "Hamburguesa de Atún"}), price: adjustPrice("$400"), description: t({en: "Fresh grilled tuna Cajun style with arugula, avocado, tomato, swiss cheese and chipotle dressing", es: "Atún fresco a la parrilla estilo cajún con arúgula, aguacate, tomate, queso suizo y aderezo de chipotle"}), category: t({en: "Burgers & Paninis", es: "Hamburguesas y Paninis"}), icons: "🐟" },
+                    // MEXICAN SPECIALTIES
+                    { id: 35, name: t({en: "Fish Tacos (3)", es: "Tacos de Pescado (3)"}), price: adjustPrice("$255"), description: t({en: "Lightly crispy breaded fish on flour tortilla with coleslaw, red onion, cilantro, chipotle dressing, guacamole, pico de gallo and homemade salsas", es: "Pescado empanizado ligeramente crujiente en tortilla de harina con col, cebolla morada, cilantro, aderezo de chipotle, guacamole, pico de gallo y salsas caseras"}), category: t({en: "Mexican Specialties", es: "Especialidades Mexicanas"}), icons: "🌮🐟" },
+                    { id: 36, name: t({en: "Shrimp Tacos (3)", es: "Tacos de Camarón (3)"}), price: adjustPrice("$265"), description: t({en: "Lightly crispy breaded shrimp on flour tortilla with coleslaw, red onion, cilantro, chipotle dressing, guacamole, pico de gallo and homemade salsas", es: "Camarón empanizado ligeramente crujiente en tortilla de harina con col, cebolla morada, cilantro, aderezo de chipotle, guacamole, pico de gallo y salsas caseras"}), category: t({en: "Mexican Specialties", es: "Especialidades Mexicanas"}), icons: "🌮🦐" },
+                    { id: 37, name: t({en: "Signature Grilled Tacos (3)", es: "Tacos a la Parrilla Firma (3)"}), price: adjustPrice("$365"), description: t({en: "Arrachera steak, Monterrey jack cheese and caramelized onion on handmade nixtamal corn tortilla with guacamole, pico de gallo and homemade salsas", es: "Arrachera, queso Monterrey jack y cebolla caramelizada en tortilla de maíz nixtamalizada hecha a mano con guacamole, pico de gallo y salsas caseras"}), featured: true, category: t({en: "Mexican Specialties", es: "Especialidades Mexicanas"}), icons: "⭐🌮🥩" },
+                    { id: 38, name: t({en: "Fajitas - Chicken", es: "Fajitas - Pollo"}), price: adjustPrice("$335"), description: t({en: "Served in hot rock molcajete with cactus, panela farm cheese, sauce with peppers and onions, pinto beans, guacamole and pico de gallo. Choice of flour or corn tortillas", es: "Servidas en molcajete de piedra caliente con nopal, queso panela, salsa con pimientos y cebolla, frijoles pintos, guacamole y pico de gallo. A elegir tortillas de harina o maíz"}), category: t({en: "Mexican Specialties", es: "Especialidades Mexicanas"}), icons: "🌶️" },
+                    { id: 39, name: t({en: "Fajitas - Shrimp", es: "Fajitas - Camarón"}), price: adjustPrice("$390"), description: t({en: "Served in hot rock molcajete with cactus, panela farm cheese, sauce with peppers and onions, pinto beans, guacamole and pico de gallo. Choice of flour or corn tortillas", es: "Servidas en molcajete de piedra caliente con nopal, queso panela, salsa con pimientos y cebolla, frijoles pintos, guacamole y pico de gallo. A elegir tortillas de harina o maíz"}), category: t({en: "Mexican Specialties", es: "Especialidades Mexicanas"}), icons: "🦐🌶️" },
+                    { id: 40, name: t({en: "Fajitas - Steak", es: "Fajitas - Arrachera"}), price: adjustPrice("$405"), description: t({en: "Served in hot rock molcajete with cactus, panela farm cheese, sauce with peppers and onions, pinto beans, guacamole and pico de gallo. Choice of flour or corn tortillas", es: "Servidas en molcajete de piedra caliente con nopal, queso panela, salsa con pimientos y cebolla, frijoles pintos, guacamole y pico de gallo. A elegir tortillas de harina o maíz"}), category: t({en: "Mexican Specialties", es: "Especialidades Mexicanas"}), icons: "🥩🌶️" }
+                ]
+            },
+            {
+                name: t({en: "🥩 Dinner", es: "🥩 Cena"}),
+                items: [
+                    // APPETIZERS
+                    { id: 41, name: t({en: "Guacamole", es: "Guacamole"}), price: adjustPrice("$255"), description: t({en: "Made at your table, served with pico de gallo and baked corn tortilla chips", es: "Hecho en tu mesa, servido con pico de gallo y totopos horneados"}), category: t({en: "Appetizers", es: "Aperitivos"}), icons: "🥑" },
+                    { id: 42, name: t({en: "Seafood Guacamole", es: "Guacamole de Mariscos"}), price: adjustPrice("$385"), description: t({en: "Made at your table: guacamole, cooked shrimp, blackened tuna and Magdalena Bay scallops with farm fresh cheese", es: "Hecho en tu mesa: guacamole, camarón cocido, atún ennegrecido y callos de hacha con queso ranchero fresco"}), category: t({en: "Appetizers", es: "Aperitivos"}), icons: "🦐" },
+                    { id: 43, name: t({en: "Solomon's Ceviche", es: "Ceviche Solomon's"}), price: adjustPrice("$335"), description: t({en: "Salmon, tuna & white fish in Mexican-Asian fusion sauce with mango, cucumber, red onion, cilantro, avocado, mint & fried chile de árbol", es: "Salmón, atún y pescado blanco en salsa fusión mexicana-asiática con mango, pepino, cebolla morada, cilantro, aguacate, menta y chile de árbol frito"}), featured: true, category: t({en: "Appetizers", es: "Aperitivos"}), icons: "⭐🐟" },
+                    { id: 44, name: t({en: "Spinach & Artichoke Dip", es: "Dip de Espinaca y Alcachofa"}), price: adjustPrice("$240"), description: t({en: "Organic spinach, artichoke, mozzarella, Monterey jack, cream cheese, parmesan, served with baked crispy pita bread", es: "Espinaca orgánica, alcachofa, mozzarella, queso Monterey jack, queso crema, parmesano, servido con pan pita horneado crujiente"}), category: t({en: "Appetizers", es: "Aperitivos"}) },
+                    { id: 45, name: t({en: "Crab Cakes", es: "Pastelitos de Cangrejo"}), price: adjustPrice("$365"), description: t({en: "Crab cakes in mango chipotle sauce with organic mixed salad, goat cheese, passion fruit dressing and homemade focaccia", es: "Pastelitos de cangrejo en salsa de mango chipotle con ensalada mixta orgánica, queso de cabra, vinagreta de maracuyá y focaccia casera"}), new: true, category: t({en: "Appetizers", es: "Aperitivos"}), icons: "🆕🦀" },
+                    // STEAKS & RIBS
+                    { id: 46, name: t({en: "Ribeye 16oz", es: "Ribeye 16oz"}), price: adjustPrice("$890"), description: t({en: "Prime ribeye with local seasonal vegetables, toasted almonds, balsamic reduction sauce over cauliflower puree. Choice of baked potato or mashed potatoes", es: "Ribeye premium con vegetales locales de temporada, almendras tostadas, salsa de reducción balsámica sobre puré de coliflor. A elegir papa al horno o puré de papas"}), category: t({en: "Steaks & Ribs", es: "Cortes y Costillas"}), icons: "🥩" },
+                    { id: 47, name: t({en: "New York 12oz", es: "New York 12oz"}), price: adjustPrice("$795"), description: t({en: "Prime New York strip with local seasonal vegetables, toasted almonds, balsamic reduction sauce over cauliflower puree. Choice of baked potato or mashed potatoes", es: "Corte New York premium con vegetales locales de temporada, almendras tostadas, salsa de reducción balsámica sobre puré de coliflor. A elegir papa al horno o puré de papas"}), category: t({en: "Steaks & Ribs", es: "Cortes y Costillas"}), icons: "🥩" },
+                    { id: 48, name: t({en: "Filet Mignon 8oz", es: "Filete Mignon 8oz"}), price: adjustPrice("$750"), description: t({en: "Prime tenderloin with local seasonal vegetables, toasted almonds, balsamic reduction sauce over cauliflower puree. Choice of baked potato or mashed potatoes", es: "Lomo premium con vegetales locales de temporada, almendras tostadas, salsa de reducción balsámica sobre puré de coliflor. A elegir papa al horno o puré de papas"}), category: t({en: "Steaks & Ribs", es: "Cortes y Costillas"}), icons: "🥩" },
+                    { id: 49, name: t({en: "BBQ Pork Ribs", es: "Costillas de Cerdo BBQ"}), price: adjustPrice("$575"), description: t({en: "Slow-cooked pork ribs with homemade BBQ sauce, served with sweet potato fries and coleslaw", es: "Costillas de cerdo cocidas lentamente con salsa BBQ casera, servidas con papas fritas de camote y ensalada de col"}), category: t({en: "Steaks & Ribs", es: "Cortes y Costillas"}), icons: "🍖" },
+                    { id: 50, name: t({en: "Surf & Turf", es: "Mar y Tierra"}), price: adjustPrice("$990"), description: t({en: "8oz filet mignon and lobster tail with local seasonal vegetables, toasted almonds, balsamic reduction sauce over cauliflower puree", es: "Filete mignon de 8oz y cola de langosta con vegetales locales de temporada, almendras tostadas, salsa de reducción balsámica sobre puré de coliflor"}), featured: true, category: t({en: "Steaks & Ribs", es: "Cortes y Costillas"}), icons: "⭐🥩🦞" },
+                    // SEAFOOD
+                    { id: 51, name: t({en: "Solomon's Catch of the Day", es: "Pesca del Día Solomon's"}), price: adjustPrice("$570"), description: t({en: "Fresh catch with local seasonal vegetables, toasted almonds and balsamic reduction sauce over cauliflower puree. Choice: garlic, creamy cilantro, lemon pepper, signature grilled, Cajun blackened, crispy coconut, capers & wine, or Rockefeller", es: "Pesca fresca con vegetales locales de temporada, almendras tostadas y salsa de reducción balsámica sobre puré de coliflor. A elegir: ajo, cilantro cremoso, pimienta limón, parrilla firma, cajún ennegrecido, coco crujiente, alcaparras y vino, o Rockefeller"}), category: t({en: "Seafood", es: "Mariscos"}), icons: "🐟" },
+                    { id: 52, name: t({en: "Grilled Lobster Tail", es: "Cola de Langosta a la Parrilla"}), price: adjustPrice("$695"), description: t({en: "Fresh lobster tail with herb butter, local seasonal vegetables, toasted almonds and balsamic reduction sauce over cauliflower puree", es: "Cola de langosta fresca con mantequilla de hierbas, vegetales locales de temporada, almendras tostadas y salsa de reducción balsámica sobre puré de coliflor"}), category: t({en: "Seafood", es: "Mariscos"}), icons: "🦞" },
+                    { id: 53, name: t({en: "Coconut Shrimp", es: "Camarones al Coco"}), price: adjustPrice("$575"), description: t({en: "Over apple compote with mango sauce, served with local seasonal vegetables, toasted almonds and balsamic reduction sauce over cauliflower puree", es: "Sobre compota de manzana con salsa de mango, servido con vegetales locales de temporada, almendras tostadas y salsa de reducción balsámica sobre puré de coliflor"}), category: t({en: "Seafood", es: "Mariscos"}), icons: "🦐🥥" },
+                    { id: 54, name: t({en: "Seared Scallops", es: "Callos de Hacha Sellados"}), price: adjustPrice("$625"), description: t({en: "Magdalena Bay scallops (seasonal) over risotto with local seasonal vegetables, toasted almonds and balsamic reduction", es: "Callos de hacha de Bahía Magdalena (de temporada) sobre risotto con vegetales locales de temporada, almendras tostadas y reducción balsámica"}), category: t({en: "Seafood", es: "Mariscos"}), icons: "🦪" }
+                ]
+            },
+            {
+                name: t({en: "🍣 Sushi", es: "🍣 Sushi"}),
+                items: [
+                    // CLASSIC ROLLS
+                    { id: 55, name: t({en: "California Roll", es: "Rollo California"}), price: adjustPrice("$185"), description: t({en: "Crab, avocado, cucumber, sesame seeds", es: "Cangrejo, aguacate, pepino, ajonjolí"}), category: t({en: "Classic Rolls", es: "Rollos Clásicos"}), icons: "🍣" },
+                    { id: 56, name: t({en: "Spicy Tuna Roll", es: "Rollo de Atún Picante"}), price: adjustPrice("$245"), description: t({en: "Fresh tuna, spicy mayo, cucumber, scallions", es: "Atún fresco, mayonesa picante, pepino, cebollín"}), category: t({en: "Classic Rolls", es: "Rollos Clásicos"}), icons: "🌶️" },
+                    { id: 57, name: t({en: "Philadelphia Roll", es: "Rollo Filadelfia"}), price: adjustPrice("$225"), description: t({en: "Smoked salmon, cream cheese, avocado, cucumber", es: "Salmón ahumado, queso crema, aguacate, pepino"}), category: t({en: "Classic Rolls", es: "Rollos Clásicos"}) },
+                    { id: 58, name: t({en: "Salmon Avocado Roll", es: "Rollo de Salmón y Aguacate"}), price: adjustPrice("$235"), description: t({en: "Fresh salmon, avocado, cucumber", es: "Salmón fresco, aguacate, pepino"}), category: t({en: "Classic Rolls", es: "Rollos Clásicos"}), icons: "🥑" },
+                    // SPECIALTY ROLLS
+                    { id: 59, name: t({en: "Rainbow Roll", es: "Rollo Arcoíris"}), price: adjustPrice("$325"), description: t({en: "California roll topped with tuna, salmon, yellowtail, shrimp, avocado", es: "Rollo California cubierto con atún, salmón, jurel, camarón, aguacate"}), featured: true, category: t({en: "Specialty Rolls", es: "Rollos Especiales"}), icons: "⭐🌈" },
+                    { id: 60, name: t({en: "Dragon Roll", es: "Rollo Dragón"}), price: adjustPrice("$365"), description: t({en: "Shrimp tempura, eel, avocado, unagi sauce, crispy flakes", es: "Camarón tempura, anguila, aguacate, salsa unagi, hojuelas crujientes"}), category: t({en: "Specialty Rolls", es: "Rollos Especiales"}), icons: "🐉" },
+                    { id: 61, name: t({en: "Volcano Roll", es: "Rollo Volcán"}), price: adjustPrice("$295"), description: t({en: "Spicy tuna, cream cheese, deep fried, topped with spicy mayo and eel sauce", es: "Atún picante, queso crema, frito, cubierto con mayonesa picante y salsa de anguila"}), category: t({en: "Specialty Rolls", es: "Rollos Especiales"}), icons: "🌋" },
+                    { id: 62, name: t({en: "Solomon's Special Roll", es: "Rollo Especial Solomon's"}), price: adjustPrice("$385"), description: t({en: "Shrimp tempura, crab, avocado, topped with seared tuna, spicy mayo, eel sauce", es: "Camarón tempura, cangrejo, aguacate, cubierto con atún sellado, mayonesa picante, salsa de anguila"}), featured: true, category: t({en: "Specialty Rolls", es: "Rollos Especiales"}), icons: "⭐" },
+                    // SASHIMI & NIGIRI
+                    { id: 63, name: t({en: "Tuna Sashimi (5 pcs)", es: "Sashimi de Atún (5 pzas)"}), price: adjustPrice("$265"), description: t({en: "Fresh sliced tuna", es: "Atún fresco rebanado"}), category: t({en: "Sashimi & Nigiri", es: "Sashimi y Nigiri"}) },
+                    { id: 64, name: t({en: "Salmon Sashimi (5 pcs)", es: "Sashimi de Salmón (5 pzas)"}), price: adjustPrice("$255"), description: t({en: "Fresh sliced salmon", es: "Salmón fresco rebanado"}), category: t({en: "Sashimi & Nigiri", es: "Sashimi y Nigiri"}) },
+                    { id: 65, name: t({en: "Mixed Sashimi Platter", es: "Plato Mixto de Sashimi"}), price: adjustPrice("$425"), description: t({en: "Chef's selection of fresh fish: tuna, salmon, yellowtail, served with wasabi, pickled ginger, soy sauce", es: "Selección del chef de pescado fresco: atún, salmón, jurel, servido con wasabi, jengibre encurtido, salsa de soya"}), category: t({en: "Sashimi & Nigiri", es: "Sashimi y Nigiri"}), icons: "🐟" },
+                    { id: 66, name: t({en: "Nigiri Combo (8 pcs)", es: "Combo Nigiri (8 pzas)"}), price: adjustPrice("$345"), description: t({en: "Chef's selection of nigiri sushi", es: "Selección del chef de sushi nigiri"}), category: t({en: "Sashimi & Nigiri", es: "Sashimi y Nigiri"}) }
+                ]
+            },
+            {
+                name: t({en: "🍹 Bar", es: "🍹 Bar"}),
+                items: [
+                    // MARGARITAS
+                    { id: 67, name: t({en: "House Margarita", es: "Margarita de la Casa"}), price: adjustPrice("$140"), description: t({en: "Tequila, triple sec, fresh lime juice, agave", es: "Tequila, triple sec, jugo de limón fresco, agave"}), category: t({en: "Margaritas", es: "Margaritas"}), icons: "🍹" },
+                    { id: 68, name: t({en: "Cadillac Margarita", es: "Margarita Cadillac"}), price: adjustPrice("$240"), description: t({en: "Premium tequila, Cointreau, fresh lime juice, agave, Grand Marnier float", es: "Tequila premium, Cointreau, jugo de limón fresco, agave, flotador de Grand Marnier"}), category: t({en: "Margaritas", es: "Margaritas"}) },
+                    { id: 69, name: t({en: "Mango Margarita", es: "Margarita de Mango"}), price: adjustPrice("$165"), description: t({en: "Tequila, fresh mango, triple sec, lime juice, agave", es: "Tequila, mango fresco, triple sec, jugo de limón, agave"}), category: t({en: "Margaritas", es: "Margaritas"}), icons: "🥭" },
+                    { id: 70, name: t({en: "Jalapeño Margarita", es: "Margarita de Jalapeño"}), price: adjustPrice("$165"), description: t({en: "Tequila, fresh jalapeño, cucumber, lime juice, agave", es: "Tequila, jalapeño fresco, pepino, jugo de limón, agave"}), category: t({en: "Margaritas", es: "Margaritas"}), icons: "🌶️" },
+                    // COCKTAILS
+                    { id: 71, name: t({en: "Mojito", es: "Mojito"}), price: adjustPrice("$145"), description: t({en: "White rum, fresh mint, lime, sugar, soda water", es: "Ron blanco, menta fresca, limón, azúcar, agua mineral"}), category: t({en: "Cocktails", es: "Cocteles"}), icons: "🍃" },
+                    { id: 72, name: t({en: "Piña Colada", es: "Piña Colada"}), price: adjustPrice("$155"), description: t({en: "Rum, coconut cream, fresh pineapple juice", es: "Ron, crema de coco, jugo de piña fresco"}), category: t({en: "Cocktails", es: "Cocteles"}), icons: "🍍" },
+                    { id: 73, name: t({en: "Paloma", es: "Paloma"}), price: adjustPrice("$145"), description: t({en: "Tequila, fresh grapefruit juice, lime, grapefruit soda", es: "Tequila, jugo de toronja fresco, limón, refresco de toronja"}), category: t({en: "Cocktails", es: "Cocteles"}), icons: "🍋" },
+                    { id: 74, name: t({en: "Moscow Mule", es: "Moscow Mule"}), price: adjustPrice("$150"), description: t({en: "Vodka, ginger beer, lime juice", es: "Vodka, cerveza de jengibre, jugo de limón"}), category: t({en: "Cocktails", es: "Cocteles"}) },
+                    // BEER
+                    { id: 75, name: t({en: "Draft Beer", es: "Cerveza de Barril"}), price: adjustPrice("$75-$95"), description: t({en: "Ask server for current selection", es: "Pregunta al mesero por la selección actual"}), category: t({en: "Beer", es: "Cerveza"}), icons: "🍺" },
+                    { id: 76, name: t({en: "Craft Beer Bottle", es: "Cerveza Artesanal"}), price: adjustPrice("$85-$125"), description: t({en: "Local and international craft beers", es: "Cervezas artesanales locales e internacionales"}), category: t({en: "Beer", es: "Cerveza"}) },
+                    { id: 77, name: t({en: "Domestic Beer", es: "Cerveza Nacional"}), price: adjustPrice("$65"), description: t({en: "Corona, Pacífico, Modelo, Tecate", es: "Corona, Pacífico, Modelo, Tecate"}), category: t({en: "Beer", es: "Cerveza"}) },
+                    // WINE
+                    { id: 78, name: t({en: "House Wine (Glass)", es: "Vino de Casa (Copa)"}), price: adjustPrice("$125"), description: t({en: "Red, White, or Rosé by the glass", es: "Tinto, Blanco o Rosado por copa"}), category: t({en: "Wine", es: "Vino"}), icons: "🍷" },
+                    { id: 79, name: t({en: "Premium Wine", es: "Vino Premium"}), price: adjustPrice("$150-$350"), description: t({en: "Ask server for wine list", es: "Pregunta al mesero por la lista de vinos"}), category: t({en: "Wine", es: "Vino"}) }
+                ]
+            },
+            {
+                name: t({en: "🎄 Seasonal", es: "🎄 Temporada"}),
+                items: [
+                    { id: 80, name: t({en: "Butternut Squash Risotto", es: "Risotto de Calabaza"}), price: adjustPrice("$425"), description: t({en: "Arborio rice, roasted butternut squash, sage, parmesan, truffle oil", es: "Arroz arborio, calabaza asada, salvia, parmesano, aceite de trufa"}), icons: "🎃" },
+                    { id: 81, name: t({en: "Wild Mushroom Ravioli", es: "Ravioli de Hongos Silvestres"}), price: adjustPrice("$395"), description: t({en: "House-made pasta, porcini mushrooms, cream sauce, herbs", es: "Pasta hecha en casa, hongos porcini, salsa de crema, hierbas"}), icons: "🍄" },
+                    { id: 82, name: t({en: "Seasonal Salad", es: "Ensalada de Temporada"}), price: adjustPrice("$325"), description: t({en: "Mixed greens, seasonal fruits, nuts, goat cheese, balsamic vinaigrette", es: "Lechugas mixtas, frutas de temporada, nueces, queso de cabra, vinagreta balsámica"}) },
+                    { id: 83, name: t({en: "Pumpkin Pie", es: "Pay de Calabaza"}), price: adjustPrice("$165"), description: t({en: "Spiced pumpkin filling, buttery crust, whipped cream, cinnamon", es: "Relleno de calabaza especiado, masa mantequillosa, crema batida, canela"}), icons: "🥧" },
+                    { id: 84, name: t({en: "Hot Chocolate", es: "Chocolate Caliente"}), price: adjustPrice("$95"), description: t({en: "Rich Belgian chocolate, whipped cream, marshmallows", es: "Chocolate belga rico, crema batida, malvaviscos"}), icons: "☕" },
+                    { id: 85, name: t({en: "Mulled Wine", es: "Vino Caliente"}), price: adjustPrice("$145"), description: t({en: "Red wine, cinnamon, cloves, orange, spices", es: "Vino tinto, canela, clavos, naranja, especias"}), icons: "🍷" }
+                ]
+            }
+        ]
+    };
+}

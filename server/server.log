@@ -1,0 +1,12 @@
+
+🚀 Solomon's Landing Backend Server
+📡 Server running on port 3000
+🌍 Environment: development
+🗄️  Database: ./database/solomons.db
+
+✅ Server ready to accept requests!
+
+2025-12-09T21:06:43.962Z - GET /health
+2025-12-09T21:06:46.476Z - GET /
+2025-12-09T21:06:58.766Z - GET /health
+2025-12-09T21:07:46.205Z - POST /api/auth/login

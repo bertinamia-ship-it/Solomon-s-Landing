@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Login</title>
+    <style>
+        body { font-family: Arial; padding: 50px; background: #165b33; }
+        .container { background: white; padding: 40px; border-radius: 20px; max-width: 400px; margin: 0 auto; }
+        input { width: 100%; padding: 10px; margin: 10px 0; font-size: 16px; }
+        button { width: 100%; padding: 15px; background: #165b33; color: white; border: none; font-size: 16px; cursor: pointer; }
+        .error { color: red; display: none; }
+        .success { color: green; display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Login Solomon's</h1>
+        <form onsubmit="return testLogin(event)">
+            <input type="text" id="user" placeholder="Usuario" value="admin">
+            <input type="password" id="pass" placeholder="Password" value="bertina123">
+            <button type="submit">LOGIN</button>
+        </form>
+        <p class="error" id="error">ERROR</p>
+        <p class="success" id="success">SUCCESS!</p>
+    </div>
+
+    <script>
+        const users = {
+            'admin': 'bertina123',
+            'ipad1': 'bertina123',
+            'meseros': 'bertina123',
+            'bar': 'bertina123'
+        };
+
+        function testLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('user').value.toLowerCase().trim();
+            const password = document.getElementById('pass').value;
+            
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('success').style.display = 'none';
+            
+            if (users[username] && users[username] === password) {
+                document.getElementById('success').style.display = 'block';
+                document.getElementById('success').textContent = 'LOGIN SUCCESS for ' + username + '!';
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            } else {
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('error').textContent = 'Wrong user or password';
+            }
+            return false;
+        }
+    </script>
+</body>
+</html>

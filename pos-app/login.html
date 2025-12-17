@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solomon's Landing - Login</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #165b33, #1a7a42);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        
+        .logo {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 20px;
+            background-image: url('logo oficial solomons..jpg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #165b33;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #165b33;
+        }
+        
+        button {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: #165b33;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background: #1a7a42;
+        }
+        
+        .error {
+            color: red;
+            text-align: center;
+            margin: 10px 0;
+            display: none;
+        }
+        
+        .quick-access {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .quick-btn {
+            padding: 12px;
+            background: #f0f0f0;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .quick-btn:hover {
+            background: #e0e0e0;
+            border-color: #165b33;
+        }
+        
+        .back-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            text-decoration: none;
+            opacity: 0.6;
+        }
+        
+        .back-btn:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <a href="../index.html" class="back-btn" title="Back to Website">🏠</a>
+    
+    <div class="login-container">
+        <div class="logo"></div>
+        <h1>SOLOMON'S LANDING</h1>
+        <p class="subtitle">Sistema de Punto de Venta</p>
+        
+        <form id="loginForm">
+            <input type="text" id="username" placeholder="Usuario" required>
+            <input type="password" id="password" placeholder="Contraseña" required>
+            <button type="submit">Iniciar Sesión</button>
+        </form>
+        
+        <p class="error" id="errorMsg">Usuario o contraseña incorrectos</p>
+        
+        <div class="quick-access">
+            <div class="quick-btn" onclick="quickLogin('admin')">👑 Admin</div>
+            <div class="quick-btn" onclick="quickLogin('ipad1')">📱 iPad 1</div>
+            <div class="quick-btn" onclick="quickLogin('meseros')">👨‍🍳 Meseros</div>
+            <div class="quick-btn" onclick="quickLogin('bar')">🍸 Bar</div>
+        </div>
+    </div>
+
+    <script>
+        // Usuarios válidos
+        const users = {
+            'admin': { password: 'bertina123', role: 'Admin', name: 'Administrator', isIpad: false },
+            'meseros': { password: 'bertina123', role: 'Waiters', name: 'Waiters', isIpad: false },
+            'bar': { password: 'bertina123', role: 'Bar', name: 'Bar', isIpad: false },
+            'ipad1': { password: 'bertina123', role: 'iPad', name: 'iPad 1', isIpad: true },
+            'ipad2': { password: 'bertina123', role: 'iPad', name: 'iPad 2', isIpad: true },
+            'ipad3': { password: 'bertina123', role: 'iPad', name: 'iPad 3', isIpad: true },
+            'ipad4': { password: 'bertina123', role: 'iPad', name: 'iPad 4', isIpad: true },
+            'ipad5': { password: 'bertina123', role: 'iPad', name: 'iPad 5', isIpad: true }
+        };
+        
+        // Quick login
+        function quickLogin(username) {
+            const password = prompt('Contraseña para ' + username + ':');
+            if (password) {
+                document.getElementById('username').value = username;
+                document.getElementById('password').value = password;
+                document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+            }
+        }
+        
+        // Handle form submit
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.toLowerCase().trim();
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('errorMsg');
+            
+            if (users[username] && users[username].password === password) {
+                // Login successful
+                errorMsg.style.display = 'none';
+                
+                // Save to session
+                sessionStorage.setItem('currentUser', JSON.stringify(users[username]));
+                sessionStorage.setItem('username', username);
+                
+                // Redirect to app
+                window.location.href = 'index.html';
+            } else {
+                // Login failed
+                errorMsg.style.display = 'block';
+                document.getElementById('password').value = '';
+            }
+        });
+    </script>
+</body>
+</html>

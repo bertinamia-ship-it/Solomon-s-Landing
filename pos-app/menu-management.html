@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Menú | Solomon's Landing</title>
+    <link rel="stylesheet" href="design-system.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            margin: 0 0 0.5rem 0;
+            color: #1e293b;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 0.875rem;
+            color: #64748b;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .stat-card.available .value { color: #10b981; }
+        .stat-card.unavailable .value { color: #ef4444; }
+
+        .filters {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filters select, .filters input {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .menu-item {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .menu-item.unavailable {
+            opacity: 0.6;
+            background: #f8fafc;
+            border: 2px dashed #e2e8f0;
+        }
+
+        .menu-item.unavailable::after {
+            content: 'NO DISPONIBLE';
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #ef4444;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .menu-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .menu-item h3 {
+            margin: 0 0 0.25rem 0;
+            color: #1e293b;
+            font-size: 1.125rem;
+        }
+
+        .menu-item .category {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .menu-item .description {
+            color: #64748b;
+            font-size: 0.875rem;
+            margin: 0.5rem 0;
+            line-height: 1.5;
+        }
+
+        .menu-item .price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #10b981;
+            margin: 0.75rem 0;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: 0.3s;
+            border-radius: 30px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #10b981;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(30px);
+        }
+
+        .bulk-actions {
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .bulk-actions button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-enable {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-disable {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-enable:hover { background: #059669; }
+        .btn-disable:hover { background: #dc2626; }
+
+        .search-box {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal-content h2 {
+            margin: 0 0 1rem 0;
+        }
+
+        .modal-content textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            min-height: 100px;
+            font-family: inherit;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .modal-actions button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-cancel {
+            background: #e2e8f0;
+            color: #64748b;
+        }
+
+        .btn-confirm {
+            background: #3b82f6;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍽️ Gestión de Menú</h1>
+            <p>Activa o desactiva platillos cuando haya faltantes de ingredientes</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Platillos</h3>
+                <div class="value" id="stat-total">0</div>
+            </div>
+            <div class="stat-card available">
+                <h3>Disponibles</h3>
+                <div class="value" id="stat-available">0</div>
+            </div>
+            <div class="stat-card unavailable">
+                <h3>No Disponibles</h3>
+                <div class="value" id="stat-unavailable">0</div>
+            </div>
+        </div>
+
+        <div class="filters">
+            <input type="text" class="search-box" id="search" placeholder="🔍 Buscar platillo...">
+            <select id="filter-category">
+                <option value="">Todas las categorías</option>
+            </select>
+            <select id="filter-status">
+                <option value="">Todos los estados</option>
+                <option value="available">Solo disponibles</option>
+                <option value="unavailable">Solo no disponibles</option>
+            </select>
+        </div>
+
+        <div class="bulk-actions">
+            <button class="btn-enable" onclick="bulkEnable()">✅ Activar Seleccionados</button>
+            <button class="btn-disable" onclick="bulkDisable()">❌ Desactivar Seleccionados</button>
+            <span id="selected-count" style="margin-left: auto; color: #64748b;"></span>
+        </div>
+
+        <div class="menu-grid" id="menu-grid"></div>
+    </div>
+
+    <!-- Modal for reason -->
+    <div class="modal" id="reason-modal">
+        <div class="modal-content">
+            <h2>Motivo del cambio</h2>
+            <textarea id="reason-text" placeholder="Ej: Falta de ingrediente principal, proveedor no entregó, etc."></textarea>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+                <button class="btn-confirm" onclick="confirmChange()">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="api-client.js"></script>
+    <script>
+        let allItems = [];
+        let selectedItems = new Set();
+        let pendingChange = null;
+
+        async function loadMenu() {
+            try {
+                const response = await fetch('/api/menu');
+                const data = await response.json();
+                allItems = data.items || [];
+                
+                renderMenu(allItems);
+                updateStats();
+                populateCategories();
+            } catch (error) {
+                console.error('Error loading menu:', error);
+                alert('Error al cargar el menú');
+            }
+        }
+
+        function renderMenu(items) {
+            const grid = document.getElementById('menu-grid');
+            grid.innerHTML = '';
+
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = `menu-item ${item.available ? '' : 'unavailable'}`;
+                
+                card.innerHTML = `
+                    <div class="menu-item-header">
+                        <div>
+                            <span class="category">${item.category_en}</span>
+                            <h3>${item.name_en}</h3>
+                            <p style="color: #64748b; font-size: 0.875rem;">${item.name_es}</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" 
+                                   ${item.available ? 'checked' : ''} 
+                                   onchange="toggleItem(${item.id}, this.checked)">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <p class="description">${item.description_en || ''}</p>
+                    <div class="price">$${item.price.toFixed(2)}</div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        function toggleItem(itemId, available) {
+            pendingChange = { itemId, available };
+            document.getElementById('reason-modal').classList.add('active');
+        }
+
+        async function confirmChange() {
+            if (!pendingChange) return;
+
+            const { itemId, available } = pendingChange;
+            const reason = document.getElementById('reason-text').value;
+
+            try {
+                const response = await fetch(`/api/menu/${itemId}/availability`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token') || 'demo-token'}`
+                    },
+                    body: JSON.stringify({ available, reason })
+                });
+
+                if (response.ok) {
+                    await loadMenu();
+                    closeModal();
+                } else {
+                    alert('Error al actualizar el platillo');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al actualizar el platillo');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('reason-modal').classList.remove('active');
+            document.getElementById('reason-text').value = '';
+            pendingChange = null;
+            loadMenu(); // Reload to reset toggles
+        }
+
+        function updateStats() {
+            const total = allItems.length;
+            const available = allItems.filter(i => i.available).length;
+            const unavailable = total - available;
+
+            document.getElementById('stat-total').textContent = total;
+            document.getElementById('stat-available').textContent = available;
+            document.getElementById('stat-unavailable').textContent = unavailable;
+        }
+
+        function populateCategories() {
+            const categories = [...new Set(allItems.map(i => i.category_en))];
+            const select = document.getElementById('filter-category');
+            
+            categories.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat;
+                option.textContent = cat;
+                select.appendChild(option);
+            });
+        }
+
+        // Filters
+        document.getElementById('search').addEventListener('input', applyFilters);
+        document.getElementById('filter-category').addEventListener('change', applyFilters);
+        document.getElementById('filter-status').addEventListener('change', applyFilters);
+
+        function applyFilters() {
+            const search = document.getElementById('search').value.toLowerCase();
+            const category = document.getElementById('filter-category').value;
+            const status = document.getElementById('filter-status').value;
+
+            let filtered = allItems;
+
+            if (search) {
+                filtered = filtered.filter(item => 
+                    item.name_en.toLowerCase().includes(search) ||
+                    item.name_es.toLowerCase().includes(search) ||
+                    item.description_en?.toLowerCase().includes(search)
+                );
+            }
+
+            if (category) {
+                filtered = filtered.filter(item => item.category_en === category);
+            }
+
+            if (status === 'available') {
+                filtered = filtered.filter(item => item.available);
+            } else if (status === 'unavailable') {
+                filtered = filtered.filter(item => !item.available);
+            }
+
+            renderMenu(filtered);
+        }
+
+        // Bulk actions (simplified for demo)
+        function bulkEnable() {
+            alert('Función de activación masiva - Implementar selección múltiple');
+        }
+
+        function bulkDisable() {
+            alert('Función de desactivación masiva - Implementar selección múltiple');
+        }
+
+        // Initialize
+        loadMenu();
+    </script>
+</body>
+</html>
