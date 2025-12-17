@@ -179,13 +179,12 @@
 </head>
 <body>
     <!-- HEADER -->
-    <header style="background: linear-gradient(135deg, rgba(22, 91, 51, 0.85) 0%, rgba(196, 30, 58, 0.85) 50%, rgba(22, 91, 51, 0.85) 100%); background-size: 200% 200%; animation: gradientShift 30s ease-in-out infinite; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; padding: 0.5rem 0;">
-        
+    <header>
         <div class="container">
-            <div class="header-content" style="display: flex; align-items: center; justify-content: space-between; padding: 0;">
+            <div class="header-content">
                 <div class="logo">
                     <a href="index.html">
-                        <img src="logo solomons.png" alt="Solomon's Landing Logo" loading="lazy" style="height: 50px;">
+                        <img src="logo solomons.png" alt="Solomon's Landing Logo" loading="lazy">
                     </a>
                 </div>
                 
@@ -197,24 +196,26 @@
                 </button>
                 
                 <nav>
-                    <ul style="display: flex; gap: 1.8rem; list-style: none; margin: 0; padding: 0;">
-                        <li><a href="index.html" class="active" style="color: var(--holiday-gold); font-weight: 600; text-decoration: none; font-size: 0.95rem;">Home</a></li>
-                        <li><a href="menus.html" style="color: white; text-decoration: none; font-size: 0.95rem;">Menus</a></li>
-                        <li><a href="reviews.html" style="color: white; text-decoration: none; font-size: 0.95rem;">Reviews</a></li>
-                        <li><a href="catering.html" style="color: white; text-decoration: none; font-size: 0.95rem;">Catering</a></li>
-                        <li><a href="gift-cards.html" style="color: white; text-decoration: none; font-size: 0.95rem;">🎁 Gifts</a></li>
-                        <li><a href="location.html" style="color: white; text-decoration: none; font-size: 0.95rem;">Location</a></li>
+                    <ul>
+                        <li><a href="index.html" class="active">Home</a></li>
+                        <li><a href="menus.html">Menus</a></li>
+                        <li><a href="reviews.html">Reviews</a></li>
+                        <li><a href="catering.html">Catering</a></li>
+                        <li><a href="gift-cards.html">🎁 Gifts</a></li>
+                        <li><a href="location.html">Location</a></li>
                     </ul>
                 </nav>
-                <div class="header-actions" style="display: flex; align-items: center; gap: 0.8rem;">
-                    <div class="language-toggle" style="display: flex; gap: 0.4rem;">
-                        <button class="lang-btn active" data-lang="en" style="background: white; color: var(--holiday-green); padding: 0.4rem 0.7rem; border: none; border-radius: 5px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">EN</button>
-                        <button class="lang-btn" data-lang="es" style="background: rgba(255,255,255,0.2); color: white; padding: 0.4rem 0.7rem; border: none; border-radius: 5px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">ES</button>
+                
+                <div class="header-actions">
+                    <div class="language-toggle">
+                        <button class="lang-btn active" data-lang="en">EN</button>
+                        <button class="lang-btn" data-lang="es">ES</button>
                     </div>
-                    <a href="reservations.html" class="btn btn-primary" id="reserveBtn" style="background: var(--holiday-gold); color: var(--holiday-green); font-weight: 700; padding: 0.5rem 1.3rem; border-radius: 50px; text-decoration: none; font-size: 0.9rem; box-shadow: 0 3px 10px rgba(255, 215, 0, 0.2);">🎄 Reserve</a>
+                    <a href="reservations.html" class="btn btn-primary" id="reserveBtn">🎄 Reserve</a>
                 </div>
             </div>
         </div>
+        
         <!-- Mobile Overlay -->
         <div class="mobile-nav-overlay"></div>
     </header>
