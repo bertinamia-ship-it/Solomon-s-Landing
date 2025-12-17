@@ -1,0 +1,177 @@
+/**
+ * MOBILE ONLY CSS
+ * Solo afecta pantallas menores a 768px
+ * NO TOCA el diseño de escritorio
+ */
+
+@media only screen and (max-width: 768px) {
+    
+    /* NAVBAR - Más delgado */
+    header {
+        padding: 10px 15px !important;
+    }
+    
+    header .logo {
+        height: 40px !important;
+    }
+    
+    /* Navegación móvil más compacta */
+    header nav a {
+        padding: 12px 20px !important;
+        font-size: 16px !important;
+    }
+    
+    /* HERO - Botones más pequeños */
+    .hero-section .btn,
+    .hero-section button,
+    .hero-content .btn,
+    .hero-content button {
+        padding: 12px 24px !important;
+        font-size: 15px !important;
+        min-width: auto !important;
+        display: inline-block !important;
+    }
+    
+    /* TEXTOS - Ajustar tamaños */
+    .hero-content h1 {
+        font-size: 1.8rem !important;
+        line-height: 1.2 !important;
+    }
+    
+    .hero-content p {
+        font-size: 0.95rem !important;
+        line-height: 1.4 !important;
+    }
+    
+    h2 {
+        font-size: 1.6rem !important;
+    }
+    
+    h3 {
+        font-size: 1.3rem !important;
+    }
+    
+    p {
+        font-size: 0.95rem !important;
+        line-height: 1.5 !important;
+    }
+    
+    /* IMÁGENES - Que quepan en pantalla */
+    img {
+        max-width: 100% !important;
+        height: auto !important;
+        object-fit: cover !important;
+    }
+    
+    .hero-section,
+    #hero {
+        background-size: cover !important;
+        background-position: center !important;
+        min-height: 60vh !important;
+        padding: 30px 15px !important;
+    }
+    
+    /* Galería de fotos */
+    .gallery,
+    .image-grid,
+    .photo-grid {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 15px !important;
+    }
+    
+    .gallery img,
+    .gallery-item img {
+        width: 100% !important;
+        height: auto !important;
+        max-height: 250px !important;
+        object-fit: cover !important;
+        border-radius: 8px !important;
+    }
+    
+    /* SECCIONES - Padding más compacto */
+    section {
+        padding: 30px 15px !important;
+    }
+    
+    .container {
+        padding: 0 15px !important;
+        max-width: 100% !important;
+    }
+    
+    /* CARDS - Stack vertical */
+    .cards-container,
+    .services-grid,
+    .features-grid,
+    .menu-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+    }
+    
+    .card,
+    .service-card,
+    .feature-card {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 20px !important;
+    }
+    
+    /* FOOTER - Más compacto */
+    footer {
+        padding: 30px 15px !important;
+    }
+    
+    .footer-content {
+        flex-direction: column !important;
+        gap: 20px !important;
+    }
+    
+    /* OCULTAR cuadro de texto después del footer */
+    footer + div,
+    footer ~ div:last-of-type,
+    footer ~ input,
+    footer ~ textarea,
+    body > div:last-child {
+        display: none !important;
+    }
+    
+    /* Prevenir scroll horizontal */
+    body,
+    html {
+        overflow-x: hidden !important;
+        max-width: 100vw !important;
+    }
+    
+    /* Botones generales más pequeños */
+    .btn,
+    button:not(.mobile-menu-toggle) {
+        padding: 10px 20px !important;
+        font-size: 14px !important;
+    }
+    
+    /* Formularios */
+    input,
+    textarea,
+    select {
+        font-size: 16px !important;
+        padding: 12px !important;
+    }
+}
+
+/* iPhone específico - Ajustes extra */
+@media only screen and (max-width: 430px) {
+    .hero-content h1 {
+        font-size: 1.6rem !important;
+    }
+}
+
+@media only screen and (max-width: 375px) {
+    .hero-content h1 {
+        font-size: 1.5rem !important;
+    }
+    
+    header {
+        padding: 8px 12px !important;
+    }
+}
