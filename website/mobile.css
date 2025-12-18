@@ -1,132 +1,112 @@
 /* ============================================
-   SOLOMON'S LANDING - MOBILE APP DESIGN
-   Professional iPhone-optimized CSS
-   Designer: AI Engineering Team
-   Optimized for: iPhone 14 Pro & similar devices
+   SOLOMON'S LANDING - MOBILE APP
+   Diseño profesional estilo Instagram/Uber Eats
+   NO TOCAR DESKTOP - Solo @media móvil
    ============================================ */
 
-/* ===== MOBILE RESET & BASE ===== */
 @media (max-width: 768px) {
     
+    /* ===== RESET COMPLETO ===== */
     * {
         -webkit-tap-highlight-color: transparent;
-        -webkit-touch-callout: none;
         box-sizing: border-box;
     }
     
-    html {
-        font-size: 16px;
-        -webkit-text-size-adjust: 100%;
-        scroll-behavior: smooth;
+    html, body {
+        font-size: 14px; /* Base más pequeña para móvil */
         overflow-x: hidden;
-    }
-    
-    body {
-        overflow-x: hidden;
-        position: relative;
-        min-height: 100vh;
-        padding: 0;
         margin: 0;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        padding: 0;
     }
 
-    /* ===== HEADER & NAVIGATION ===== */
+    /* ===== HEADER COMPACTO ===== */
     header {
         position: sticky !important;
         top: 0;
         z-index: 1000;
-        background: rgba(0, 0, 0, 0.98) !important;
-        backdrop-filter: blur(20px) saturate(180%);
-        -webkit-backdrop-filter: blur(20px) saturate(180%);
-        padding: 10px 16px !important;
-        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.4);
-        height: 56px;
-        display: flex;
-        align-items: center;
-    }
-
-    .logo-container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex: 1;
-        margin: 0 auto;
+        background: rgba(0, 0, 0, 0.95) !important;
+        backdrop-filter: blur(20px);
+        height: 52px !important;
+        padding: 8px 12px !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     }
 
     .logo-container img {
-        height: 36px !important;
+        height: 32px !important;
         width: auto !important;
-        max-width: 160px !important;
-        filter: brightness(1.1);
     }
 
-    /* ===== HAMBURGER MENU ===== */
+    /* ===== MENU HAMBURGUESA (60% pantalla) ===== */
     .hamburger-menu {
         display: flex !important;
         flex-direction: column;
-        justify-content: space-around;
-        width: 24px;
-        height: 20px;
+        gap: 4px;
+        width: 22px;
+        height: 18px;
         background: transparent;
         border: none;
-        cursor: pointer;
         padding: 0;
-        z-index: 1001;
         position: absolute;
-        left: 16px;
-        top: 50%;
-        transform: translateY(-50%);
-        transition: transform 0.3s ease;
-    }
-
-    .hamburger-menu:active {
-        transform: translateY(-50%) scale(0.9);
+        left: 12px;
+        top: 17px;
     }
 
     .hamburger-menu span {
-        width: 24px;
+        width: 22px;
         height: 2px;
         background: #c9a961;
-        border-radius: 2px;
-        transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        transform-origin: center;
+        border-radius: 1px;
+        transition: all 0.3s ease;
     }
 
     .hamburger-menu.active span:nth-child(1) {
         transform: rotate(45deg) translate(5px, 5px);
     }
-
     .hamburger-menu.active span:nth-child(2) {
         opacity: 0;
-        transform: translateX(-10px);
     }
-
     .hamburger-menu.active span:nth-child(3) {
         transform: rotate(-45deg) translate(5px, -5px);
     }
 
-    /* ===== MOBILE MENU OVERLAY (Compacto 70% ancho) ===== */
+    /* MENU LATERAL COMPACTO */
     nav {
         position: fixed !important;
         top: 0;
-        left: -75%;
-        width: 70%;
-        max-width: 280px;
+        left: -100%;
+        width: 70% !important; /* AUMENTADO para ver mejor */
+        max-width: 280px !important;
         height: 100vh;
-        background: linear-gradient(180deg, rgba(26, 26, 26, 0.98) 0%, rgba(13, 13, 13, 0.98) 100%);
-        backdrop-filter: blur(20px) saturate(180%);
-        -webkit-backdrop-filter: blur(20px) saturate(180%);
-        padding: 70px 0 20px 0;
-        transition: left 0.35s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        background: rgba(20, 20, 20, 0.98);
+        backdrop-filter: blur(20px);
+        padding: 60px 0 20px 0;
+        transition: left 0.3s ease;
         z-index: 999;
         overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.6);
-        border-right: 1px solid rgba(201, 169, 97, 0.15);
+        box-shadow: 3px 0 15px rgba(0, 0, 0, 0.5);
     }
 
     nav.active {
-        left: 0;
+        left: 0 !important;
+    }
+
+    /* BOT\u00d3N X PARA CERRAR VISIBLE */
+    nav::before {
+        content: '\u00d7';
+        position: absolute;
+        top: 10px;
+        right: 12px;
+        font-size: 36px;
+        color: rgba(255,255,255,0.8);
+        cursor: pointer;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,0.05);
+        border-radius: 50%;
+        z-index: 1000;
     }
 
     nav ul {
@@ -138,46 +118,38 @@
     }
 
     nav ul li {
-        width: 100%;
-        margin: 0;
-        border-bottom: 1px solid rgba(201, 169, 97, 0.08);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     nav ul li a {
-        display: flex !important;
-        align-items: center;
-        padding: 14px 20px !important;
-        color: rgba(255, 255, 255, 0.9) !important;
-        text-decoration: none;
-        font-size: 15px !important;
+        display: block !important;
+        padding: 14px 20px !important; /* M\u00c1S GRANDE */
+        color: rgba(255, 255, 255, 0.85) !important;
+        font-size: 15px !important; /* M\u00c1S GRANDE */
         font-weight: 500;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
-        letter-spacing: 0.3px;
+        text-decoration: none;
+        transition: all 0.2s ease;
     }
 
     nav ul li a:hover,
     nav ul li a.active {
-        background: rgba(201, 169, 97, 0.12);
+        background: rgba(201, 169, 97, 0.1);
         color: #c9a961 !important;
         padding-left: 28px !important;
-        border-left: 3px solid #c9a961;
     }
 
-    /* Menu Overlay Backdrop */
     .menu-backdrop {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100vh;
-        background: rgba(0, 0, 0, 0.75);
+        background: rgba(0, 0, 0, 0.7); /* M\u00c1S OSCURO */
         opacity: 0;
         visibility: hidden;
-        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: all 0.3s ease;
         z-index: 998;
-        backdrop-filter: blur(4px);
-        -webkit-backdrop-filter: blur(4px);
+        cursor: pointer; /* Indicar que es clickeable */
     }
 
     .menu-backdrop.active {
@@ -185,40 +157,40 @@
         visibility: visible;
     }
 
-    /* ===== LANGUAGE SELECTOR ===== */
-    .language-selector {
+    /* SELECTOR DE IDIOMA - BANDERITAS PEQUEÑAS */
+    .language-selector,
+    .language-toggle {
         position: absolute !important;
-        right: 14px !important;
+        right: 54px !important;
         top: 50% !important;
         transform: translateY(-50%) !important;
-        z-index: 1001;
+        gap: 4px !important;
     }
 
-    .language-selector select {
-        background: rgba(201, 169, 97, 0.15) !important;
-        color: #c9a961 !important;
-        border: 1px solid rgba(201, 169, 97, 0.4) !important;
-        padding: 5px 8px !important;
-        border-radius: 6px !important;
-        font-size: 12px !important;
-        font-weight: 600 !important;
-        cursor: pointer;
-        -webkit-appearance: none;
-        appearance: none;
-        padding-right: 20px !important;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23c9a961' d='M6 9L1 4h10z'/%3E%3C/svg%3E") !important;
-        background-repeat: no-repeat !important;
-        background-position: right 4px center !important;
+    .language-selector select,
+    .lang-btn {
+        font-size: 14px !important; /* Emoji banderas */
+        padding: 3px 5px !important;
+        border-radius: 4px !important;
+        background: rgba(255,255,255,0.1) !important;
+        border: 1px solid rgba(255,255,255,0.15) !important;
+        min-width: 30px !important;
     }
 
-    /* ===== HERO SECTION (ARREGLADO para iPhone vertical) ===== */
-    .hero {
-        height: 50vh !important;
-        min-height: 400px !important;
-        max-height: 500px !important;
+    .lang-btn.active {
+        background: rgba(255,255,255,0.2) !important;
+        border-color: rgba(201,169,97,0.4) !important;
+    }
+
+    /* ===== HERO - ESTILO APP MÓVIL ===== */
+    .hero,
+    #hero {
+        height: 45vh !important;
+        min-height: 360px !important;
+        max-height: 450px !important;
         position: relative;
         overflow: hidden;
-        margin-top: 0 !important;
+        margin: 0 !important;
     }
 
     .hero-slide {
@@ -226,206 +198,268 @@
         width: 100% !important;
     }
 
-    /* CLAVE: Hacer que las fotos se vean COMPLETAS */
-    .hero-slide img {
+    /* FOTOS OPTIMIZADAS PARA VERTICAL */
+    .hero-slide img,
+    #hero img {
         width: 100% !important;
         height: 100% !important;
         object-fit: cover !important;
-        object-position: center 35% !important; /* Mostrar la parte importante */
-        transform: none !important; /* Sin zoom */
-        filter: brightness(0.7) !important; /* Más oscuro para leer texto */
+        object-position: center 30% !important; /* Mostrar parte alta */
+        transform: none !important;
+        filter: brightness(0.65) !important; /* Oscurecer para leer */
     }
 
-    /* Overlay para que se lea el texto */
-    .hero::before {
+    /* Overlay oscuro */
+    .hero::before,
+    #hero::before {
         content: '';
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(
-            to bottom,
-            rgba(0, 0, 0, 0.3) 0%,
-            rgba(0, 0, 0, 0.5) 50%,
-            rgba(0, 0, 0, 0.7) 100%
-        );
+        inset: 0;
+        background: linear-gradient(to bottom, 
+            rgba(0,0,0,0.3) 0%, 
+            rgba(0,0,0,0.6) 70%, 
+            rgba(0,0,0,0.8) 100%);
         z-index: 1;
-        pointer-events: none;
     }
 
     .hero-content {
         position: absolute;
-        top: 50%;
+        bottom: 40px !important; /* Abajo como Instagram */
         left: 50%;
-        transform: translate(-50%, -50%);
+        transform: translateX(-50%);
         text-align: center;
-        width: 85%;
-        max-width: 320px;
+        width: 90%;
+        max-width: 300px;
         z-index: 2;
-        padding: 0 12px;
     }
 
     .hero-content h1 {
-        font-size: 1.5rem !important; /* MÁS PEQUEÑO */
-        margin-bottom: 8px !important;
-        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+        font-size: 1.3rem !important; /* PEQUEÑO */
+        margin-bottom: 6px !important;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.9);
         line-height: 1.2;
-        letter-spacing: 0.3px;
         font-weight: 700;
+        letter-spacing: 0.5px;
     }
 
     .hero-content p {
-        font-size: 0.85rem !important; /* MÁS PEQUEÑO */
-        margin-bottom: 16px !important;
-        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+        font-size: 0.75rem !important; /* MUY PEQUEÑO */
+        margin-bottom: 14px !important;
+        text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+        opacity: 0.9;
         line-height: 1.3;
-        opacity: 0.95;
     }
 
-    /* ===== BUTTONS (MÁS PEQUEÑOS para móvil) ===== */
+    /* BOTONES PEQUEÑOS REDONDEADOS */
     .cta-buttons {
         display: flex !important;
-        flex-direction: column !important;
-        gap: 8px !important;
-        align-items: center !important;
+        flex-direction: row !important; /* LADO A LADO */
+        gap: 6px !important;
+        justify-content: center !important;
+        flex-wrap: wrap;
     }
 
     .btn,
     .cta-button,
     .btn-primary,
     .btn-secondary {
-        width: auto !important;
-        max-width: 240px !important;
-        padding: 10px 24px !important; /* MÁS COMPACTO */
-        font-size: 13px !important; /* MÁS PEQUEÑO */
+        width: auto !important; /* NO FULL WIDTH */
+        padding: 7px 14px !important; /* MÁS COMPACTO */
+        font-size: 10px !important; /* MÁS PEQUEÑO */
         font-weight: 600 !important;
-        border-radius: 8px !important;
+        border-radius: 18px !important; /* MUY REDONDEADO */
         text-transform: uppercase !important;
-        letter-spacing: 0.5px !important;
+        letter-spacing: 0.3px !important;
         transition: all 0.2s ease !important;
+        border: 1.5px solid #c9a961 !important;
+        min-height: 32px !important; /* MÁS BAJO */
         display: inline-flex !important;
         align-items: center !important;
-        justify-content: center !important;
-        text-align: center !important;
-        border: 2px solid #c9a961 !important;
-        cursor: pointer;
-        min-height: 40px !important; /* MÁS BAJITO */
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
         white-space: nowrap;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4);
     }
 
     .btn-primary,
     .cta-button {
         background: #c9a961 !important;
         color: #000 !important;
-        border-color: #c9a961 !important;
+        font-weight: 700 !important;
     }
 
     .btn-secondary {
-        background: rgba(201, 169, 97, 0.15) !important;
-        color: #c9a961 !important;
-        border-color: rgba(201, 169, 97, 0.5) !important;
+        background: rgba(0,0,0,0.4) !important;
+        color: #fff !important;
+        border-color: rgba(255,255,255,0.4) !important;
     }
 
-    .btn:active,
-    .cta-button:active,
-    .btn-primary:active,
-    .btn-secondary:active {
+    .btn:active {
         transform: scale(0.95);
     }
 
-    /* ===== SECTIONS (MÁS COMPACTAS) ===== */
+    /* INDICADORES DE CARRUSEL PEQUEÑOS */
+    .hero-indicators,
+    .carousel-indicators {
+        position: absolute !important;
+        bottom: 10px !important;
+        left: 50% !important;
+        transform: translateX(-50%);
+        display: flex !important;
+        gap: 5px !important;
+        z-index: 3;
+    }
+
+    .hero-indicators button,
+    .carousel-indicators button {
+        width: 6px !important;
+        height: 6px !important;
+        border-radius: 50% !important;
+        background: rgba(255,255,255,0.5) !important;
+        border: none !important;
+        padding: 0 !important;
+        transition: all 0.2s ease;
+    }
+
+    .hero-indicators button.active,
+    .carousel-indicators button.active {
+        background: #c9a961 !important;
+        width: 20px !important;
+        border-radius: 3px !important;
+    }
+
+    /* STICKERS/BADGES PEQUEÑOS */
+    .perks,
+    .feature-badges {
+        display: flex !important;
+        gap: 6px !important;
+        justify-content: center !important;
+        flex-wrap: wrap;
+        margin: 12px 0 !important;
+    }
+
+    .perk-item,
+    .badge {
+        background: rgba(0,0,0,0.6) !important;
+        backdrop-filter: blur(10px);
+        padding: 6px 10px !important; /* COMPACTO */
+        border-radius: 12px !important;
+        font-size: 10px !important; /* PEQUEÑO */
+        color: #fff !important;
+        border: 1px solid rgba(201,169,97,0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .perk-item svg,
+    .perk-item img,
+    .badge svg,
+    .badge img {
+        width: 14px !important;
+        height: 14px !important;
+    }
+
+    /* ===== SECCIONES COMPACTAS ===== */
     section {
-        padding: 24px 14px !important; /* MÁS PEQUEÑO */
+        padding: 18px 12px !important; /* MÁS COMPACTO */
     }
 
     .section-title,
     h2 {
-        font-size: 1.4rem !important; /* MÁS PEQUEÑO */
-        margin-bottom: 16px !important;
+        font-size: 1.15rem !important; /* MÁS PEQUEÑO */
+        margin-bottom: 12px !important;
         text-align: center;
-        font-weight: 600;
-        letter-spacing: 0.2px;
-        line-height: 1.3;
+        font-weight: 700;
+        line-height: 1.2;
     }
 
     .section-subtitle,
     h3 {
-        font-size: 1.1rem !important; /* MÁS PEQUEÑO */
-        margin-bottom: 12px !important;
+        font-size: 0.95rem !important; /* MÁS PEQUEÑO */
+        margin-bottom: 8px !important;
         font-weight: 600;
-        line-height: 1.3;
     }
 
     p {
-        font-size: 0.9rem !important;
-        line-height: 1.5;
+        font-size: 0.8rem !important; /* MÁS PEQUEÑO */
+        line-height: 1.4;
     }
 
-    /* ===== CARDS & GRID (Imágenes optimizadas) ===== */
+    /* ===== CARDS ESTILO APP ===== */
     .features-grid,
     .menu-categories,
     .gallery-grid,
     .values-grid {
         display: grid !important;
         grid-template-columns: 1fr !important;
-        gap: 12px !important;
-        padding: 0 !important;
+        gap: 8px !important; /* MÁS COMPACTO */
     }
 
     .feature-card,
     .menu-card,
-    .value-card,
-    .gallery-item {
-        border-radius: 10px !important;
+    .value-card {
+        border-radius: 10px !important; /* MÁS REDONDEADO */
         overflow: hidden;
-        background: rgba(255, 255, 255, 0.04);
-        padding: 14px !important;
-        transition: transform 0.2s ease;
-        border: 1px solid rgba(201, 169, 97, 0.1);
+        background: rgba(255,255,255,0.03);
+        padding: 10px !important; /* MÁS COMPACTO */
+        border: 1px solid rgba(255,255,255,0.05);
     }
 
-    .feature-card:active,
-    .menu-card:active,
-    .value-card:active {
-        transform: scale(0.98);
-    }
-
-    /* CLAVE: Imágenes que se vean BIEN */
+    /* FOTOS EN CARDS - ASPECT RATIO 16:9 */
     .feature-card img,
     .menu-card img,
     .gallery-item img {
         width: 100% !important;
-        height: 180px !important; /* Altura fija razonable */
+        height: 150px !important; /* MÁS BAJO */
         object-fit: cover !important;
-        object-position: center 40% !important; /* Mostrar parte importante */
+        object-position: center 40% !important;
         border-radius: 6px !important;
-        margin-bottom: 10px;
-        display: block;
+        margin-bottom: 6px; /* MÁS COMPACTO */
     }
 
     .feature-card h3,
-    .menu-card h3,
-    .value-card h3 {
-        font-size: 1rem !important; /* MÁS PEQUEÑO */
-        margin-bottom: 6px !important;
+    .menu-card h3 {
+        font-size: 0.9rem !important; /* MÁS PEQUEÑO */
+        margin-bottom: 3px !important;
         color: #c9a961;
-        line-height: 1.3;
     }
 
     .feature-card p,
-    .menu-card p,
-    .value-card p {
-        font-size: 0.85rem !important; /* MÁS PEQUEÑO */
-        line-height: 1.4;
-        color: rgba(255, 255, 255, 0.8);
+    .menu-card p {
+        font-size: 0.75rem !important; /* MÁS PEQUEÑO */
+        line-height: 1.3;
+        color: rgba(255,255,255,0.75);
     }
 
     /* ===== MENU PAGE (MÁS COMPACTO) ===== */
     .menu-section {
         margin-bottom: 20px !important;
+    }
+
+    /* BOTONES DE TABS (Breakfast, Lunch, etc.) - COMPACTOS */
+    .menu-tabs,
+    .menu-tab-container {
+        display: flex !important;
+        gap: 6px !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        padding: 8px 0 !important;
+        margin-bottom: 16px !important;
+    }
+
+    .menu-tab {
+        padding: 6px 12px !important; /* MÁS PEQUEÑO */
+        font-size: 0.75rem !important; /* MÁS PEQUEÑO */
+        font-weight: 600 !important;
+        border-radius: 16px !important;
+        white-space: nowrap;
+        flex-shrink: 0;
+        min-height: 32px !important;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+
+    .menu-tab.active {
+        padding: 6px 14px !important;
     }
 
     .menu-items {
@@ -435,7 +469,7 @@
     }
 
     .menu-item {
-        padding: 12px !important;
+        padding: 10px !important; /* MÁS COMPACTO */
         background: rgba(255, 255, 255, 0.04);
         border-radius: 8px;
         border-left: 3px solid #c9a961;
@@ -449,12 +483,12 @@
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        margin-bottom: 4px;
-        gap: 10px;
+        margin-bottom: 3px; /* MÁS COMPACTO */
+        gap: 8px; /* MÁS COMPACTO */
     }
 
     .menu-item-name {
-        font-size: 0.95rem !important; /* MÁS PEQUEÑO */
+        font-size: 0.9rem !important; /* MÁS PEQUEÑO */
         font-weight: 600;
         color: #c9a961;
         line-height: 1.2;
@@ -462,17 +496,17 @@
     }
 
     .menu-item-price {
-        font-size: 0.95rem !important; /* MÁS PEQUEÑO */
+        font-size: 0.9rem !important; /* MÁS PEQUEÑO */
         font-weight: 700;
         color: #fff;
         white-space: nowrap;
     }
 
     .menu-item-description {
-        font-size: 0.8rem !important; /* MÁS PEQUEÑO */
+        font-size: 0.75rem !important; /* MÁS PEQUEÑO */
         color: rgba(255, 255, 255, 0.7);
         line-height: 1.3;
-        margin-top: 4px;
+        margin-top: 3px; /* MÁS COMPACTO */
     }
 
     /* ===== FORMS (iOS-style) ===== */
@@ -524,6 +558,30 @@
     textarea {
         min-height: 100px;
         resize: vertical;
+    }
+
+    /* Botones de submit compactos */
+    button[type="submit"],
+    .submit-btn,
+    .form-submit {
+        width: 100% !important;
+        padding: 14px !important;
+        font-size: 1rem !important;
+        font-weight: 600 !important;
+        border-radius: 12px !important;
+        background: linear-gradient(135deg, #c9a961 0%, #b89850 100%) !important;
+        color: #000 !important;
+        border: none !important;
+        margin-top: 12px !important;
+        min-height: 48px !important;
+        box-shadow: 0 4px 12px rgba(201, 169, 97, 0.3);
+        transition: all 0.2s ease;
+    }
+
+    button[type="submit"]:active,
+    .submit-btn:active {
+        transform: scale(0.98);
+        box-shadow: 0 2px 8px rgba(201, 169, 97, 0.4);
     }
 
     /* ===== FOOTER (Compacto y profesional) ===== */

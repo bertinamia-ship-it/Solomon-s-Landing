@@ -73,6 +73,15 @@
         // Close menu on backdrop click
         backdrop.addEventListener('click', closeMenu);
 
+        // Close menu on X button click (CSS ::before)
+        nav.addEventListener('click', function(e) {
+            const rect = nav.getBoundingClientRect();
+            // Si el click es en la esquina superior derecha (donde está la X)
+            if (e.clientX > rect.right - 60 && e.clientY < rect.top + 60) {
+                closeMenu();
+            }
+        });
+
         // Close menu on navigation link click
         navLinks.forEach(link => {
             link.addEventListener('click', closeMenu);
