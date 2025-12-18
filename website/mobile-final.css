@@ -19,6 +19,19 @@
     }
     
     /* ========================================
+       SCROLL INDICATOR - MINI
+       ======================================== */
+    .scroll-indicator {
+        transform: translateX(-50%) scale(0.6) !important;
+    }
+    
+    .scroll-indicator p {
+        font-size: 0.5rem !important;
+        margin-top: 5px !important;
+        letter-spacing: 0.8px !important;
+    }
+    
+    /* ========================================
        HEADER - AZUL PROFESIONAL
        ======================================== */
     header {
@@ -45,6 +58,11 @@
         color: white !important;
         letter-spacing: 0.5px !important;
         white-space: nowrap !important;
+    }
+    
+    /* Ocultar logo del footer también */
+    footer img[src*="logo"] {
+        display: none !important;
     }
     
     /* HAMBURGUESA - COMPACTA */
@@ -86,13 +104,13 @@
         position: fixed !important;
         top: 0 !important;
         right: -100% !important;
-        width: 50% !important;
-        max-width: 200px !important;
-        height: 88vh !important;
-        max-height: 550px !important;
+        width: 48% !important;
+        max-width: 190px !important;
+        height: 70vh !important;
+        max-height: 480px !important;
         background: linear-gradient(180deg, rgba(30, 58, 138, 0.98), rgba(37, 99, 235, 0.98)) !important;
         backdrop-filter: blur(20px) !important;
-        padding: 40px 8px 12px !important;
+        padding: 35px 8px 10px !important;
         z-index: 2001 !important;
         overflow-y: auto !important;
         box-shadow: -3px 0 20px rgba(0,0,0,0.5) !important;
@@ -123,13 +141,13 @@
     
     header nav ul li a {
         display: block !important;
-        padding: 8px 6px !important;
+        padding: 7px 6px !important;
         color: white !important;
         text-decoration: none !important;
-        font-size: 11.5px !important;
+        font-size: 11px !important;
         font-weight: 500 !important;
         cursor: pointer !important;
-        letter-spacing: 0.3px !important;
+        letter-spacing: 0.2px !important;
     }
     
     header nav ul li a:active,
@@ -166,6 +184,15 @@
         min-height: 320px !important;
         max-height: 480px !important;
         padding: 0 !important;
+    }
+    
+    #hero img,
+    .hero-section img,
+    #hero::before,
+    .hero-section::before {
+        object-fit: cover !important;
+        object-position: center 40% !important;
+        transform: scale(0.95) !important;
     }
     
     .hero-overlay {
@@ -229,7 +256,7 @@
     }
     
     .features-scroll-track {
-        gap: 6px !important;
+        gap: 5px !important;
         padding: 6px 8px !important;
         scroll-snap-type: x mandatory !important;
         display: flex !important;
@@ -237,10 +264,11 @@
     }
     
     .feature-mini-card {
-        min-width: 62px !important;
-        max-width: 62px !important;
-        height: 62px !important;
-        padding: 5px 3px !important;
+        min-width: 55px !important;
+        max-width: 55px !important;
+        width: 55px !important;
+        height: 55px !important;
+        padding: 4px 2px !important;
         border-radius: 8px !important;
         scroll-snap-align: start !important;
         display: flex !important;
@@ -251,14 +279,14 @@
     }
     
     .feature-mini-card > div:first-child {
-        font-size: 1rem !important;
+        font-size: 0.95rem !important;
         margin-bottom: 2px !important;
         line-height: 1 !important;
     }
     
     .feature-mini-card h4 {
-        font-size: 0.48rem !important;
-        line-height: 1.05 !important;
+        font-size: 0.45rem !important;
+        line-height: 1.03 !important;
         font-weight: 600 !important;
         text-align: center !important;
         margin: 0 !important;
