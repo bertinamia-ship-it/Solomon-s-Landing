@@ -1,4 +1,4 @@
-/* MOBILE ULTRA COMPACTO - APP STYLE */
+/* MOBILE PROFESIONAL - FUTURISTA */
 
 @media only screen and (max-width: 768px) {
     *, *::before, *::after {
@@ -10,37 +10,41 @@
         font-size: 12px !important;
         overflow-x: hidden !important;
         -webkit-font-smoothing: antialiased !important;
+        background: #f8f9fa !important;
     }
     
     .container {
-        padding: 0 15px !important;
+        padding: 0 12px !important;
         max-width: 100% !important;
     }
     
     /* ========================================
-       HEADER - LIMPIO Y PROFESIONAL
+       HEADER - AZUL PROFESIONAL
        ======================================== */
     header {
         padding: 8px 0 !important;
-        background: rgba(22, 91, 51, 0.96) !important;
+        background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%) !important;
         backdrop-filter: blur(10px) !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
     }
     
     header .header-content {
         padding: 0 12px !important;
     }
     
+    /* Logo sin Santa en móvil */
     header .logo img {
-        height: 32px !important;
+        height: 34px !important;
+        content: url('logo solomons.png') !important;
     }
     
-    /* HAMBURGUESA - ESTILO MODERNO */
+    /* HAMBURGUESA - COMPACTA */
     header .mobile-menu-toggle {
         display: flex !important;
         flex-direction: column !important;
         justify-content: space-between !important;
-        width: 24px !important;
-        height: 18px !important;
+        width: 26px !important;
+        height: 20px !important;
         background: transparent !important;
         border: none !important;
         padding: 0 !important;
@@ -51,13 +55,13 @@
     header .mobile-menu-toggle span {
         display: block !important;
         width: 100% !important;
-        height: 2.5px !important;
+        height: 3px !important;
         background: white !important;
         border-radius: 2px !important;
     }
     
     header .mobile-menu-toggle.active span:nth-child(1) {
-        transform: translateY(7.5px) rotate(45deg) !important;
+        transform: translateY(8.5px) rotate(45deg) !important;
     }
     
     header .mobile-menu-toggle.active span:nth-child(2) {
@@ -65,20 +69,20 @@
     }
     
     header .mobile-menu-toggle.active span:nth-child(3) {
-        transform: translateY(-7.5px) rotate(-45deg) !important;
+        transform: translateY(-8.5px) rotate(-45deg) !important;
     }
     
-    /* MENU - LIMPIO SIN NAVIDAD */
+    /* MENU - ULTRA COMPACTO AZUL */
     header nav {
         position: fixed !important;
         top: 0 !important;
         right: -100% !important;
-        width: 60% !important;
-        max-width: 240px !important;
+        width: 50% !important;
+        max-width: 200px !important;
         height: 100vh !important;
-        background: rgba(30, 30, 30, 0.98) !important;
+        background: linear-gradient(180deg, rgba(30, 58, 138, 0.98), rgba(37, 99, 235, 0.98)) !important;
         backdrop-filter: blur(20px) !important;
-        padding: 55px 15px 20px !important;
+        padding: 45px 10px 15px !important;
         z-index: 2001 !important;
         overflow-y: auto !important;
         box-shadow: -3px 0 20px rgba(0,0,0,0.5) !important;
@@ -100,7 +104,7 @@
     header nav ul li {
         width: 100% !important;
         margin: 0 !important;
-        border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+        border-bottom: 1px solid rgba(255,255,255,0.1) !important;
     }
     
     header nav ul li:last-child {
@@ -109,10 +113,10 @@
     
     header nav ul li a {
         display: block !important;
-        padding: 12px 10px !important;
+        padding: 10px 8px !important;
         color: white !important;
         text-decoration: none !important;
-        font-size: 14px !important;
+        font-size: 12px !important;
         font-weight: 500 !important;
         cursor: pointer !important;
         letter-spacing: 0.3px !important;
@@ -120,8 +124,8 @@
     
     header nav ul li a:active,
     header nav ul li a.active {
-        background: rgba(22, 91, 51, 0.4) !important;
-        color: #90EE90 !important;
+        background: rgba(96, 165, 250, 0.3) !important;
+        color: #dbeafe !important;
     }
     
     /* OVERLAY */
@@ -139,150 +143,161 @@
         visibility: visible !important;
     }
     
-    /* Ocultar botones de idioma y reserve */
     header .header-actions {
         display: none !important;
     }
     
     /* ========================================
-       HERO - MAS ESTRECHO
+       HERO - COMPACTO CON FOTOS COMPLETAS
        ======================================== */
     #hero,
     .hero-section {
-        height: 42vh !important;
-        min-height: 300px !important;
-        max-height: 450px !important;
+        height: 45vh !important;
+        min-height: 320px !important;
+        max-height: 480px !important;
         padding: 0 !important;
     }
     
     .hero-overlay {
         padding: 15px !important;
-        max-width: 90% !important;
+        max-width: 88% !important;
         margin: 0 auto !important;
     }
     
     .hero-overlay h1 {
-        font-size: 1.1rem !important;
+        font-size: 1.05rem !important;
         line-height: 1.15 !important;
         margin-bottom: 8px !important;
         padding: 0 !important;
+        font-weight: 700 !important;
     }
     
     .hero-overlay p {
-        font-size: 0.68rem !important;
+        font-size: 0.65rem !important;
         line-height: 1.25 !important;
         margin-bottom: 12px !important;
-        padding: 0 5px !important;
+        padding: 0 !important;
+        letter-spacing: 0.3px !important;
     }
     
     /* ========================================
-       BOTONES - MINI PROFESIONAL
+       BOTONES - ULTRA PEQUEÑOS
        ======================================== */
     .hero-buttons {
-        gap: 8px !important;
-        padding: 0 10px !important;
+        gap: 7px !important;
+        padding: 0 8px !important;
+        flex-direction: column !important;
     }
     
     .hero-buttons a,
     a.btn,
-    button.btn {
-        max-width: 160px !important;
-        min-height: 36px !important;
-        padding: 9px 14px !important;
-        font-size: 11px !important;
-        border-radius: 18px !important;
+    button.btn,
+    .btn-primary,
+    .btn-secondary {
+        max-width: 140px !important;
+        min-height: 32px !important;
+        padding: 7px 12px !important;
+        font-size: 10px !important;
+        border-radius: 16px !important;
         font-weight: 600 !important;
+        letter-spacing: 0.3px !important;
     }
     
     /* ========================================
-       FEATURE CARDS - COMPACTO
+       FEATURE CARDS - MINI Y LENTO
        ======================================== */
     .features-scroll-container {
-        padding: 10px 0 !important;
+        padding: 12px 0 !important;
         margin: 0 !important;
     }
     
     .features-scroll-track {
         gap: 8px !important;
         padding: 8px 10px !important;
+        scroll-snap-type: x mandatory !important;
     }
     
     .feature-mini-card {
-        min-width: 75px !important;
-        max-width: 75px !important;
-        padding: 8px 5px !important;
+        min-width: 68px !important;
+        max-width: 68px !important;
+        padding: 7px 4px !important;
         border-radius: 10px !important;
+        scroll-snap-align: start !important;
     }
     
     .feature-mini-card > div:first-child {
-        font-size: 1.3rem !important;
-        margin-bottom: 4px !important;
+        font-size: 1.1rem !important;
+        margin-bottom: 3px !important;
     }
     
     .feature-mini-card h4 {
-        font-size: 0.55rem !important;
-        line-height: 1.1 !important;
+        font-size: 0.5rem !important;
+        line-height: 1.08 !important;
         font-weight: 600 !important;
     }
     
     /* ========================================
-       CHATBOT - ULTRA MINI
+       CHATBOT - MINI AZUL
        ======================================== */
     #chatbot-widget,
     .chatbot-widget {
-        width: 250px !important;
-        max-width: 78vw !important;
-        height: 320px !important;
-        max-height: 45vh !important;
-        bottom: 52px !important;
+        width: 240px !important;
+        max-width: 75vw !important;
+        height: 300px !important;
+        max-height: 42vh !important;
+        bottom: 50px !important;
         right: 10px !important;
         border-radius: 14px !important;
+        border: 2px solid #3b82f6 !important;
     }
     
     #chatbot-toggle,
     .chatbot-toggle {
-        width: 42px !important;
-        height: 42px !important;
+        width: 40px !important;
+        height: 40px !important;
         bottom: 10px !important;
         right: 10px !important;
-        font-size: 18px !important;
+        font-size: 17px !important;
+        background: linear-gradient(135deg, #1e3a8a, #3b82f6) !important;
     }
     
     .chatbot-header {
-        padding: 8px 10px !important;
-        font-size: 11px !important;
-        min-height: 34px !important;
+        padding: 7px 10px !important;
+        font-size: 10.5px !important;
+        min-height: 32px !important;
+        background: linear-gradient(135deg, #1e3a8a, #3b82f6) !important;
     }
     
     .chatbot-header h3 {
-        font-size: 11px !important;
+        font-size: 10.5px !important;
     }
     
     .chatbot-messages {
-        padding: 8px !important;
+        padding: 7px !important;
     }
     
     .chatbot-message {
-        font-size: 9.5px !important;
-        padding: 6px 8px !important;
-        margin-bottom: 5px !important;
-        max-width: 80% !important;
+        font-size: 9px !important;
+        padding: 5px 7px !important;
+        margin-bottom: 4px !important;
+        max-width: 78% !important;
     }
     
     .chatbot-input {
-        padding: 8px !important;
+        padding: 7px !important;
     }
     
     .chatbot-input input {
-        font-size: 10.5px !important;
+        font-size: 10px !important;
         padding: 6px 8px !important;
-        height: 30px !important;
+        height: 28px !important;
     }
     
     .chatbot-input button {
-        width: 30px !important;
-        height: 30px !important;
-        font-size: 13px !important;
+        width: 28px !important;
+        height: 28px !important;
+        font-size: 12px !important;
+        background: linear-gradient(135deg, #1e3a8a, #3b82f6) !important;
     }
     
     /* ========================================
@@ -290,95 +305,103 @@
        ======================================== */
     #welcome,
     #timeline {
-        padding: 25px 0 !important;
+        padding: 22px 0 !important;
     }
     
     #welcome h2,
     #timeline h2 {
-        font-size: 1.1rem !important;
+        font-size: 1.05rem !important;
         margin-bottom: 10px !important;
     }
     
     #welcome p,
     #timeline > div > p {
-        font-size: 0.73rem !important;
+        font-size: 0.7rem !important;
         line-height: 1.45 !important;
     }
     
     .timeline-item {
-        min-width: 190px !important;
+        min-width: 180px !important;
         border-radius: 12px !important;
     }
     
     .timeline-item > div:first-child {
-        height: 120px !important;
-        font-size: 2.5rem !important;
+        height: 115px !important;
+        font-size: 2.3rem !important;
+        background-size: cover !important;
+        background-position: center !important;
     }
     
     .timeline-item h3 {
-        font-size: 0.9rem !important;
+        font-size: 0.85rem !important;
     }
     
     .timeline-item p {
-        font-size: 0.68rem !important;
-        line-height: 1.35 !important;
+        font-size: 0.65rem !important;
+        line-height: 1.3 !important;
     }
     
     /* ========================================
-       IMAGENES
+       IMAGENES - SIN CORTAR
        ======================================== */
     img {
         max-width: 100% !important;
         height: auto !important;
-        object-fit: cover !important;
+        object-fit: contain !important;
     }
     
     #hero,
     .hero-slide,
     .hero-slider > div {
         background-size: cover !important;
-        background-position: center !important;
+        background-position: center center !important;
+    }
+    
+    /* Timeline y gallery images completas */
+    .timeline-item img,
+    .gallery img,
+    .menu-item img {
+        object-fit: cover !important;
+        width: 100% !important;
     }
     
     /* ========================================
        GENERAL
        ======================================== */
     section {
-        padding: 22px 0 !important;
+        padding: 20px 0 !important;
     }
     
-    h1 { font-size: 1.1rem !important; line-height: 1.2 !important; }
-    h2 { font-size: 1rem !important; line-height: 1.2 !important; }
-    h3 { font-size: 0.9rem !important; line-height: 1.2 !important; }
-    h4 { font-size: 0.8rem !important; line-height: 1.2 !important; }
-    p { font-size: 0.7rem !important; line-height: 1.4 !important; }
+    h1 { font-size: 1.05rem !important; line-height: 1.2 !important; }
+    h2 { font-size: 0.95rem !important; line-height: 1.2 !important; }
+    h3 { font-size: 0.85rem !important; line-height: 1.2 !important; }
+    h4 { font-size: 0.75rem !important; line-height: 1.2 !important; }
+    p { font-size: 0.68rem !important; line-height: 1.38 !important; }
     
     strong {
         font-weight: 600 !important;
     }
     
-    /* Footer */
     footer {
-        padding: 20px 0 12px !important;
+        padding: 18px 0 10px !important;
+        background: linear-gradient(135deg, #1e3a8a, #3b82f6) !important;
     }
     
     footer h3 {
-        font-size: 0.95rem !important;
+        font-size: 0.9rem !important;
     }
     
     footer p,
     footer li,
     footer a {
-        font-size: 0.7rem !important;
+        font-size: 0.68rem !important;
     }
     
-    /* Decoraciones navideñas ocultas */
     .snowflakes,
     .snowflake {
         display: none !important;
     }
     
-    /* Optimización de rendimiento */
     * {
         -webkit-tap-highlight-color: transparent !important;
     }

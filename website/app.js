@@ -1327,21 +1327,21 @@ function initAllHeroSliders() {
 }
 
 // ============================================
-// PERKS CAROUSEL - AUTO-SCROLLING ANIMATION (OPTIMIZADO)
+// PERKS CAROUSEL - AUTO-SCROLLING ANIMATION (OPTIMIZADO Y LENTO)
 // ============================================
 function initPerksCarousel() {
     const track = document.querySelector('.features-scroll-track');
     if (!track) return;
 
     let scrollPosition = 0;
-    const scrollSpeed = 0.6; // Velocidad aumentada para más fluidez
+    const scrollSpeed = 0.25; // VELOCIDAD MAS LENTA (antes 0.6)
     const cards = track.querySelectorAll('.feature-mini-card');
     
     if (cards.length === 0) return;
 
     // Calculate total width of one set of cards (first 10)
     const cardWidth = cards[0].offsetWidth;
-    const gap = 12; // 0.75rem = 12px
+    const gap = 8; // Reducido de 12px a 8px
     const totalWidth = (cardWidth + gap) * (cards.length / 2); // Divide by 2 because we duplicated
 
     let animationId = null;
