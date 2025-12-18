@@ -603,8 +603,6 @@
 }
 
 /* Mobile Responsive */
-/* COMENTADO - mobile-override.css controla móvil */
-/*
 @media (max-width: 768px) {
     .chatbot-container {
         bottom: 10px;
@@ -642,7 +640,6 @@
         max-width: 85%;
     }
 }
-*/
 
 /* Welcome animation */
 @keyframes welcomePulse {

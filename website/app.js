@@ -1181,19 +1181,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicializar idioma
     initLanguage();
 
-    // Agregar listeners a botones de idioma EN TODAS LAS PÁGINAS
+    // Agregar listeners a botones de idioma
     document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            const lang = this.getAttribute('data-lang');
-            setLanguage(lang);
-        });
-    });
-    
-    // Agregar listeners a language-toggle divs
-    document.querySelectorAll('.language-toggle button').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
+        btn.addEventListener('click', function() {
             const lang = this.getAttribute('data-lang');
             setLanguage(lang);
         });
@@ -1327,21 +1317,21 @@ function initAllHeroSliders() {
 }
 
 // ============================================
-// PERKS CAROUSEL - AUTO-SCROLLING ANIMATION (OPTIMIZADO Y LENTO)
+// PERKS CAROUSEL - AUTO-SCROLLING ANIMATION (OPTIMIZADO)
 // ============================================
 function initPerksCarousel() {
     const track = document.querySelector('.features-scroll-track');
     if (!track) return;
 
     let scrollPosition = 0;
-    const scrollSpeed = 0.25; // VELOCIDAD MAS LENTA (antes 0.6)
+    const scrollSpeed = 0.6; // Velocidad aumentada para más fluidez
     const cards = track.querySelectorAll('.feature-mini-card');
     
     if (cards.length === 0) return;
 
     // Calculate total width of one set of cards (first 10)
     const cardWidth = cards[0].offsetWidth;
-    const gap = 8; // Reducido de 12px a 8px
+    const gap = 12; // 0.75rem = 12px
     const totalWidth = (cardWidth + gap) * (cards.length / 2); // Divide by 2 because we duplicated
 
     let animationId = null;

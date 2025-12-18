@@ -962,8 +962,6 @@ footer a:hover {
 /* ============================================
    RESPONSIVE
    ============================================ */
-/* COMENTADO - mobile-override.css controla móvil */
-/*
 @media (max-width: 768px) {
     section {
         padding: 3.5rem 0;
@@ -1076,8 +1074,6 @@ footer a:hover {
         font-size: 1.05rem;
     }
 }
-*/
-
 /* ============================================
    ESTILOS ADICIONALES PARA INDEX.HTML
    Agregar estos estilos al final de styles.css
@@ -1150,8 +1146,6 @@ nav a.active {
 }
 
 /* LOCATION QUICK INFO - RESPONSIVE BUTTONS */
-/* COMENTADO - mobile-override.css controla móvil */
-/*
 @media (max-width: 768px) {
     .feature-card {
         padding: 2rem 1.5rem;
@@ -1170,7 +1164,6 @@ nav a.active {
         max-width: 250px;
     }
 }
-*/
 
 /* SMOOTH SCROLL OFFSET FOR FIXED HEADER */
 html {
@@ -1445,8 +1438,6 @@ footer .container > div > div:last-child a:hover {
 .timeline-item:nth-child(6) { animation-delay: 0.6s; }
 
 /* Responsive adjustments for timeline */
-/* COMENTADO - mobile-override.css controla móvil */
-/*
 @media (max-width: 768px) {
     .timeline-item {
         min-width: 240px;
@@ -1456,4 +1447,3 @@ footer .container > div > div:last-child a:hover {
         gap: 1rem;
     }
 }
-*/

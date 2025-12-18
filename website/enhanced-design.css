@@ -723,8 +723,6 @@
    RESPONSIVE DESIGN
    ======================================== */
 
-/* COMENTADO - mobile-override.css controla móvil */
-/*
 @media (max-width: 768px) {
     .hero-title {
         font-size: 3rem;
@@ -749,4 +747,3 @@
         flex-direction: column;
     }
 }
-*/
