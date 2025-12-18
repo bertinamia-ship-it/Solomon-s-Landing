@@ -191,8 +191,15 @@
     #hero::before,
     .hero-section::before {
         object-fit: cover !important;
-        object-position: center 40% !important;
-        transform: scale(0.95) !important;
+        object-position: center 35% !important;
+        transform: scale(0.85) !important;
+    }
+    
+    /* Mejorar visualización de hero backgrounds */
+    #hero,
+    .hero-section {
+        background-position: center 30% !important;
+        background-size: 140% !important;
     }
     
     .hero-overlay {
@@ -478,29 +485,21 @@
         background: linear-gradient(135deg, #1e3a8a, #3b82f6) !important;
     }
     
-    footer .footer-content {
+    footer .container {
         padding: 0 10px !important;
-        gap: 8px !important;
     }
     
     /* Ocultar About y Quick Links en móvil */
-    footer > div > div:nth-child(1),
-    footer > div > div:nth-child(2) {
+    footer .container > div > div:nth-child(1),
+    footer .container > div > div:nth-child(2) {
         display: none !important;
     }
     
-    /* Reorganizar contacto y redes en columna */
-    footer > div {
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 10px !important;
-    }
-    
-    footer > div > div {
-        width: 100% !important;
-        max-width: 100% !important;
-        padding: 0 !important;
-        margin: 0 !important;
+    /* Grid a columna única */
+    footer .container > div[style*="grid-template-columns"] {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+        margin-bottom: 12px !important;
     }
     
     footer h3 {
@@ -523,6 +522,10 @@
     }
     
     /* Redes sociales mini */
+    footer div[style*="display: flex; flex-direction: column"] {
+        gap: 0.5rem !important;
+    }
+    
     footer div[style*="display: flex; flex-direction: column"] a {
         padding: 4px 6px !important;
         font-size: 0.6rem !important;
@@ -564,7 +567,41 @@
         display: none !important;
     }
     
-    .snowflakes,
+    /* ========================================
+       MENU PAGE - OPTIMIZACIONES
+       ======================================== */
+    #menu-hero {
+        height: 50vh !important;
+        max-height: 400px !important;
+        min-height: 300px !important;
+    }
+    
+    .menu-tabs {
+        position: static !important;
+        padding: 0.5rem !important;
+        gap: 0.4rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+    
+    .menu-tab {
+        padding: 0.4rem 0.8rem !important;
+        font-size: 0.7rem !important;
+        border-radius: 15px !important;
+    }
+    
+    .menu-items,
+    #menuItems {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+    
+    .menu-content {
+        padding: 0 10px !important;
+    }
+    
+    /* ========================================
+       GENERAL
+       ======================================== */
     .snowflake {
         display: none !important;
     }
