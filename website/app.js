@@ -1181,9 +1181,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicializar idioma
     initLanguage();
 
-    // Agregar listeners a botones de idioma
+    // Agregar listeners a botones de idioma EN TODAS LAS PÁGINAS
     document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const lang = this.getAttribute('data-lang');
+            setLanguage(lang);
+        });
+    });
+    
+    // Agregar listeners a language-toggle divs
+    document.querySelectorAll('.language-toggle button').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
             const lang = this.getAttribute('data-lang');
             setLanguage(lang);
         });
