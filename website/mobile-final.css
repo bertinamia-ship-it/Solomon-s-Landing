@@ -60,6 +60,19 @@
         white-space: nowrap !important;
     }
     
+    /* Botón idioma pequeño pero visible */
+    .language-toggle {
+        gap: 0.25rem !important;
+    }
+    
+    .language-toggle button,
+    .lang-btn {
+        padding: 3px 5px !important;
+        font-size: 0.65rem !important;
+        border-radius: 4px !important;
+        min-width: 26px !important;
+    }
+    
     /* Ocultar logo del footer también */
     footer img[src*="logo"] {
         display: none !important;
@@ -191,15 +204,15 @@
     #hero::before,
     .hero-section::before {
         object-fit: cover !important;
-        object-position: center 35% !important;
-        transform: scale(0.85) !important;
+        object-position: center 25% !important;
+        transform: scale(0.7) !important;
     }
     
     /* Mejorar visualización de hero backgrounds */
     #hero,
     .hero-section {
-        background-position: center 30% !important;
-        background-size: 140% !important;
+        background-position: center 20% !important;
+        background-size: 160% !important;
     }
     
     .hero-overlay {
@@ -304,23 +317,23 @@
        ======================================== */
     #chatbot-widget,
     .chatbot-widget {
-        width: 240px !important;
-        max-width: 75vw !important;
-        height: 300px !important;
-        max-height: 42vh !important;
-        bottom: 50px !important;
-        right: 10px !important;
-        border-radius: 14px !important;
+        width: 220px !important;
+        max-width: 70vw !important;
+        height: 280px !important;
+        max-height: 38vh !important;
+        bottom: 48px !important;
+        right: 8px !important;
+        border-radius: 12px !important;
         border: 2px solid #3b82f6 !important;
     }
     
     #chatbot-toggle,
     .chatbot-toggle {
-        width: 40px !important;
-        height: 40px !important;
-        bottom: 10px !important;
-        right: 10px !important;
-        font-size: 17px !important;
+        width: 38px !important;
+        height: 38px !important;
+        bottom: 8px !important;
+        right: 8px !important;
+        font-size: 16px !important;
         background: linear-gradient(135deg, #1e3a8a, #3b82f6) !important;
     }
     
@@ -597,6 +610,44 @@
     
     .menu-content {
         padding: 0 10px !important;
+    }
+    
+    /* ========================================
+       CATERING & LOCATION - OPTIMIZACIONES
+       ======================================== */
+    #catering-hero,
+    #location-hero {
+        height: 45vh !important;
+        max-height: 380px !important;
+        min-height: 280px !important;
+    }
+    
+    /* Catering forms y botones */
+    #catering form input,
+    #catering form textarea,
+    #catering form select {
+        font-size: 0.75rem !important;
+        padding: 8px !important;
+    }
+    
+    #catering .btn,
+    #location .btn {
+        max-width: 100% !important;
+        width: auto !important;
+        min-width: 120px !important;
+        padding: 8px 15px !important;
+        font-size: 0.75rem !important;
+    }
+    
+    /* Location map y contenido */
+    #location iframe,
+    #location .map-container {
+        height: 250px !important;
+        border-radius: 10px !important;
+    }
+    
+    #location section {
+        padding: 15px 0 !important;
     }
     
     /* ========================================
