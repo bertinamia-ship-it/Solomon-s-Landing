@@ -1,137 +1,154 @@
 /**
- * Menu Hamburguesa - Solomon's Landing
- * Funcionalidad completa para navegación móvil
+ * SOLOMON'S LANDING - MOBILE MENU
+ * Professional hamburger menu handler for mobile devices
  */
 
-document.addEventListener('DOMContentLoaded', function() {
-    
-    // Crear overlay si no existe
-    if (!document.querySelector('.mobile-nav-overlay')) {
-        const overlay = document.createElement('div');
-        overlay.className = 'mobile-nav-overlay';
-        document.body.appendChild(overlay);
+(function() {
+    'use strict';
+
+    // Wait for DOM to be ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initMobileMenu);
+    } else {
+        initMobileMenu();
     }
 
-    // Variables
-    const menuToggle = document.querySelector('.mobile-menu-toggle');
-    const nav = document.querySelector('header nav');
-    const overlay = document.querySelector('.mobile-nav-overlay');
-    const navLinks = document.querySelectorAll('header nav a');
+    function initMobileMenu() {
+        // Only run on mobile devices
+        if (window.innerWidth > 768) return;
 
-    if (!menuToggle) {
-        console.warn('Mobile menu toggle button not found');
-        return;
-    }
-
-    // Toggle menú
-    function toggleMenu() {
-        menuToggle.classList.toggle('active');
-        nav.classList.toggle('active');
-        overlay.classList.toggle('active');
+        // Create hamburger button if it doesn't exist
+        createHamburgerButton();
         
-        // Prevent body scroll cuando menú está abierto
-        if (nav.classList.contains('active')) {
-            document.body.style.overflow = 'hidden';
+        // Create menu backdrop
+        createMenuBackdrop();
+        
+        // Setup event listeners
+        setupEventListeners();
+        
+        // Close menu on page load
+        closeMenu();
+    }
+
+    function createHamburgerButton() {
+        const header = document.querySelector('header');
+        if (!header) return;
+
+        // Check if hamburger already exists
+        if (document.querySelector('.hamburger-menu')) return;
+
+        const hamburger = document.createElement('button');
+        hamburger.className = 'hamburger-menu';
+        hamburger.setAttribute('aria-label', 'Toggle menu');
+        hamburger.setAttribute('aria-expanded', 'false');
+        hamburger.innerHTML = `
+            <span></span>
+            <span></span>
+            <span></span>
+        `;
+
+        header.insertBefore(hamburger, header.firstChild);
+    }
+
+    function createMenuBackdrop() {
+        // Check if backdrop already exists
+        if (document.querySelector('.menu-backdrop')) return;
+
+        const backdrop = document.createElement('div');
+        backdrop.className = 'menu-backdrop';
+        document.body.appendChild(backdrop);
+    }
+
+    function setupEventListeners() {
+        const hamburger = document.querySelector('.hamburger-menu');
+        const nav = document.querySelector('nav');
+        const backdrop = document.querySelector('.menu-backdrop');
+        const navLinks = document.querySelectorAll('nav a');
+
+        if (!hamburger || !nav || !backdrop) return;
+
+        // Toggle menu on hamburger click
+        hamburger.addEventListener('click', toggleMenu);
+
+        // Close menu on backdrop click
+        backdrop.addEventListener('click', closeMenu);
+
+        // Close menu on navigation link click
+        navLinks.forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+
+        // Close menu on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeMenu();
+            }
+        });
+
+        // Handle resize
+        let resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                if (window.innerWidth > 768) {
+                    closeMenu();
+                }
+            }, 250);
+        });
+    }
+
+    function toggleMenu() {
+        const hamburger = document.querySelector('.hamburger-menu');
+        const nav = document.querySelector('nav');
+        const backdrop = document.querySelector('.menu-backdrop');
+
+        if (!hamburger || !nav || !backdrop) return;
+
+        const isActive = nav.classList.contains('active');
+
+        if (isActive) {
+            closeMenu();
         } else {
-            document.body.style.overflow = '';
+            openMenu();
         }
     }
 
-    // Cerrar menú
+    function openMenu() {
+        const hamburger = document.querySelector('.hamburger-menu');
+        const nav = document.querySelector('nav');
+        const backdrop = document.querySelector('.menu-backdrop');
+
+        if (!hamburger || !nav || !backdrop) return;
+
+        hamburger.classList.add('active');
+        nav.classList.add('active');
+        backdrop.classList.add('active');
+        hamburger.setAttribute('aria-expanded', 'true');
+        
+        // Prevent body scroll when menu is open
+        document.body.style.overflow = 'hidden';
+    }
+
     function closeMenu() {
-        menuToggle.classList.remove('active');
+        const hamburger = document.querySelector('.hamburger-menu');
+        const nav = document.querySelector('nav');
+        const backdrop = document.querySelector('.menu-backdrop');
+
+        if (!hamburger || !nav || !backdrop) return;
+
+        hamburger.classList.remove('active');
         nav.classList.remove('active');
-        overlay.classList.remove('active');
+        backdrop.classList.remove('active');
+        hamburger.setAttribute('aria-expanded', 'false');
+        
+        // Restore body scroll
         document.body.style.overflow = '';
     }
 
-    // Event listeners
-    menuToggle.addEventListener('click', toggleMenu);
-    overlay.addEventListener('click', closeMenu);
-
-    // Cerrar al hacer click en un link
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            // Si es anchor link (#), cerrar menú
-            if (this.getAttribute('href').startsWith('#')) {
-                closeMenu();
-            }
-        });
-    });
-
-    // Cerrar con tecla ESC
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && nav.classList.contains('active')) {
-            closeMenu();
-        }
-    });
-
-    // Manejar resize
-    let resizeTimer;
-    window.addEventListener('resize', function() {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(function() {
-            if (window.innerWidth > 768) {
-                closeMenu();
-            }
-        }, 250);
-    });
-
-    // Smooth scroll para anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            const href = this.getAttribute('href');
-            if (href !== '#' && href !== '') {
-                e.preventDefault();
-                const target = document.querySelector(href);
-                if (target) {
-                    const headerOffset = 80;
-                    const elementPosition = target.getBoundingClientRect().top;
-                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-                    window.scrollTo({
-                        top: offsetPosition,
-                        behavior: 'smooth'
-                    });
-                }
-            }
-        });
-    });
-
-    // Highlight active section
-    function highlightActiveSection() {
-        const sections = document.querySelectorAll('section[id]');
-        const scrollY = window.pageYOffset;
-
-        sections.forEach(section => {
-            const sectionHeight = section.offsetHeight;
-            const sectionTop = section.offsetTop - 100;
-            const sectionId = section.getAttribute('id');
-            const correspondingLink = document.querySelector(`header nav a[href="#${sectionId}"]`);
-
-            if (correspondingLink) {
-                if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
-                    correspondingLink.classList.add('active');
-                } else {
-                    correspondingLink.classList.remove('active');
-                }
-            }
-        });
-    }
-
-    // Ejecutar en scroll (throttled)
-    let scrollTimer;
-    window.addEventListener('scroll', function() {
-        if (scrollTimer) {
-            window.cancelAnimationFrame(scrollTimer);
-        }
-        scrollTimer = window.requestAnimationFrame(function() {
-            highlightActiveSection();
-        });
-    }, { passive: true });
-
-    // Ejecutar al cargar
-    highlightActiveSection();
-
-    console.log('Mobile menu initialized successfully');
-});
+    // Expose functions globally if needed
+    window.SolomonsMobileMenu = {
+        open: openMenu,
+        close: closeMenu,
+        toggle: toggleMenu
+    };
+})();
