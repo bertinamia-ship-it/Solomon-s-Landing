@@ -84,10 +84,13 @@ document.addEventListener('DOMContentLoaded', function() {
     overlay.addEventListener('click', closeMenu, true);
     overlay.addEventListener('touchstart', closeMenu, { passive: false, capture: true });
     
-    // Cerrar al hacer click en links
+    // Cerrar al hacer click en links - SOLO click, NO touchstart
     navLinks.forEach((link, index) => {
-        link.addEventListener('click', closeMenu, true);
-        link.addEventListener('touchstart', closeMenu, { passive: false, capture: true });
+        link.addEventListener('click', function(e) {
+            console.log('Nav link clicked:', link.textContent);
+            closeMenu();
+            // Permitir navegación normal
+        }, false);
     });
     
     // Cerrar con ESC
