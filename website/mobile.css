@@ -19,45 +19,42 @@
         padding: 0;
     }
 
-    /* ===== HEADER COMPACTO ===== */
+    /* ===== HEADER COMPACTO - TODO VISIBLE ===== */
     header {
         position: sticky !important;
         top: 0;
         z-index: 1000;
-        background: rgba(0, 0, 0, 0.95) !important;
+        background: rgba(0, 0, 0, 0.96) !important;
         backdrop-filter: blur(20px);
-        height: 56px !important;
-        padding: 0 !important;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        position: relative !important;
+        height: 54px !important;
+        padding: 6px 10px !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
     }
 
-    .header-container {
-        width: 100% !important;
+    .header-content {
         display: flex !important;
         align-items: center !important;
-        justify-content: center !important;
-        position: relative !important;
+        justify-content: space-between !important;
+        height: 100%;
     }
 
+    /* LOGO SIN SANTA - VISIBLE */
+    .logo,
     .logo-container {
-        position: absolute !important;
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-        z-index: 10;
+        flex: 1 !important;
+        display: flex !important;
+        justify-content: center !important;
     }
 
+    .logo img,
     .logo-container img {
-        height: 36px !important;
+        height: 34px !important;
         width: auto !important;
+        display: block !important;
+        content: url('cropped-solomons-logo.png') !important;
     }
 
     .header-actions {
-        position: absolute !important;
-        right: 12px !important;
         display: flex !important;
         gap: 6px !important;
         align-items: center !important;
@@ -126,7 +123,7 @@
 
     /* BOT\u00d3N X PARA CERRAR VISIBLE */
     nav::before {
-        content: '\u00d7';
+        content: 'X';
         position: absolute;
         top: 10px;
         right: 12px;
@@ -232,15 +229,14 @@
         width: 100% !important;
     }
 
-    /* FOTOS OPTIMIZADAS PARA VERTICAL */
+    /* FOTOS HERO - CENTRADAS */
     .hero-slide img,
     #hero img {
         width: 100% !important;
         height: 100% !important;
         object-fit: cover !important;
-        object-position: center 30% !important; /* Mostrar parte alta */
-        transform: none !important;
-        filter: brightness(0.65) !important; /* Oscurecer para leer */
+        object-position: center center !important;
+        filter: brightness(0.7) !important;
     }
 
     /* Overlay oscuro */
@@ -258,38 +254,39 @@
 
     .hero-content {
         position: absolute;
-        bottom: 50px !important;
+        bottom: 60px !important;
         left: 50%;
         transform: translateX(-50%);
         text-align: center;
-        width: 88%;
-        max-width: 320px;
+        width: 90%;
+        max-width: 340px;
         z-index: 2;
     }
 
     .hero-content h1 {
-        font-size: 1.4rem !important;
-        margin-bottom: 8px !important;
-        text-shadow: 0 2px 10px rgba(0,0,0,0.9);
+        font-size: 1.5rem !important;
+        margin-bottom: 10px !important;
+        text-shadow: 0 3px 12px rgba(0,0,0,0.9);
         line-height: 1.2;
         font-weight: 700;
         letter-spacing: 0.5px;
     }
 
     .hero-content p {
-        font-size: 0.8rem !important;
-        margin-bottom: 16px !important;
-        text-shadow: 0 1px 6px rgba(0,0,0,0.9);
+        font-size: 0.85rem !important;
+        margin-bottom: 18px !important;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.9);
         opacity: 0.95;
-        line-height: 1.35;
+        line-height: 1.4;
     }
 
-    /* BOTONES COMPACTOS LADO A LADO */
+    /* BOTONES COMPACTOS */
     .cta-buttons {
         display: flex !important;
         flex-direction: row !important;
-        gap: 8px !important;
+        gap: 10px !important;
         justify-content: center !important;
+        align-items: center !important;
         flex-wrap: nowrap !important;
     }
 
@@ -297,22 +294,17 @@
     .cta-button,
     .btn-primary,
     .btn-secondary {
-        flex: 0 1 auto !important;
-        max-width: 48% !important;
+        flex: 0 0 auto !important;
+        width: auto !important;
+        max-width: 135px !important;
         padding: 10px 16px !important;
         font-size: 0.7rem !important;
         font-weight: 600 !important;
         border-radius: 20px !important;
         text-transform: uppercase !important;
         letter-spacing: 0.4px !important;
-        transition: all 0.2s ease !important;
-        border: 1.5px solid #c9a961 !important;
-        min-height: 38px !important;
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        white-space: nowrap;
-        box-shadow: 0 3px 12px rgba(0,0,0,0.5);
+        min-height: 40px !important;
+        white-space: nowrap !important;
     }
 
     .btn-primary,
@@ -402,6 +394,12 @@
 
     /* ===== SECCIONES COMPACTAS ===== */
     section {
+        padding: 20px 16px !important;
+        background: transparent !important;
+        text-align: center !important;
+    }
+
+    section {
         padding: 18px 12px !important; /* MÁS COMPACTO */
         background: transparent !important;
     }
@@ -434,16 +432,17 @@
         background: transparent !important;
     }
 
-    /* ===== CARDS BIEN ALINEADAS SIN FONDOS RAROS ===== */
+    /* CARDS PERFECTAMENTE CENTRADAS */
     .features-grid,
     .menu-categories,
     .gallery-grid,
     .values-grid {
         display: grid !important;
         grid-template-columns: 1fr !important;
-        gap: 12px !important;
+        gap: 14px !important;
         padding: 0 !important;
-        margin: 0 !important;
+        margin: 0 auto !important;
+        max-width: 100% !important;
     }
 
     .feature-card,
@@ -451,30 +450,32 @@
     .value-card {
         border-radius: 12px !important;
         overflow: hidden;
-        background: rgba(0,0,0,0.3) !important;
+        background: rgba(0,0,0,0.35) !important;
         padding: 0 !important;
-        border: 1px solid rgba(201,169,97,0.15) !important;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        margin: 0 auto !important;
+        width: 100% !important;
+        border: 1px solid rgba(201,169,97,0.2) !important;
+        text-align: center !important;
     }
 
-    /* FOTOS EN CARDS SIN FONDO BLANCO */
+    /* FOTOS EN CARDS - CENTRADAS */
     .feature-card img,
     .menu-card img,
     .gallery-item img {
         width: 100% !important;
-        height: 160px !important;
+        height: 165px !important;
         object-fit: cover !important;
-        object-position: center 35% !important;
+        object-position: center 45% !important;
         border-radius: 0 !important;
         margin: 0 !important;
         display: block !important;
-        background: transparent !important;
     }
 
     .feature-card > div,
-    .menu-card > div {
-        padding: 12px !important;
-        background: transparent !important;
+    .menu-card > div,
+    .value-card > div {
+        padding: 14px !important;
+        text-align: center !important;
     }
 
     .feature-card h3,
