@@ -174,59 +174,98 @@
     <!-- MOBILE OVERRIDE - CARGA AL FINAL PARA FORZAR CAMBIOS -->
     <link rel="stylesheet" href="mobile-override.css?v=1766113057" media="(max-width: 768px)">
     
-    <!-- MOBILE FORCE INLINE - EJECUTA INMEDIATAMENTE -->
+    <!-- MOBILE FORCE INLINE - EJECUTA CONSTANTEMENTE -->
     <script>
     (function() {
         const isMobile = window.innerWidth <= 768;
         if (!isMobile) return;
         
+        let count = 0;
         function forzar() {
-            console.log('🔧 MOBILE FORCE INLINE');
+            count++;
             
-            // LOGO
-            document.querySelectorAll('header img, .logo img, footer img[src*="logo"]').forEach(img => {
-                if (img.src && (img.src.includes('logo') || img.src.includes('solomons'))) {
-                    img.src = 'cropped-solomons-logo.png';
-                    img.style.cssText = 'height:32px!important;width:auto!important';
+            // LOGO - FORZAR SIEMPRE
+            document.querySelectorAll('header img, .logo img, .logo-container img, footer img').forEach(img => {
+                const src = img.getAttribute('src') || '';
+                if (src.includes('logo') && !src.includes('cropped')) {
+                    img.setAttribute('src', 'cropped-solomons-logo.png');
+                    img.style.height = '32px';
+                    img.style.width = 'auto';
+                    if (count <= 3) console.log('✅ Logo cambiado:', src, '→ cropped');
                 }
             });
+            
+            // FAVICON
             const fav = document.querySelector('link[rel="icon"]');
-            if (fav) fav.href = 'cropped-solomons-logo.png';
-            
-            // H1 RESTAURANT
-            document.querySelectorAll('.hero-overlay h1, .hero h1').forEach(h1 => {
-                if (h1.textContent.includes('Restaurant') || h1.textContent.includes('Cuisine')) {
-                    h1.style.cssText = 'display:none!important;height:0!important;opacity:0!important;position:absolute!important';
-                }
-            });
-            
-            // CARRUSEL
-            document.querySelectorAll('.feature-mini-card').forEach(card => {
-                card.style.cssText = 'min-width:70px!important;max-width:70px!important;padding:5px 4px!important';
-                const icon = card.querySelector('div:first-child');
-                if (icon) icon.style.fontSize = '1.4rem';
-                const h4 = card.querySelector('h4');
-                if (h4) h4.style.cssText = 'font-size:0.5rem!important;line-height:1.1!important;margin:0!important';
-            });
-            
-            // FOOTER
-            const footer = document.querySelector('footer');
-            if (footer) {
-                footer.style.padding = '20px 15px';
-                const grid = footer.querySelector('div > div');
-                if (grid && grid.children[1]) grid.children[1].style.display = 'none';
+            if (fav && !fav.href.includes('cropped')) {
+                fav.href = 'cropped-solomons-logo.png';
             }
             
-            console.log('✅ APLICADO');
+            // H1 RESTAURANT - ELIMINAR
+            document.querySelectorAll('.hero-overlay h1, .hero h1, h1').forEach(h1 => {
+                const txt = h1.textContent || '';
+                if ((txt.includes('Restaurant') || txt.includes('Cuisine') || txt.includes('International')) && 
+                    h1.style.display !== 'none') {
+                    h1.style.display = 'none';
+                    h1.style.visibility = 'hidden';
+                    h1.style.opacity = '0';
+                    h1.style.height = '0';
+                    h1.style.position = 'absolute';
+                    h1.remove(); // ELIMINAR COMPLETAMENTE
+                    if (count <= 3) console.log('❌ H1 eliminado:', txt);
+                }
+            });
+            
+            // CARRUSEL - SUPER PEQUEÑO
+            document.querySelectorAll('.feature-mini-card').forEach(card => {
+                if (card.style.minWidth !== '60px') {
+                    card.style.minWidth = '60px';
+                    card.style.maxWidth = '60px';
+                    card.style.padding = '4px 3px';
+                    card.style.borderRadius = '6px';
+                    
+                    const icon = card.querySelector('div:first-child');
+                    if (icon) {
+                        icon.style.fontSize = '1.2rem';
+                        icon.style.marginBottom = '1px';
+                    }
+                    
+                    const h4 = card.querySelector('h4');
+                    if (h4) {
+                        h4.style.fontSize = '0.45rem';
+                        h4.style.lineHeight = '1';
+                        h4.style.margin = '0';
+                        h4.style.padding = '0';
+                    }
+                }
+            });
+            
+            // FOOTER - OCULTAR QUICK LINKS
+            const footer = document.querySelector('footer');
+            if (footer) {
+                footer.style.padding = '15px 10px';
+                const grid = footer.querySelector('div > div');
+                if (grid && grid.children[1] && grid.children[1].style.display !== 'none') {
+                    grid.children[1].style.display = 'none';
+                    if (count <= 3) console.log('❌ Quick Links eliminado');
+                }
+            }
+            
+            if (count === 1) console.log('🔧 MOBILE FORCE: Aplicando cada 100ms');
         }
         
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', forzar);
-        } else {
-            forzar();
-        }
-        setTimeout(forzar, 100);
-        setTimeout(forzar, 500);
+        // EJECUTAR INMEDIATAMENTE
+        forzar();
+        
+        // EJECUTAR CADA 100ms POR 5 SEGUNDOS
+        const interval = setInterval(forzar, 100);
+        setTimeout(() => {
+            clearInterval(interval);
+            console.log('✅ MOBILE FORCE: Finalizado después de', count, 'iteraciones');
+        }, 5000);
+        
+        // TAMBIÉN CUANDO CARGUE EL DOM
+        document.addEventListener('DOMContentLoaded', forzar);
     })();
     </script>
     
