@@ -137,10 +137,7 @@
             if (isChatOpen && 
                 !chatbotWindow.contains(e.target) && 
                 !chatbotToggle.contains(e.target)) {
-                closeChatbot();       sendBotMessage(chatbot.responses[chatbot.currentLanguage].greeting, true);
-                        showQuickReplies();
-                    }, 500);
-                }
+                closeChatbot();
             }
         });
 
