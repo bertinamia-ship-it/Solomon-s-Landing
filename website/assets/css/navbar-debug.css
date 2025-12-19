@@ -1,0 +1,44 @@
+/* ============================================
+   NAVBAR DEBUG STYLES
+   Add this temporarily to troubleshoot issues
+   Remove once everything works
+   ============================================ */
+
+/* Add borders to see component boundaries */
+.debug-navbar .navbar-container {
+    border: 2px solid red !important;
+}
+
+.debug-navbar .navbar-logo {
+    border: 2px solid blue !important;
+}
+
+.debug-navbar .navbar-toggle {
+    border: 2px solid green !important;
+}
+
+.debug-navbar .navbar-nav {
+    border: 2px solid purple !important;
+}
+
+.debug-navbar .navbar-menu {
+    border: 2px solid orange !important;
+}
+
+.debug-navbar .navbar-lang {
+    border: 2px solid pink !important;
+}
+
+.debug-navbar .navbar-overlay {
+    background: rgba(255, 0, 0, 0.3) !important;
+}
+
+/* Add to <header> to activate: */
+/* <header class="site-header debug-navbar"> */
+
+/* Console logging */
+/* Open DevTools Console and type:
+   window.solomons.currentLanguage()  // See current language
+   window.solomons.translatePage('es') // Switch to Spanish
+   window.solomons.translatePage('en') // Switch to English
+*/

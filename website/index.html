@@ -149,7 +149,7 @@
     </script>
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="cropped-solomons-logo.png">
+    <link rel="icon" type="image/png" href="solomons-logo.png">
     
     <!-- Preload Critical Resources -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -167,10 +167,16 @@
     <link rel="stylesheet" href="enhanced-design.css?v=21">
     <link rel="stylesheet" href="chatbot.css?v=21">
     
+    <!-- Global Professional UI System -->
+    <link rel="stylesheet" href="assets/css/solomons-global.css">
+    
     <!-- Mobile CSS -->
     <link rel="stylesheet" href="mobile.css?v=1766159500" media="(max-width: 768px)">
     
-    <!-- Mobile Menu Script -->
+    <!-- Main JavaScript -->
+    <script src="assets/js/main.js"></script>
+    
+    <!-- Mobile Menu Script (Legacy - will be replaced by main.js) -->
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         const menuToggle = document.querySelector('.mobile-menu-toggle');
@@ -200,45 +206,39 @@
     <script src="stripe-reservation.js" defer></script>
 </head>
 <body>
-    <!-- HEADER -->
-    <header style="background: linear-gradient(135deg, rgba(22, 91, 51, 0.85) 0%, rgba(196, 30, 58, 0.85) 50%, rgba(22, 91, 51, 0.85) 100%); background-size: 200% 200%; animation: gradientShift 30s ease-in-out infinite; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; padding: 0.5rem 0;">
-        
-        <div class="container">
-            <div class="header-content" style="display: flex; align-items: center; justify-content: space-between; padding: 0;">
-                <div class="logo">
-                    <a href="index.html">
-                        <img src="solomons-logo.png" alt="Solomon's Landing" loading="lazy" style="height: 50px;">
-                    </a>
-                </div>
-                
-                <!-- Mobile Menu Toggle -->
-                <button class="mobile-menu-toggle" aria-label="Toggle navigation menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-                
-                <nav>
-                    <ul style="display: flex; gap: 1.8rem; list-style: none; margin: 0; padding: 0;">
-                        <li><a href="index.html" class="active" style="color: var(--holiday-gold); font-weight: 600; text-decoration: none; font-size: 0.95rem;">Home</a></li>
-                        <li><a href="menus.html" style="color: white; text-decoration: none; font-size: 0.95rem;">Menus</a></li>
-                        <li><a href="reviews.html" style="color: white; text-decoration: none; font-size: 0.95rem;">Reviews</a></li>
-                        <li><a href="catering.html" style="color: white; text-decoration: none; font-size: 0.95rem;">Catering</a></li>
-                        <li><a href="gift-cards.html" style="color: white; text-decoration: none; font-size: 0.95rem;">🎁 Gifts</a></li>
-                        <li><a href="location.html" style="color: white; text-decoration: none; font-size: 0.95rem;">Location</a></li>
-                    </ul>
-                </nav>
-                <div class="header-actions" style="display: flex; align-items: center; gap: 0.8rem;">
-                    <div class="language-toggle" style="display: flex; gap: 0.3rem;">
-                        <button class="lang-btn active" data-lang="en" title="English" style="background: rgba(255,255,255,0.15); color: white; padding: 0.3rem 0.5rem; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: 600;">🇺🇸</button>
-                        <button class="lang-btn" data-lang="es" title="Español" style="background: transparent; color: rgba(255,255,255,0.6); padding: 0.3rem 0.5rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: 600;">🇲🇽</button>
-                    </div>
-                    <a href="reservations.html" class="btn btn-primary" id="reserveBtn" style="background: var(--holiday-gold); color: var(--holiday-green); font-weight: 700; padding: 0.5rem 1.3rem; border-radius: 50px; text-decoration: none; font-size: 0.9rem; box-shadow: 0 3px 10px rgba(255, 215, 0, 0.2);">Reserve</a>
+    <!-- HEADER / NAVBAR -->
+    <header class="site-header">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <a href="index.html">
+                    <img src="solomons-logo.png" alt="Solomon's Landing" loading="lazy">
+                </a>
+            </div>
+            
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <nav class="navbar-menu">
+                <ul class="navbar-nav">
+                    <li><a href="index.html" class="active" data-i18n="nav.home">Home</a></li>
+                    <li><a href="menus.html" data-i18n="nav.menus">Menus</a></li>
+                    <li><a href="reviews.html" data-i18n="nav.reviews">Reviews</a></li>
+                    <li><a href="catering.html" data-i18n="nav.catering">Catering</a></li>
+                    <li><a href="location.html" data-i18n="nav.location">Location</a></li>
+                </ul>
+            </nav>
+            
+            <div class="navbar-actions">
+                <div class="language-toggle">
+                    <button class="lang-btn active" data-lang="en" title="English">🇺🇸 EN</button>
+                    <button class="lang-btn" data-lang="es" title="Español">🇲🇽 ES</button>
                 </div>
             </div>
         </div>
         
-        <!-- Mobile Overlay -->
         <div class="mobile-nav-overlay"></div>
     </header>
 
@@ -247,17 +247,7 @@
          ============================================ -->
     <main>
         <!-- HERO SECTION -->
-        <section id="hero">
-            <!-- Nieve sutil animada -->
-            <div class="snowflakes" aria-hidden="true">
-                <div class="snowflake">❄</div>
-                <div class="snowflake">❄</div>
-                <div class="snowflake">❄</div>
-                <div class="snowflake">❄</div>
-                <div class="snowflake">❄</div>
-                <div class="snowflake">❄</div>
-            </div>
-            
+        <section id="hero" class="home-hero">
             <!-- Hero Slider -->
             <div class="hero-slider">
                 <div class="hero-slide hero-slide-1 active"></div>
@@ -266,13 +256,16 @@
                 <div class="hero-slide hero-slide-4"></div>
             </div>
             
-            <!-- Hero Overlay Content -->
-            <div class="hero-overlay">
-                <h1 data-i18n="hero.title" style="font-family: 'Cormorant Garamond', serif; font-size: 4.5rem; line-height: 1.2; margin-bottom: 1rem; text-shadow: 3px 5px 15px rgba(0,0,0,0.5); animation: fadeInUp 1s ease-out 0.2s backwards; font-weight: 300; letter-spacing: 3px;">International Cuisine Restaurant</h1>
-                <p data-i18n="hero.subtitle" style="font-family: 'Montserrat', sans-serif; font-size: 1.4rem; line-height: 1.5; max-width: 700px; margin: 0 auto 3rem auto; text-shadow: 2px 3px 10px rgba(0,0,0,0.4); animation: fadeInUp 1s ease-out 0.4s backwards; font-weight: 300; letter-spacing: 4px; text-transform: uppercase; color: rgba(255, 255, 255, 0.95);">Enjoy the experience</p>
-                <div class="hero-buttons" style="animation: fadeInUp 1s ease-out 0.6s backwards; margin-bottom: 3rem;">
-                    <a href="reservations.html" class="btn" data-i18n="hero.bookBtn" style="background: rgba(255, 201, 60, 0.3); backdrop-filter: blur(15px); color: var(--white); font-weight: 700; padding: 1rem 2.5rem; font-size: 1.1rem; box-shadow: 0 8px 25px rgba(255, 201, 60, 0.4); transition: all 0.3s ease; border: 2px solid rgba(255, 201, 60, 0.6);">Book a Table</a>
-                    <a href="menus.html" class="btn btn-primary" data-i18n="hero.menusBtn" style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 2px solid rgba(255, 255, 255, 0.4); padding: 1rem 2.5rem; font-size: 1.1rem; transition: all 0.3s ease;">View Menus</a>
+            <!-- Hero Overlay -->
+            <div class="hero-overlay"></div>
+            
+            <!-- Hero Content -->
+            <div class="hero-content">
+                <h1 data-i18n="hero.title">International Cuisine Restaurant</h1>
+                <p data-i18n="hero.subtitle">Enjoy the experience</p>
+                <div>
+                    <a href="reservations.html" class="btn btn-primary" data-i18n="hero.bookBtn">Book a Table</a>
+                    <a href="menus.html" class="btn btn-secondary" data-i18n="hero.menusBtn">View Menus</a>
                 </div>
 
                 <!-- Perks Carousel Inside Hero -->
@@ -409,13 +402,10 @@
                         <div style="width: 120px; height: 5px; background: linear-gradient(90deg, var(--yellow-sun), var(--orange-sun)); margin: 0 auto; border-radius: 3px; box-shadow: 0 2px 10px rgba(255, 201, 60, 0.4);"></div>
                     </div>
                     
-                    <!-- Content Card with Holiday Design -->
-                    <div style="background: linear-gradient(to bottom, #ffffff 0%, #fafafa 100%); padding: 4rem 3.5rem; border-radius: 20px; box-shadow: 0 15px 60px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(196, 30, 58, 0.1); animation: fadeInUp 0.8s ease-out 0.2s backwards; position: relative; overflow: hidden;">
-                        <!-- Decorative Holiday Pattern -->
-                        <div style="position: absolute; top: -50px; right: -50px; width: 300px; height: 300px; background: radial-gradient(circle, rgba(196, 30, 58, 0.04) 0%, transparent 70%); border-radius: 50%;"></div>
-                        <div style="position: absolute; bottom: -80px; left: -80px; width: 400px; height: 400px; background: radial-gradient(circle, rgba(22, 91, 51, 0.03) 0%, transparent 70%); border-radius: 50%;"></div>
-                        <!-- Subtle Holiday Decorations -->
-                        <div style="position: absolute; top: 1.5rem; right: 1.5rem; font-size: 2rem; opacity: 0.15;">🎄</div>
+                    <div style="background: linear-gradient(to bottom, #ffffff 0%, #fafafa 100%); padding: 4rem 3.5rem; border-radius: 20px; box-shadow: 0 15px 60px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 74, 159, 0.1); animation: fadeInUp 0.8s ease-out 0.2s backwards; position: relative; overflow: hidden;">
+                        <div style="position: absolute; top: -50px; right: -50px; width: 300px; height: 300px; background: radial-gradient(circle, rgba(0, 74, 159, 0.04) 0%, transparent 70%); border-radius: 50%;"></div>
+                        <div style="position: absolute; bottom: -80px; left: -80px; width: 400px; height: 400px; background: radial-gradient(circle, rgba(0, 102, 204, 0.03) 0%, transparent 70%); border-radius: 50%;"></div>
+                        <div style="position: absolute; top: 1.5rem; right: 1.5rem; font-size: 2rem; opacity: 0.15;"></div>
                         <div style="position: absolute; bottom: 1.5rem; left: 1.5rem; font-size: 2rem; opacity: 0.15;">✨</div>
                         
                         <!-- Main Text Content -->
@@ -433,7 +423,7 @@
                             <div style="width: 80px; height: 3px; background: linear-gradient(90deg, transparent, var(--yellow-sun), transparent); margin: 0 auto 4rem auto;"></div>
 
                             <!-- Health & Quality Commitment Section - Winter Edition -->
-                            <div style="background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(250, 250, 250, 0.9) 100%); border-radius: 20px; padding: 3rem 2.5rem; border: 2px solid rgba(196, 30, 58, 0.15); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08), 0 0 20px rgba(196, 30, 58, 0.05);">
+                            <div style="background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(250, 250, 250, 0.9) 100%); border-radius: 20px; padding: 3rem 2.5rem; border: 2px solid rgba(0, 38, 84, 0.15); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08), 0 0 20px rgba(0, 38, 84, 0.05);">
                                 <!-- Title with Icon -->
                                 <div style="text-align: center; margin-bottom: 2.5rem;">
                                     <div style="font-size: 3.5rem; margin-bottom: 1rem;">✨</div>
@@ -449,8 +439,7 @@
                                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2.5rem; margin: 3rem 0;">
                                     <!-- Organic Products -->
                                     <div style="background: var(--white); border-radius: 16px; padding: 2.5rem 2rem; text-align: center; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); transition: all 0.3s ease; border: 2px solid transparent; position: relative; overflow: hidden;">
-                                        <div style="position: absolute; top: 0.5rem; right: 0.5rem; font-size: 1rem; opacity: 0.2;">❄️</div>
-                                        <div style="width: 90px; height: 90px; background: linear-gradient(135deg, rgba(22, 91, 51, 0.15), rgba(34, 193, 195, 0.15)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 3.5rem; box-shadow: 0 4px 16px rgba(22, 91, 51, 0.2);">🌿</div>
+                                        <div style="width: 90px; height: 90px; background: linear-gradient(135deg, rgba(0, 74, 159, 0.15), rgba(34, 193, 195, 0.15)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 3.5rem; box-shadow: 0 4px 16px rgba(0, 74, 159, 0.2);">🌿</div>
                                         <h4 style="font-size: 1.3rem; color: var(--navy-dark); margin-bottom: 1rem; font-weight: 700; letter-spacing: 0.3px;" data-i18n="welcome.organicTitle">100% Organic Products</h4>
                                         <p style="font-size: 1.05rem; color: var(--text-light); line-height: 1.8;" data-i18n="welcome.organicDesc">Only the finest organic ingredients, sourced with care for your health and the environment</p>
                                     </div>
@@ -458,15 +447,15 @@
                                     <!-- Avocado Oil -->
                                     <div style="background: var(--white); border-radius: 16px; padding: 2.5rem 2rem; text-align: center; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); transition: all 0.3s ease; border: 2px solid transparent; position: relative; overflow: hidden;">
                                         <div style="position: absolute; top: 0.5rem; right: 0.5rem; font-size: 1rem; opacity: 0.2;">⭐</div>
-                                        <div style="width: 90px; height: 90px; background: linear-gradient(135deg, rgba(196, 30, 58, 0.15), rgba(255, 138, 60, 0.2)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 3.5rem; box-shadow: 0 4px 16px rgba(196, 30, 58, 0.2);">🥑</div>
+                                        <div style="width: 90px; height: 90px; background: linear-gradient(135deg, rgba(0, 38, 84, 0.15), rgba(255, 138, 60, 0.2)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 3.5rem; box-shadow: 0 4px 16px rgba(0, 38, 84, 0.2);">🥑</div>
                                         <h4 style="font-size: 1.3rem; color: var(--navy-dark); margin-bottom: 1rem; font-weight: 700; letter-spacing: 0.3px;" data-i18n="welcome.oilTitle">Premium Avocado Oil</h4>
                                         <p style="font-size: 1.05rem; color: var(--text-light); line-height: 1.8;" data-i18n="welcome.oilDesc">We cook exclusively with heart-healthy avocado oil, never compromising on quality</p>
                                     </div>
                                     
                                     <!-- Local Support -->
                                     <div style="background: var(--white); border-radius: 16px; padding: 2.5rem 2rem; text-align: center; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); transition: all 0.3s ease; border: 2px solid transparent; position: relative; overflow: hidden;">
-                                        <div style="position: absolute; top: 0.5rem; right: 0.5rem; font-size: 1rem; opacity: 0.2;">🎁</div>
-                                        <div style="width: 90px; height: 90px; background: linear-gradient(135deg, rgba(22, 91, 51, 0.15), rgba(196, 30, 58, 0.1)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 3.5rem; box-shadow: 0 4px 16px rgba(22, 91, 51, 0.2);">🤝</div>
+                                        <div style="position: absolute; top: 0.5rem; right: 0.5rem; font-size: 1rem; opacity: 0.2;"></div>
+                                        <div style="width: 90px; height: 90px; background: linear-gradient(135deg, rgba(0, 74, 159, 0.15), rgba(0, 38, 84, 0.1)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 3.5rem; box-shadow: 0 4px 16px rgba(0, 74, 159, 0.2);">🤝</div>
                                         <h4 style="font-size: 1.3rem; color: var(--navy-dark); margin-bottom: 1rem; font-weight: 700; letter-spacing: 0.3px;" data-i18n="welcome.localTitle">Supporting Local Businesses</h4>
                                         <p style="font-size: 1.05rem; color: var(--text-light); line-height: 1.8;" data-i18n="welcome.localDesc">Since our founding, we've partnered with local farmers and suppliers to bring you the freshest ingredients</p>
                                     </div>
@@ -490,12 +479,11 @@
             </div>
         </section>
 
-        <!-- TIMELINE GALLERY SECTION - Holiday Edition -->
         <section id="timeline" style="background: linear-gradient(180deg, #fafafa 0%, #f5f7fa 50%, #fff 100%); padding: 5rem 0; overflow: hidden; position: relative;">
             <!-- Decoraciones sutiles -->
-            <div style="position: absolute; top: 2rem; left: 5%; font-size: 2rem; opacity: 0.08;">🎄</div>
+            <div style="position: absolute; top: 2rem; left: 5%; font-size: 2rem; opacity: 0.08;"></div>
             <div style="position: absolute; top: 50%; right: 5%; font-size: 2rem; opacity: 0.08;">✨</div>
-            <div style="position: absolute; bottom: 2rem; left: 10%; font-size: 2rem; opacity: 0.08;">🎁</div>
+            <div style="position: absolute; bottom: 2rem; left: 10%; font-size: 2rem; opacity: 0.08;"></div>
             <div class="container">
                 <h2 class="section-title" data-i18n="timeline.title" style="font-size: 3.2rem; text-align: center; color: var(--navy-dark); margin-bottom: 1rem; font-weight: 800; background: linear-gradient(135deg, var(--navy-dark), var(--blue-main)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Our Journey Through the Years</h2>
                 <p style="text-align: center; color: var(--text-light); margin-bottom: 4rem; font-size: 1.2rem;">
@@ -629,99 +617,63 @@
     <!-- ============================================
          FOOTER
          ============================================ -->
-    <footer id="contact" style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); color: var(--white); padding: 2.5rem 0 1.5rem 0; border-top: 4px solid var(--yellow-sun);">
-        <div class="container">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2.5rem; margin-bottom: 2rem; text-align: left;">
-                <!-- About -->
-                <div>
-                    <h3 style="color: var(--yellow-sun); margin-bottom: 1.25rem; font-size: 1.3rem; font-weight: 700;">About Solomon's Landing</h3>
-                    <p style="line-height: 1.8; opacity: 0.9; font-size: 0.98rem;">
-                        International cuisine on the Cabo San Lucas Marina. Experience fresh seafood, premium cuts, and authentic flavors with breathtaking marina views since 1995.
-                    </p>
-                    <div style="margin-top: 1.75rem;">
-                        <img src="solomons-logo.png" alt="Solomon's Landing" style="height: 55px; filter: brightness(0) invert(1) opacity(0.85);">
-                    </div>
-                </div>
-
-                <!-- Quick Links -->
-                <div>
-                    <h3 style="color: var(--yellow-sun); margin-bottom: 1.25rem; font-size: 1.3rem; font-weight: 700;">Quick Links</h3>
-                    <ul style="list-style: none; padding: 0; line-height: 2.2;">
-                        <li><a href="index.html" style="color: rgba(255,255,255,0.9); text-decoration: none; transition: all 0.3s; display: inline-block; padding: 0.2rem 0; position: relative;">Home</a></li>
-                        <li><a href="menus.html" style="color: rgba(255,255,255,0.9); text-decoration: none; transition: all 0.3s; display: inline-block; padding: 0.2rem 0; position: relative;">Menus</a></li>
-                        <li><a href="reviews.html" style="color: rgba(255,255,255,0.9); text-decoration: none; transition: all 0.3s; display: inline-block; padding: 0.2rem 0; position: relative;">Reviews</a></li>
-                        <li><a href="catering.html" style="color: rgba(255,255,255,0.9); text-decoration: none; transition: all 0.3s; display: inline-block; padding: 0.2rem 0; position: relative;">Catering</a></li>
-                        <li><a href="location.html" style="color: rgba(255,255,255,0.9); text-decoration: none; transition: all 0.3s; display: inline-block; padding: 0.2rem 0; position: relative;">Location</a></li>
-                        <li><a href="reservations.html" style="color: rgba(255,255,255,0.9); text-decoration: none; transition: all 0.3s; display: inline-block; padding: 0.2rem 0; position: relative;">Reservations</a></li>
-                    </ul>
-                </div>
-
-                <!-- Contact Info -->
-                <div>
-                    <h3 style="color: var(--yellow-sun); margin-bottom: 1.25rem; font-size: 1.3rem; font-weight: 700;">Contact</h3>
-                    <p style="line-height: 1.9; opacity: 0.9;">
-                        <strong style="font-size: 1.05rem;">Phone:</strong><br>
-                        <a href="tel:+526242193228" style="color: var(--yellow-sun); text-decoration: none; font-size: 1.05rem; transition: all 0.3s;">+52 624 219 3228</a>
-                    </p>
-                    <p style="line-height: 1.9; opacity: 0.9; margin-top: 1.25rem;">
-                        <strong style="font-size: 1.05rem;">Email:</strong><br>
-                        <a href="mailto:condecorporation@gmail.com" style="color: var(--yellow-sun); text-decoration: none; font-size: 1.05rem; transition: all 0.3s;">condecorporation@gmail.com</a>
-                    </p>
-                    <p style="line-height: 1.9; opacity: 0.9; margin-top: 1.25rem;">
-                        <strong style="font-size: 1.05rem;">Staff:</strong><br>
-                        <a href="pos-app/index.html" style="color: var(--yellow-sun); text-decoration: none; font-size: 1.05rem; transition: all 0.3s;">Solomon's App</a>
-                    </p>
-                </div>
-
-                <!-- Social Media -->
-                <div>
-                    <h3 style="color: var(--yellow-sun); margin-bottom: 1.25rem; font-size: 1.3rem; font-weight: 700;">Follow Us</h3>
-                    <div style="display: flex; flex-direction: column; gap: 1rem;">
-                        <a href="https://www.instagram.com/solomonslanding/" target="_blank" rel="noopener" style="color: rgba(255,255,255,0.9); text-decoration: none; transition: all 0.3s; display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem; border-radius: 8px; background: rgba(255, 255, 255, 0.05);">
-                            <span style="font-size: 1.75rem;">📷</span> <span style="font-size: 1.05rem;">Instagram</span>
-                        </a>
-                        <a href="https://www.facebook.com/SolomonsLandingLosCabos" target="_blank" rel="noopener" style="color: rgba(255,255,255,0.9); text-decoration: none; transition: all 0.3s; display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem; border-radius: 8px; background: rgba(255, 255, 255, 0.05);">
-                            <span style="font-size: 1.75rem;">👥</span> <span style="font-size: 1.05rem;">Facebook</span>
-                        </a>
-                        <a href="https://www.tripadvisor.com.mx/Restaurant_Review-g152515-d878292-Reviews-Solomon_s_Landing_Restaurant-Cabo_San_Lucas_Los_Cabos_Baja_California.html" target="_blank" rel="noopener" style="color: rgba(255,255,255,0.9); text-decoration: none; transition: all 0.3s; display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem; border-radius: 8px; background: rgba(255, 255, 255, 0.05);">
-                            <span style="font-size: 1.75rem;">✈️</span> <span style="font-size: 1.05rem;">TripAdvisor</span>
-                        </a>
-                    </div>
+    <!-- FOOTER - SLIM & PROFESSIONAL -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <!-- Brand & Social -->
+            <div class="footer-section">
+                <img src="solomons-logo.png" alt="Solomon's Landing" class="footer-logo">
+                <p class="footer-tagline">Premium waterfront dining in Cabo Marina since 1995. Fresh seafood, international cuisine, and unforgettable views.</p>
+                <div class="footer-social">
+                    <a href="https://www.facebook.com/SolomonsLandingLosCabos" target="_blank" rel="noopener" aria-label="Facebook">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M24 12.07C24 5.41 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.04V9.41c0-3.02 1.8-4.7 4.54-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.5c-1.5 0-1.96.93-1.96 1.89v2.26h3.32l-.53 3.5h-2.8V24C19.62 23.1 24 18.1 24 12.07"/></svg>
+                    </a>
+                    <a href="https://www.instagram.com/solomonslanding/" target="_blank" rel="noopener" aria-label="Instagram">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-3.3-.1-4.8-1.7-4.9-4.9-.1-1.3-.1-1.7-.1-4.9s0-3.6.1-4.9c.1-3.2 1.7-4.8 4.9-4.9 1.3-.1 1.7-.1 4.9-.1M12 0C8.7 0 8.3 0 7.1.1 2.7.3.3 2.7.1 7.1 0 8.3 0 8.7 0 12s0 3.7.1 4.9c.2 4.4 2.6 6.8 7 7 1.2.1 1.6.1 4.9.1s3.7 0 4.9-.1c4.4-.2 6.8-2.6 7-7 .1-1.2.1-1.6.1-4.9s0-3.7-.1-4.9c-.2-4.4-2.6-6.8-7-7C15.7 0 15.3 0 12 0m0 5.8a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4M12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8m6.4-11.8a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8"/></svg>
+                    </a>
+                    <a href="https://www.tripadvisor.com.mx/Restaurant_Review-g152515-d878292-Reviews-Solomon_s_Landing_Restaurant-Cabo_San_Lucas_Los_Cabos_Baja_California.html" target="_blank" rel="noopener" aria-label="TripAdvisor">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-7.78 3.67h15.56A10 10 0 0 0 12 2M2.5 7.5a4 4 0 1 0 0 8 4 4 0 0 0 0-8m0 1.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5m19 0a4 4 0 1 0 0 8 4 4 0 0 0 0-8m0 1.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5m0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6m0 1a2 2 0 1 0 0 4 2 2 0 0 0 0-4"/></svg>
+                    </a>
                 </div>
             </div>
 
-            <!-- Bottom Bar -->
-            <div style="border-top: 1px solid rgba(255,255,255,0.2); padding-top: 1.5rem; text-align: center;">
-                <p style="margin: 0; font-size: 0.95rem; color: rgba(255,255,255,0.8); font-weight: 500;">
-                    &copy; 2025 Solomon's Landing. All rights reserved. | Cabo San Lucas, B.C.S., México
+            <!-- Contact & Hours -->
+            <div class="footer-section">
+                <h3>Contact & Hours</h3>
+                <p style="margin: 0.5rem 0;">
+                    <a href="tel:+526242193228" style="display: inline-flex; align-items: center; gap: 0.4rem;">
+                        📞 +52 624 219 3228
+                    </a>
                 </p>
-                <p style="margin: 1rem 0 0 0; font-size: 0.9rem; color: rgba(255,255,255,0.6);">
-                    🐾 Pet Friendly | 🦞 Fresh Seafood Daily | 🌍 International Cuisine
+                <p style="margin: 0.5rem 0;">
+                    <a href="https://wa.me/526242193228" target="_blank" style="color: #25D366; display: inline-flex; align-items: center; gap: 0.4rem;">
+                        💬 WhatsApp
+                    </a>
                 </p>
+                <p style="margin: 0.5rem 0;">
+                    <a href="mailto:condecorporation@gmail.com" style="display: inline-flex; align-items: center; gap: 0.4rem;">
+                        ✉️ Email Us
+                    </a>
+                </p>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <p style="margin: 0.25rem 0; font-weight: 600; color: #FFC93C;">Open 7 Days</p>
+                    <p style="margin: 0.25rem 0;">Monday - Sunday</p>
+                    <p style="margin: 0.25rem 0;"><strong>12:00 PM - 11:00 PM</strong></p>
+                </div>
             </div>
+        </div>
+
+        <!-- Footer Bottom -->
+        <div class="footer-bottom">
+            <p style="margin: 0;">&copy; 2025 Solomon's Landing. All rights reserved. | 🐾 Pet Friendly | 🦞 Fresh Daily</p>
         </div>
     </footer>
 
-    <!-- Supabase Client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-client.js?v=22"></script>
-    
     <!-- Chatbot Scripts -->
-    <script src="chatbot.js?v=21"></script>
-    <script src="chatbot-init.js?v=21"></script>
+    <script src="chatbot.js"></script>
+    <script src="chatbot-init.js"></script>
 
-    <!-- JavaScript -->
-    <script src="mobile-menu.js?v=1"></script>
-    <script src="app.js?v=21"></script>
-    
-    <!-- Inicializar Supabase -->
-    <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            if (window.SupabaseAPI) {
-                SupabaseAPI.init();
-            }
-        });
-    </script>
+    <!-- Main App -->
+    <script src="app.js"></script>
 </body>
 </html>
-, dond

@@ -42,6 +42,9 @@
                             </div>
                         </div>
                     </div>
+                    <button class="chatbot-close" id="chatbotClose" aria-label="Close chat">
+                        ✕
+                    </button>
                 </div>
 
                 <!-- Messages Area -->
@@ -84,14 +87,19 @@
         let isChatOpen = false;
         let hasShownWelcome = false;
 
-        // DOM Elements
-        const chatbotToggle = document.getElementById('chatbotToggle');
-        const chatbotWindow = document.getElementById('chatbotWindow');
+        // DOM ElemenClose = document.getElementById('chatbotClose');
         const chatbotMessages = document.getElementById('chatbotMessages');
         const chatbotInput = document.getElementById('chatbotInput');
         const chatbotSend = document.getElementById('chatbotSend');
         const chatbotNotification = document.getElementById('chatbotNotification');
         const quickRepliesContainer = document.getElementById('quickReplies');
+
+        // Function to close chatbot
+        function closeChatbot() {
+            isChatOpen = false;
+            chatbotWindow.classList.remove('open');
+            chatbotToggle.classList.remove('active');
+        }
 
         // Toggle chat window
         chatbotToggle.addEventListener('click', () => {
@@ -108,6 +116,28 @@
                     hasShownWelcome = true;
                     setTimeout(() => {
                         sendBotMessage(chatbot.responses[chatbot.currentLanguage].greeting, true);
+                        showQuickReplies();
+                    }, 500);
+                }
+            }
+        });
+
+        // Close button click
+        chatbotClose.addEventListener('click', closeChatbot);
+
+        // Close on ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && isChatOpen) {
+                closeChatbot();
+            }
+        });
+
+        // Close on click outside
+        document.addEventListener('click', (e) => {
+            if (isChatOpen && 
+                !chatbotWindow.contains(e.target) && 
+                !chatbotToggle.contains(e.target)) {
+                closeChatbot();       sendBotMessage(chatbot.responses[chatbot.currentLanguage].greeting, true);
                         showQuickReplies();
                     }, 500);
                 }

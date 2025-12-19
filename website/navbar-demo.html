@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navbar Component Demo - Solomon's Landing</title>
+    
+    <!-- Navbar Component CSS -->
+    <link rel="stylesheet" href="assets/css/components/navbar.css">
+    <link rel="stylesheet" href="assets/css/navbar-override.css">
+    
+    <!-- Main JavaScript -->
+    <script src="assets/js/main.js"></script>
+    
+    <style>
+        /* Demo-specific styles */
+        :root {
+            --blue-main: #004A9F;
+            --yellow-sun: #FFC93C;
+            --orange-sun: #FF8A3C;
+            --navy-dark: #002654;
+            --white: #FFFFFF;
+        }
+        
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        .demo-content {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .demo-section {
+            background: white;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+        
+        .demo-section h2 {
+            color: var(--navy-dark);
+            margin-top: 0;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .demo-card {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--blue-main), var(--navy-dark));
+            color: white;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .demo-card h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.2rem;
+        }
+        
+        .demo-card p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: #10b981;
+            color: white;
+            border-radius: 20px;
+            font-weight: 600;
+            margin: 0.5rem;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            background: #f0f9ff;
+            border-left: 4px solid var(--blue-main);
+            border-radius: 4px;
+        }
+        
+        .feature-list li::before {
+            content: '✓ ';
+            color: #10b981;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+        
+        code {
+            background: #1e293b;
+            color: #10b981;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        .test-button {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--yellow-sun);
+            color: var(--navy-dark);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 201, 60, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .demo-content {
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ============================================
+         NAVBAR COMPONENT (Copy this section)
+         ============================================ -->
+    <header class="site-header">
+        <div class="navbar-container">
+            <!-- Logo -->
+            <div class="navbar-logo">
+                <a href="index.html" aria-label="Solomon's Landing Home">
+                    <img src="solomons-logo.png" alt="Solomon's Landing" loading="eager">
+                </a>
+            </div>
+            
+            <!-- Mobile Hamburger Toggle -->
+            <button class="navbar-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <!-- Navigation -->
+            <nav class="navbar-nav">
+                <ul class="navbar-menu">
+                    <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+                    <li><a href="menus.html" data-i18n="nav.menus">Menus</a></li>
+                    <li><a href="reviews.html" data-i18n="nav.reviews">Reviews</a></li>
+                    <li><a href="catering.html" data-i18n="nav.catering">Catering</a></li>
+                    <li><a href="location.html" data-i18n="nav.location">Location</a></li>
+                </ul>
+                
+                <!-- Language Toggle -->
+                <div class="navbar-lang">
+                    <button class="lang-btn active" data-lang="en" title="English" aria-label="Switch to English">
+                        🇺🇸 EN
+                    </button>
+                    <button class="lang-btn" data-lang="es" title="Español" aria-label="Cambiar a Español">
+                        🇲🇽 ES
+                    </button>
+                </div>
+            </nav>
+        </div>
+        
+        <!-- Mobile Overlay -->
+        <div class="navbar-overlay"></div>
+    </header>
+
+    <!-- ============================================
+         DEMO CONTENT
+         ============================================ -->
+    <div class="demo-content">
+        <div class="demo-section">
+            <h2>🎉 Navbar Component Demo</h2>
+            <p>This page demonstrates the new navbar component in action. Try the following:</p>
+            
+            <div style="margin: 2rem 0;">
+                <span class="status-badge">✓ Installed</span>
+                <span class="status-badge">✓ Responsive</span>
+                <span class="status-badge">✓ Bilingual</span>
+                <span class="status-badge">✓ Accessible</span>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>🧪 Interactive Tests</h2>
+            <p>Test the navbar functionality:</p>
+            
+            <div style="margin: 1.5rem 0;">
+                <button class="test-button" onclick="testMobileMenu()">
+                    📱 Test Mobile Menu
+                </button>
+                <button class="test-button" onclick="testLanguage()">
+                    🌐 Switch Language
+                </button>
+                <button class="test-button" onclick="testScroll()">
+                    ⬇️ Test Scroll Effect
+                </button>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>✨ Features</h2>
+            <ul class="feature-list">
+                <li><strong>Mobile-First Design:</strong> Hamburger menu on mobile, horizontal menu on desktop</li>
+                <li><strong>Sticky Header:</strong> Navbar stays at top when scrolling</li>
+                <li><strong>Bilingual Support:</strong> Switch between English and Spanish instantly</li>
+                <li><strong>Active Page Detection:</strong> Current page is automatically highlighted</li>
+                <li><strong>Smooth Animations:</strong> Professional transitions and effects</li>
+                <li><strong>Accessible:</strong> ARIA labels, keyboard navigation, screen reader friendly</li>
+                <li><strong>No Dependencies:</strong> Pure vanilla JavaScript and CSS</li>
+            </ul>
+        </div>
+
+        <div class="demo-section">
+            <h2>📱 Responsive Breakpoints</h2>
+            <div class="demo-grid">
+                <div class="demo-card">
+                    <h3>Mobile</h3>
+                    <p>≤768px</p>
+                    <p style="margin-top: 1rem; font-size: 0.85rem;">Hamburger menu + slide-out drawer</p>
+                </div>
+                <div class="demo-card">
+                    <h3>Tablet</h3>
+                    <p>769-1024px</p>
+                    <p style="margin-top: 1rem; font-size: 0.85rem;">Compact horizontal menu</p>
+                </div>
+                <div class="demo-card">
+                    <h3>Desktop</h3>
+                    <p>1025-1399px</p>
+                    <p style="margin-top: 1rem; font-size: 0.85rem;">Full horizontal menu</p>
+                </div>
+                <div class="demo-card">
+                    <h3>Large</h3>
+                    <p>≥1400px</p>
+                    <p style="margin-top: 1rem; font-size: 0.85rem;">Extra spacing + larger logo</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>💻 Code Example</h2>
+            <p>To add bilingual content, use <code>data-i18n</code> attributes:</p>
+            <pre style="background: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 8px; overflow-x: auto; margin: 1rem 0;">
+&lt;!-- HTML --&gt;
+&lt;h1 data-i18n="hero.title"&gt;International Cuisine Restaurant&lt;/h1&gt;
+
+&lt;!-- JavaScript (main.js) --&gt;
+const translations = {
+  en: { 'hero.title': 'International Cuisine Restaurant' },
+  es: { 'hero.title': 'Restaurante de Cocina Internacional' }
+};</pre>
+        </div>
+
+        <div class="demo-section">
+            <h2 data-i18n="hero.title">International Cuisine Restaurant</h2>
+            <p data-i18n="hero.subtitle">Enjoy the experience</p>
+            <p style="margin-top: 1rem; padding: 1rem; background: #fef3c7; border-left: 4px solid var(--yellow-sun); border-radius: 4px;">
+                <strong>👆 Try switching languages!</strong> Click the EN/ES buttons in the navbar to see this content translate.
+            </p>
+        </div>
+
+        <div class="demo-section">
+            <h2>📚 Documentation</h2>
+            <p>Complete documentation is available in:</p>
+            <ul style="line-height: 2;">
+                <li><code>IMPLEMENTATION-SUMMARY.md</code> - Overview and results</li>
+                <li><code>assets/README.md</code> - Technical documentation</li>
+                <li><code>MIGRATION-CHECKLIST.md</code> - Step-by-step guide</li>
+                <li><code>BEFORE-AFTER.md</code> - Code comparison</li>
+                <li><code>QUICK-REFERENCE.txt</code> - Quick reference card</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function testMobileMenu() {
+            const toggle = document.querySelector('.navbar-toggle');
+            if (toggle) {
+                toggle.click();
+                alert('✓ Mobile menu toggled!\n\nOn mobile devices, the hamburger menu will slide out from the right.\n\nTry resizing your browser to mobile size (≤768px) to see the full effect.');
+            }
+        }
+
+        function testLanguage() {
+            const currentLang = window.solomons.currentLanguage();
+            const newLang = currentLang === 'en' ? 'es' : 'en';
+            window.solomons.translatePage(newLang);
+            alert(`✓ Language switched to ${newLang.toUpperCase()}!\n\nNotice how the navigation and demo content updated automatically.\n\nThe selected language is saved in localStorage and persists across page loads.`);
+        }
+
+        function testScroll() {
+            window.scrollTo({ top: 500, behavior: 'smooth' });
+            setTimeout(() => {
+                alert('✓ Scroll effect active!\n\nNotice how the navbar stays at the top of the page (sticky positioning).\n\nOn scroll, the header can apply additional styling via the .scrolled class.');
+            }, 500);
+        }
+
+        // Add some content to enable scrolling
+        const demoContent = document.querySelector('.demo-content');
+        const scrollSection = document.createElement('div');
+        scrollSection.className = 'demo-section';
+        scrollSection.innerHTML = '<h2>⬇️ Scroll Test Section</h2><p>Scroll down to see the sticky navbar effect in action. The navbar will stay at the top of the viewport.</p>';
+        demoContent.appendChild(scrollSection);
+    </script>
+</body>
+</html>

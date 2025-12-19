@@ -20,269 +20,198 @@
     <link rel="canonical" href="https://solomonslanding.com/location.html">
     
     <title>Location & Hours | Solomon's Landing Marina Cabo San Lucas | Directions, Contact & Map | Ubicación</title>
-    <link rel="stylesheet" href="performance.css">
-    <link rel="stylesheet" href="styles.css?v=21">
-    <link rel="stylesheet" href="enhanced-design.css?v=21">
-    <link rel="stylesheet" href="chatbot.css?v=21">
-    <link rel="stylesheet" href="holiday-theme.css?v=21">
-    <link rel="stylesheet" href="location-enhanced.css?v=2">
-    <link rel="stylesheet" href="mobile.css?v=1766106090" media="(max-width: 768px)">
-    <link rel="stylesheet" href="mobile-override.css?v=1766113057" media="(max-width: 768px)">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="assets/css/solomons-global.css">
+    <link rel="stylesheet" href="chatbot.css">
     
-    <!-- EmailJS SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script src="mobile-force.js?v=1766113057"></script>
+    <script defer src="assets/js/main.js"></script>
 </head>
 <body>
-    <!-- HEADER -->
-    <header style="background: linear-gradient(135deg, rgba(22, 91, 51, 0.85) 0%, rgba(196, 30, 58, 0.85) 50%, rgba(22, 91, 51, 0.85) 100%); background-size: 200% 200%; animation: gradientShift 30s ease-in-out infinite; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; padding: 0.5rem 0;">
-        
-        <div class="container">
-            <div class="header-content" style="display: flex; align-items: center; justify-content: space-between; padding: 0;">
-                <div class="logo">
-                    <a href="index.html"><img src="logo solomons.png" alt="Solomon's Landing Logo" loading="lazy" style="height: 50px;"></a>
-                </div>
-                
-                <!-- Mobile Menu Toggle -->
-                <button class="mobile-menu-toggle" aria-label="Toggle navigation menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-                
-                <nav>
-                    <ul style="display: flex; gap: 1.8rem; list-style: none; margin: 0; padding: 0;">
-                        <li><a href="index.html" style="color: white;">Home</a></li>
-                        <li><a href="menus.html" style="color: white;">Menus</a></li>
-                        <li><a href="reviews.html" style="color: white;">Reviews</a></li>
-                        <li><a href="catering.html" style="color: white;">Catering</a></li>
-                        <li><a href="location.html" class="active" style="color: var(--holiday-gold); font-weight: 700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);">Location</a></li>
-                    </ul>
-                </nav>
-                <div class="header-actions" style="display: flex; align-items: center; gap: 1rem;">
-                    <div class="language-toggle" style="display: flex; gap: 0.4rem;">
-                        <button class="lang-btn active" data-lang="en" style="background: white; color: var(--holiday-green); padding: 0.4rem 0.7rem; border: none; border-radius: 5px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">EN</button>
-                        <button class="lang-btn" data-lang="es" style="background: rgba(255,255,255,0.2); color: white; padding: 0.4rem 0.7rem; border: none; border-radius: 5px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">ES</button>
-                    </div>
-                    <a href="reservations.html" class="btn btn-primary" style="background: var(--holiday-gold); color: var(--holiday-green); padding: 0.7rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 700; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.25); font-size: 0.95rem;">🎄 Reserve</a>
+    <!-- HEADER / NAVBAR -->
+    <header class="site-header">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <a href="index.html">
+                    <img src="solomons-logo.png" alt="Solomon's Landing" loading="lazy">
+                </a>
+            </div>
+            
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <nav class="navbar-menu">
+                <ul class="navbar-nav">
+                    <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+                    <li><a href="menus.html" data-i18n="nav.menus">Menus</a></li>
+                    <li><a href="reviews.html" data-i18n="nav.reviews">Reviews</a></li>
+                    <li><a href="catering.html" data-i18n="nav.catering">Catering</a></li>
+                    <li><a href="location.html" class="active" data-i18n="nav.location">Location</a></li>
+                </ul>
+            </nav>
+            
+            <div class="navbar-actions">
+                <div class="language-toggle">
+                    <button class="lang-btn active" data-lang="en" title="English">🇺🇸 EN</button>
+                    <button class="lang-btn" data-lang="es" title="Español">🇲🇽 ES</button>
                 </div>
             </div>
         </div>
-        <!-- Mobile Overlay -->
+        
         <div class="mobile-nav-overlay"></div>
     </header>
 
     <!-- MAIN CONTENT -->
     <main>
-        <!-- LOCATION HERO SECTION - Photo Slider -->
-        <section id="location-hero" style="position: relative; height: 100vh; min-height: 600px; overflow: hidden;">
-            <!-- Nieve sutil animada -->
-            <div class="snowflakes" aria-hidden="true">
-                <div class="snowflake">❄</div>
-                <div class="snowflake">❄</div>
-                <div class="snowflake">❄</div>
-                <div class="snowflake">❄</div>
-                <div class="snowflake">❄</div>
-                <div class="snowflake">❄</div>
-            </div>
-            
-            <!-- Hero Background -->
-            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/sh2'); background-size: cover; background-position: center center; background-repeat: no-repeat;"></div>
-            
-            <!-- Hero Overlay Content -->
-            <div class="hero-overlay" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2; width: 90%; max-width: 900px; text-align: center;">
-                <div style="font-size: 4rem; margin-bottom: 1rem; animation: fadeInUp 0.8s ease-out;">📍</div>
-                <h1 data-i18n="location.heroTitle" style="font-family: 'Cormorant Garamond', serif; font-size: 4rem; color: white; margin-bottom: 1.5rem; text-shadow: 0 4px 30px rgba(0,0,0,0.5); font-weight: 300; letter-spacing: 2px; animation: fadeInUp 0.8s ease-out 0.2s backwards;">Location & Hours</h1>
-                <div style="width: 120px; height: 4px; background: linear-gradient(90deg, var(--holiday-red), var(--holiday-gold), var(--holiday-green)); margin: 0 auto 2rem; border-radius: 2px; animation: fadeInUp 0.8s ease-out 0.3s backwards;"></div>
-                <p data-i18n="location.heroSubtitle" style="font-family: 'Montserrat', sans-serif; font-size: 1.3rem; color: rgba(255,255,255,0.95); line-height: 1.8; text-shadow: 0 2px 15px rgba(0,0,0,0.4); letter-spacing: 1px; animation: fadeInUp 0.8s ease-out 0.4s backwards; max-width: 700px; margin: 0 auto;">
-                    Find us at the beautiful Cabo San Lucas Marina
-                </p>
-            </div>
-            
-            <!-- Scroll Indicator -->
-            <div class="scroll-indicator" style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 100; animation: bounce 2s infinite; cursor: pointer;">
-                <div style="width: 35px; height: 55px; border: 3px solid rgba(255,255,255,0.9); border-radius: 25px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
-                    <div style="width: 8px; height: 12px; background: white; border-radius: 4px; position: absolute; top: 10px; left: 50%; transform: translateX(-50%); animation: scroll-down 2s infinite; box-shadow: 0 2px 5px rgba(0,0,0,0.2);"></div>
-                </div>
-                <p style="color: white; font-size: 0.85rem; margin-top: 10px; text-align: center; opacity: 1; letter-spacing: 1.5px; font-weight: 600; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">SCROLL</p>
+        <!-- LOCATION HERO -->
+        <section id="location-hero" class="page-hero" style="background-image: url('https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/sh2');">
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <div style="font-size: 3rem; margin-bottom: 0.75rem;">📍</div>
+                <h1 data-i18n="location.heroTitle">Location & Hours</h1>
+                <p data-i18n="location.heroSubtitle">Find us at the beautiful Cabo San Lucas Marina</p>
             </div>
         </section>
 
-        <!-- Location Section -->
-        <section id="location">
+        <!-- Location Content -->
+        <section style="padding: 4rem 0;">
             <div class="container">
-                <h2 class="section-title-main" data-i18n="location.mainTitle">Visit Us</h2>
+                <h2 style="text-align: center; margin-bottom: 3rem;" data-i18n="location.mainTitle">Visit Us in Cabo Marina</h2>
                 
-                <!-- Info Cards Grid -->
-                <div class="info-cards-grid">
-                    <!-- Address Card -->
-                    <div class="info-card">
-                        <div class="info-card-icon">📍</div>
-                        <h3 data-i18n="location.addressTitle">Our Location</h3>
-                        <div class="info-card-content">
-                            <p class="restaurant-name">Solomon's Landing</p>
-                            <p>Blvd. Paseo de la Marina Centro</p>
-                            <p>Centro, Marina</p>
-                            <p>23450 Cabo San Lucas, B.C.S.</p>
-                            <p>Mexico</p>
-                            <a href="https://maps.google.com/?q=Solomon's+Landing+Cabo+San+Lucas" target="_blank" class="card-link">Open in Maps →</a>
+                <div class="location-grid">
+                    <!-- Left Column: Info Cards -->
+                    <div>
+                        <!-- Address Card -->
+                        <div class="location-card" style="margin-bottom: 2rem;">
+                            <h3>📍 <span data-i18n="location.addressTitle">Our Location</span></h3>
+                            <p><strong>Solomon's Landing</strong></p>
+                            <p>Blvd. Paseo de la Marina Centro<br>
+                            Centro, Marina<br>
+                            23450 Cabo San Lucas, B.C.S.<br>
+                            Mexico</p>
+                            <p style="margin-top: 1rem; padding: 0.75rem; background: rgba(0, 74, 159, 0.05); border-radius: 8px; font-size: 0.9rem;">
+                                <strong>Plus Code:</strong> V3JQ+7C Cabo San Lucas, Baja California Sur
+                            </p>
+                            <a href="https://www.google.com/maps?q=V3JQ%2B7C%20Cabo%20San%20Lucas%20Baja%20California%20Sur" target="_blank" rel="noopener" class="btn btn-primary" style="margin-top: 1rem; display: inline-block; width: 100%; text-align: center;">
+                                🗺️ Open in Google Maps
+                            </a>
+                        </div>
+                        
+                        <!-- Contact Card -->
+                        <div class="location-card" style="margin-bottom: 2rem;">
+                            <h3>📞 <span data-i18n="location.contactTitle">Contact Us</span></h3>
+                            <p><strong data-i18n="location.phone">Phone:</strong><br>
+                            <a href="tel:+526242193228" style="color: #004A9F; font-weight: 600;">+52 624 219 3228</a></p>
+                            <p><strong data-i18n="location.whatsapp">WhatsApp:</strong><br>
+                            <a href="https://wa.me/526242193228" target="_blank" style="color: #25D366; font-weight: 600;">+52 624 219 3228 💬</a></p>
+                            <p><strong data-i18n="location.email">Email:</strong><br>
+                            <a href="mailto:condecorporation@gmail.com" style="color: #004A9F;">condecorporation@gmail.com</a></p>
+                        </div>
+                        
+                        <!-- Hours Card -->
+                        <div class="location-card">
+                            <h3>🕒 <span data-i18n="location.hoursTitle">Opening Hours</span></h3>
+                            <p><strong data-i18n="location.openDays">Open 7 Days a Week</strong></p>
+                            <p style="font-size: 1.1rem; margin: 0.75rem 0;">Monday - Sunday<br><strong>12:00 PM - 11:00 PM</strong></p>
+                            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(0, 74, 159, 0.1);">
+                                <p style="margin: 0.5rem 0;">🍅 <strong data-i18n="location.lunch">Lunch:</strong> 12:00 PM - 5:00 PM</p>
+                                <p style="margin: 0.5rem 0;">🌙 <strong data-i18n="location.dinner">Dinner:</strong> 5:00 PM - 11:00 PM</p>
+                            </div>
                         </div>
                     </div>
-
-                    <!-- Contact Card -->
-                    <div class="info-card">
-                        <div class="info-card-icon">📞</div>
-                        <h3 data-i18n="location.contactTitle">Contact Us</h3>
-                        <div class="info-card-content">
-                            <div class="contact-item">
-                                <span class="contact-label" data-i18n="location.phone">Phone:</span>
-                                <a href="tel:+526242193228" class="contact-value">+52 624 219 3228</a>
-                            </div>
-                            <div class="contact-item">
-                                <span class="contact-label" data-i18n="location.whatsapp">WhatsApp:</span>
-                                <a href="https://wa.me/526242193228" target="_blank" class="contact-value">+52 624 219 3228</a>
-                            </div>
-                            <div class="contact-item">
-                                <span class="contact-label" data-i18n="location.email">Email:</span>
-                                <a href="mailto:contact@solomonslanding.com.mx" class="contact-value">contact@solomonslanding.com.mx</a>
-                            </div>
+                    
+                    <!-- Right Column: Map -->
+                    <div>
+                        <div class="location-map-card">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3671.234!2d-109.9131!3d22.88088!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x86af4b0000000000%3A0x0!2zMjLCsDUyJzUxLjIiTiAxMDnCsDU0JzQ3LjIiVw!5e0!3m2!1sen!2smx!4v1734649200000!5m2!1sen!2smx" width="100%" height="450" style="border:0; border-radius: 12px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Solomon's Landing Location Map"></iframe>
                         </div>
-                    </div>
-
-                    <!-- Hours Card -->
-                    <div class="info-card">
-                        <div class="info-card-icon">🕒</div>
-                        <h3 data-i18n="location.hoursTitle">Opening Hours</h3>
-                        <div class="info-card-content">
-                            <p class="open-daily" data-i18n="location.openDays">Open 7 Days a Week</p>
-                            <p class="hours-range">Monday - Sunday: 8:00 AM - 11:00 PM</p>
-                            <div class="meal-times">
-                                <div class="meal-time">
-                                    <span class="meal-icon">🌅</span>
-                                    <span data-i18n="location.breakfast">Breakfast</span>
-                                    <span class="time">8:00 AM - 12:00 PM</span>
+                        
+                        <!-- Additional Info Card -->
+                        <div class="location-card" style="margin-top: 2rem;">
+                            <h3>✨ <span data-i18n="location.specialTitle">What Makes Us Special</span></h3>
+                            <p data-i18n="location.specialText" style="margin-bottom: 1.25rem;">Located in the heart of Cabo Marina, we offer breathtaking waterfront views, premium fresh seafood, and authentic international cuisine.</p>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span style="font-size: 1.5rem;">🐾</span>
+                                    <span style="font-size: 0.9rem;">Pet Friendly</span>
                                 </div>
-                                <div class="meal-time">
-                                    <span class="meal-icon">☀️</span>
-                                    <span data-i18n="location.lunch">Lunch</span>
-                                    <span class="time">12:00 PM - 5:00 PM</span>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span style="font-size: 1.5rem;">🅿️</span>
+                                    <span style="font-size: 0.9rem;">FREE Parking</span>
                                 </div>
-                                <div class="meal-time">
-                                    <span class="meal-icon">🌙</span>
-                                    <span data-i18n="location.dinner">Dinner</span>
-                                    <span class="time">5:00 PM - 11:00 PM</span>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span style="font-size: 1.5rem;">🌊</span>
+                                    <span style="font-size: 0.9rem;">Marina Views</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span style="font-size: 1.5rem;">🦞</span>
+                                    <span style="font-size: 0.9rem;">Fresh Daily</span>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Parking Card -->
-                    <div class="info-card">
-                        <div class="info-card-icon">🅿️</div>
-                        <h3 data-i18n="location.parkingTitle">Parking</h3>
-                        <div class="info-card-content">
-                            <p data-i18n="location.parkingInfo">Free parking available at the Marina. Look for our restaurant signage along the boardwalk.</p>
-                            <p class="parking-tip" data-i18n="location.parkingTip">Marina parking lot is open 24/7</p>
-                        </div>
-                    </div>
-
-                    <!-- Pet Friendly Card -->
-                    <div class="info-card">
-                        <div class="info-card-icon">🐕</div>
-                        <h3 data-i18n="contact.petFriendly">Pet Friendly</h3>
-                        <div class="info-card-content">
-                            <p data-i18n="contact.petMessage">We love seeing you with your best friend. Our place is suitable for you both.</p>
-                            <p class="pet-note" data-i18n="location.petNote">Well-behaved pets welcome on our patio</p>
-                        </div>
-                    </div>
-
-                    <!-- Special Note Card -->
-                    <div class="info-card info-card-special">
-                        <div class="info-card-icon">✨</div>
-                        <h3 data-i18n="location.specialTitle">Why Visit Us</h3>
-                        <div class="info-card-content">
-                            <p data-i18n="location.specialText">Experience stunning marina views, fresh seafood, and exceptional service in the heart of Cabo San Lucas.</p>
                         </div>
                     </div>
                 </div>
-
-                <!-- Map Section -->
-                <div class="map-section">
-                    <h2 class="section-subtitle" data-i18n="location.mapTitle">Find Us on the Map</h2>
-                    <div class="contact-map">
-                        <iframe 
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3671.511896281449!2d-109.91462!3d22.89083!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x86af4b32d635d58f%3A0x3e17f85a73e84e0f!2sSolomon&#39;s%20Landing!5e0!3m2!1sen!2smx!4v1234567890123"
-                            allowfullscreen=""
-                            loading="lazy"
-                            referrerpolicy="no-referrer-when-downgrade">
-                        </iframe>
-                    </div>
-                </div>
-
-                <!-- Directions Section -->
-                <div class="directions-section">
-                    <h2 class="section-subtitle" data-i18n="location.directionsTitle">How to Get Here</h2>
-                    <div class="directions-grid">
-                        <div class="direction-card">
-                            <div class="direction-icon">✈️</div>
-                            <h4 data-i18n="location.fromAirport">From Los Cabos Airport (SJD)</h4>
-                            <p data-i18n="location.airportDirections">Take Highway 1 south towards Cabo San Lucas (30-40 minutes). Follow signs to the Marina. We're on the main Marina boardwalk, easily accessible from the marina parking area.</p>
-                            <div class="direction-time">⏱️ ~35 minutes</div>
-                        </div>
-
-                        <div class="direction-card">
-                            <div class="direction-icon">🏙️</div>
-                            <h4 data-i18n="location.fromDowntown">From Downtown Cabo</h4>
-                            <p data-i18n="location.downtownDirections">Head towards the Marina district via Blvd. Paseo de la Marina. We're directly on the Marina boardwalk with beautiful ocean views. Look for our distinctive signage.</p>
-                            <div class="direction-time">⏱️ ~10 minutes</div>
-                        </div>
-
-                        <div class="direction-card">
-                            <div class="direction-icon">🚕</div>
-                            <h4 data-i18n="location.taxiUber">Taxi & Uber</h4>
-                            <p data-i18n="location.taxiDirections">Both taxi and Uber services are readily available throughout Los Cabos. Simply tell your driver "Solomon's Landing at the Marina" and they'll know exactly where to take you.</p>
-                            <div class="direction-time">📍 Ask for: Solomon's Landing Marina</div>
-                        </div>
-                    </div>
-                </div>
+            </div>
+        </section>
             </div>
         </section>
     </main>
 
     <!-- FOOTER -->
-    <footer id="contact">
-        <div class="container">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem; text-align: left;">
-                <div>
-                    <h3 style="color: var(--yellow-sun); margin-bottom: 1rem;">Contact</h3>
-                    <p>Phone: <a href="tel:+526242193228">+52 624 219 3228</a></p>
-                    <p>Email: <a href="mailto:contact@solomonslanding.com.mx">contact@solomonslanding.com.mx</a></p>
-                </div>
-                <div>
-                    <h3 style="color: var(--yellow-sun); margin-bottom: 1rem;">Location</h3>
-                    <p>Blvd. Paseo de la Marina Centro<br>Marina, 23450 Cabo San Lucas, B.C.S.</p>
-                </div>
-                <div>
-                    <h3 style="color: var(--yellow-sun); margin-bottom: 1rem;">Follow Us</h3>
-                    <p>
-                        <a href="https://www.instagram.com/solomonslanding/" target="_blank" rel="noopener">Instagram</a><br>
-                        <a href="https://www.facebook.com/SolomonsLandingLosCabos" target="_blank" rel="noopener">Facebook</a><br>
-                        <a href="https://www.tripadvisor.com.mx/Restaurant_Review-g152515-d878292-Reviews-Solomon_s_Landing_Restaurant-Cabo_San_Lucas_Los_Cabos_Baja_California.html" target="_blank" rel="noopener">TripAdvisor</a>
-                    </p>
+    <footer class="site-footer">
+        <div class="footer-content">
+            <!-- Brand & Social -->
+            <div class="footer-section">
+                <img src="solomons-logo.png" alt="Solomon's Landing" class="footer-logo">
+                <p class="footer-tagline">Premium waterfront dining in Cabo Marina since 1995. Fresh seafood, international cuisine, and unforgettable views.</p>
+                <div class="footer-social">
+                    <a href="https://www.facebook.com/SolomonsLandingLosCabos" target="_blank" rel="noopener" aria-label="Facebook">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M24 12.07C24 5.41 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.04V9.41c0-3.02 1.8-4.7 4.54-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.5c-1.5 0-1.96.93-1.96 1.89v2.26h3.32l-.53 3.5h-2.8V24C19.62 23.1 24 18.1 24 12.07"/></svg>
+                    </a>
+                    <a href="https://www.instagram.com/solomonslanding/" target="_blank" rel="noopener" aria-label="Instagram">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-3.3-.1-4.8-1.7-4.9-4.9-.1-1.3-.1-1.7-.1-4.9s0-3.6.1-4.9c.1-3.2 1.7-4.8 4.9-4.9 1.3-.1 1.7-.1 4.9-.1M12 0C8.7 0 8.3 0 7.1.1 2.7.3.3 2.7.1 7.1 0 8.3 0 8.7 0 12s0 3.7.1 4.9c.2 4.4 2.6 6.8 7 7 1.2.1 1.6.1 4.9.1s3.7 0 4.9-.1c4.4-.2 6.8-2.6 7-7 .1-1.2.1-1.6.1-4.9s0-3.7-.1-4.9c-.2-4.4-2.6-6.8-7-7C15.7 0 15.3 0 12 0m0 5.8a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4M12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8m6.4-11.8a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8"/></svg>
+                    </a>
+                    <a href="https://www.tripadvisor.com.mx/Restaurant_Review-g152515-d878292-Reviews-Solomon_s_Landing_Restaurant-Cabo_San_Lucas_Los_Cabos_Baja_California.html" target="_blank" rel="noopener" aria-label="TripAdvisor">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-7.78 3.67h15.56A10 10 0 0 0 12 2M2.5 7.5a4 4 0 1 0 0 8 4 4 0 0 0 0-8m0 1.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5m19 0a4 4 0 1 0 0 8 4 4 0 0 0 0-8m0 1.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5m0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6m0 1a2 2 0 1 0 0 4 2 2 0 0 0 0-4"/></svg>
+                    </a>
                 </div>
             </div>
-            <p style="margin-top: 1.5rem; font-size: 0.9rem; color: #999; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem;">
-                &copy; 2025 Solomon's Landing. All rights reserved.
-            </p>
+
+            <!-- Contact & Hours -->
+            <div class="footer-section">
+                <h3>Contact & Hours</h3>
+                <p style="margin: 0.5rem 0;">
+                    <a href="tel:+526242193228" style="display: inline-flex; align-items: center; gap: 0.4rem;">
+                        📞 +52 624 219 3228
+                    </a>
+                </p>
+                <p style="margin: 0.5rem 0;">
+                    <a href="https://wa.me/526242193228" target="_blank" style="color: #25D366; display: inline-flex; align-items: center; gap: 0.4rem;">
+                        💬 WhatsApp
+                    </a>
+                </p>
+                <p style="margin: 0.5rem 0;">
+                    <a href="mailto:condecorporation@gmail.com" style="display: inline-flex; align-items: center; gap: 0.4rem;">
+                        ✉️ Email Us
+                    </a>
+                </p>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <p style="margin: 0.25rem 0; font-weight: 600; color: #FFC93C;">Open 7 Days</p>
+                    <p style="margin: 0.25rem 0;">Monday - Sunday</p>
+                    <p style="margin: 0.25rem 0;"><strong>12:00 PM - 11:00 PM</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Bottom -->
+        <div class="footer-bottom">
+            <p style="margin: 0;">&copy; 2025 Solomon's Landing. All rights reserved. | 🐾 Pet Friendly | 🦞 Fresh Daily</p>
         </div>
     </footer>
 
-    <!-- Chatbot Scripts -->
-    <script src="chatbot.js?v=21" defer></script>
-    <script src="chatbot-init.js?v=21" defer></script>
-    
-    <!-- Mobile Menu -->
-    <script src="mobile-menu.js?v=1"></script>
+    <script src="assets/js/main.js"></script>
     <script src="app.js?v=21" defer></script>
 </body>
 </html>

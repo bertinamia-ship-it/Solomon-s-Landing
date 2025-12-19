@@ -20,53 +20,46 @@
     <link rel="canonical" href="https://solomonslanding.com/catering.html">
     
     <title>Catering Services | Solomon's Landing Los Cabos | Wedding & Corporate Event Catering | Servicio de Catering Cabo</title>
-    <link rel="stylesheet" href="styles.css?v=21">
-    <link rel="stylesheet" href="enhanced-design.css?v=21">
-    <link rel="stylesheet" href="chatbot.css?v=21">
-    <link rel="stylesheet" href="holiday-theme.css?v=21">
-    <link rel="stylesheet" href="mobile.css?v=1766106090" media="(max-width: 768px)">
-    <link rel="stylesheet" href="mobile-override.css?v=1766113057" media="(max-width: 768px)">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="assets/css/solomons-global.css">
+    <link rel="stylesheet" href="chatbot.css">
     
-    <!-- EmailJS SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script src="mobile-force.js?v=1766113057"></script>
+    <script defer src="assets/js/main.js"></script>
 </head>
 <body>
-    <!-- HEADER -->
-    <header style="background: linear-gradient(135deg, rgba(22, 91, 51, 0.85) 0%, rgba(196, 30, 58, 0.85) 50%, rgba(22, 91, 51, 0.85) 100%); background-size: 200% 200%; animation: gradientShift 30s ease-in-out infinite; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; padding: 0.5rem 0;">
-        
-        <div class="container">
-            <div class="header-content" style="display: flex; align-items: center; justify-content: space-between; padding: 0;">
-                <div class="logo">
-                    <a href="index.html"><img src="logo solomons.png" alt="Solomon's Landing Logo" loading="lazy" style="height: 50px;"></a>
-                </div>
-                
-                <!-- Mobile Menu Toggle -->
-                <button class="mobile-menu-toggle" aria-label="Toggle navigation menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-                
-                <nav>
-                    <ul style="display: flex; gap: 1.8rem; list-style: none; margin: 0; padding: 0;">
-                        <li><a href="index.html" style="color: white;">Home</a></li>
-                        <li><a href="menus.html" style="color: white;">Menus</a></li>
-                        <li><a href="reviews.html" style="color: white;">Reviews</a></li>
-                        <li><a href="catering.html" class="active" style="color: var(--holiday-gold); font-weight: 700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);">Catering</a></li>
-                        <li><a href="location.html" style="color: white;">Location</a></li>
-                    </ul>
-                </nav>
-                <div class="header-actions" style="display: flex; align-items: center; gap: 0.8rem;">
-                    <div class="language-toggle" style="display: flex; gap: 0.4rem;">
-                        <button class="lang-btn active" data-lang="en" style="background: white; color: var(--holiday-green); padding: 0.4rem 0.7rem; border: none; border-radius: 5px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">EN</button>
-                        <button class="lang-btn" data-lang="es" style="background: rgba(255,255,255,0.2); color: white; padding: 0.4rem 0.7rem; border: none; border-radius: 5px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">ES</button>
-                    </div>
-                    <a href="reservations.html" class="btn btn-primary" id="reserveBtn" style="background: var(--holiday-gold); color: var(--holiday-green); font-weight: 700; padding: 0.5rem 1.3rem; border-radius: 50px; text-decoration: none; font-size: 0.9rem; box-shadow: 0 3px 10px rgba(255, 215, 0, 0.2);">🎄 Reserve</a>
+    <!-- HEADER / NAVBAR -->
+    <header class="site-header">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <a href="index.html">
+                    <img src="solomons-logo.png" alt="Solomon's Landing" loading="lazy">
+                </a>
+            </div>
+            
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <nav class="navbar-menu">
+                <ul class="navbar-nav">
+                    <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+                    <li><a href="menus.html" data-i18n="nav.menus">Menus</a></li>
+                    <li><a href="reviews.html" data-i18n="nav.reviews">Reviews</a></li>
+                    <li><a href="catering.html" class="active" data-i18n="nav.catering">Catering</a></li>
+                    <li><a href="location.html" data-i18n="nav.location">Location</a></li>
+                </ul>
+            </nav>
+            
+            <div class="navbar-actions">
+                <div class="language-toggle">
+                    <button class="lang-btn active" data-lang="en" title="English">🇺🇸 EN</button>
+                    <button class="lang-btn" data-lang="es" title="Español">🇲🇽 ES</button>
                 </div>
             </div>
         </div>
-        <!-- Mobile Overlay -->
+        
         <div class="mobile-nav-overlay"></div>
     </header>
 
@@ -95,34 +88,34 @@
                     <div style="font-size: 4rem; margin-bottom: 1.5rem; animation: fadeInUp 0.8s ease-out;">🍽️✨</div>
                     
                     <h1 style="font-family: 'Cormorant Garamond', serif; font-size: 4.5rem; color: white; margin-bottom: 1.2rem; text-shadow: 0 4px 30px rgba(0,0,0,0.9); font-weight: 400; letter-spacing: 4px; line-height: 1.2; animation: fadeInUp 0.8s ease-out 0.2s backwards;">
-                        <span style="display: block; font-size: 1.8rem; color: var(--holiday-gold); font-weight: 300; letter-spacing: 3px; margin-bottom: 0.5rem;">Premium</span>
+                        <span style="display: block; font-size: 1.8rem; color: #fbbf24; font-weight: 300; letter-spacing: 3px; margin-bottom: 0.5rem;">Premium</span>
                         Catering Services
                     </h1>
                     
-                    <div style="width: 150px; height: 4px; background: linear-gradient(90deg, var(--holiday-red), var(--holiday-gold), var(--holiday-green)); margin: 0 auto 2rem; border-radius: 2px; animation: fadeInUp 0.8s ease-out 0.3s backwards;"></div>
+                    <div style="width: 150px; height: 4px; background: linear-gradient(90deg, #dc2626, #fbbf24, #065f46); margin: 0 auto 2rem; border-radius: 2px; animation: fadeInUp 0.8s ease-out 0.3s backwards;"></div>
                     
                     <p style="font-family: 'Montserrat', sans-serif; font-size: 1.4rem; color: rgba(255,255,255,0.95); line-height: 1.8; text-shadow: 0 2px 20px rgba(0,0,0,0.8); letter-spacing: 0.5px; animation: fadeInUp 0.8s ease-out 0.4s backwards; max-width: 800px; margin: 0 auto 3rem; font-weight: 300;">
-                        Transform your special moments into unforgettable culinary experiences with our <strong style="color: var(--holiday-gold);">award-winning</strong> catering services
+                        Transform your special moments into unforgettable culinary experiences with our <strong style="color: #fbbf24;">award-winning</strong> catering services
                     </p>
                     
                     <!-- Stats Row -->\n                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-bottom: 3rem; animation: fadeInUp 0.8s ease-out 0.5s backwards;">
                         <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 15px; border: 1px solid rgba(255,215,0,0.2);">
-                            <div style="font-size: 2.5rem; color: var(--holiday-gold); font-weight: 800; margin-bottom: 0.3rem;">20+</div>
+                            <div style="font-size: 2.5rem; color: #fbbf24; font-weight: 800; margin-bottom: 0.3rem;">20+</div>
                             <div style="color: white; font-size: 0.95rem; font-weight: 500;">Years Experience</div>
                         </div>
                         <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 15px; border: 1px solid rgba(255,215,0,0.2);">
-                            <div style="font-size: 2.5rem; color: var(--holiday-gold); font-weight: 800; margin-bottom: 0.3rem;">500+</div>
+                            <div style="font-size: 2.5rem; color: #fbbf24; font-weight: 800; margin-bottom: 0.3rem;">500+</div>
                             <div style="color: white; font-size: 0.95rem; font-weight: 500;">Events Catered</div>
                         </div>
                         <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 15px; border: 1px solid rgba(255,215,0,0.2);">
-                            <div style="font-size: 2.5rem; color: var(--holiday-gold); font-weight: 800; margin-bottom: 0.3rem;">200+</div>
+                            <div style="font-size: 2.5rem; color: #fbbf24; font-weight: 800; margin-bottom: 0.3rem;">200+</div>
                             <div style="color: white; font-size: 0.95rem; font-weight: 500;">Max Capacity</div>
                         </div>
                     </div>
                     
                     <!-- CTA Buttons -->
                     <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; animation: fadeInUp 0.8s ease-out 0.6s backwards;">
-                        <a href="#contact-catering" style="background: linear-gradient(135deg, var(--holiday-gold), #f59e0b); color: #1a1a1a; padding: 1.2rem 3rem; border-radius: 50px; text-decoration: none; font-weight: 800; font-size: 1.1rem; transition: all 0.3s ease; box-shadow: 0 8px 30px rgba(255, 215, 0, 0.4); text-transform: uppercase; letter-spacing: 1px;">
+                        <a href="#contact-catering" style="background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #1a1a1a; padding: 1.2rem 3rem; border-radius: 50px; text-decoration: none; font-weight: 800; font-size: 1.1rem; transition: all 0.3s ease; box-shadow: 0 8px 30px rgba(255, 215, 0, 0.4); text-transform: uppercase; letter-spacing: 1px;">
                             📞 Get Free Quote
                         </a>
                         <a href="#catering-gallery" style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); color: white; padding: 1.2rem 3rem; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 1.1rem; transition: all 0.3s ease; border: 2px solid rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px;">
@@ -147,14 +140,14 @@
                 <!-- Título Principal -->
                 <div style="text-align: center; margin-bottom: 4rem;">
                     <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 3.5rem; color: var(--navy-dark); margin-bottom: 1rem; font-weight: 400;">Our Catering Services</h2>
-                    <div style="width: 100px; height: 3px; background: var(--holiday-gold); margin: 0 auto 1.5rem;"></div>
+                    <div style="width: 100px; height: 3px; background: #fbbf24; margin: 0 auto 1.5rem;"></div>
                     <p style="font-size: 1.2rem; color: #64748b; max-width: 700px; margin: 0 auto;">Make your special event truly memorable with award-winning cuisine and exceptional service</p>
                 </div>
 
                 <!-- Servicio 1: Weddings & Celebrations -->
                 <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 3rem; margin-bottom: 5rem; align-items: center;">
                     <div>
-                        <div style="background: var(--holiday-red); color: white; display: inline-block; padding: 0.5rem 1.5rem; border-radius: 50px; font-size: 0.85rem; font-weight: 700; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 1px;">💒 Weddings & Celebrations</div>
+                        <div style="background: #dc2626; color: white; display: inline-block; padding: 0.5rem 1.5rem; border-radius: 50px; font-size: 0.85rem; font-weight: 700; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 1px;">💒 Weddings & Celebrations</div>
                         <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; color: var(--navy-dark); margin-bottom: 1.5rem; line-height: 1.2;">Create Unforgettable Wedding Memories</h3>
                         <p style="font-size: 1.1rem; color: #64748b; line-height: 1.8; margin-bottom: 2rem;">From intimate beach ceremonies to grand ballroom receptions, we specialize in creating magical wedding experiences. Our team works closely with you to design a custom menu that reflects your style and delights your guests.</p>
                         <ul style="list-style: none; padding: 0; margin-bottom: 2rem;">
@@ -163,7 +156,7 @@
                             <li style="padding: 0.8rem 0; border-bottom: 1px solid #e2e8f0; font-size: 1.05rem;">🎂 <strong>Wedding cakes</strong> & dessert stations</li>
                             <li style="padding: 0.8rem 0; font-size: 1.05rem;">👨‍🍳 <strong>Professional staff</strong> for seamless service</li>
                         </ul>
-                        <a href="#contact-catering" style="background: linear-gradient(135deg, var(--holiday-red), #d32f4a); color: white; padding: 1rem 2.5rem; border-radius: 50px; text-decoration: none; font-weight: 700; display: inline-block; box-shadow: 0 6px 20px rgba(196, 30, 58, 0.3);">Plan Your Dream Wedding →</a>
+                        <a href="#contact-catering" style="background: linear-gradient(135deg, #dc2626, #d32f4a); color: white; padding: 1rem 2.5rem; border-radius: 50px; text-decoration: none; font-weight: 700; display: inline-block; box-shadow: 0 6px 20px rgba(0, 38, 84, 0.3);">Plan Your Dream Wedding →</a>
                     </div>
                     <div style="position: relative; height: 550px; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.2);">
                         <img src="https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/catering-2" alt="Wedding Catering" style="width: 100%; height: 100%; object-fit: cover;">
@@ -179,12 +172,12 @@
                     <div style="position: relative; height: 550px; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.2);">
                         <img src="https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/catering-5" alt="Corporate Catering" style="width: 100%; height: 100%; object-fit: cover;">
                         <div style="position: absolute; top: 2rem; left: 2rem; background: rgba(255,255,255,0.95); padding: 1.5rem; border-radius: 15px; max-width: 250px;">
-                            <div style="font-size: 2rem; color: var(--holiday-green); font-weight: 800; margin-bottom: 0.5rem;">50-200</div>
+                            <div style="font-size: 2rem; color: #065f46; font-weight: 800; margin-bottom: 0.5rem;">50-200</div>
                             <p style="margin: 0; color: #1a1a1a; font-weight: 600;">Guests Capacity</p>
                         </div>
                     </div>
                     <div>
-                        <div style="background: var(--holiday-green); color: white; display: inline-block; padding: 0.5rem 1.5rem; border-radius: 50px; font-size: 0.85rem; font-weight: 700; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 1px;">💼 Corporate Events</div>
+                        <div style="background: #065f46; color: white; display: inline-block; padding: 0.5rem 1.5rem; border-radius: 50px; font-size: 0.85rem; font-weight: 700; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 1px;">💼 Corporate Events</div>
                         <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; color: var(--navy-dark); margin-bottom: 1.5rem; line-height: 1.2;">Impress Your Clients & Team</h3>
                         <p style="font-size: 1.1rem; color: #64748b; line-height: 1.8; margin-bottom: 2rem;">Elevate your business events with professional catering that makes a lasting impression. Perfect for conferences, product launches, team building, and executive dinners.</p>
                         <ul style="list-style: none; padding: 0; margin-bottom: 2rem;">
@@ -193,14 +186,14 @@
                             <li style="padding: 0.8rem 0; border-bottom: 1px solid #e2e8f0; font-size: 1.05rem;">🥗 <strong>Dietary accommodations</strong> for all needs</li>
                             <li style="padding: 0.8rem 0; font-size: 1.05rem;">💰 <strong>Corporate packages</strong> & volume discounts</li>
                         </ul>
-                        <a href="#contact-catering" style="background: linear-gradient(135deg, var(--holiday-green), #1a7a42); color: white; padding: 1rem 2.5rem; border-radius: 50px; text-decoration: none; font-weight: 700; display: inline-block; box-shadow: 0 6px 20px rgba(22, 91, 51, 0.3);">Request Corporate Quote →</a>
+                        <a href="#contact-catering" style="background: linear-gradient(135deg, #065f46, #1a7a42); color: white; padding: 1rem 2.5rem; border-radius: 50px; text-decoration: none; font-weight: 700; display: inline-block; box-shadow: 0 6px 20px rgba(0, 74, 159, 0.3);">Request Corporate Quote →</a>
                     </div>
                 </div>
 
                 <!-- Servicio 3: Private Parties & Events -->
                 <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 3rem; margin-bottom: 3rem; align-items: center;">
                     <div>
-                        <div style="background: var(--holiday-gold); color: #1a1a1a; display: inline-block; padding: 0.5rem 1.5rem; border-radius: 50px; font-size: 0.85rem; font-weight: 700; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 1px;">🎉 Private Events</div>
+                        <div style="background: #fbbf24; color: #1a1a1a; display: inline-block; padding: 0.5rem 1.5rem; border-radius: 50px; font-size: 0.85rem; font-weight: 700; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 1px;">🎉 Private Events</div>
                         <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; color: var(--navy-dark); margin-bottom: 1.5rem; line-height: 1.2;">Celebrate in Style</h3>
                         <p style="font-size: 1.1rem; color: #64748b; line-height: 1.8; margin-bottom: 2rem;">Birthday parties, anniversaries, family reunions, or any special occasion - we bring the restaurant experience to your venue with personalized menus and exceptional service.</p>
                         <ul style="list-style: none; padding: 0; margin-bottom: 2rem;">
@@ -209,7 +202,7 @@
                             <li style="padding: 0.8rem 0; border-bottom: 1px solid #e2e8f0; font-size: 1.05rem;">🎨 <strong>Themed menus</strong> & custom decorations</li>
                             <li style="padding: 0.8rem 0; font-size: 1.05rem;">🎵 <strong>Full-service coordination</strong> available</li>
                         </ul>
-                        <a href="#contact-catering" style="background: linear-gradient(135deg, var(--holiday-gold), #f59e0b); color: #1a1a1a; padding: 1rem 2.5rem; border-radius: 50px; text-decoration: none; font-weight: 700; display: inline-block; box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);">Start Planning Your Party →</a>
+                        <a href="#contact-catering" style="background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #1a1a1a; padding: 1rem 2.5rem; border-radius: 50px; text-decoration: none; font-weight: 700; display: inline-block; box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);">Start Planning Your Party →</a>
                     </div>
                     <div style="position: relative; height: 550px; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.2);">
                         <img src="https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/catering-3" alt="Private Party Catering" style="width: 100%; height: 100%; object-fit: cover;">
@@ -223,7 +216,7 @@
             <div class="container">
                 <div style="text-align: center; margin-bottom: 4rem;">
                     <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 3.5rem; margin-bottom: 1rem; font-weight: 400;">Our Work in Action</h2>
-                    <div style="width: 100px; height: 3px; background: var(--holiday-gold); margin: 0 auto 1.5rem;"></div>
+                    <div style="width: 100px; height: 3px; background: #fbbf24; margin: 0 auto 1.5rem;"></div>
                     <p style="font-size: 1.2rem; color: rgba(255,255,255,0.7);">See the quality and elegance we bring to every event</p>
                 </div>
 
@@ -259,7 +252,7 @@
                 <div class="catering-content">
                     <div class="catering-intro" style="text-align: center; margin-bottom: 3rem;">
                         <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 3.5rem; color: var(--navy-dark); margin-bottom: 1rem;">Get Your Free Quote</h2>
-                        <div style="width: 100px; height: 3px; background: var(--holiday-gold); margin: 0 auto 1.5rem;"></div>
+                        <div style="width: 100px; height: 3px; background: #fbbf24; margin: 0 auto 1.5rem;"></div>
                         <p style="font-size: 1.2rem; color: #64748b; max-width: 700px; margin: 0 auto;">Tell us about your event and we'll create a customized proposal just for you</p>
                     </div>
 
@@ -352,9 +345,6 @@
     <!-- Chatbot Scripts -->
     <script src="chatbot.js?v=21"></script>
     <script src="chatbot-init.js?v=21"></script>
-    
-    <!-- Mobile Menu -->
-    <script src="mobile-menu.js?v=1"></script>
     
     <script src="app.js?v=21"></script>
     
@@ -457,5 +447,7 @@
             }
         })();
     </script>
+    <!-- Core JS -->
+    <script src="assets/js/main.js"></script>
 </body>
 </html>

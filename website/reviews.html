@@ -7,54 +7,47 @@
     <meta name="keywords" content="Solomon's Landing Reviews, Testimonials, Cabo San Lucas Restaurant Reviews, Customer Feedback">
     <title>Guest Reviews | Solomon's Landing</title>
     
-    <link rel="icon" type="image/png" href="logo solomons.png">
-    <link rel="stylesheet" href="styles.css?v=21">
-    <link rel="stylesheet" href="enhanced-design.css?v=21">
-    <link rel="stylesheet" href="chatbot.css?v=21">
-    <link rel="stylesheet" href="holiday-theme.css?v=21">
-    <link rel="stylesheet" href="mobile.css?v=1766106090" media="(max-width: 768px)">
-    <link rel="stylesheet" href="mobile-override.css?v=1766113057" media="(max-width: 768px)">
+    <link rel="icon" type="image/png" href="solomons-logo.png">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="assets/css/solomons-global.css">
+    <link rel="stylesheet" href="chatbot.css">
     
-    <!-- EmailJS SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script src="mobile-force.js?v=1766113057"></script>
+    <script defer src="assets/js/main.js"></script>
 </head>
 <body>
-    <!-- HEADER -->
-    <header style="background: linear-gradient(135deg, rgba(22, 91, 51, 0.85) 0%, rgba(196, 30, 58, 0.85) 50%, rgba(22, 91, 51, 0.85) 100%); backdrop-filter: blur(10px); padding: 0.5rem 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000;">
-        <div class="container">
-            <div class="header-content" style="display: flex; align-items: center; justify-content: space-between; padding: 0;">
-                <div class="logo">
-                    <a href="index.html"><img src="logo solomons.png" alt="Solomon's Landing" style="height: 50px;"></a>
-                </div>
-                
-                <!-- Mobile Menu Toggle -->
-                <button class="mobile-menu-toggle" aria-label="Toggle navigation menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-                
-                <nav>
-                    <ul style="display: flex; gap: 1.8rem; list-style: none; margin: 0; padding: 0;">
-                        <li><a href="index.html" style="color: white; text-decoration: none; font-size: 0.95rem; transition: color 0.3s;">Home</a></li>
-                        <li><a href="menus.html" style="color: white; text-decoration: none; font-size: 0.95rem; transition: color 0.3s;">Menus</a></li>
-                        <li><a href="reviews.html" class="active" style="color: var(--holiday-gold); font-weight: 700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.4); text-decoration: none; font-size: 0.95rem;">Reviews</a></li>
-                        <li><a href="catering.html" style="color: white; text-decoration: none; font-size: 0.95rem; transition: color 0.3s;">Catering</a></li>
-                        <li><a href="gift-cards.html" style="color: white; text-decoration: none; font-size: 0.95rem; transition: color 0.3s;">🎁 Gifts</a></li>
-                        <li><a href="location.html" style="color: white; text-decoration: none; font-size: 0.95rem; transition: color 0.3s;">Location</a></li>
-                    </ul>
-                </nav>
-                <div class="header-actions" style="display: flex; align-items: center; gap: 1rem;">
-                    <div class="language-toggle" style="display: flex; gap: 0.4rem;">
-                        <button class="lang-btn active" data-lang="en" style="background: white; color: var(--holiday-green); padding: 0.4rem 0.7rem; border: none; border-radius: 5px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">EN</button>
-                        <button class="lang-btn" data-lang="es" style="background: rgba(255,255,255,0.2); color: white; padding: 0.4rem 0.7rem; border: none; border-radius: 5px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">ES</button>
-                    </div>
-                    <a href="reservations.html" class="btn btn-primary" style="background: var(--holiday-gold); color: var(--holiday-green); padding: 0.7rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 700; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.25); font-size: 0.95rem;">🎄 Reserve</a>
+    <!-- HEADER / NAVBAR -->
+    <header class="site-header">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <a href="index.html">
+                    <img src="solomons-logo.png" alt="Solomon's Landing" loading="lazy">
+                </a>
+            </div>
+            
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <nav class="navbar-menu">
+                <ul class="navbar-nav">
+                    <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+                    <li><a href="menus.html" data-i18n="nav.menus">Menus</a></li>
+                    <li><a href="reviews.html" class="active" data-i18n="nav.reviews">Reviews</a></li>
+                    <li><a href="catering.html" data-i18n="nav.catering">Catering</a></li>
+                    <li><a href="location.html" data-i18n="nav.location">Location</a></li>
+                </ul>
+            </nav>
+            
+            <div class="navbar-actions">
+                <div class="language-toggle">
+                    <button class="lang-btn active" data-lang="en" title="English">🇺🇸 EN</button>
+                    <button class="lang-btn" data-lang="es" title="Español">🇲🇽 ES</button>
                 </div>
             </div>
         </div>
-        <!-- Mobile Overlay -->
+        
         <div class="mobile-nav-overlay"></div>
     </header>
 
@@ -62,15 +55,6 @@
     <main>
         <!-- REVIEWS HERO SECTION - Photo Slider -->
         <section id="reviews-hero" style="position: relative; height: 100vh; min-height: 600px; overflow: hidden;">
-            <!-- Nieve sutil animada -->
-            <div class="snowflakes" aria-hidden="true">
-                <div class="snowflake">❄</div>
-                <div class="snowflake">❄</div>
-                <div class="snowflake">❄</div>
-                <div class="snowflake">❄</div>
-                <div class="snowflake">❄</div>
-                <div class="snowflake">❄</div>
-            </div>
             
             <!-- Hero Background -->
             <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; min-height: 100vh; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/reviews1'); background-size: cover; background-position: center center; background-repeat: no-repeat;"></div>
@@ -79,7 +63,7 @@
             <div class="hero-overlay" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2; width: 90%; max-width: 900px; text-align: center;">
                 <div style="font-size: 4rem; margin-bottom: 1rem; animation: fadeInUp 0.8s ease-out;">⭐</div>
                 <h1 data-i18n="reviews.heroTitle" style="font-family: 'Cormorant Garamond', serif; font-size: 4rem; color: white; margin-bottom: 1.5rem; text-shadow: 0 4px 30px rgba(0,0,0,0.5); font-weight: 300; letter-spacing: 2px; animation: fadeInUp 0.8s ease-out 0.2s backwards;">Guest Reviews</h1>
-                <div style="width: 120px; height: 4px; background: linear-gradient(90deg, var(--holiday-red), var(--holiday-gold), var(--holiday-green)); margin: 0 auto 2rem; border-radius: 2px; animation: fadeInUp 0.8s ease-out 0.3s backwards;"></div>
+                <div style="width: 120px; height: 4px; background: linear-gradient(90deg, #dc2626, #fbbf24, #065f46); margin: 0 auto 2rem; border-radius: 2px; animation: fadeInUp 0.8s ease-out 0.3s backwards;"></div>
                 <p data-i18n="reviews.heroSubtitle" style="font-family: 'Montserrat', sans-serif; font-size: 1.3rem; color: rgba(255,255,255,0.95); line-height: 1.8; text-shadow: 0 2px 15px rgba(0,0,0,0.4); letter-spacing: 1px; animation: fadeInUp 0.8s ease-out 0.4s backwards; max-width: 700px; margin: 0 auto;">
                     Read what our valued customers have to say about their experience
                 </p>
@@ -98,33 +82,33 @@
         <section style="background: linear-gradient(135deg, var(--background-light) 0%, var(--white) 100%); padding: 3rem 0; position: relative; overflow: hidden;">
             <!-- Decorative elements -->
             <div style="position: absolute; top: 10%; right: 5%; font-size: 3rem; opacity: 0.05; animation: float 8s ease-in-out infinite;">⭐</div>
-            <div style="position: absolute; bottom: 10%; left: 5%; font-size: 3rem; opacity: 0.05; animation: float 6s ease-in-out infinite;">🎄</div>
+            <div style="position: absolute; bottom: 10%; left: 5%; font-size: 3rem; opacity: 0.05; animation: float 6s ease-in-out infinite;"></div>
             
             <div class="container">
                 <div style="max-width: 700px; margin: 0 auto; text-align: center; padding: 2.5rem 2rem; background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 255, 255, 0.95)); border-radius: 20px; box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 215, 0, 0.3); backdrop-filter: blur(10px); animation: fadeInUp 0.8s ease-out;">
                     <div style="font-size: 3.5rem; color: #fbbf24; margin-bottom: 0.5rem; animation: starShine 2s ease-in-out infinite; filter: drop-shadow(0 0 15px rgba(251, 191, 36, 0.6));">★★★★★</div>
-                    <h2 style="font-size: 3rem; background: linear-gradient(135deg, var(--holiday-gold), var(--holiday-red)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.3rem; font-weight: 800; letter-spacing: -1px;">4.8 / 5.0</h2>
+                    <h2 style="font-size: 3rem; background: linear-gradient(135deg, #fbbf24, #dc2626); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.3rem; font-weight: 800; letter-spacing: -1px;">4.8 / 5.0</h2>
                     <p data-i18n="reviews.rating" style="color: var(--text-light); font-size: 1rem; margin-bottom: 2rem; font-weight: 500;">Based on 500+ verified reviews</p>
                     
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
                         <div style="padding: 1.2rem; background: white; border-radius: 14px; box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; animation: fadeInUp 0.8s ease-out 0.1s backwards;" onmouseover="this.style.transform='translateY(-8px) scale(1.05)'; this.style.boxShadow='0 10px 25px rgba(251, 191, 36, 0.3)'" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 6px 15px rgba(0, 0, 0, 0.08)'">
                             <div style="font-size: 2rem; margin-bottom: 0.3rem; animation: bounce 2s ease-in-out infinite;">🍽️</div>
-                            <div style="font-weight: 800; font-size: 1.6rem; background: linear-gradient(135deg, var(--holiday-gold), var(--holiday-red)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">4.9</div>
+                            <div style="font-weight: 800; font-size: 1.6rem; background: linear-gradient(135deg, #fbbf24, #dc2626); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">4.9</div>
                             <div data-i18n="reviews.foodQuality" style="color: var(--text-light); font-size: 0.85rem; font-weight: 600;">Food Quality</div>
                         </div>
                         <div style="padding: 1.2rem; background: white; border-radius: 14px; box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; animation: fadeInUp 0.8s ease-out 0.2s backwards;" onmouseover="this.style.transform='translateY(-8px) scale(1.05)'; this.style.boxShadow='0 10px 25px rgba(251, 191, 36, 0.3)'" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 6px 15px rgba(0, 0, 0, 0.08)'">
                             <div style="font-size: 2rem; margin-bottom: 0.3rem; animation: bounce 2s ease-in-out infinite 0.2s;">👨‍🍳</div>
-                            <div style="font-weight: 800; font-size: 1.6rem; background: linear-gradient(135deg, var(--holiday-gold), var(--holiday-red)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">4.8</div>
+                            <div style="font-weight: 800; font-size: 1.6rem; background: linear-gradient(135deg, #fbbf24, #dc2626); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">4.8</div>
                             <div data-i18n="reviews.service" style="color: var(--text-light); font-size: 0.85rem; font-weight: 600;">Service</div>
                         </div>
                         <div style="padding: 1.2rem; background: white; border-radius: 14px; box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; animation: fadeInUp 0.8s ease-out 0.3s backwards;" onmouseover="this.style.transform='translateY(-8px) scale(1.05)'; this.style.boxShadow='0 10px 25px rgba(251, 191, 36, 0.3)'" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 6px 15px rgba(0, 0, 0, 0.08)'">
                             <div style="font-size: 2rem; margin-bottom: 0.3rem; animation: bounce 2s ease-in-out infinite 0.4s;">🌊</div>
-                            <div style="font-weight: 800; font-size: 1.6rem; background: linear-gradient(135deg, var(--holiday-gold), var(--holiday-red)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">5.0</div>
+                            <div style="font-weight: 800; font-size: 1.6rem; background: linear-gradient(135deg, #fbbf24, #dc2626); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">5.0</div>
                             <div data-i18n="reviews.ambiance" style="color: var(--text-light); font-size: 0.85rem; font-weight: 600;">Ambiance</div>
                         </div>
                         <div style="padding: 1.2rem; background: white; border-radius: 14px; box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; animation: fadeInUp 0.8s ease-out 0.4s backwards;" onmouseover="this.style.transform='translateY(-8px) scale(1.05)'; this.style.boxShadow='0 10px 25px rgba(251, 191, 36, 0.3)'" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 6px 15px rgba(0, 0, 0, 0.08)'">
                             <div style="font-size: 2rem; margin-bottom: 0.3rem; animation: bounce 2s ease-in-out infinite 0.6s;">💰</div>
-                            <div style="font-weight: 800; font-size: 1.6rem; background: linear-gradient(135deg, var(--holiday-gold), var(--holiday-red)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">4.7</div>
+                            <div style="font-weight: 800; font-size: 1.6rem; background: linear-gradient(135deg, #fbbf24, #dc2626); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">4.7</div>
                             <div data-i18n="reviews.value" style="color: var(--text-light); font-size: 0.85rem; font-weight: 600;">Value</div>
                         </div>
                     </div>
@@ -142,7 +126,7 @@
                 
                 <div class="testimonials-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
                     <!-- Review 1 -->
-                    <div class="testimonial-card" style="background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; animation: fadeInUp 0.8s ease-out 0.1s backwards; border: 2px solid transparent;" onmouseover="this.style.transform='translateY(-15px) rotate(1deg)'; this.style.boxShadow='0 20px 50px rgba(255, 215, 0, 0.3)'; this.style.borderColor='var(--holiday-gold)'" onmouseout="this.style.transform='translateY(0) rotate(0deg)'; this.style.boxShadow='0 10px 30px rgba(0, 0, 0, 0.1)'; this.style.borderColor='transparent'">
+                    <div class="testimonial-card" style="background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; animation: fadeInUp 0.8s ease-out 0.1s backwards; border: 2px solid transparent;" onmouseover="this.style.transform='translateY(-15px) rotate(1deg)'; this.style.boxShadow='0 20px 50px rgba(255, 215, 0, 0.3)'; this.style.borderColor='#fbbf24'" onmouseout="this.style.transform='translateY(0) rotate(0deg)'; this.style.boxShadow='0 10px 30px rgba(0, 0, 0, 0.1)'; this.style.borderColor='transparent'">
                         <div style="position: absolute; top: -10px; right: -10px; font-size: 4rem; opacity: 0.05;">💬</div>
                         <div class="testimonial-stars" style="font-size: 1.5rem; color: #fbbf24; margin-bottom: 1rem; text-shadow: 0 0 10px rgba(251, 191, 36, 0.3);">★★★★★</div>
                         <p class="testimonial-text" style="font-size: 1.05rem; line-height: 1.7; color: var(--text-dark); margin-bottom: 1.5rem; font-style: italic;">
@@ -331,7 +315,7 @@
                         International cuisine on the Cabo San Lucas Marina. Experience fresh seafood, premium cuts, and authentic flavors with breathtaking marina views since 1995.
                     </p>
                     <div style="margin-top: 1.5rem;">
-                        <img src="logo solomons.png" alt="Solomon's Landing" style="height: 50px; filter: brightness(0) invert(1) opacity(0.8);">
+                        <img src="solomons-logo.png" alt="Solomon's Landing" style="height: 50px; filter: brightness(0) invert(1) opacity(0.8);">
                     </div>
                 </div>
 
@@ -383,13 +367,8 @@
         </div>
     </footer>
 
-    <!-- Chatbot Scripts -->
-    <script src="chatbot.js?v=21"></script>
-    <script src="chatbot-init.js?v=21"></script>
-    
-    <!-- Mobile Menu -->
-    <script src="mobile-menu.js?v=1"></script>
-
-    <script src="app.js?v=21"></script>
+    <script src="chatbot.js"></script>
+    <script src="chatbot-init.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>

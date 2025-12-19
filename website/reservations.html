@@ -20,56 +20,46 @@
     <link rel="canonical" href="https://solomonslanding.com/reservations.html">
     
     <title>Make a Reservation | Solomon's Landing Cabo San Lucas | Book Your Table Online | Reservaciones Marina</title>
-    <link rel="stylesheet" href="performance.css">
-    <link rel="stylesheet" href="styles.css?v=21">
-    <link rel="stylesheet" href="enhanced-design.css?v=21">
-    <link rel="stylesheet" href="chatbot.css?v=21">
-    <link rel="stylesheet" href="holiday-theme.css?v=21">
-    <link rel="stylesheet" href="reservations-enhanced.css">
-    <link rel="stylesheet" href="mobile.css?v=1766106090" media="(max-width: 768px)">
-    <link rel="stylesheet" href="mobile-override.css?v=1766113057" media="(max-width: 768px)">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="assets/css/solomons-global.css">
+    <link rel="stylesheet" href="chatbot.css">
     
-    <!-- EmailJS SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script src="mobile-force.js?v=1766113057"></script>
+    <script defer src="assets/js/main.js"></script>
 </head>
 <body>
-    <!-- HEADER -->
-    <header style="background: linear-gradient(135deg, rgba(22, 91, 51, 0.85) 0%, rgba(196, 30, 58, 0.85) 50%, rgba(22, 91, 51, 0.85) 100%); background-size: 200% 200%; animation: gradientShift 30s ease-in-out infinite; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; padding: 0.5rem 0;">
-        
-        <div class="container">
-            <div class="header-content" style="display: flex; align-items: center; justify-content: space-between; padding: 0;">
-                <div class="logo">
-                    <a href="index.html"><img src="logo solomons.png" alt="Solomon's Landing Logo" loading="lazy" style="height: 50px;"></a>
-                </div>
-                
-                <!-- Mobile Menu Toggle -->
-                <button class="mobile-menu-toggle" aria-label="Toggle navigation menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-                
-                <nav>
-                    <ul style="display: flex; gap: 1.8rem; list-style: none; margin: 0; padding: 0;">
-                        <li><a href="index.html" style="color: white;">Home</a></li>
-                        <li><a href="menus.html" style="color: white;">Menus</a></li>
-                        <li><a href="reviews.html" style="color: white;">Reviews</a></li>
-                        <li><a href="catering.html" style="color: white;">Catering</a></li>
-                        <li><a href="location.html" style="color: white;">Location</a></li>
-                        <li><a href="reservations.html" class="active" style="color: var(--holiday-gold); font-weight: 700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);">Reserve</a></li>
-                    </ul>
-                </nav>
-                <div class="header-actions">
-                    <div class="language-toggle">
-                        <button class="lang-btn active" data-lang="en" style="background: white; color: var(--holiday-green);">EN</button>
-                        <button class="lang-btn" data-lang="es" style="background: rgba(255,255,255,0.2); color: white;">ES</button>
-                    </div>
-                    <span style="color: white; font-size: 1.5rem; margin-left: 1rem; animation: rotate 5s ease-in-out infinite;">🎄</span>
+    <!-- HEADER / NAVBAR -->
+    <header class="site-header">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <a href="index.html">
+                    <img src="solomons-logo.png" alt="Solomon's Landing" loading="lazy">
+                </a>
+            </div>
+            
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <nav class="navbar-menu">
+                <ul class="navbar-nav">
+                    <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+                    <li><a href="menus.html" data-i18n="nav.menus">Menus</a></li>
+                    <li><a href="reviews.html" data-i18n="nav.reviews">Reviews</a></li>
+                    <li><a href="catering.html" data-i18n="nav.catering">Catering</a></li>
+                    <li><a href="location.html" data-i18n="nav.location">Location</a></li>
+                </ul>
+            </nav>
+            
+            <div class="navbar-actions">
+                <div class="language-toggle">
+                    <button class="lang-btn active" data-lang="en" title="English">🇺🇸 EN</button>
+                    <button class="lang-btn" data-lang="es" title="Español">🇲🇽 ES</button>
                 </div>
             </div>
         </div>
-        <!-- Mobile Overlay -->
+        
         <div class="mobile-nav-overlay"></div>
     </header>
 
@@ -77,15 +67,6 @@
     <main>
         <!-- RESERVATIONS HERO SECTION - Photo Slider -->
         <section id="reservations-hero" style="position: relative; height: 100vh; min-height: 600px; overflow: hidden;">
-            <!-- Nieve sutil animada -->
-            <div class="snowflakes" aria-hidden="true">
-                <div class="snowflake">❄</div>
-                <div class="snowflake">❄</div>
-                <div class="snowflake">❄</div>
-                <div class="snowflake">❄</div>
-                <div class="snowflake">❄</div>
-                <div class="snowflake">❄</div>
-            </div>
             
             <!-- Hero Slider -->
             <div class="hero-slider" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
@@ -106,7 +87,7 @@
                 </div>
                 <p style="color: white; font-size: 0.85rem; margin-top: 10px; text-align: center; opacity: 1; letter-spacing: 1.5px; font-weight: 600; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">SCROLL</p>
             </div>
-                <div style="width: 120px; height: 4px; background: linear-gradient(90deg, var(--holiday-red), var(--holiday-gold), var(--holiday-green)); margin: 0 auto 2rem; border-radius: 2px; animation: fadeInUp 0.8s ease-out 0.3s backwards;"></div>
+                <div style="width: 120px; height: 4px; background: linear-gradient(90deg, #dc2626, #fbbf24, #065f46); margin: 0 auto 2rem; border-radius: 2px; animation: fadeInUp 0.8s ease-out 0.3s backwards;"></div>
                 <p data-i18n="reservations.heroSubtitle" style="font-family: 'Montserrat', sans-serif; font-size: 1.3rem; color: rgba(255,255,255,0.95); line-height: 1.8; text-shadow: 0 2px 15px rgba(0,0,0,0.4); letter-spacing: 1px; animation: fadeInUp 0.8s ease-out 0.4s backwards; max-width: 700px; margin: 0 auto;">
                     Reserve your table and enjoy an unforgettable dining experience
                 </p>
@@ -250,7 +231,7 @@
                                 <textarea id="notes" name="notes" data-i18n-placeholder="form.notesPlaceholder" placeholder="Alergias, requerimientos dietéticos..." style="width: 100%; padding: 0.9rem 1.2rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; transition: all 0.3s; background: white; min-height: 100px; resize: vertical; font-family: inherit;" onfocus="this.style.borderColor='#fbbf24'; this.style.boxShadow='0 0 0 3px rgba(251,191,36,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'"></textarea>
                             </div>
 
-                            <button type="submit" class="btn-submit" data-i18n="form.reserveBtn" style="width: 100%; padding: 1.1rem 2rem; background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #1e293b; font-size: 1.1rem; font-weight: 700; border: none; border-radius: 12px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(251,191,36,0.4); text-transform: uppercase; letter-spacing: 0.5px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(251,191,36,0.5)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(251,191,36,0.4)'">🎄 Reservar Mesa Ahora</button>
+                            <button type="submit" class="btn-submit" data-i18n="form.reserveBtn" style="width: 100%; padding: 1.1rem 2rem; background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #1e293b; font-size: 1.1rem; font-weight: 700; border: none; border-radius: 12px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(251,191,36,0.4); text-transform: uppercase; letter-spacing: 0.5px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(251,191,36,0.5)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(251,191,36,0.4)'"> Reservar Mesa Ahora</button>
 
                             <div id="formMessage" class="form-message" style="margin-top: 1.5rem; padding: 1rem; border-radius: 10px; display: none;"></div>
                         </form>
@@ -308,7 +289,6 @@
     
     <!-- Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-client.js"></script>
     
     <!-- EmailJS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
@@ -423,9 +403,8 @@
         });
     </script>
     
-    <!-- Mobile Menu -->
-    <script src="mobile-menu.js?v=1"></script>
-    
     <script src="app.js?v=21" defer></script>
+    <!-- Core JS -->
+    <script src="assets/js/main.js"></script>
 </body>
 </html>

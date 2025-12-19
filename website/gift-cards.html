@@ -261,11 +261,11 @@
 </head>
 <body>
     <!-- HEADER -->
-    <header style="background: linear-gradient(135deg, rgba(22, 91, 51, 0.85) 0%, rgba(196, 30, 58, 0.85) 50%, rgba(22, 91, 51, 0.85) 100%); backdrop-filter: blur(10px); padding: 0.5rem 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000;">
+    <header style="background: linear-gradient(135deg, rgba(0, 74, 159, 0.95) 0%, rgba(0, 38, 84, 0.95) 50%, rgba(0, 74, 159, 0.95) 100%); backdrop-filter: blur(10px); padding: 0.5rem 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000;">
         <div class="container">
             <div class="header-content" style="display: flex; align-items: center; justify-content: space-between; padding: 0;">
                 <div class="logo">
-                    <a href="index.html"><img src="logo solomons.png" alt="Solomon's Landing" style="height: 50px;"></a>
+                    <a href="index.html"><img src="solomons-logo.png" alt="Solomon's Landing" style="height: 50px;"></a>
                 </div>
                 
                 <!-- Mobile Menu Toggle -->
@@ -281,16 +281,15 @@
                         <li><a href="menus.html" style="color: white; text-decoration: none; font-size: 0.95rem; transition: color 0.3s;">Menus</a></li>
                         <li><a href="reviews.html" style="color: white; text-decoration: none; font-size: 0.95rem; transition: color 0.3s;">Reviews</a></li>
                         <li><a href="catering.html" style="color: white; text-decoration: none; font-size: 0.95rem; transition: color 0.3s;">Catering</a></li>
-                        <li><a href="gift-cards.html" class="active" style="color: var(--holiday-gold); font-weight: 700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.4); text-decoration: none; font-size: 0.95rem;">🎁 Gifts</a></li>
                         <li><a href="location.html" style="color: white; text-decoration: none; font-size: 0.95rem; transition: color 0.3s;">Location</a></li>
                     </ul>
                 </nav>
                 <div class="header-actions" style="display: flex; align-items: center; gap: 1rem;">
                     <div class="language-toggle" style="display: flex; gap: 0.4rem;">
-                        <button class="lang-btn active" data-lang="en" style="background: white; color: var(--holiday-green); padding: 0.4rem 0.7rem; border: none; border-radius: 5px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">EN</button>
+                        <button class="lang-btn active" data-lang="en" style="background: white; color: #065f46; padding: 0.4rem 0.7rem; border: none; border-radius: 5px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">EN</button>
                         <button class="lang-btn" data-lang="es" style="background: rgba(255,255,255,0.2); color: white; padding: 0.4rem 0.7rem; border: none; border-radius: 5px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">ES</button>
                     </div>
-                    <a href="reservations.html" class="btn btn-primary" style="background: var(--holiday-gold); color: var(--holiday-green); padding: 0.7rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 700; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.25); font-size: 0.95rem;">🎄 Reserve</a>
+                    <a href="reservations.html" class="btn btn-primary" style="background: #fbbf24; color: #065f46; padding: 0.7rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 700; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.25); font-size: 0.95rem;"> Reserve</a>
                 </div>
             </div>
         </div>
@@ -299,7 +298,7 @@
     </header>
 
     <section class="gift-card-hero">
-        <h1>🎁 Gift the Experience</h1>
+        <h1> Gift the Experience</h1>
         <p style="font-size: 1.25rem; max-width: 600px; margin: 0 auto;">Give the perfect gift: an unforgettable dining experience at Solomon's Landing</p>
     </section>
 
@@ -307,7 +306,7 @@
         <!-- Preview -->
         <div class="gift-card-preview">
             <div class="card-design">
-                <img src="logo solomons.png" alt="Solomon's Landing" class="logo">
+                <img src="solomons-logo.png" alt="Solomon's Landing" class="logo">
                 <h2>GIFT CERTIFICATE</h2>
                 <div class="amount" id="preview-amount">$100.00</div>
                 <div class="recipient" id="preview-recipient">To: Select recipient below</div>
@@ -388,7 +387,7 @@
                 </div>
 
                 <button type="submit" class="submit-btn">
-                    🎁 Purchase Gift Card
+                     Purchase Gift Card
                 </button>
 
                 <p style="text-align: center; margin-top: 1rem; font-size: 0.875rem; color: #64748b;">
@@ -519,7 +518,7 @@
                 console.error('Error:', error);
                 alert('Error sending gift card. Please try again or contact support.');
                 submitBtn.disabled = false;
-                submitBtn.textContent = '🎁 Purchase Gift Card';
+                submitBtn.textContent = ' Purchase Gift Card';
             }
         });
 
@@ -588,7 +587,6 @@
         <p>&copy; 2025 Solomon's Landing. All rights reserved.</p>
     </footer>
     
-    <!-- Mobile Menu -->
-    <script src="mobile-menu.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
