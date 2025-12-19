@@ -174,8 +174,61 @@
     <!-- MOBILE OVERRIDE - CARGA AL FINAL PARA FORZAR CAMBIOS -->
     <link rel="stylesheet" href="mobile-override.css?v=1766113057" media="(max-width: 768px)">
     
-    <!-- MOBILE FORCE - JAVASCRIPT PARA FORZAR CAMBIOS SIN CACHE -->
-    <script src="mobile-force.js?v=1766113057"></script>
+    <!-- MOBILE FORCE INLINE - EJECUTA INMEDIATAMENTE -->
+    <script>
+    (function() {
+        const isMobile = window.innerWidth <= 768;
+        if (!isMobile) return;
+        
+        function forzar() {
+            console.log('🔧 MOBILE FORCE INLINE');
+            
+            // LOGO
+            document.querySelectorAll('header img, .logo img, footer img[src*="logo"]').forEach(img => {
+                if (img.src && (img.src.includes('logo') || img.src.includes('solomons'))) {
+                    img.src = 'cropped-solomons-logo.png';
+                    img.style.cssText = 'height:32px!important;width:auto!important';
+                }
+            });
+            const fav = document.querySelector('link[rel="icon"]');
+            if (fav) fav.href = 'cropped-solomons-logo.png';
+            
+            // H1 RESTAURANT
+            document.querySelectorAll('.hero-overlay h1, .hero h1').forEach(h1 => {
+                if (h1.textContent.includes('Restaurant') || h1.textContent.includes('Cuisine')) {
+                    h1.style.cssText = 'display:none!important;height:0!important;opacity:0!important;position:absolute!important';
+                }
+            });
+            
+            // CARRUSEL
+            document.querySelectorAll('.feature-mini-card').forEach(card => {
+                card.style.cssText = 'min-width:70px!important;max-width:70px!important;padding:5px 4px!important';
+                const icon = card.querySelector('div:first-child');
+                if (icon) icon.style.fontSize = '1.4rem';
+                const h4 = card.querySelector('h4');
+                if (h4) h4.style.cssText = 'font-size:0.5rem!important;line-height:1.1!important;margin:0!important';
+            });
+            
+            // FOOTER
+            const footer = document.querySelector('footer');
+            if (footer) {
+                footer.style.padding = '20px 15px';
+                const grid = footer.querySelector('div > div');
+                if (grid && grid.children[1]) grid.children[1].style.display = 'none';
+            }
+            
+            console.log('✅ APLICADO');
+        }
+        
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', forzar);
+        } else {
+            forzar();
+        }
+        setTimeout(forzar, 100);
+        setTimeout(forzar, 500);
+    })();
+    </script>
     
     <!-- Scripts - Deferred for Performance -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js" defer></script>
