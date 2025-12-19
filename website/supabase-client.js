@@ -5,7 +5,7 @@
 
 // Configuración de Supabase
 const SUPABASE_CONFIG = {
-    url: 'https://xqhpkcogbhiqwmfjdwtb.supabaseClient.co',
+    url: 'https://xqhpkcogbhiqwmfjdwtb.supabase.co',
     anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhxaHBrY29nYmhpcXdtZmpkd3RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU1OTIwNTYsImV4cCI6MjA4MTE2ODA1Nn0.eugQmksnT7KIBYH71kj1pxbotzzSs5HCO6g_9qrlOhU'
 };
 
@@ -18,7 +18,7 @@ function initSupabase() {
         return null;
     }
     
-    supabaseClient = window.supabaseClient.createClient(
+    supabaseClient = window.supabase.createClient(
         SUPABASE_CONFIG.url,
         SUPABASE_CONFIG.anonKey
     );
