@@ -5,6 +5,18 @@
    ============================================ */
 
 @media (max-width: 768px) {
+    /* ===== VIEWPORT CORRECTO ===== */
+    html {
+        font-size: 14px !important;
+        -webkit-text-size-adjust: 100% !important;
+    }
+    
+    body {
+        font-size: 14px !important;
+        zoom: 0.9 !important;
+        -webkit-text-size-adjust: 100% !important;
+    }
+
     
     /* ===== RESET COMPLETO ===== */
     * {
@@ -38,20 +50,50 @@
         height: 100%;
     }
 
-    /* LOGO SIN SANTA - VISIBLE */
-    .logo,
-    .logo-container {
-        flex: 1 !important;
-        display: flex !important;
-        justify-content: center !important;
+    
+    /* LOGO SIN SANTA - SUPER FORZADO */
+    .logo img,
+    .logo-container img,
+    header img[src*="logo"],
+    header img[alt*="Logo"],
+    header img[alt*="Solomon"] {
+        content: url('cropped-solomons-logo.png') !important;
+        height: 32px !important;
+        width: auto !important;
     }
 
-    .logo img,
-    .logo-container img {
-        height: 34px !important;
-        width: auto !important;
-        display: block !important;
-        content: url('cropped-solomons-logo.png') !important;
+    /* OCULTAR CUADRO "Restaurant" DEL HERO */
+    .hero-overlay h1,
+    .hero-content h1,
+    .hero h1[data-i18n="hero.title"] {
+        display: none !important;
+    }
+
+    /* CARRUSEL DE FEATURES PEQUEÑO */
+    .features-scroll-container {
+        padding: 12px 0 !important;
+        max-width: 100% !important;
+    }
+
+    .features-scroll-track {
+        gap: 6px !important;
+    }
+
+    .feature-mini-card {
+        min-width: 90px !important;
+        padding: 8px 6px !important;
+        border-radius: 10px !important;
+        border-width: 1px !important;
+    }
+
+    .feature-mini-card > div:first-child {
+        font-size: 1.8rem !important;
+        margin-bottom: 4px !important;
+    }
+
+    .feature-mini-card h4 {
+        font-size: 0.65rem !important;
+        letter-spacing: 0px !important;
     }
 
     .header-actions {
@@ -224,25 +266,28 @@
     #hero {
         height: 52vh !important;
         min-height: 420px !important;
-        max-height: 520px !important;
+        max-height: 480px !important;
         position: relative;
         overflow: hidden;
         margin: 0 !important;
-        background: transparent !important;
+        background: none !important;
+        background-color: transparent !important;
     }
 
     /* ELIMINAR CUALQUIER CUADRO BLANCO */
     .hero *,
     .hero-content *,
     .hero-slide * {
-        background: transparent !important;
+        background: none !important;
+        background-color: transparent !important;
         backdrop-filter: none !important;
     }
 
     .hero-slide {
         height: 100% !important;
         width: 100% !important;
-        background: transparent !important;
+        background: none !important;
+        background-color: transparent !important;
     }
 
     /* FOTOS HERO - CENTRADAS */
@@ -277,13 +322,15 @@
         width: 90%;
         max-width: 340px;
         z-index: 2;
-        background: transparent !important;
+        background: none !important;
+        background-color: transparent !important;
     }
 
     .hero-content h1,
     .hero-content p,
     .hero-content * {
-        background: transparent !important;
+        background: none !important;
+        background-color: transparent !important;
     }
 
     .hero-content h1 {
@@ -416,24 +463,35 @@
         box-shadow: 0 1px 4px rgba(0,0,0,0.3);
     }
 
+    
+    .perk-item,
+    .badge {
+        padding: 3px 6px !important;
+        font-size: 0.55rem !important;
+        border-radius: 6px !important;
+    }
+    
     .perk-item svg,
     .perk-item img,
     .badge svg,
     .badge img {
-        width: 12px !important;
-        height: 12px !important;
+        width: 10px !important;
+        height: 10px !important;
     }
+
 
     /* ===== SECCIONES COMPACTAS ===== */
     section {
         padding: 20px 16px !important;
-        background: transparent !important;
+        background: none !important;
+        background-color: transparent !important;
         text-align: center !important;
     }
 
     section {
         padding: 18px 12px !important; /* MÁS COMPACTO */
-        background: transparent !important;
+        background: none !important;
+        background-color: transparent !important;
     }
 
     .section-title,
@@ -461,7 +519,8 @@
     section > div,
     .container,
     .content-wrapper {
-        background: transparent !important;
+        background: none !important;
+        background-color: transparent !important;
     }
 
     /* CARDS PERFECTAMENTE CENTRADAS */
