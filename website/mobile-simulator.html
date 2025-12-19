@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Simulator - Solomon's Landing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .header {
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .controls {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .controls button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .controls button.active {
+            background: #667eea;
+            color: white;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+        }
+        
+        .controls button:not(.active) {
+            background: #f3f4f6;
+            color: #374151;
+        }
+        
+        .controls button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .phone-frame {
+            background: #1f2937;
+            border-radius: 40px;
+            padding: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .phone-frame::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 6px;
+            background: #374151;
+            border-radius: 3px;
+            z-index: 10;
+        }
+        
+        .phone-screen {
+            background: white;
+            border-radius: 30px;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .phone-screen iframe {
+            border: none;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        
+        /* iPhone 14 Pro */
+        .phone-frame.iphone14 {
+            width: 393px;
+        }
+        
+        .phone-frame.iphone14 .phone-screen {
+            width: 393px;
+            height: 852px;
+        }
+        
+        /* iPhone SE */
+        .phone-frame.iphoneSE {
+            width: 375px;
+        }
+        
+        .phone-frame.iphoneSE .phone-screen {
+            width: 375px;
+            height: 667px;
+        }
+        
+        /* Galaxy S21 */
+        .phone-frame.galaxyS21 {
+            width: 360px;
+        }
+        
+        .phone-frame.galaxyS21 .phone-screen {
+            width: 360px;
+            height: 800px;
+        }
+        
+        .reload-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            cursor: pointer;
+            font-size: 24px;
+            transition: all 0.3s;
+            z-index: 100;
+        }
+        
+        .reload-btn:hover {
+            transform: rotate(180deg) scale(1.1);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+        }
+        
+        .info {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.95);
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            font-size: 13px;
+            color: #374151;
+            max-width: 200px;
+        }
+        
+        .info strong {
+            display: block;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📱 Mobile Simulator</h1>
+        <p>Solomon's Landing - Vista Móvil</p>
+    </div>
+    
+    <div class="controls">
+        <button class="device-btn active" data-device="iphone14">iPhone 14 Pro</button>
+        <button class="device-btn" data-device="iphoneSE">iPhone SE</button>
+        <button class="device-btn" data-device="galaxyS21">Galaxy S21</button>
+    </div>
+    
+    <div class="phone-frame iphone14" id="phoneFrame">
+        <div class="phone-screen">
+            <iframe id="mobileView" src="http://localhost:8080/index.html"></iframe>
+        </div>
+    </div>
+    
+    <button class="reload-btn" onclick="reloadIframe()" title="Recargar">🔄</button>
+    
+    <div class="info">
+        <strong>Dispositivo:</strong>
+        <span id="deviceInfo">iPhone 14 Pro<br>393 × 852px</span>
+    </div>
+    
+    <script>
+        const deviceConfigs = {
+            iphone14: { name: 'iPhone 14 Pro', width: 393, height: 852 },
+            iphoneSE: { name: 'iPhone SE', width: 375, height: 667 },
+            galaxyS21: { name: 'Galaxy S21', width: 360, height: 800 }
+        };
+        
+        const phoneFrame = document.getElementById('phoneFrame');
+        const deviceInfo = document.getElementById('deviceInfo');
+        const buttons = document.querySelectorAll('.device-btn');
+        
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const device = btn.dataset.device;
+                
+                // Update active button
+                buttons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Update frame
+                phoneFrame.className = `phone-frame ${device}`;
+                
+                // Update info
+                const config = deviceConfigs[device];
+                deviceInfo.innerHTML = `${config.name}<br>${config.width} × ${config.height}px`;
+            });
+        });
+        
+        function reloadIframe() {
+            const iframe = document.getElementById('mobileView');
+            iframe.src = iframe.src;
+        }
+        
+        // Auto-reload on keypress (Cmd+R)
+        document.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'r') {
+                e.preventDefault();
+                reloadIframe();
+            }
+        });
+    </script>
+</body>
+</html>
