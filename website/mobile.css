@@ -26,14 +26,48 @@
         z-index: 1000;
         background: rgba(0, 0, 0, 0.95) !important;
         backdrop-filter: blur(20px);
-        height: 52px !important;
-        padding: 8px 12px !important;
+        height: 56px !important;
+        padding: 0 !important;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        position: relative !important;
+    }
+
+    .header-container {
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        position: relative !important;
+    }
+
+    .logo-container {
+        position: absolute !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        z-index: 10;
     }
 
     .logo-container img {
-        height: 32px !important;
+        height: 36px !important;
         width: auto !important;
+    }
+
+    .header-actions {
+        position: absolute !important;
+        right: 12px !important;
+        display: flex !important;
+        gap: 6px !important;
+        align-items: center !important;
+    }
+
+    .header-actions .btn {
+        padding: 6px 12px !important;
+        font-size: 0.75rem !important;
+        min-height: 32px !important;
+        border-radius: 16px !important;
     }
 
     /* ===== MENU HAMBURGUESA (60% pantalla) ===== */
@@ -185,9 +219,9 @@
     /* ===== HERO - ESTILO APP MÓVIL ===== */
     .hero,
     #hero {
-        height: 45vh !important;
-        min-height: 360px !important;
-        max-height: 450px !important;
+        height: 55vh !important;
+        min-height: 440px !important;
+        max-height: 550px !important;
         position: relative;
         overflow: hidden;
         margin: 0 !important;
@@ -224,59 +258,61 @@
 
     .hero-content {
         position: absolute;
-        bottom: 40px !important; /* Abajo como Instagram */
+        bottom: 50px !important;
         left: 50%;
         transform: translateX(-50%);
         text-align: center;
-        width: 90%;
-        max-width: 300px;
+        width: 88%;
+        max-width: 320px;
         z-index: 2;
     }
 
     .hero-content h1 {
-        font-size: 1.3rem !important; /* PEQUEÑO */
-        margin-bottom: 6px !important;
-        text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+        font-size: 1.4rem !important;
+        margin-bottom: 8px !important;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.9);
         line-height: 1.2;
         font-weight: 700;
         letter-spacing: 0.5px;
     }
 
     .hero-content p {
-        font-size: 0.75rem !important; /* MUY PEQUEÑO */
-        margin-bottom: 14px !important;
-        text-shadow: 0 1px 4px rgba(0,0,0,0.9);
-        opacity: 0.9;
-        line-height: 1.3;
+        font-size: 0.8rem !important;
+        margin-bottom: 16px !important;
+        text-shadow: 0 1px 6px rgba(0,0,0,0.9);
+        opacity: 0.95;
+        line-height: 1.35;
     }
 
-    /* BOTONES PEQUEÑOS REDONDEADOS */
+    /* BOTONES COMPACTOS LADO A LADO */
     .cta-buttons {
         display: flex !important;
-        flex-direction: row !important; /* LADO A LADO */
-        gap: 6px !important;
+        flex-direction: row !important;
+        gap: 8px !important;
         justify-content: center !important;
-        flex-wrap: wrap;
+        flex-wrap: nowrap !important;
     }
 
     .btn,
     .cta-button,
     .btn-primary,
     .btn-secondary {
-        width: auto !important; /* NO FULL WIDTH */
-        padding: 7px 14px !important; /* MÁS COMPACTO */
-        font-size: 10px !important; /* MÁS PEQUEÑO */
+        flex: 0 1 auto !important;
+        max-width: 48% !important;
+        padding: 10px 16px !important;
+        font-size: 0.7rem !important;
         font-weight: 600 !important;
-        border-radius: 18px !important; /* MUY REDONDEADO */
+        border-radius: 20px !important;
         text-transform: uppercase !important;
-        letter-spacing: 0.3px !important;
+        letter-spacing: 0.4px !important;
         transition: all 0.2s ease !important;
         border: 1.5px solid #c9a961 !important;
-        min-height: 32px !important; /* MÁS BAJO */
+        min-height: 38px !important;
         display: inline-flex !important;
         align-items: center !important;
+        justify-content: center !important;
         white-space: nowrap;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        box-shadow: 0 3px 12px rgba(0,0,0,0.5);
     }
 
     .btn-primary,
@@ -326,41 +362,48 @@
         border-radius: 3px !important;
     }
 
-    /* STICKERS/BADGES PEQUEÑOS */
+    /* PERKS/BADGES VISIBLES */
     .perks,
-    .feature-badges {
+    .feature-badges,
+    .hero-perks {
         display: flex !important;
-        gap: 6px !important;
+        gap: 8px !important;
         justify-content: center !important;
         flex-wrap: wrap;
-        margin: 12px 0 !important;
+        margin: 16px auto !important;
+        max-width: 90% !important;
+        position: relative !important;
+        z-index: 5 !important;
     }
 
     .perk-item,
     .badge {
-        background: rgba(0,0,0,0.6) !important;
+        background: rgba(0,0,0,0.75) !important;
         backdrop-filter: blur(10px);
-        padding: 6px 10px !important; /* COMPACTO */
-        border-radius: 12px !important;
-        font-size: 10px !important; /* PEQUEÑO */
+        padding: 8px 12px !important;
+        border-radius: 14px !important;
+        font-size: 0.7rem !important;
         color: #fff !important;
-        border: 1px solid rgba(201,169,97,0.3);
-        display: inline-flex;
+        border: 1px solid rgba(201,169,97,0.4);
+        display: inline-flex !important;
         align-items: center;
-        gap: 4px;
+        gap: 6px;
+        font-weight: 500;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4);
     }
 
     .perk-item svg,
     .perk-item img,
     .badge svg,
     .badge img {
-        width: 14px !important;
-        height: 14px !important;
+        width: 16px !important;
+        height: 16px !important;
     }
 
     /* ===== SECCIONES COMPACTAS ===== */
     section {
         padding: 18px 12px !important; /* MÁS COMPACTO */
+        background: transparent !important;
     }
 
     .section-title,
@@ -384,50 +427,69 @@
         line-height: 1.4;
     }
 
-    /* ===== CARDS ESTILO APP ===== */
+    /* ELIMINAR FONDOS BLANCOS */
+    section > div,
+    .container,
+    .content-wrapper {
+        background: transparent !important;
+    }
+
+    /* ===== CARDS BIEN ALINEADAS SIN FONDOS RAROS ===== */
     .features-grid,
     .menu-categories,
     .gallery-grid,
     .values-grid {
         display: grid !important;
         grid-template-columns: 1fr !important;
-        gap: 8px !important; /* MÁS COMPACTO */
+        gap: 12px !important;
+        padding: 0 !important;
+        margin: 0 !important;
     }
 
     .feature-card,
     .menu-card,
     .value-card {
-        border-radius: 10px !important; /* MÁS REDONDEADO */
+        border-radius: 12px !important;
         overflow: hidden;
-        background: rgba(255,255,255,0.03);
-        padding: 10px !important; /* MÁS COMPACTO */
-        border: 1px solid rgba(255,255,255,0.05);
+        background: rgba(0,0,0,0.3) !important;
+        padding: 0 !important;
+        border: 1px solid rgba(201,169,97,0.15) !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
 
-    /* FOTOS EN CARDS - ASPECT RATIO 16:9 */
+    /* FOTOS EN CARDS SIN FONDO BLANCO */
     .feature-card img,
     .menu-card img,
     .gallery-item img {
         width: 100% !important;
-        height: 150px !important; /* MÁS BAJO */
+        height: 160px !important;
         object-fit: cover !important;
-        object-position: center 40% !important;
-        border-radius: 6px !important;
-        margin-bottom: 6px; /* MÁS COMPACTO */
+        object-position: center 35% !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        display: block !important;
+        background: transparent !important;
+    }
+
+    .feature-card > div,
+    .menu-card > div {
+        padding: 12px !important;
+        background: transparent !important;
     }
 
     .feature-card h3,
     .menu-card h3 {
-        font-size: 0.9rem !important; /* MÁS PEQUEÑO */
-        margin-bottom: 3px !important;
+        font-size: 0.95rem !important;
+        margin-bottom: 6px !important;
         color: #c9a961;
+        font-weight: 600;
     }
 
     .feature-card p,
     .menu-card p {
-        font-size: 0.75rem !important; /* MÁS PEQUEÑO */
-        line-height: 1.3;
-        color: rgba(255,255,255,0.75);
+        font-size: 0.8rem !important;
+        line-height: 1.4;
+        color: rgba(255,255,255,0.85);
     }
 
     /* ===== MENU PAGE (MÁS COMPACTO) ===== */
@@ -793,12 +855,20 @@
         display: block !important;
     }
 
-    /* ===== PERFORMANCE & UX ===== */
+    /* ===== PERFORMANCE & UX PROFESIONAL ===== */
     
-    /* Smooth scrolling */
+    /* Smooth scrolling rápido */
     html {
         scroll-behavior: smooth;
         scroll-padding-top: 60px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Optimización de fuentes */
+    body {
+        font-size: 14px !important;
+        text-rendering: optimizeLegibility;
     }
 
     /* Touch-friendly spacing */
@@ -808,6 +878,17 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
+    }
+
+    /* Transiciones suaves */
+    * {
+        -webkit-tap-highlight-color: rgba(201,169,97,0.2);
+    }
+
+    /* Espaciado consistente */
+    section + section {
+        margin-top: 0 !important;
+        border-top: 1px solid rgba(201,169,97,0.08);
     }
 
     /* Prevent zoom on input focus (iOS) */
