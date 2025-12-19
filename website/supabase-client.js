@@ -5,12 +5,12 @@
 
 // Configuración de Supabase
 const SUPABASE_CONFIG = {
-    url: 'https://xqhpkcogbhiqwmfjdwtb.supabase.co',
+    url: 'https://xqhpkcogbhiqwmfjdwtb.supabaseClient.co',
     anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhxaHBrY29nYmhpcXdtZmpkd3RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU1OTIwNTYsImV4cCI6MjA4MTE2ODA1Nn0.eugQmksnT7KIBYH71kj1pxbotzzSs5HCO6g_9qrlOhU'
 };
 
-// Inicializar cliente Supabase
-let supabase = null;
+// Inicializar cliente Supabase (renombrado para evitar conflicto con CDN)
+let supabaseClient = null;
 
 function initSupabase() {
     if (!SUPABASE_CONFIG.url || !SUPABASE_CONFIG.anonKey) {
@@ -18,13 +18,13 @@ function initSupabase() {
         return null;
     }
     
-    supabase = window.supabase.createClient(
+    supabaseClient = window.supabaseClient.createClient(
         SUPABASE_CONFIG.url,
         SUPABASE_CONFIG.anonKey
     );
     
     console.log('✅ Supabase inicializado');
-    return supabase;
+    return supabaseClient;
 }
 
 // ============================================
@@ -32,7 +32,7 @@ function initSupabase() {
 // ============================================
 
 async function getSettings() {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
         .from('settings')
         .select('*');
     
@@ -51,7 +51,7 @@ async function getSettings() {
 }
 
 async function updateSetting(key, value) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
         .from('settings')
         .update({ value, updated_at: new Date() })
         .eq('key', key)
@@ -70,7 +70,7 @@ async function updateSetting(key, value) {
 // ============================================
 
 async function getAllTables() {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
         .from('tables')
         .select('*')
         .eq('is_active', true)
@@ -85,7 +85,7 @@ async function getAllTables() {
 }
 
 async function getTableById(tableId) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
         .from('tables')
         .select('*')
         .eq('id', tableId)
@@ -104,7 +104,7 @@ async function getTableById(tableId) {
 // ============================================
 
 async function createReservation(reservationData) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
         .from('reservations')
         .insert([{
             customer_name: reservationData.name,
@@ -129,7 +129,7 @@ async function createReservation(reservationData) {
 }
 
 async function getReservationById(reservationId) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
         .from('reservations')
         .select(`
             *,
@@ -148,7 +148,7 @@ async function getReservationById(reservationId) {
 }
 
 async function getReservationByConfirmation(confirmationCode) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
         .from('reservations')
         .select(`
             *,
@@ -167,7 +167,7 @@ async function getReservationByConfirmation(confirmationCode) {
 }
 
 async function updateReservationStatus(reservationId, status) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
         .from('reservations')
         .update({ status, updated_at: new Date() })
         .eq('id', reservationId)
@@ -182,7 +182,7 @@ async function updateReservationStatus(reservationId, status) {
 }
 
 async function getReservationsByDate(date) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
         .from('reservations')
         .select(`
             *,
@@ -215,7 +215,7 @@ async function checkAvailability(date, time, partySize) {
     const timeWindow = calculateTimeWindow(time, tableDuration);
     
     // 3. Obtener reservaciones en esa ventana
-    const { data: reservations, error } = await supabase
+    const { data: reservations, error } = await supabaseClient
         .from('reservations')
         .select('party_size, reservation_time, table_id')
         .eq('reservation_date', date)
@@ -304,7 +304,7 @@ async function findAvailableTable(date, time, partySize, existingReservations) {
 // ============================================
 
 async function createPaymentRecord(reservationId, stripeIntentId, amountCents) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
         .from('payments')
         .insert([{
             reservation_id: reservationId,
@@ -323,7 +323,7 @@ async function createPaymentRecord(reservationId, stripeIntentId, amountCents) {
 }
 
 async function updatePaymentStatus(stripeIntentId, status, metadata = {}) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
         .from('payments')
         .update({ 
             status, 
@@ -346,7 +346,7 @@ async function updatePaymentStatus(stripeIntentId, status, metadata = {}) {
 // ============================================
 
 async function blockTimeSlot(tableId, date, time, reason) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
         .from('blocked_slots')
         .insert([{
             table_id: tableId,
@@ -365,7 +365,7 @@ async function blockTimeSlot(tableId, date, time, reason) {
 }
 
 async function getBlockedSlots(date) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
         .from('blocked_slots')
         .select('*, table:tables(table_number)')
         .eq('blocked_date', date);
@@ -383,7 +383,7 @@ async function getBlockedSlots(date) {
 // ============================================
 
 function subscribeToReservations(date, callback) {
-    const subscription = supabase
+    const subscription = supabaseClient
         .channel('reservations-channel')
         .on('postgres_changes', 
             { 
@@ -404,7 +404,7 @@ function subscribeToReservations(date, callback) {
 
 function unsubscribeFromReservations(subscription) {
     if (subscription) {
-        supabase.removeChannel(subscription);
+        supabaseClient.removeChannel(subscription);
     }
 }
 
@@ -413,7 +413,7 @@ function unsubscribeFromReservations(subscription) {
 // ============================================
 
 async function cleanExpiredLocks() {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
         .from('reservations')
         .update({ status: 'cancelled' })
         .eq('status', 'pending')
