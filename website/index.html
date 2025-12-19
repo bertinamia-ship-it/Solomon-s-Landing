@@ -169,10 +169,10 @@
     <link rel="stylesheet" href="holiday-theme.css?v=21" media="print" onload="this.media='all'">
     
     <!-- Mobile App-Style CSS -->
-    <link rel="stylesheet" href="mobile.css?v=1766113057" media="(max-width: 768px)">
+    <link rel="stylesheet" href="mobile.css?v=1766158432" media="(max-width: 768px)">
     
     <!-- MOBILE OVERRIDE - CARGA AL FINAL PARA FORZAR CAMBIOS -->
-    <link rel="stylesheet" href="mobile-override.css?v=1766113057" media="(max-width: 768px)">
+    <link rel="stylesheet" href="mobile-override.css?v=1766158432" media="(max-width: 768px)">
     
     <!-- MOBILE FORCE INLINE - EJECUTA CONSTANTEMENTE -->
     <script>
@@ -184,21 +184,35 @@
         function forzar() {
             count++;
             
-            // LOGO - FORZAR SIEMPRE
+            // LOGO - FORZAR SIEMPRE (INCLUSO SI YA ES CROPPED)
             document.querySelectorAll('header img, .logo img, .logo-container img, footer img').forEach(img => {
-                const src = img.getAttribute('src') || '';
-                if (src.includes('logo') && !src.includes('cropped')) {
+                const currentSrc = img.getAttribute('src') || '';
+                // FORZAR a cropped sin importar qué tenga
+                if (currentSrc.includes('logo') || currentSrc.includes('solomons') || currentSrc.includes('Solomon')) {
                     img.setAttribute('src', 'cropped-solomons-logo.png');
-                    img.style.height = '32px';
-                    img.style.width = 'auto';
-                    if (count <= 3) console.log('✅ Logo cambiado:', src, '→ cropped');
+                    img.style.cssText = 'height:32px!important;width:auto!important;display:block!important';
+                    if (count <= 2) console.log('✅ Logo forzado:', currentSrc);
                 }
             });
             
             // FAVICON
             const fav = document.querySelector('link[rel="icon"]');
-            if (fav && !fav.href.includes('cropped')) {
+            if (fav) {
                 fav.href = 'cropped-solomons-logo.png';
+            }
+            
+            // HERO - FORZAR FOTOS DE FONDO
+            if (count === 1) {
+                const slides = document.querySelectorAll('.hero-slide');
+                if (slides.length > 0) {
+                    slides[0].style.backgroundImage = "url('https://res.cloudinary.com/dpmozdkfh/image/upload/v1734308409/solomons-landing/sh1.jpg')";
+                    slides[0].style.backgroundSize = 'cover';
+                    slides[0].style.backgroundPosition = 'center';
+                    if (slides[1]) slides[1].style.backgroundImage = "url('https://res.cloudinary.com/dpmozdkfh/image/upload/v1734308409/solomons-landing/sh2.jpg')";
+                    if (slides[2]) slides[2].style.backgroundImage = "url('https://res.cloudinary.com/dpmozdkfh/image/upload/v1734308409/solomons-landing/sh3.jpg')";
+                    if (slides[3]) slides[3].style.backgroundImage = "url('https://res.cloudinary.com/dpmozdkfh/image/upload/v1734308409/solomons-landing/sh4.jpg')";
+                    console.log('✅ Fotos hero aplicadas:', slides.length, 'slides');
+                }
             }
             
             // H1 RESTAURANT - ELIMINAR

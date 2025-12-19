@@ -278,16 +278,14 @@
     .hero *,
     .hero-content *,
     .hero-slide * {
-        background: none !important;
-        background-color: transparent !important;
         backdrop-filter: none !important;
     }
 
     .hero-slide {
         height: 100% !important;
         width: 100% !important;
-        background: none !important;
-        background-color: transparent !important;
+        background-size: cover !important;
+        background-position: center center !important;
     }
 
     /* FOTOS HERO - CENTRADAS */
