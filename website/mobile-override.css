@@ -1,0 +1,119 @@
+/* ============================================
+   MOBILE OVERRIDE - FORZAR CAMBIOS
+   Este archivo se carga AL FINAL para sobrescribir TODO
+   ============================================ */
+
+@media (max-width: 768px) {
+    
+    /* ===== LOGO SIN SANTA - OCULTAR IMAGEN ORIGINAL ===== */
+    header .logo img,
+    header img[src*="logo"],
+    header img[src*="solomons"],
+    .header-content img,
+    .logo-container img,
+    footer img[src*="logo"],
+    footer img[src*="solomons"] {
+        content: url('cropped-solomons-logo.png') !important;
+    }
+
+    /* ===== OCULTAR H1 "RESTAURANT" COMPLETAMENTE ===== */
+    .hero-overlay > h1:first-child,
+    .hero-overlay h1[data-i18n="hero.title"],
+    .hero > div > h1:first-child {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        position: absolute !important;
+        clip: rect(0,0,0,0) !important;
+    }
+
+    /* ===== CARRUSEL/STICKERS MINI ===== */
+    .features-scroll-container {
+        padding: 8px 0 !important;
+        margin: 0 !important;
+    }
+
+    .features-scroll-track {
+        gap: 4px !important;
+    }
+
+    .feature-mini-card {
+        min-width: 70px !important;
+        max-width: 70px !important;
+        padding: 5px 4px !important;
+        border-radius: 8px !important;
+        border-width: 1px !important;
+    }
+
+    .feature-mini-card > div:first-child {
+        font-size: 1.4rem !important;
+        margin-bottom: 2px !important;
+    }
+
+    .feature-mini-card h4 {
+        font-size: 0.5rem !important;
+        line-height: 1.1 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        letter-spacing: -0.2px !important;
+    }
+
+    /* ===== FOOTER COMPACTO ===== */
+    footer {
+        padding: 20px 15px !important;
+    }
+
+    /* Ocultar Quick Links - buscar el div que contiene el h3 */
+    footer > div > div:nth-child(2),
+    footer h3:contains("Quick Links"),
+    footer div:has(h3:contains("Quick")) {
+        display: none !important;
+    }
+
+    /* Grid de 2 columnas en lugar de 3 */
+    footer > div > div {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+    }
+
+    /* Redes sociales pequeñas */
+    footer .social-links a,
+    footer .social-icons a,
+    footer a[href*="facebook"],
+    footer a[href*="instagram"],
+    footer a[href*="tripadvisor"] {
+        width: 28px !important;
+        height: 28px !important;
+        font-size: 14px !important;
+        padding: 6px !important;
+        margin: 0 4px !important;
+    }
+
+    /* ===== HERO MÁS COMPACTO ===== */
+    .hero,
+    #hero {
+        height: 45vh !important;
+        min-height: 380px !important;
+        max-height: 450px !important;
+    }
+
+    /* ===== BOTONES MÁS PEQUEÑOS ===== */
+    .hero-buttons a,
+    .cta-buttons a,
+    .btn {
+        max-width: 120px !important;
+        padding: 8px 14px !important;
+        font-size: 0.65rem !important;
+        border-radius: 18px !important;
+    }
+
+    /* ===== SUBTITLE MÁS PEQUEÑO ===== */
+    .hero-overlay p,
+    .hero p[data-i18n="hero.subtitle"] {
+        font-size: 0.75rem !important;
+        margin-bottom: 12px !important;
+        letter-spacing: 1px !important;
+    }
+}
