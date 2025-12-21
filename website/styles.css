@@ -345,10 +345,18 @@ section:nth-child(even) {
 /* ============================================
    HERO
    ============================================ */
-#hero {
-    height: clamp(500px, 65vh, 700px);
-    min-height: 500px;
-    max-height: 700px;
+/* Standardized hero heights across all pages */
+#hero,
+.home-hero,
+#menu-hero,
+#reviews-hero,
+#catering-hero,
+#location-hero,
+#reserve-hero,
+section[id$="-hero"] {
+    height: clamp(520px, 75vh, 760px);
+    min-height: 520px;
+    max-height: 760px;
     position: relative;
     overflow: hidden;
     display: flex;
@@ -371,7 +379,7 @@ section:nth-child(even) {
     width: 100%;
     height: 100%;
     background-size: cover;
-    background-position: center 40%;
+    background-position: center 35%;
     background-repeat: no-repeat;
     opacity: 0;
     transition: opacity 1.5s ease-in-out;
@@ -383,6 +391,7 @@ section:nth-child(even) {
     opacity: 1;
 }
 
+/* Home hero slides - optimized positioning */
 .hero-slide-1 {
     background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.3)), url('https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/sh1');
     background-position: center 35%;
@@ -390,16 +399,33 @@ section:nth-child(even) {
 
 .hero-slide-2 {
     background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.3)), url('https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/sh2');
-    background-position: center 40%;
+    background-position: center 38%;
 }
 
 .hero-slide-3 {
     background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.3)), url('https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/sh3');
-    background-position: center 45%;
+    background-position: center 40%;
 }
 
 .hero-slide-4 {
     background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.3)), url('https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/sh4');
+    background-position: center 38%;
+}
+
+/* Page-specific hero positioning */
+#menu-hero {
+    background-position: center 25%;
+}
+
+#catering-hero {
+    background-position: center 30%;
+}
+
+#reviews-hero {
+    background-position: center 35%;
+}
+
+#location-hero {
     background-position: center 40%;
 }
 
@@ -448,6 +474,9 @@ section:nth-child(even) {
 }
 
 /* Hide scroll indicator */
+.scroll-indicator {
+    display: none !important;
+}
 .scroll-indicator {
     display: none !important;
 }

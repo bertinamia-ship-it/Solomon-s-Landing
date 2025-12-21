@@ -176,29 +176,6 @@
     <!-- Main JavaScript -->
     <script src="assets/js/main.js"></script>
     
-    <!-- Mobile Menu Script (Legacy - will be replaced by main.js) -->
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const menuToggle = document.querySelector('.mobile-menu-toggle');
-        const nav = document.querySelector('header nav');
-        const overlay = document.querySelector('.mobile-nav-overlay');
-        
-        if (menuToggle && nav) {
-            menuToggle.addEventListener('click', function() {
-                nav.classList.toggle('active');
-                overlay.classList.toggle('active');
-                menuToggle.classList.toggle('active');
-            });
-            
-            overlay.addEventListener('click', function() {
-                nav.classList.remove('active');
-                overlay.classList.remove('active');
-                menuToggle.classList.remove('active');
-            });
-        }
-    });
-    </script>
-    
     <!-- Scripts - Deferred for Performance -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js" defer></script>
     <script src="email-config.js" defer></script>

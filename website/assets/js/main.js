@@ -181,11 +181,11 @@
     // NAVBAR FUNCTIONS
     // ============================================
     function initNavbar() {
-        const toggle = document.querySelector('.mobile-menu-toggle');
-        const nav = document.querySelector('.navbar-nav');
+        const toggle = document.querySelector('.mobile-menu-toggle, #nav-toggle, .hamburger-btn');
+        const nav = document.querySelector('.navbar-menu, nav');
         const overlay = document.querySelector('.mobile-nav-overlay');
         const header = document.querySelector('.site-header');
-        const navLinks = document.querySelectorAll('.navbar-nav a');
+        const navLinks = document.querySelectorAll('.navbar-menu a, nav a');
         
         // Mobile menu toggle
         if (toggle && nav && overlay) {
