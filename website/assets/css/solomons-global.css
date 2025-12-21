@@ -611,18 +611,25 @@ p {
    RESPONSIVE - MOBILE ADJUSTMENTS
    ============================================ */
 @media (max-width: 768px) {
+    /* Fix z-index stacking for mobile navbar */
+    .site-header {
+        z-index: 3500 !important;
+    }
+    
     .navbar-nav {
         position: fixed;
         top: 0;
         left: -100%;
         width: 280px;
         height: 100vh;
-        background: #002654;
+        background: #002654 !important;
+        backdrop-filter: none !important;
         flex-direction: column;
         padding: 80px 24px 24px;
         gap: 0;
         transition: left 0.3s ease;
         box-shadow: 4px 0 20px rgba(0,0,0,0.3);
+        z-index: 3000 !important;
     }
     
     .navbar-nav.active {
@@ -643,21 +650,28 @@ p {
     
     .mobile-menu-toggle {
         display: flex;
+        z-index: 3500;
     }
     
     .mobile-nav-overlay {
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.5);
+        background: rgba(0, 0, 0, 0.7);
         opacity: 0;
         pointer-events: none;
         transition: opacity 0.3s ease;
-        z-index: 998;
+        z-index: 2500 !important;
     }
     
     .mobile-nav-overlay.active {
         opacity: 1;
         pointer-events: all;
+    }
+    
+    /* Catering page mobile grid fixes */
+    [style*="grid-template-columns: 1.2fr 1fr"],
+    [style*="grid-template-columns: 1fr 1.2fr"] {
+        grid-template-columns: 1fr !important;
     }
 }
 /* ============================================
