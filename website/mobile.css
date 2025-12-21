@@ -221,17 +221,20 @@
     .hero-slide-4 {
         height: 100% !important;
         width: 100% !important;
-        background-size: 110% auto !important;
-        background-position: center 45% !important;
+        background-size: cover !important;
+        background-position: center 35% !important;
         transform: scale(1) !important;
     }
     
-    /* Specific hero backgrounds with better framing */
-    #reviews-hero > div,
-    #menu-hero > div,
-    #catering-hero {
-        background-size: 115% auto !important;
-        background-position: center 50% !important;
+    /* Clean hero overlays - remove gray bands */
+    .hero-overlay {
+        background: transparent !important;
+        backdrop-filter: none !important;
+    }
+    
+    /* Hero content should be clean and centered */
+    .hero-content {
+        padding: 1rem !important;
     }
 
     /* ASEGURAR QUE LAS FOTOS SE VEAN - OVERLAY SUTIL */
@@ -251,6 +254,11 @@
         background-image: linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.35)), url('https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/sh4') !important;
     }
 
+    /* Hide scroll indicator on mobile */
+    .scroll-indicator {
+        display: none !important;
+    }
+    
     /* OCULTAR H1 "Restaurant" */
     .hero-overlay > h1:first-child,
     .hero-overlay h1[data-i18n="hero.title"],
@@ -345,10 +353,17 @@
     /* Home info cards (Organic/Avocado Oil) - Center and fix width */
     div[style*="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))"] {
         grid-template-columns: 1fr !important;
-        max-width: 400px !important;
+        max-width: 420px !important;
         margin-left: auto !important;
         margin-right: auto !important;
         gap: 1.5rem !important;
+        padding: 0 1rem !important;
+    }
+    
+    /* Ensure all cards inside are properly centered */
+    div[style*="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))"] > div {
+        margin: 0 auto !important;
+        width: 100% !important;
     }
 
     .menu-card,
@@ -434,8 +449,8 @@
     
     /* Catering page - fix images and layout */
     #catering-hero {
-        background-size: 120% auto !important;
-        background-position: center 50% !important;
+        background-size: cover !important;
+        background-position: center 30% !important;
     }
     
     #catering > .container > div[style*="grid-template-columns"] {
@@ -447,13 +462,31 @@
     #catering img {
         width: 100% !important;
         height: auto !important;
-        max-height: 300px !important;
+        max-height: 320px !important;
         object-fit: cover !important;
-        object-position: center !important;
+        object-position: center 40% !important;
+        border-radius: 16px !important;
     }
     
     #catering div[style*="height: 550px"] {
-        height: 300px !important;
+        height: 320px !important;
+        border-radius: 16px !important;
+        overflow: hidden !important;
+    }
+    
+    /* Reviews hero - better positioning */
+    #reviews-hero > div {
+        background-position: center 35% !important;
+    }
+    
+    /* Menu hero - better positioning */
+    #menu-hero {
+        background-position: center 30% !important;
+    }
+    
+    /* Location hero - better positioning */
+    #location-hero {
+        background-position: center 40% !important;
     }
     
     img {
@@ -508,6 +541,38 @@
         max-width: 100% !important;
     }
     
+    /* Consistent button sizing for mobile */
+    .btn,
+    a.btn,
+    button.btn {
+        min-height: 48px !important;
+        padding: 0.875rem 1.5rem !important;
+        font-size: 0.95rem !important;
+        border-radius: 12px !important;
+    }
+    
+    /* Hero buttons on mobile */
+    .hero-buttons {
+        flex-direction: column !important;
+        gap: 1rem !important;
+        padding: 0 1rem !important;
+    }
+    
+    .hero-buttons .btn {
+        width: 100% !important;
+        max-width: 280px !important;
+        margin: 0 auto !important;
+    }
+    
+    /* Card improvements */
+    .menu-card,
+    .feature-card,
+    .review-card {
+        border-radius: 16px !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+        transition: all 0.3s ease !important;
+    }
+    
     /* Ensure tables don't overflow */
     table {
         max-width: 100% !important;
@@ -526,6 +591,24 @@
         width: 100% !important;
         max-width: 100vw !important;
         overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+    
+    /* Improve section padding consistency */
+    section {
+        padding: 2.5rem 1rem !important;
+    }
+    
+    /* Improve text readability */
+    p {
+        line-height: 1.7 !important;
+    }
+    
+    /* Better touch targets for links */
+    a {
+        min-height: 44px !important;
+        display: inline-flex !important;
+        align-items: center !important;
     }
     
     /* Reviews hero consistent height */
