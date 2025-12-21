@@ -178,11 +178,68 @@
     }
 
     // ============================================
-    // NAVBAR FUNCTIONS (Hamburger handled by app.js)
+    // NAVBAR FUNCTIONS
     // ============================================
     function initNavbar() {
+        const toggle = document.querySelector('.mobile-menu-toggle');
+        const nav = document.querySelector('.navbar-nav');
+        const overlay = document.querySelector('.mobile-nav-overlay');
         const header = document.querySelector('.site-header');
         const navLinks = document.querySelectorAll('.navbar-nav a, .navbar-menu a');
+        
+        // Mobile menu functions
+        function openNav() {
+            if (nav) nav.classList.add('active');
+            if (overlay) overlay.classList.add('active');
+            if (toggle) {
+                toggle.classList.add('active');
+                toggle.setAttribute('aria-expanded', 'true');
+            }
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeNav() {
+            if (nav) nav.classList.remove('active');
+            if (overlay) overlay.classList.remove('active');
+            if (toggle) {
+                toggle.classList.remove('active');
+                toggle.setAttribute('aria-expanded', 'false');
+            }
+            document.body.style.overflow = '';
+        }
+        
+        function toggleNav() {
+            if (nav && nav.classList.contains('active')) {
+                closeNav();
+            } else {
+                openNav();
+            }
+        }
+        
+        // Event listeners
+        if (toggle) {
+            toggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleNav();
+            });
+        }
+        
+        if (overlay) {
+            overlay.addEventListener('click', closeNav);
+        }
+        
+        // Close on nav link click
+        navLinks.forEach(link => {
+            link.addEventListener('click', closeNav);
+        });
+        
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeNav();
+            }
+        });
         
         // Active page indicator
         const currentPage = window.location.pathname.split('/').pop() || 'index.html';

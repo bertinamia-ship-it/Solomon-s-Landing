@@ -613,7 +613,7 @@ p {
 @media (max-width: 768px) {
     /* Fix z-index stacking for mobile navbar */
     .site-header {
-        z-index: 3500 !important;
+        z-index: 10000 !important;
     }
     
     .navbar-nav {
@@ -629,7 +629,7 @@ p {
         gap: 0;
         transition: left 0.3s ease;
         box-shadow: 4px 0 20px rgba(0,0,0,0.3);
-        z-index: 3000 !important;
+        z-index: 9999 !important;
     }
     
     .navbar-nav.active {
@@ -650,7 +650,8 @@ p {
     
     .mobile-menu-toggle {
         display: flex;
-        z-index: 3500;
+        z-index: 10000;
+        position: relative;
     }
     
     .mobile-nav-overlay {
@@ -660,7 +661,7 @@ p {
         opacity: 0;
         pointer-events: none;
         transition: opacity 0.3s ease;
-        z-index: 2500 !important;
+        z-index: 9998 !important;
     }
     
     .mobile-nav-overlay.active {

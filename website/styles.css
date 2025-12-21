@@ -362,6 +362,9 @@ section[id$="-hero"] {
     display: flex;
     align-items: center;
     justify-content: center;
+    /* CSS variables for hero background control */
+    --hero-bg-size: cover;
+    --hero-bg-pos: center;
 }
 
 .hero-slider {
@@ -378,8 +381,8 @@ section[id$="-hero"] {
     left: 0;
     width: 100%;
     height: 100%;
-    background-size: cover;
-    background-position: center 35%;
+    background-size: var(--hero-bg-size, cover);
+    background-position: var(--hero-bg-pos, center 35%);
     background-repeat: no-repeat;
     opacity: 0;
     transition: opacity 1.5s ease-in-out;
@@ -994,6 +997,14 @@ footer a:hover {
         height: 70vh;
         min-height: 500px;
         max-height: 700px;
+        /* Mobile hero zoom-out for better framing */
+        --hero-bg-size: 100% auto;
+        --hero-bg-pos: center;
+    }
+    
+    /* Home page perks carousel spacing */
+    .features-scroll-container {
+        margin-top: 14px !important;
     }
 
     .hero-overlay h1 {
@@ -1037,6 +1048,8 @@ footer a:hover {
     .menu-tabs {
         gap: 0.5rem;
         padding: 1rem;
+        position: static !important;
+        top: auto !important;
     }
 
     .menu-tab {
@@ -1051,6 +1064,12 @@ footer a:hover {
 
     .menu-item {
         padding: 1.25rem;
+        height: auto !important;
+        min-height: unset !important;
+    }
+    
+    .menu-item p {
+        line-height: 1.4;
     }
 
     .menu-item-name {
