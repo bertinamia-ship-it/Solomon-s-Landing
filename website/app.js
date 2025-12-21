@@ -1379,9 +1379,9 @@ function initPerksCarousel() {
 // ============================================
 function initMobileMenu() {
     const menuToggle = document.querySelector('.mobile-menu-toggle');
-    const nav = document.querySelector('nav');
+    const nav = document.querySelector('.navbar-menu');
     const overlay = document.querySelector('.mobile-nav-overlay');
-    const navLinks = document.querySelectorAll('nav a');
+    const navLinks = document.querySelectorAll('.navbar-menu a');
     
     if (!menuToggle || !nav || !overlay) return;
     
@@ -1391,8 +1391,12 @@ function initMobileMenu() {
         nav.classList.toggle('active');
         overlay.classList.toggle('active');
         
+        // Update aria-expanded
+        const isActive = nav.classList.contains('active');
+        menuToggle.setAttribute('aria-expanded', isActive ? 'true' : 'false');
+        
         // Prevent body scroll when menu is open
-        document.body.style.overflow = menuToggle.classList.contains('active') ? 'hidden' : '';
+        document.body.style.overflow = isActive ? 'hidden' : '';
     });
     
     // Close menu when overlay is clicked
@@ -1400,6 +1404,7 @@ function initMobileMenu() {
         menuToggle.classList.remove('active');
         nav.classList.remove('active');
         overlay.classList.remove('active');
+        menuToggle.setAttribute('aria-expanded', 'false');
         document.body.style.overflow = '';
     });
     
@@ -1409,6 +1414,7 @@ function initMobileMenu() {
             menuToggle.classList.remove('active');
             nav.classList.remove('active');
             overlay.classList.remove('active');
+            menuToggle.setAttribute('aria-expanded', 'false');
             document.body.style.overflow = '';
         });
     });
@@ -1419,6 +1425,7 @@ function initMobileMenu() {
             menuToggle.classList.remove('active');
             nav.classList.remove('active');
             overlay.classList.remove('active');
+            menuToggle.setAttribute('aria-expanded', 'false');
             document.body.style.overflow = '';
         }
     });

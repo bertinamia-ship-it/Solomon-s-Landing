@@ -178,50 +178,11 @@
     }
 
     // ============================================
-    // NAVBAR FUNCTIONS
+    // NAVBAR FUNCTIONS (Hamburger handled by app.js)
     // ============================================
     function initNavbar() {
-        const toggle = document.querySelector('.mobile-menu-toggle, #nav-toggle, .hamburger-btn');
-        // Explicitly target the <nav> drawer element (not the UL inside)
-        const navPanel = document.querySelector('header nav') || document.querySelector('.navbar-menu') || document.querySelector('nav');
-        const overlay = document.querySelector('.mobile-nav-overlay');
         const header = document.querySelector('.site-header');
-        const navLinks = document.querySelectorAll('header nav a, .navbar-menu a, nav a');
-        
-        // Mobile menu toggle
-        if (toggle && navPanel && overlay) {
-            toggle.addEventListener('click', function() {
-                const isActive = navPanel.classList.toggle('active');
-                overlay.classList.toggle('active', isActive);
-                toggle.classList.toggle('active', isActive);
-                toggle.setAttribute('aria-expanded', isActive ? 'true' : 'false');
-                
-                // Prevent body scroll when menu is open
-                document.body.style.overflow = isActive ? 'hidden' : '';
-            });
-            
-            // Close menu when clicking overlay
-            overlay.addEventListener('click', function() {
-                navPanel.classList.remove('active');
-                overlay.classList.remove('active');
-                toggle.classList.remove('active');
-                toggle.setAttribute('aria-expanded', 'false');
-                document.body.style.overflow = '';
-            });
-            
-            // Close menu when clicking a link
-            navLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    if (window.innerWidth <= 768) {
-                        navPanel.classList.remove('active');
-                        overlay.classList.remove('active');
-                        toggle.classList.remove('active');
-                        toggle.setAttribute('aria-expanded', 'false');
-                        document.body.style.overflow = '';
-                    }
-                });
-            });
-        }
+        const navLinks = document.querySelectorAll('.navbar-nav a, .navbar-menu a');
         
         // Active page indicator
         const currentPage = window.location.pathname.split('/').pop() || 'index.html';
@@ -245,29 +206,6 @@
                 }
                 
                 lastScroll = currentScroll;
-            });
-        }
-    }
-
-    // ============================================
-    // KEYBOARD ACCESSIBILITY
-    // ============================================
-    function initAccessibility() {
-        // Trap focus in mobile menu when open
-        const nav = document.querySelector('.navbar-nav');
-        const toggle = document.querySelector('.navbar-toggle');
-        
-        if (nav && toggle) {
-            document.addEventListener('keydown', function(e) {
-                // Close menu with Escape key
-                if (e.key === 'Escape' && nav.classList.contains('active')) {
-                    nav.classList.remove('active');
-                    document.querySelector('.navbar-overlay').classList.remove('active');
-                    toggle.classList.remove('active');
-                    toggle.setAttribute('aria-expanded', 'false');
-                    document.body.style.overflow = '';
-                    toggle.focus();
-                }
             });
         }
     }
@@ -324,7 +262,6 @@
         initLanguage();
         initNavbar();
         initChatbot();
-        initAccessibility();
     }
 
     // Run when DOM is ready
