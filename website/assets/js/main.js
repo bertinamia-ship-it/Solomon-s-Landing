@@ -182,18 +182,19 @@
     // ============================================
     function initNavbar() {
         const toggle = document.querySelector('.mobile-menu-toggle, #nav-toggle, .hamburger-btn');
-        const nav = document.querySelector('.navbar-menu, nav');
+        // Explicitly target the <nav> drawer element (not the UL inside)
+        const navPanel = document.querySelector('header nav') || document.querySelector('.navbar-menu') || document.querySelector('nav');
         const overlay = document.querySelector('.mobile-nav-overlay');
         const header = document.querySelector('.site-header');
-        const navLinks = document.querySelectorAll('.navbar-menu a, nav a');
+        const navLinks = document.querySelectorAll('header nav a, .navbar-menu a, nav a');
         
         // Mobile menu toggle
-        if (toggle && nav && overlay) {
+        if (toggle && navPanel && overlay) {
             toggle.addEventListener('click', function() {
-                const isActive = nav.classList.toggle('active');
+                const isActive = navPanel.classList.toggle('active');
                 overlay.classList.toggle('active', isActive);
                 toggle.classList.toggle('active', isActive);
-                toggle.setAttribute('aria-expanded', isActive);
+                toggle.setAttribute('aria-expanded', isActive ? 'true' : 'false');
                 
                 // Prevent body scroll when menu is open
                 document.body.style.overflow = isActive ? 'hidden' : '';
@@ -201,7 +202,7 @@
             
             // Close menu when clicking overlay
             overlay.addEventListener('click', function() {
-                nav.classList.remove('active');
+                navPanel.classList.remove('active');
                 overlay.classList.remove('active');
                 toggle.classList.remove('active');
                 toggle.setAttribute('aria-expanded', 'false');
@@ -212,7 +213,7 @@
             navLinks.forEach(link => {
                 link.addEventListener('click', function() {
                     if (window.innerWidth <= 768) {
-                        nav.classList.remove('active');
+                        navPanel.classList.remove('active');
                         overlay.classList.remove('active');
                         toggle.classList.remove('active');
                         toggle.setAttribute('aria-expanded', 'false');
