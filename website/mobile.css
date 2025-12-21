@@ -236,8 +236,8 @@
         height: 100% !important;
         width: 100% !important;
         background-size: cover !important;
-        background-position: center 40% !important;
-        transform: scale(1) !important;
+        background-position: center 35% !important;
+        transform: scale(0.95) !important; /* Slight zoom out for better framing */
     }
     
     /* Clean hero overlays - remove gray bands */
@@ -256,27 +256,33 @@
     /* ASEGURAR QUE LAS FOTOS SE VEAN - OVERLAY SUTIL */
     .hero-slide-1 {
         background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.3)), url('https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/sh1') !important;
-        background-position: center 40% !important;
+        background-position: center 30% !important;
     }
 
     .hero-slide-2 {
         background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.3)), url('https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/sh2') !important;
-        background-position: center 40% !important;
+        background-position: center 35% !important;
     }
 
     .hero-slide-3 {
         background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.3)), url('https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/sh3') !important;
-        background-position: center 45% !important;
+        background-position: center 40% !important;
     }
 
     .hero-slide-4 {
         background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.3)), url('https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/sh4') !important;
-        background-position: center 40% !important;
+        background-position: center 35% !important;
     }
 
     /* Hide scroll indicator on mobile */
     .scroll-indicator {
         display: none !important;
+    }
+    
+    /* Perks carousel - more spacing from hero buttons */
+    .features-scroll-container {
+        margin: 2.5rem auto 0 !important;
+        padding: 20px 0 !important;
     }
     
     /* OCULTAR H1 "Restaurant" */
