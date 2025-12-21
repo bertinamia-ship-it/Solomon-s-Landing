@@ -235,9 +235,9 @@
     .hero-slide-4 {
         height: 100% !important;
         width: 100% !important;
-        background-size: cover !important;
-        background-position: center 35% !important;
-        transform: scale(0.95) !important; /* Slight zoom out for better framing */
+        background-size: 100% auto !important;
+        background-position: center top !important;
+        background-color: #000 !important;
     }
     
     /* Clean hero overlays - remove gray bands */
@@ -281,7 +281,7 @@
     
     /* Perks carousel - more spacing from hero buttons */
     .features-scroll-container {
-        margin: 2.5rem auto 0 !important;
+        margin-top: 14px !important;
         padding: 20px 0 !important;
     }
     
@@ -326,7 +326,7 @@
     /* ===== CARRUSEL/STICKERS MINI ===== */
     .features-scroll-container {
         padding: 15px 0 !important;
-        margin: 2rem auto 0 !important;
+        margin-top: 14px !important;
         max-width: 100% !important;
     }
 
@@ -384,19 +384,13 @@
     }
     
     /* Home info cards (Organic/Avocado Oil) - Center and fix width */
-    div[style*="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))"] {
+    .home-info-grid {
         grid-template-columns: 1fr !important;
-        max-width: 420px !important;
+        max-width: 520px !important;
         margin-left: auto !important;
         margin-right: auto !important;
         gap: 1.5rem !important;
         padding: 0 1rem !important;
-    }
-    
-    /* Ensure all cards inside are properly centered */
-    div[style*="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))"] > div {
-        margin: 0 auto !important;
-        width: 100% !important;
     }
 
     .menu-card,
@@ -675,9 +669,7 @@
     /* ===== MENUS PAGE FIXES ===== */
     /* Fix menu category buttons - stable and no shifting */
     .menu-tabs {
-        position: sticky !important;
-        top: 58px !important;
-        z-index: 90 !important;
+        position: static !important;
         padding: 0.75rem !important;
         gap: 0.6rem !important;
         background: rgba(255, 255, 255, 0.98) !important;
