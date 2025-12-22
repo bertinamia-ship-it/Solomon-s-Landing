@@ -27,6 +27,13 @@
     * {
         -webkit-tap-highlight-color: transparent;
     }
+    
+    /* Global text wrapping safety */
+    p, h1, h2, h3, h4, h5, h6, div, span, a {
+        overflow-wrap: anywhere;
+        word-break: break-word;
+        hyphens: auto;
+    }
 
     /* ===== HEADER COMPACTO - BRAND BLUE GRADIENT ===== */
     header,
@@ -225,6 +232,9 @@
         min-height: 380px !important;
         max-height: 520px !important;
         position: relative !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        filter: none !important;
     }
 
     /* HERO - FOTOS VISIBLES Y ZOOM OUT (SOBREESCRIBIR STYLES.CSS) */
@@ -235,10 +245,10 @@
     .hero-slide-4 {
         height: 100% !important;
         width: 100% !important;
-        background-size: 100% auto !important;
+        background-size: cover !important;
         background-repeat: no-repeat !important;
-        background-position: center top !important;
-        background-color: #000 !important;
+        background-position: center !important;
+        background-color: transparent !important;
     }
     
     /* Clean hero overlays - remove gray bands */
@@ -364,7 +374,14 @@
 
     /* ===== SECCIONES ===== */
     section {
-        padding: 30px 15px !important;
+        padding: 30px 14px !important;
+    }
+    
+    /* Content containers - ensure side padding */
+    .container,
+    section > div {
+        padding-left: 14px;
+        padding-right: 14px;
     }
 
     h2 {
@@ -389,14 +406,16 @@
         display: grid !important;
         grid-template-columns: 1fr !important;
         gap: 16px !important;
-        padding: 0 16px !important;
-        max-width: 520px !important;
+        padding: 0 !important;
+        max-width: 100% !important;
         margin: 0 auto !important;
     }
     
     .home-info-grid > .card,
     .home-info-grid > div {
-        width: 100% !important;
+        width: min(92vw, 440px) !important;
+        margin: 0 auto !important;
+        padding: 1.5rem 1rem !important;
     }
 
     .menu-card,
