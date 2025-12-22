@@ -19,6 +19,12 @@
     body {
         zoom: 0.9 !important;
         padding-bottom: env(safe-area-inset-bottom) !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    
+    main {
+        flex: 1 !important;
     }
     
     /* Prevent horizontal scrolling leaks */
@@ -252,6 +258,7 @@
         background-repeat: no-repeat !important;
         background-position: center !important;
         background-color: transparent !important;
+        transform: none !important;
     }
     
     /* Clean hero overlays - remove gray bands */
@@ -440,11 +447,17 @@
     }
     
     /* Home info cards (Organic/Avocado Oil) - Wider and better proportions */
+    #welcome .container > div {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+        box-sizing: border-box !important;
+    }
+    
     .home-info-grid {
         display: grid !important;
         grid-template-columns: 1fr !important;
-        gap: 20px !important;
-        padding: 0 8px !important;
+        gap: 1.5rem !important;
+        padding: 0 !important;
         max-width: 100% !important;
         margin: 0 auto !important;
         width: 100% !important;
@@ -452,9 +465,10 @@
     
     .home-info-grid > .card,
     .home-info-grid > div {
-        width: min(92vw, 520px) !important;
+        width: 100% !important;
+        max-width: 100% !important;
         margin: 0 auto !important;
-        padding: 1.75rem 1.25rem !important;
+        padding: 1.5rem 1.25rem !important;
         box-sizing: border-box !important;
         min-height: auto !important;
         height: auto !important;
@@ -482,21 +496,23 @@
     }
     
     /* Yellow quote box - proper mobile layout */
+    #welcome div[style*="border-left: 4px solid var(--yellow-sun)"],
     .welcome-section div[style*="border-left: 4px solid var(--yellow-sun)"] {
-        width: min(92vw, 560px) !important;
-        max-width: min(92vw, 560px) !important;
-        margin: 2rem auto 0 auto !important;
-        padding: 1.5rem 1.5rem !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 1.5rem auto 0 auto !important;
+        padding: 1.25rem 1.25rem !important;
         box-sizing: border-box !important;
         min-height: auto !important;
         height: auto !important;
     }
     
+    #welcome div[style*="border-left: 4px solid var(--yellow-sun)"] p,
     .welcome-section div[style*="border-left: 4px solid var(--yellow-sun)"] p {
         font-size: clamp(15px, 4vw, 18px) !important;
-        line-height: 1.65 !important;
+        line-height: 1.6 !important;
         hyphens: none !important;
-        overflow-wrap: normal !important;
+        overflow-wrap: anywhere !important;
         word-break: normal !important;
         max-width: 100% !important;
     }
@@ -866,7 +882,7 @@
     /* Menu cards - ensure full visibility, no clipping */
     .menu-item {
         width: 100% !important;
-        max-width: min(92vw, 520px) !important;
+        max-width: 100% !important;
         margin: 0 auto 0.75rem auto !important;
         padding: 1.25rem 1rem !important;
         border-radius: 12px !important;
@@ -876,31 +892,48 @@
         box-sizing: border-box !important;
     }
     
-    /* Menu card content - proper wrapping */
-    .menu-item h4 {
-        font-size: clamp(1rem, 4vw, 1.1rem) !important;
+    /* Menu item header with title and price */
+    .menu-item-header {
+        display: flex !important;
+        gap: 0.75rem !important;
+        flex-wrap: wrap !important;
+        align-items: baseline !important;
         margin-bottom: 0.6rem !important;
+    }
+    
+    /* Menu card content - proper wrapping */
+    .menu-item h4,
+    .menu-item-header h4 {
+        flex: 1 1 100% !important;
+        font-size: clamp(1rem, 4vw, 1.1rem) !important;
+        margin: 0 0 0.4rem 0 !important;
         line-height: 1.4 !important;
         overflow-wrap: break-word !important;
         word-break: normal !important;
         hyphens: none !important;
+        white-space: normal !important;
     }
     
-    .menu-item p {
+    .menu-item p,
+    .menu-item-description {
         font-size: clamp(0.875rem, 3.5vw, 0.95rem) !important;
         line-height: 1.65 !important;
         overflow-wrap: break-word !important;
         word-break: normal !important;
         hyphens: auto !important;
-        margin-bottom: 0.6rem !important;
+        margin: 0 0 0.6rem 0 !important;
         max-width: 100% !important;
+        white-space: normal !important;
     }
     
-    .menu-item .price {
+    .menu-item .price,
+    .menu-item-price {
+        flex: 0 0 auto !important;
         font-size: clamp(0.95rem, 3.8vw, 1.05rem) !important;
         font-weight: 700 !important;
-        margin-top: 0.5rem !important;
+        margin: 0 !important;
         color: var(--primary-color, #004A9F) !important;
+        white-space: nowrap !important;
     }
     
     /* Menu and location page heroes */
@@ -942,13 +975,17 @@
         box-sizing: border-box !important;
     }
     
-    /* Reservation card */
-    .reservation-card {
+    /* Reservation card - app-like styling */
+    .reservation-card,
+    .reservation-form-wrapper {
         padding: 1.75rem 1.25rem !important;
         box-sizing: border-box !important;
         width: 100% !important;
         max-width: 100% !important;
         margin: 0 auto !important;
+        background: white !important;
+        border-radius: 16px !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
     }
     
     /* Form title */

@@ -615,15 +615,16 @@ section[id$="-hero"] {
 .reservation-card {
     background: var(--white);
     padding: 3rem;
-    border-radius: 16px;
-    box-shadow: var(--shadow-xl);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(26, 77, 109, 0.12);
     border: 1px solid rgba(26, 77, 109, 0.08);
-    transition: transform 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .reservation-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-6px);
     box-shadow: 0 16px 56px rgba(26, 77, 109, 0.24);
+    border-color: rgba(251, 191, 36, 0.3);
 }
 
 .reservation-card .card-icon {
