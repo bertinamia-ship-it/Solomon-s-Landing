@@ -22,7 +22,6 @@
     }
     
     body {
-        zoom: 0.9 !important;
         padding-bottom: env(safe-area-inset-bottom) !important;
         display: flex !important;
         flex-direction: column !important;
@@ -32,9 +31,14 @@
         flex: 1 !important;
     }
     
-    /* Prevent horizontal scrolling leaks */
-    * {
-        max-width: 100vw;
+    /* Safe overflow prevention without breaking layouts */
+    img, svg, video, canvas {
+        max-width: 100% !important;
+        height: auto !important;
+    }
+    
+    .container, section, main {
+        max-width: 100% !important;
     }
     
     /* Remove tap highlight */
@@ -464,40 +468,43 @@
     /* Home info cards (Organic/Avocado Oil) - Wider and better proportions */
     #welcome .container,
     .welcome-section .container {
-        padding-left: 1rem !important;
-        padding-right: 1rem !important;
+        padding-left: 16px !important;
+        padding-right: 16px !important;
         box-sizing: border-box !important;
         width: 100% !important;
+        max-width: 100% !important;
     }
     
     #welcome .container > div,
     .welcome-section .container > div {
-        padding-left: 0.5rem !important;
-        padding-right: 0.5rem !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
         box-sizing: border-box !important;
+        max-width: 100% !important;
     }
     
     .home-info-grid {
         display: grid !important;
         grid-template-columns: 1fr !important;
-        gap: 1.25rem !important;
+        gap: 16px !important;
         padding: 0 !important;
         max-width: 100% !important;
-        margin: 1.5rem auto !important;
+        margin: 16px auto !important;
         width: 100% !important;
     }
     
     .home-info-grid > .card,
     .home-info-grid > div {
-        width: min(95vw, 520px) !important;
-        max-width: min(95vw, 520px) !important;
+        width: 100% !important;
+        max-width: 100% !important;
         margin: 0 auto !important;
-        padding: 1.5rem 1.25rem !important;
+        padding: 20px 16px !important;
         box-sizing: border-box !important;
         min-height: auto !important;
         height: auto !important;
         overflow-wrap: anywhere !important;
         word-break: normal !important;
+        border-radius: 18px !important;
     }
     
     /* Icon circles in info cards */
@@ -526,10 +533,10 @@
     .welcome-section div[style*="border-left: 4px solid var(--yellow-sun)"],
     #welcome div[style*="border-left: 4px solid"],
     .welcome-section div[style*="border-left: 4px solid"] {
-        width: min(95vw, 520px) !important;
-        max-width: min(95vw, 520px) !important;
-        margin: 1.25rem auto !important;
-        padding: 1.25rem 1.5rem !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 20px auto !important;
+        padding: 20px 16px !important;
         box-sizing: border-box !important;
         min-height: auto !important;
         height: auto !important;
@@ -539,12 +546,13 @@
     .welcome-section div[style*="border-left: 4px solid var(--yellow-sun)"] p,
     #welcome div[style*="border-left: 4px solid"] p,
     .welcome-section div[style*="border-left: 4px solid"] p {
-        font-size: clamp(15px, 4vw, 17px) !important;
-        line-height: 1.5 !important;
+        font-size: 16px !important;
+        line-height: 1.6 !important;
         hyphens: none !important;
         overflow-wrap: anywhere !important;
         word-break: normal !important;
         margin: 0 !important;
+        max-width: 100% !important;
     }
     
     /* Welcome section - override desktop padding on mobile */
@@ -912,10 +920,10 @@
     
     /* Menu cards - ensure full visibility, no clipping */
     .menu-item {
-        width: min(95vw, 520px) !important;
-        max-width: min(95vw, 520px) !important;
-        margin: 0 auto 0.75rem auto !important;
-        padding: 1.25rem 1rem !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 auto 14px auto !important;
+        padding: 16px !important;
         border-radius: 12px !important;
         background: white !important;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
@@ -926,10 +934,10 @@
     /* Menu item header with title and price */
     .menu-item-header {
         display: flex !important;
-        gap: 0.75rem !important;
-        flex-wrap: wrap !important;
-        align-items: baseline !important;
-        margin-bottom: 0.6rem !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 6px !important;
+        margin-bottom: 8px !important;
     }
     
     /* Menu card content - proper wrapping */
@@ -1190,5 +1198,84 @@
         --spacing-md: 16px;
         --spacing-lg: 24px;
         --spacing-xl: 32px;
+    }
+}
+
+/* ===== EXTRA SMALL MOBILE (iPhone SE, iPhone 12/13 mini) ===== */
+@media (max-width: 480px) {
+    /* Force no horizontal scroll on smallest devices */
+    html, body {
+        overflow-x: hidden !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    
+    body * {
+        max-width: 100% !important;
+    }
+    
+    /* Home info grid - ensure no overflow */
+    .home-info-grid {
+        padding: 0 8px !important;
+    }
+    
+    .home-info-grid > div,
+    .home-info-grid > .card {
+        width: calc(100% - 16px) !important;
+        max-width: calc(100% - 16px) !important;
+        margin-left: 8px !important;
+        margin-right: 8px !important;
+    }
+    
+    /* Menu items - compact */
+    .menu-item {
+        width: calc(100% - 16px) !important;
+        max-width: calc(100% - 16px) !important;
+        margin-left: 8px !important;
+        margin-right: 8px !important;
+    }
+    
+    /* Yellow quote box */
+    #welcome div[style*="border-left: 4px solid"],
+    .welcome-section div[style*="border-left: 4px solid"] {
+        width: calc(100% - 16px) !important;
+        max-width: calc(100% - 16px) !important;
+        margin-left: 8px !important;
+        margin-right: 8px !important;
+    }
+    
+    /* Sections - reduce padding on smallest screens */
+    section {
+        padding: 24px 8px !important;
+    }
+    
+    /* Hero buttons - stack vertically */
+    .hero-buttons,
+    .cta-buttons {
+        flex-direction: column !important;
+        gap: 12px !important;
+        width: 100% !important;
+        padding: 0 16px !important;
+    }
+    
+    .hero-buttons a,
+    .cta-buttons a {
+        width: 100% !important;
+        max-width: 280px !important;
+    }
+    
+    /* Reservations hero - reduce height on small screens */
+    #reservations-hero {
+        height: 220px !important;
+        min-height: 220px !important;
+        max-height: 220px !important;
+    }
+    
+    #reservations-hero h1 {
+        font-size: 2rem !important;
+    }
+    
+    #reservations-hero p {
+        font-size: 0.95rem !important;
     }
 }

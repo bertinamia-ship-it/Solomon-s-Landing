@@ -30,15 +30,15 @@ class RestaurantChatbot {
     // Predefined responses for common questions
     responses = {
         en: {
-            greeting: "Welcome to Solomon's Landing! 👋\n\nHow can I help you?\n• Reservations 📅\n• Catering 🍽️\n• Location 📍\n• Menu 🍴\n• Hours ⏰",
+            greeting: "Hi! How can I help? 👋",
             
-            catering: "🎉 **Catering Services**\n\nWe offer professional catering for all types of events:\n\n• **Weddings** 💒\n• **Corporate Events** 🏢\n• **Private Parties** 🎊\n• **Special Celebrations** 🎈\n\nOur catering menu features:\n✨ Fresh seafood & sushi\n✨ International cuisine\n✨ Customizable menus\n✨ Professional service\n\n📱 **For catering inquiries, please contact:**\n**Phone/WhatsApp: +52 624-217-5935**\n\nOr visit our [catering page](/catering.html) for more details!",
+            catering: "🎉 **Catering Services**\n\nWeddings • Corporate • Parties\n\n📱 Contact:\n**+52 624-217-5935**\n\n[More info](/catering.html)",
             
-            directions: "📍 We're located at the beautiful Cabo San Lucas Marina!\n\n**Address:**\nBlvd. Paseo de la Marina Centro\nCentro, Marina\n23450 Cabo San Lucas, B.C.S.\nMexico\n\n🗺️ [View our location page](/location.html) for detailed directions and parking information.",
+            directions: "📍 **Cabo San Lucas Marina**\n\nBlvd. Paseo de la Marina Centro\n23450 Cabo San Lucas, B.C.S.\n\n🗺️ [View map & directions](/location.html)",
             
-            menu: "🍽️ We offer an amazing selection of international cuisine with fresh local seafood!\n\n**Our Menus:**\n• Breakfast (8:00 AM - 12:00 PM)\n• Lunch (12:00 PM - 5:00 PM)\n• Dinner (5:00 PM - 11:00 PM)\n• Sushi & Bar\n\n📖 [View our full menus here](/menus.html)",
+            menu: "🍽️ **Our Menus:**\n• Breakfast (8 AM - 12 PM)\n• Lunch (12 PM - 5 PM)\n• Dinner (5 PM - 11 PM)\n• Sushi & Bar\n\n📖 [View full menus](/menus.html)",
             
-            hours: "⏰ **Hours of Operation:**\n\nOpen 7 days a week\nMonday - Sunday: 8:00 AM - 11:00 PM\n\n🌅 Breakfast: 8:00 AM - 12:00 PM\n🌞 Lunch: 12:00 PM - 5:00 PM\n🌙 Dinner: 5:00 PM - 11:00 PM",
+            hours: "⏰ **Hours:**\n\nOpen 7 days\nMon-Sun: 8 AM - 11 PM",
             
             startReservation: "Perfect! I'll help you make a reservation. 📅\n\nLet me get some information from you.\n\n**What is your full name?**",
             
@@ -88,15 +88,19 @@ class RestaurantChatbot {
             help: "I can help you with:\n\n📅 **Reservations** - Type 'reservation' or 'book a table'\n🍽️ **Catering** - Type 'catering' or 'events'\n📍 **Directions** - Type 'location' or 'how to get there'\n🍴 **Menu** - Type 'menu' or 'food'\n⏰ **Hours** - Type 'hours' or 'when are you open'\n\nJust ask me anything!"
         },
         es: {
-            greeting: "¡Bienvenido a Solomon's Landing! 👋\n\n¿Cómo puedo ayudarte?\n• Reservaciones 📅\n• Catering 🍽️\n• Ubicación 📍\n• Menú 🍴\n• Horarios ⏰",
+            greeting: "¡Hola! ¿En qué te ayudo? 👋",
             
-            catering: "🎉 **Servicios de Catering**\n\n¡Ofrecemos catering profesional para todo tipo de eventos!\n\n• **Bodas** 💒\n• **Eventos Corporativos** 🏢\n• **Fiestas Privadas** 🎊\n• **Celebraciones Especiales** 🎈\n\nNuestro menú de catering incluye:\n✨ Mariscos frescos y sushi\n✨ Cocina internacional\n✨ Menús personalizables\n✨ Servicio profesional\n\n📱 **Para consultas de catering, contacta:**\n**Teléfono/WhatsApp: +52 624-217-5935**\n\nO visita nuestra [página de catering](/catering.html) para más detalles!",
+            catering: "🎉 **Catering**\n\nBodas • Corporativo • Fiestas\n\n📱 Contacto:\n**+52 624-217-5935**\n\n[Más info](/catering.html)",
             
-            directions: "📍 ¡Estamos ubicados en la hermosa Marina de Cabo San Lucas!\n\n**Dirección:**\nBlvd. Paseo de la Marina Centro\nCentro, Marina\n23450 Cabo San Lucas, B.C.S.\nMéxico\n\n🗺️ [Ver nuestra página de ubicación](/location.html) para direcciones detalladas e información de estacionamiento.",
+            directions: "📍 **Marina Cabo San Lucas**\n\nBlvd. Paseo de la Marina Centro\n23450 Cabo San Lucas, B.C.S.\n\n🗺️ [Ver mapa](/location.html)",
             
-            menu: "🍽️ ¡Ofrecemos una increíble selección de cocina internacional con mariscos locales frescos!\n\n**Nuestros Menús:**\n• Desayuno (8:00 AM - 12:00 PM)\n• Comida (12:00 PM - 5:00 PM)\n• Cena (5:00 PM - 11:00 PM)\n• Sushi y Bar\n\n📖 [Ver nuestros menús completos aquí](/menus.html)",
+            menu: "🍽️ **Nuestros Menús:**\n• Desayuno (8 AM - 12 PM)\n• Comida (12 PM - 5 PM)\n• Cena (5 PM - 11 PM)\n• Sushi & Bar\n\n📖 [Ver menús completos](/menus.html)",
             
-            hours: "⏰ **Horarios de Operación:**\n\nAbierto los 7 días de la semana\nLunes - Domingo: 8:00 AM - 11:00 PM\n\n🌅 Desayuno: 8:00 AM - 12:00 PM\n🌞 Comida: 12:00 PM - 5:00 PM\n🌙 Cena: 5:00 PM - 11:00 PM",
+            hours: "⏰ **Horario:**\n\nAbierto 7 días\nLun-Dom: 8 AM - 11 PM"
+            
+            menu: "🍽️ **Nuestros Menús:**\n• Desayuno (8 AM - 12 PM)\n• Comida (12 PM - 5 PM)\n• Cena (5 PM - 11 PM)\n• Sushi & Bar\n\n📖 [Ver menús completos](/menus.html)"
+            
+            hours: "⏰ **Horario:**\n\nAbierto 7 días\nLun-Dom: 8 AM - 11 PM"
             
             startReservation: "¡Perfecto! Te ayudaré a hacer una reservación. 📅\n\nDéjame obtener algunos datos.\n\n**¿Cuál es tu nombre completo?**",
             
