@@ -32,11 +32,11 @@ class RestaurantChatbot {
         en: {
             greeting: "Hi! How can I help? 👋",
             
-            catering: "🎉 **Catering Services**\n\nWeddings • Corporate • Parties\n\n📱 Contact:\n**+52 624-217-5935**\n\n[More info](/catering.html)",
+            catering: "🎉 **Catering Services**\n\nWeddings • Corporate • Parties\n\n📱 Contact:\n**+52 624-217-5935**\n\n[More info](catering.html)",
             
-            directions: "📍 **Cabo San Lucas Marina**\n\nBlvd. Paseo de la Marina Centro\n23450 Cabo San Lucas, B.C.S.\n\n🗺️ [View map & directions](/location.html)",
+            directions: "📍 **Cabo San Lucas Marina**\n\nBlvd. Paseo de la Marina Centro\n23450 Cabo San Lucas, B.C.S.\n\n🗺️ [View map & directions](location.html)",
             
-            menu: "🍽️ **Our Menus:**\n• Breakfast (8 AM - 12 PM)\n• Lunch (12 PM - 5 PM)\n• Dinner (5 PM - 11 PM)\n• Sushi & Bar\n\n📖 [View full menus](/menus.html)",
+            menu: "🍽️ **Our Menus:**\n• Breakfast (8 AM - 12 PM)\n• Lunch (12 PM - 5 PM)\n• Dinner (5 PM - 11 PM)\n• Sushi & Bar\n\n📖 [View full menus](menus.html)",
             
             hours: "⏰ **Hours:**\n\nOpen 7 days\nMon-Sun: 8 AM - 11 PM",
             
@@ -90,17 +90,13 @@ class RestaurantChatbot {
         es: {
             greeting: "¡Hola! ¿En qué te ayudo? 👋",
             
-            catering: "🎉 **Catering**\n\nBodas • Corporativo • Fiestas\n\n📱 Contacto:\n**+52 624-217-5935**\n\n[Más info](/catering.html)",
+            catering: "🎉 **Catering**\n\nBodas • Corporativo • Fiestas\n\n📱 Contacto:\n**+52 624-217-5935**\n\n[Más info](catering.html)",
             
-            directions: "📍 **Marina Cabo San Lucas**\n\nBlvd. Paseo de la Marina Centro\n23450 Cabo San Lucas, B.C.S.\n\n🗺️ [Ver mapa](/location.html)",
+            directions: "📍 **Marina Cabo San Lucas**\n\nBlvd. Paseo de la Marina Centro\n23450 Cabo San Lucas, B.C.S.\n\n🗺️ [Ver mapa](location.html)",
             
-            menu: "🍽️ **Nuestros Menús:**\n• Desayuno (8 AM - 12 PM)\n• Comida (12 PM - 5 PM)\n• Cena (5 PM - 11 PM)\n• Sushi & Bar\n\n📖 [Ver menús completos](/menus.html)",
+            menu: "🍽️ **Nuestros Menús:**\n• Desayuno (8 AM - 12 PM)\n• Comida (12 PM - 5 PM)\n• Cena (5 PM - 11 PM)\n• Sushi & Bar\n\n📖 [Ver menús completos](menus.html)",
             
-            hours: "⏰ **Horario:**\n\nAbierto 7 días\nLun-Dom: 8 AM - 11 PM"
-            
-            menu: "🍽️ **Nuestros Menús:**\n• Desayuno (8 AM - 12 PM)\n• Comida (12 PM - 5 PM)\n• Cena (5 PM - 11 PM)\n• Sushi & Bar\n\n📖 [Ver menús completos](/menus.html)"
-            
-            hours: "⏰ **Horario:**\n\nAbierto 7 días\nLun-Dom: 8 AM - 11 PM"
+            hours: "⏰ **Horario:**\n\nAbierto 7 días\nLun-Dom: 8 AM - 11 PM",
             
             startReservation: "¡Perfecto! Te ayudaré a hacer una reservación. 📅\n\nDéjame obtener algunos datos.\n\n**¿Cuál es tu nombre completo?**",
             
@@ -393,8 +389,12 @@ class RestaurantChatbot {
                             day: 'numeric'
                         });
                         
-                        // Build confirmation URL with all parameters
-                        const confirmUrl = `${window.location.origin}/website/confirm-reservation.html?` + 
+                        // Build confirmation URL with all parameters (GitHub Pages compatible)
+                        // Detect base path from current location
+                        const basePath = window.location.pathname.includes('/Solomon-s-Landing/') 
+                            ? '/Solomon-s-Landing/website/' 
+                            : window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1) || '/';
+                        const confirmUrl = `${window.location.origin}${basePath}confirm-reservation.html?` + 
                             `code=${encodeURIComponent(confirmationCode)}` +
                             `&name=${encodeURIComponent(this.reservationData.name)}` +
                             `&email=${encodeURIComponent(this.reservationData.email)}` +
