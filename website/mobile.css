@@ -8,7 +8,7 @@
     /* ===== BASE ===== */
     html, body {
         font-size: 14px !important;
-        overflow-x: hidden;
+        overflow-x: hidden !important;
         -webkit-text-size-adjust: 100% !important;
         width: 100%;
         position: relative;
@@ -28,11 +28,11 @@
         -webkit-tap-highlight-color: transparent;
     }
     
-    /* Global text wrapping safety */
+    /* Global text wrapping safety - NO hyphens */
     p, h1, h2, h3, h4, h5, h6, div, span, a {
         overflow-wrap: anywhere;
-        word-break: break-word;
-        hyphens: auto;
+        word-break: normal;
+        hyphens: none;
     }
 
     /* ===== HEADER COMPACTO - BRAND BLUE GRADIENT ===== */
@@ -375,13 +375,45 @@
     /* ===== SECCIONES ===== */
     section {
         padding: 30px 14px !important;
+        box-sizing: border-box !important;
     }
     
-    /* Content containers - ensure side padding */
+    /* Content containers - ensure side padding and no overflow */
     .container,
     section > div {
-        padding-left: 14px;
-        padding-right: 14px;
+        padding-left: 14px !important;
+        padding-right: 14px !important;
+        box-sizing: border-box !important;
+        max-width: 100% !important;
+    }
+    
+    /* Ensure all text blocks have proper width */
+    section p,
+    section h1,
+    section h2,
+    section h3,
+    section div {
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* Content containers - ensure side padding and no overflow */
+    .container,
+    section > div {
+        padding-left: 14px !important;
+        padding-right: 14px !important;
+        box-sizing: border-box !important;
+        max-width: 100% !important;
+    }
+    
+    /* Ensure all text blocks have proper width */
+    section p,
+    section h1,
+    section h2,
+    section h3,
+    section div {
+        max-width: 100% !important;
+        box-sizing: border-box !important;
     }
 
     h2 {
@@ -401,11 +433,11 @@
         gap: 15px !important;
     }
     
-    /* Home info cards (Organic/Avocado Oil) - Center and fix width */
+    /* Home info cards (Organic/Avocado Oil) - Wider and better proportions */
     .home-info-grid {
         display: grid !important;
         grid-template-columns: 1fr !important;
-        gap: 16px !important;
+        gap: 20px !important;
         padding: 0 !important;
         max-width: 100% !important;
         margin: 0 auto !important;
@@ -413,9 +445,86 @@
     
     .home-info-grid > .card,
     .home-info-grid > div {
-        width: min(92vw, 440px) !important;
+        width: min(92vw, 520px) !important;
         margin: 0 auto !important;
-        padding: 1.5rem 1rem !important;
+        padding: 2rem 1.5rem !important;
+        box-sizing: border-box !important;
+        min-height: auto !important;
+        height: auto !important;
+    }
+    
+    /* Icon circles in info cards */
+    .home-info-grid div[style*="width: 90px"] {
+        width: 70px !important;
+        height: 70px !important;
+        font-size: 2.8rem !important;
+        margin: 0 auto 1.25rem !important;
+    }
+    
+    /* Titles in info cards */
+    .home-info-grid h4 {
+        font-size: 1.15rem !important;
+        margin-bottom: 0.75rem !important;
+        line-height: 1.4 !important;
+    }
+    
+    /* Descriptions in info cards */
+    .home-info-grid p {
+        font-size: 0.95rem !important;
+        line-height: 1.6 !important;
+    }
+    
+    /* Yellow quote box - proper mobile layout */
+    .welcome-section div[style*="border-left: 4px solid var(--yellow-sun)"] {
+        width: min(92vw, 560px) !important;
+        max-width: min(92vw, 560px) !important;
+        margin: 2rem auto 0 auto !important;
+        padding: 1.5rem 1.25rem !important;
+        box-sizing: border-box !important;
+    }
+    
+    .welcome-section div[style*="border-left: 4px solid var(--yellow-sun)"] p {
+        font-size: clamp(16px, 4.2vw, 20px) !important;
+        line-height: 1.6 !important;
+        hyphens: none !important;
+        overflow-wrap: normal !important;
+        word-break: normal !important;
+    }
+    
+    /* Welcome section - override desktop padding on mobile */
+    .welcome-section {
+        padding: 3rem 1rem !important;
+    }
+    
+    /* Welcome section title */
+    .welcome-section h2 {
+        font-size: 2rem !important;
+        line-height: 1.3 !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    /* Welcome section inner container */
+    .welcome-section > .container > div {
+        max-width: 100% !important;
+    }
+    
+    /* Welcome section main content box */
+    .welcome-section div[style*="padding: 4rem"] {
+        padding: 2rem 1.25rem !important;
+    }
+    
+    /* Welcome section intro paragraphs */
+    .welcome-section p[style*="font-size: 1.5rem"],
+    .welcome-section p[style*="font-size: 1.35rem"] {
+        font-size: 1.1rem !important;
+        line-height: 1.7 !important;
+        margin-bottom: 1.5rem !important;
+    }
+    
+    /* Health commitment title */
+    .welcome-section h3[style*="font-size: 2.2rem"] {
+        font-size: 1.5rem !important;
+        line-height: 1.4 !important;
     }
 
     .menu-card,
@@ -736,35 +845,47 @@
     #menuItems {
         grid-template-columns: 1fr !important;
         gap: 1rem !important;
-        padding: 0 0.5rem !important;
+        padding: 0 !important;
         width: 100% !important;
+        max-width: 100% !important;
     }
     
-    /* Menu cards - ensure full visibility */
+    /* Menu cards - ensure full visibility, no clipping */
     .menu-item {
         width: 100% !important;
-        padding: 1rem !important;
+        max-width: min(92vw, 520px) !important;
+        margin: 0 auto 0.75rem auto !important;
+        padding: 1.25rem 1rem !important;
         border-radius: 12px !important;
         background: white !important;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
-        margin-bottom: 0.5rem !important;
         overflow: visible !important;
+        box-sizing: border-box !important;
     }
     
-    /* Menu card content */
+    /* Menu card content - proper wrapping */
     .menu-item h4 {
-        font-size: 1rem !important;
-        margin-bottom: 0.5rem !important;
+        font-size: 1.05rem !important;
+        margin-bottom: 0.6rem !important;
+        line-height: 1.4 !important;
+        overflow-wrap: anywhere !important;
+        word-break: normal !important;
+        hyphens: none !important;
     }
     
     .menu-item p {
-        font-size: 0.85rem !important;
-        line-height: 1.5 !important;
+        font-size: 0.9rem !important;
+        line-height: 1.6 !important;
+        overflow-wrap: anywhere !important;
+        word-break: normal !important;
+        hyphens: none !important;
+        margin-bottom: 0.5rem !important;
     }
     
     .menu-item .price {
-        font-size: 0.95rem !important;
+        font-size: 1rem !important;
         font-weight: 700 !important;
+        margin-top: 0.5rem !important;
     }
     
     /* Menu and location page heroes */
