@@ -17,6 +17,10 @@
         background-color: #ffffff !important;
     }
     
+    *, *::before, *::after {
+        box-sizing: border-box !important;
+    }
+    
     body {
         zoom: 0.9 !important;
         padding-bottom: env(safe-area-inset-bottom) !important;
@@ -243,8 +247,15 @@
         max-height: 520px !important;
         position: relative !important;
         background: transparent !important;
+        background-color: transparent !important;
         box-shadow: none !important;
         filter: none !important;
+    }
+    
+    /* Hero slider - ensure no black background */
+    .hero-slider {
+        background: transparent !important;
+        background-color: transparent !important;
     }
 
     /* HERO - FOTOS VISIBLES Y ZOOM OUT (SOBREESCRIBIR STYLES.CSS) */
@@ -260,6 +271,8 @@
         background-position: center !important;
         background-color: transparent !important;
         transform: none !important;
+        box-shadow: none !important;
+        border: none !important;
     }
     
     /* Clean hero overlays - remove gray bands */
@@ -454,12 +467,13 @@
         padding-left: 1rem !important;
         padding-right: 1rem !important;
         box-sizing: border-box !important;
+        width: 100% !important;
     }
     
     #welcome .container > div,
     .welcome-section .container > div {
-        padding-left: 0.75rem !important;
-        padding-right: 0.75rem !important;
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
         box-sizing: border-box !important;
     }
     
@@ -469,19 +483,21 @@
         gap: 1.25rem !important;
         padding: 0 !important;
         max-width: 100% !important;
-        margin: 2rem auto !important;
+        margin: 1.5rem auto !important;
         width: 100% !important;
     }
     
     .home-info-grid > .card,
     .home-info-grid > div {
-        width: min(94vw, 500px) !important;
-        max-width: min(94vw, 500px) !important;
+        width: min(95vw, 520px) !important;
+        max-width: min(95vw, 520px) !important;
         margin: 0 auto !important;
         padding: 1.5rem 1.25rem !important;
         box-sizing: border-box !important;
         min-height: auto !important;
         height: auto !important;
+        overflow-wrap: anywhere !important;
+        word-break: normal !important;
     }
     
     /* Icon circles in info cards */
@@ -510,10 +526,10 @@
     .welcome-section div[style*="border-left: 4px solid var(--yellow-sun)"],
     #welcome div[style*="border-left: 4px solid"],
     .welcome-section div[style*="border-left: 4px solid"] {
-        width: min(94vw, 500px) !important;
-        max-width: min(94vw, 500px) !important;
-        margin: 1.25rem auto 0 auto !important;
-        padding: 1.25rem 1.25rem !important;
+        width: min(95vw, 520px) !important;
+        max-width: min(95vw, 520px) !important;
+        margin: 1.25rem auto !important;
+        padding: 1.25rem 1.5rem !important;
         box-sizing: border-box !important;
         min-height: auto !important;
         height: auto !important;
@@ -523,8 +539,8 @@
     .welcome-section div[style*="border-left: 4px solid var(--yellow-sun)"] p,
     #welcome div[style*="border-left: 4px solid"] p,
     .welcome-section div[style*="border-left: 4px solid"] p {
-        font-size: clamp(14px, 3.8vw, 17px) !important;
-        line-height: 1.55 !important;
+        font-size: clamp(15px, 4vw, 17px) !important;
+        line-height: 1.5 !important;
         hyphens: none !important;
         overflow-wrap: anywhere !important;
         word-break: normal !important;
@@ -896,8 +912,8 @@
     
     /* Menu cards - ensure full visibility, no clipping */
     .menu-item {
-        width: min(94vw, 500px) !important;
-        max-width: min(94vw, 500px) !important;
+        width: min(95vw, 520px) !important;
+        max-width: min(95vw, 520px) !important;
         margin: 0 auto 0.75rem auto !important;
         padding: 1.25rem 1rem !important;
         border-radius: 12px !important;
@@ -923,7 +939,7 @@
         font-size: clamp(1rem, 4vw, 1.1rem) !important;
         margin: 0 0 0.4rem 0 !important;
         line-height: 1.4 !important;
-        overflow-wrap: break-word !important;
+        overflow-wrap: anywhere !important;
         word-break: normal !important;
         hyphens: none !important;
         white-space: normal !important;
@@ -932,8 +948,8 @@
     .menu-item p,
     .menu-item-description {
         font-size: clamp(0.875rem, 3.5vw, 0.95rem) !important;
-        line-height: 1.65 !important;
-        overflow-wrap: break-word !important;
+        line-height: 1.6 !important;
+        overflow-wrap: anywhere !important;
         word-break: normal !important;
         hyphens: auto !important;
         margin: 0 0 0.6rem 0 !important;
@@ -980,20 +996,20 @@
     
     /* Reservation form wrapper */
     #reservation-form-section .container {
-        padding: 2rem 1rem !important;
+        padding: 1.5rem 0.75rem !important;
     }
     
     /* OpenTable badge */
     .opentable-badge {
-        margin-bottom: 2rem !important;
-        padding: 1.25rem !important;
+        margin-bottom: 1.5rem !important;
+        padding: 1rem !important;
         box-sizing: border-box !important;
     }
     
-    /* Reservation card - app-like styling */
+    /* Reservation card - modern app-like design */
     .reservation-card,
     .reservation-form-wrapper {
-        padding: 1.75rem 1.25rem !important;
+        padding: 1.5rem 1.25rem !important;
         box-sizing: border-box !important;
         width: 100% !important;
         max-width: 100% !important;
@@ -1005,51 +1021,74 @@
     
     /* Form title */
     .reservation-form-wrapper h2 {
-        font-size: clamp(1.75rem, 6vw, 2.25rem) !important;
-        margin-bottom: 1rem !important;
+        font-size: clamp(1.5rem, 5.5vw, 2rem) !important;
+        margin-bottom: 0.75rem !important;
+        text-align: center !important;
     }
     
     /* Form description */
     .reservation-form-wrapper > p {
-        font-size: clamp(0.95rem, 3.5vw, 1.1rem) !important;
-        margin-bottom: 2rem !important;
-        line-height: 1.6 !important;
+        font-size: clamp(0.9rem, 3.5vw, 1rem) !important;
+        margin-bottom: 1.5rem !important;
+        line-height: 1.5 !important;
+        text-align: center !important;
     }
     
-    /* Form groups */
+    /* Form groups - better spacing */
     .form-group {
-        margin-bottom: 1.5rem !important;
+        margin-bottom: 1.25rem !important;
     }
     
     .form-group label {
         font-size: 0.9rem !important;
         margin-bottom: 0.5rem !important;
+        font-weight: 600 !important;
+        color: #1e293b !important;
     }
     
     .form-group input,
     .form-group select,
     .form-group textarea {
-        padding: 0.85rem 1rem !important;
+        padding: 1rem 1rem !important;
         font-size: 1rem !important;
         width: 100% !important;
         box-sizing: border-box !important;
+        border: 2px solid #e2e8f0 !important;
+        border-radius: 10px !important;
+        min-height: 48px !important;
+        transition: all 0.2s ease !important;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        border-color: #004A9F !important;
+        box-shadow: 0 0 0 3px rgba(0, 74, 159, 0.1) !important;
+        outline: none !important;
     }
     
     /* Form row for date/time */
     .form-row {
         grid-template-columns: 1fr !important;
-        gap: 1.5rem !important;
+        gap: 1.25rem !important;
     }
     
-    /* Buttons on reservation page */
+    /* Buttons on reservation page - larger tap targets */
     #reservation-form-section .btn,
     #reservation-form-section button {
         width: 100% !important;
-        padding: 1rem 1.5rem !important;
-        font-size: 1rem !important;
+        padding: 1.1rem 1.5rem !important;
+        font-size: 1.05rem !important;
         margin-bottom: 0.75rem !important;
         box-sizing: border-box !important;
-        min-height: 48px !important;
+        min-height: 52px !important;
+        border-radius: 12px !important;
+        font-weight: 600 !important;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    
+    #reservation-form-section .btn:active {
+        transform: scale(0.98) !important;
     }
     
     /* CTA buttons container */
