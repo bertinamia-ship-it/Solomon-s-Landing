@@ -10,7 +10,8 @@
         font-size: 14px !important;
         overflow-x: hidden !important;
         -webkit-text-size-adjust: 100% !important;
-        width: 100%;
+        width: 100% !important;
+        max-width: 100vw !important;
         position: relative;
         min-height: 100vh !important;
         background-color: #ffffff !important;
@@ -387,6 +388,7 @@
         padding: 30px 14px !important;
         box-sizing: border-box !important;
         width: 100% !important;
+        max-width: 100vw !important;
         overflow-x: hidden !important;
     }
     
@@ -447,26 +449,34 @@
     }
     
     /* Home info cards (Organic/Avocado Oil) - Wider and better proportions */
-    #welcome .container > div {
+    #welcome .container,
+    .welcome-section .container {
         padding-left: 1rem !important;
         padding-right: 1rem !important;
+        box-sizing: border-box !important;
+    }
+    
+    #welcome .container > div,
+    .welcome-section .container > div {
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
         box-sizing: border-box !important;
     }
     
     .home-info-grid {
         display: grid !important;
         grid-template-columns: 1fr !important;
-        gap: 1.5rem !important;
+        gap: 1.25rem !important;
         padding: 0 !important;
         max-width: 100% !important;
-        margin: 0 auto !important;
+        margin: 2rem auto !important;
         width: 100% !important;
     }
     
     .home-info-grid > .card,
     .home-info-grid > div {
-        width: 100% !important;
-        max-width: 100% !important;
+        width: min(94vw, 500px) !important;
+        max-width: min(94vw, 500px) !important;
         margin: 0 auto !important;
         padding: 1.5rem 1.25rem !important;
         box-sizing: border-box !important;
@@ -497,10 +507,12 @@
     
     /* Yellow quote box - proper mobile layout */
     #welcome div[style*="border-left: 4px solid var(--yellow-sun)"],
-    .welcome-section div[style*="border-left: 4px solid var(--yellow-sun)"] {
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 1.5rem auto 0 auto !important;
+    .welcome-section div[style*="border-left: 4px solid var(--yellow-sun)"],
+    #welcome div[style*="border-left: 4px solid"],
+    .welcome-section div[style*="border-left: 4px solid"] {
+        width: min(94vw, 500px) !important;
+        max-width: min(94vw, 500px) !important;
+        margin: 1.25rem auto 0 auto !important;
         padding: 1.25rem 1.25rem !important;
         box-sizing: border-box !important;
         min-height: auto !important;
@@ -508,13 +520,15 @@
     }
     
     #welcome div[style*="border-left: 4px solid var(--yellow-sun)"] p,
-    .welcome-section div[style*="border-left: 4px solid var(--yellow-sun)"] p {
-        font-size: clamp(15px, 4vw, 18px) !important;
-        line-height: 1.6 !important;
+    .welcome-section div[style*="border-left: 4px solid var(--yellow-sun)"] p,
+    #welcome div[style*="border-left: 4px solid"] p,
+    .welcome-section div[style*="border-left: 4px solid"] p {
+        font-size: clamp(14px, 3.8vw, 17px) !important;
+        line-height: 1.55 !important;
         hyphens: none !important;
         overflow-wrap: anywhere !important;
         word-break: normal !important;
-        max-width: 100% !important;
+        margin: 0 !important;
     }
     
     /* Welcome section - override desktop padding on mobile */
@@ -874,21 +888,22 @@
     #menuItems {
         grid-template-columns: 1fr !important;
         gap: 1rem !important;
-        padding: 0 !important;
+        padding: 0 0.5rem !important;
         width: 100% !important;
         max-width: 100% !important;
+        overflow-x: hidden !important;
     }
     
     /* Menu cards - ensure full visibility, no clipping */
     .menu-item {
-        width: 100% !important;
-        max-width: 100% !important;
+        width: min(94vw, 500px) !important;
+        max-width: min(94vw, 500px) !important;
         margin: 0 auto 0.75rem auto !important;
         padding: 1.25rem 1rem !important;
         border-radius: 12px !important;
         background: white !important;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
-        overflow: visible !important;
+        overflow: hidden !important;
         box-sizing: border-box !important;
     }
     

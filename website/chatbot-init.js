@@ -42,6 +42,10 @@
                             </div>
                         </div>
                     </div>
+                    <div class="chatbot-language-toggle" id="langToggle">
+                        <button class="lang-flag active" data-lang="en" aria-label="English">🇺🇸</button>
+                        <button class="lang-flag" data-lang="es" aria-label="Español">🇲🇽</button>
+                    </div>
                     <button class="chatbot-close" id="chatbotClose" aria-label="Close chat">
                         ✕
                     </button>
@@ -93,6 +97,34 @@
         const chatbotSend = document.getElementById('chatbotSend');
         const chatbotNotification = document.getElementById('chatbotNotification');
         const quickRepliesContainer = document.getElementById('quickReplies');
+        const langToggle = document.getElementById('langToggle');
+
+        // Language toggle functionality
+        if (langToggle) {
+            langToggle.addEventListener('click', (e) => {
+                if (e.target.classList.contains('lang-flag')) {
+                    const newLang = e.target.dataset.lang;
+                    if (newLang !== chatbot.currentLanguage) {
+                        chatbot.currentLanguage = newLang;
+                        
+                        // Update active flag
+                        langToggle.querySelectorAll('.lang-flag').forEach(flag => {
+                            flag.classList.toggle('active', flag.dataset.lang === newLang);
+                        });
+                        
+                        // Update placeholder
+                        chatbotInput.placeholder = newLang === 'en' 
+                            ? 'Type your message...' 
+                            : 'Escribe tu mensaje...';
+                        
+                        // Show quick replies in new language if in chatting state
+                        if (chatbot.conversationState === 'chatting' || chatbot.conversationState === 'idle') {
+                            showQuickReplies();
+                        }
+                    }
+                }
+            });
+        }
 
         // Function to close chatbot
         function closeChatbot() {

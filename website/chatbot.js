@@ -30,7 +30,7 @@ class RestaurantChatbot {
     // Predefined responses for common questions
     responses = {
         en: {
-            greeting: "Hello! 👋 Welcome to Solomon's Landing. How can I help you today?\n\nI can assist you with:\n• Making a reservation 📅\n• Catering services 🍽️\n• Directions to our restaurant 📍\n• Menu information 🍴\n• Hours of operation ⏰\n• General questions ❓",
+            greeting: "Welcome to Solomon's Landing! 👋\n\nHow can I help you?\n• Reservations 📅\n• Catering 🍽️\n• Location 📍\n• Menu 🍴\n• Hours ⏰",
             
             catering: "🎉 **Catering Services**\n\nWe offer professional catering for all types of events:\n\n• **Weddings** 💒\n• **Corporate Events** 🏢\n• **Private Parties** 🎊\n• **Special Celebrations** 🎈\n\nOur catering menu features:\n✨ Fresh seafood & sushi\n✨ International cuisine\n✨ Customizable menus\n✨ Professional service\n\n📱 **For catering inquiries, please contact:**\n**Phone/WhatsApp: +52 624-217-5935**\n\nOr visit our [catering page](/catering.html) for more details!",
             
@@ -88,7 +88,7 @@ class RestaurantChatbot {
             help: "I can help you with:\n\n📅 **Reservations** - Type 'reservation' or 'book a table'\n🍽️ **Catering** - Type 'catering' or 'events'\n📍 **Directions** - Type 'location' or 'how to get there'\n🍴 **Menu** - Type 'menu' or 'food'\n⏰ **Hours** - Type 'hours' or 'when are you open'\n\nJust ask me anything!"
         },
         es: {
-            greeting: "¡Hola! 👋 Bienvenido a Solomon's Landing. ¿Cómo puedo ayudarte hoy?\n\nPuedo asistirte con:\n• Hacer una reservación 📅\n• Servicios de catering 🍽️\n• Indicaciones al restaurante 📍\n• Información del menú 🍴\n• Horarios de operación ⏰\n• Preguntas generales ❓",
+            greeting: "¡Bienvenido a Solomon's Landing! 👋\n\n¿Cómo puedo ayudarte?\n• Reservaciones 📅\n• Catering 🍽️\n• Ubicación 📍\n• Menú 🍴\n• Horarios ⏰",
             
             catering: "🎉 **Servicios de Catering**\n\n¡Ofrecemos catering profesional para todo tipo de eventos!\n\n• **Bodas** 💒\n• **Eventos Corporativos** 🏢\n• **Fiestas Privadas** 🎊\n• **Celebraciones Especiales** 🎈\n\nNuestro menú de catering incluye:\n✨ Mariscos frescos y sushi\n✨ Cocina internacional\n✨ Menús personalizables\n✨ Servicio profesional\n\n📱 **Para consultas de catering, contacta:**\n**Teléfono/WhatsApp: +52 624-217-5935**\n\nO visita nuestra [página de catering](/catering.html) para más detalles!",
             
