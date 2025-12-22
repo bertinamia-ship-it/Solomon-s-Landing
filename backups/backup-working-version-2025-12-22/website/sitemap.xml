@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  
+  <!-- Homepage - Máxima prioridad -->
+  <url>
+    <loc>https://solomonslanding.com/</loc>
+    <lastmod>2025-12-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://solomonslanding.com/"/>
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://solomonslanding.com/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://solomonslanding.com/"/>
+  </url>
+  
+  <!-- Reservations - Alta prioridad para conversiones -->
+  <url>
+    <loc>https://solomonslanding.com/reservations.html</loc>
+    <lastmod>2025-12-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://solomonslanding.com/reservations.html"/>
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://solomonslanding.com/reservations.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://solomonslanding.com/reservations.html"/>
+  </url>
+  
+  <!-- Menus - Alta prioridad -->
+  <url>
+    <loc>https://solomonslanding.com/menus.html</loc>
+    <lastmod>2025-12-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://solomonslanding.com/menus.html"/>
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://solomonslanding.com/menus.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://solomonslanding.com/menus.html"/>
+  </url>
+  
+  <!-- Location - Importante para búsquedas locales -->
+  <url>
+    <loc>https://solomonslanding.com/location.html</loc>
+    <lastmod>2025-12-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://solomonslanding.com/location.html"/>
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://solomonslanding.com/location.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://solomonslanding.com/location.html"/>
+  </url>
+  
+  <!-- Catering - Importante para eventos -->
+  <url>
+    <loc>https://solomonslanding.com/catering.html</loc>
+    <lastmod>2025-12-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://solomonslanding.com/catering.html"/>
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://solomonslanding.com/catering.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://solomonslanding.com/catering.html"/>
+  </url>
+  
+  <!-- Reviews - Social proof -->
+  <url>
+    <loc>https://solomonslanding.com/reviews.html</loc>
+    <lastmod>2025-12-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://solomonslanding.com/reviews.html"/>
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://solomonslanding.com/reviews.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://solomonslanding.com/reviews.html"/>
+  </url>
+  
+  <!-- Gift Cards -->
+  <url>
+    <loc>https://solomonslanding.com/gift-cards.html</loc>
+    <lastmod>2025-12-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://solomonslanding.com/gift-cards.html"/>
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://solomonslanding.com/gift-cards.html"/>
+  </url>
+  
+  <!-- FAQ Page - Importante para SEO -->
+  <url>
+    <loc>https://solomonslanding.com/faq.html</loc>
+    <lastmod>2025-12-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://solomonslanding.com/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://solomonslanding.com/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://solomonslanding.com/faq.html"/>
+  </url>
+
+</urlset>

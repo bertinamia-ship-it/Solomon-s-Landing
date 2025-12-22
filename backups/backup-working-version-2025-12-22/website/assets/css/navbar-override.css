@@ -1,0 +1,48 @@
+/* ============================================
+   NAVBAR OVERRIDE FOR LEGACY MOBILE.CSS
+   This ensures new navbar takes precedence
+   ============================================ */
+
+@media (max-width: 768px) {
+    /* Override old header styles */
+    header.site-header {
+        height: auto !important;
+        padding: 0 !important;
+        background: linear-gradient(135deg, rgba(0, 74, 159, 0.95) 0%, rgba(0, 38, 84, 0.95) 100%) !important;
+    }
+    
+    .navbar-container {
+        height: 60px !important;
+        padding: 0 1rem !important;
+    }
+    
+    /* Override old nav styles */
+    .navbar-nav {
+        position: fixed !important;
+        top: 0 !important;
+        right: -100% !important;
+        width: 280px !important;
+        height: 100vh !important;
+        padding-top: 80px !important;
+    }
+    
+    .navbar-nav.active {
+        right: 0 !important;
+    }
+    
+    /* Logo override */
+    .navbar-logo img {
+        height: 40px !important;
+    }
+    
+    /* Make sure overlay works */
+    .navbar-overlay {
+        display: block !important;
+        z-index: 999 !important;
+    }
+    
+    .navbar-overlay.active {
+        display: block !important;
+        opacity: 1 !important;
+    }
+}

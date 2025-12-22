@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .header {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2e5984 50%, #3d7ab3 100%);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+        }
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+        .header p {
+            font-size: 16px;
+            opacity: 0.95;
+            letter-spacing: 0.5px;
+        }
+        .success-badge {
+            background: #10b981;
+            color: white;
+            padding: 15px 30px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .greeting {
+            font-size: 24px;
+            color: #1e3a5f;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+        .intro-text {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .details-card {
+            background: linear-gradient(to bottom right, #f8f9fa, #ffffff);
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+        .details-title {
+            font-size: 18px;
+            color: #1e3a5f;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #D4AF37;
+        }
+        .detail-row {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .detail-row:last-child { border-bottom: none; }
+        .detail-icon {
+            font-size: 20px;
+            width: 35px;
+            text-align: center;
+        }
+        .detail-label {
+            font-size: 13px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            min-width: 140px;
+        }
+        .detail-value {
+            font-size: 16px;
+            color: #333;
+            font-weight: 600;
+            flex: 1;
+        }
+        .payment-section {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        .payment-section h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+        .payment-section p {
+            font-size: 15px;
+            margin-bottom: 8px;
+            opacity: 0.95;
+        }
+        .amount-display {
+            font-size: 36px;
+            font-weight: 700;
+            margin: 20px 0;
+            letter-spacing: 1px;
+        }
+        .payment-btn {
+            display: inline-block;
+            background: white;
+            color: #10b981;
+            padding: 16px 40px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 16px;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .payment-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+        }
+        .info-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 6px;
+        }
+        .info-box-title {
+            font-weight: 600;
+            color: #856404;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        .info-box-text {
+            color: #856404;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .location-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+        .location-section h4 {
+            color: #1e3a5f;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            font-size: 15px;
+            color: #555;
+        }
+        .contact-item span {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        .contact-item a {
+            color: #2e5984;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .contact-item a:hover {
+            text-decoration: underline;
+        }
+        .footer {
+            background: #1e3a5f;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .footer-logo {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .footer-info {
+            font-size: 14px;
+            opacity: 0.9;
+            margin: 8px 0;
+        }
+        .footer-hours {
+            font-size: 13px;
+            opacity: 0.8;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+        .social-links {
+            margin-top: 20px;
+        }
+        .social-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🌊 Solomon's Landing</h1>
+            <p>Your Reservation is Confirmed!</p>
+        </div>
+
+        <!-- Success Badge -->
+        <div class="success-badge">
+            ✓ Confirmed by Restaurant
+        </div>
+
+        <!-- Main Content -->
+        <div class="content">
+            <div class="greeting">Hello {{to_name}}! 🎉</div>
+            <p class="intro-text">
+                Great news! Your reservation has been confirmed by our team. 
+                We're excited to welcome you to Solomon's Landing at the beautiful Cabo San Lucas Marina.
+            </p>
+
+            <!-- Reservation Details -->
+            <div class="details-card">
+                <div class="details-title">Your Reservation Details</div>
+                
+                <div class="detail-row">
+                    <div class="detail-icon">📅</div>
+                    <div class="detail-label">Date</div>
+                    <div class="detail-value">{{reservation_date}}</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-icon">⏰</div>
+                    <div class="detail-label">Time</div>
+                    <div class="detail-value">{{reservation_time}}</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-icon">👥</div>
+                    <div class="detail-label">Party Size</div>
+                    <div class="detail-value">{{guests}} guests</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-icon">🏨</div>
+                    <div class="detail-label">Staying At</div>
+                    <div class="detail-value">{{hotel}}</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-icon">📝</div>
+                    <div class="detail-label">Special Requests</div>
+                    <div class="detail-value">{{special_requests}}</div>
+                </div>
+            </div>
+
+            <!-- Payment Section -->
+            <div class="payment-section">
+                <h3>🔒 Secure Your Reservation</h3>
+                <p>Complete the pre-authorization hold to finalize your reservation</p>
+                <div class="amount-display">${{hold_amount}} USD</div>
+                <p style="font-size: 13px; opacity: 0.9;">($20 per person - not a charge, just a hold)</p>
+                <a href="{{payment_link}}" class="payment-btn">
+                    Complete Payment Hold →
+                </a>
+                <p style="font-size: 13px; margin-top: 15px;">
+                    We accept Visa, Mastercard, Amex, Apple Pay & Google Pay
+                </p>
+            </div>
+
+            <!-- Important Information -->
+            <div class="info-box">
+                <div class="info-box-title">⚠️ Important Information</div>
+                <div class="info-box-text">
+                    <strong>This is NOT a charge</strong> - it's a temporary hold on your card. 
+                    The hold will be released when you check in at the restaurant. 
+                    It's only captured in case of a no-show without 24-hour advance cancellation notice.
+                </div>
+            </div>
+
+            <!-- Location & Contact -->
+            <div class="location-section">
+                <h4>📍 Find Us</h4>
+                <div class="contact-item">
+                    <span>📍</span>
+                    <div>Blvd. Paseo de la Marina Centro<br>23450 Cabo San Lucas, B.C.S., Mexico</div>
+                </div>
+                <div class="contact-item">
+                    <span>📞</span>
+                    <a href="tel:+526242193228">+52 624 219 3228</a>
+                </div>
+                <div class="contact-item">
+                    <span>✉️</span>
+                    <a href="mailto:contact@solomonslanding.com.mx">contact@solomonslanding.com.mx</a>
+                </div>
+            </div>
+
+            <p style="text-align: center; color: #666; font-size: 14px; margin-top: 30px;">
+                Need to modify or cancel? Contact us at least 24 hours in advance.
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-logo">Solomon's Landing</div>
+            <div class="footer-info">Cabo San Lucas Marina • Premium Waterfront Dining</div>
+            <div class="footer-hours">Open 7 Days a Week | 8:00 AM - 11:00 PM</div>
+            <div class="social-links">
+                <a href="#">📘</a>
+                <a href="#">📷</a>
+                <a href="#">🐦</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<!--
+COPIA ESTE HTML EN EMAILJS:
+
+1. Ve a https://dashboard.emailjs.com/admin/templates
+2. Click "Create New Template"
+3. Pega este HTML completo
+4. Guarda como "template_customer_confirm"
+5. Las variables {{to_name}}, {{reservation_date}}, etc. se reemplazan automáticamente
+-->
