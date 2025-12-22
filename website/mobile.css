@@ -12,10 +12,13 @@
         -webkit-text-size-adjust: 100% !important;
         width: 100%;
         position: relative;
+        min-height: 100vh !important;
+        background-color: #ffffff !important;
     }
     
     body {
         zoom: 0.9 !important;
+        padding-bottom: env(safe-area-inset-bottom) !important;
     }
     
     /* Prevent horizontal scrolling leaks */
@@ -376,6 +379,8 @@
     section {
         padding: 30px 14px !important;
         box-sizing: border-box !important;
+        width: 100% !important;
+        overflow-x: hidden !important;
     }
     
     /* Content containers - ensure side padding and no overflow */
@@ -385,6 +390,7 @@
         padding-right: 14px !important;
         box-sizing: border-box !important;
         max-width: 100% !important;
+        width: 100% !important;
     }
     
     /* Ensure all text blocks have proper width */
@@ -438,16 +444,17 @@
         display: grid !important;
         grid-template-columns: 1fr !important;
         gap: 20px !important;
-        padding: 0 !important;
+        padding: 0 8px !important;
         max-width: 100% !important;
         margin: 0 auto !important;
+        width: 100% !important;
     }
     
     .home-info-grid > .card,
     .home-info-grid > div {
         width: min(92vw, 520px) !important;
         margin: 0 auto !important;
-        padding: 2rem 1.5rem !important;
+        padding: 1.75rem 1.25rem !important;
         box-sizing: border-box !important;
         min-height: auto !important;
         height: auto !important;
@@ -463,15 +470,15 @@
     
     /* Titles in info cards */
     .home-info-grid h4 {
-        font-size: 1.15rem !important;
+        font-size: clamp(1.05rem, 4vw, 1.2rem) !important;
         margin-bottom: 0.75rem !important;
         line-height: 1.4 !important;
     }
     
     /* Descriptions in info cards */
     .home-info-grid p {
-        font-size: 0.95rem !important;
-        line-height: 1.6 !important;
+        font-size: clamp(0.9rem, 3.5vw, 1rem) !important;
+        line-height: 1.65 !important;
     }
     
     /* Yellow quote box - proper mobile layout */
@@ -479,16 +486,19 @@
         width: min(92vw, 560px) !important;
         max-width: min(92vw, 560px) !important;
         margin: 2rem auto 0 auto !important;
-        padding: 1.5rem 1.25rem !important;
+        padding: 1.5rem 1.5rem !important;
         box-sizing: border-box !important;
+        min-height: auto !important;
+        height: auto !important;
     }
     
     .welcome-section div[style*="border-left: 4px solid var(--yellow-sun)"] p {
-        font-size: clamp(16px, 4.2vw, 20px) !important;
-        line-height: 1.6 !important;
+        font-size: clamp(15px, 4vw, 18px) !important;
+        line-height: 1.65 !important;
         hyphens: none !important;
         overflow-wrap: normal !important;
         word-break: normal !important;
+        max-width: 100% !important;
     }
     
     /* Welcome section - override desktop padding on mobile */
@@ -537,6 +547,9 @@
     footer,
     .site-footer {
         padding: 1.5rem 1rem 0.75rem !important;
+        margin: 0 !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
     }
 
     footer > div > div:first-child {
@@ -865,27 +878,29 @@
     
     /* Menu card content - proper wrapping */
     .menu-item h4 {
-        font-size: 1.05rem !important;
+        font-size: clamp(1rem, 4vw, 1.1rem) !important;
         margin-bottom: 0.6rem !important;
         line-height: 1.4 !important;
-        overflow-wrap: anywhere !important;
+        overflow-wrap: break-word !important;
         word-break: normal !important;
         hyphens: none !important;
     }
     
     .menu-item p {
-        font-size: 0.9rem !important;
-        line-height: 1.6 !important;
-        overflow-wrap: anywhere !important;
+        font-size: clamp(0.875rem, 3.5vw, 0.95rem) !important;
+        line-height: 1.65 !important;
+        overflow-wrap: break-word !important;
         word-break: normal !important;
-        hyphens: none !important;
-        margin-bottom: 0.5rem !important;
+        hyphens: auto !important;
+        margin-bottom: 0.6rem !important;
+        max-width: 100% !important;
     }
     
     .menu-item .price {
-        font-size: 1rem !important;
+        font-size: clamp(0.95rem, 3.8vw, 1.05rem) !important;
         font-weight: 700 !important;
         margin-top: 0.5rem !important;
+        color: var(--primary-color, #004A9F) !important;
     }
     
     /* Menu and location page heroes */
@@ -894,5 +909,195 @@
         height: clamp(400px, 55vh, 520px) !important;
         min-height: 400px !important;
         max-height: 520px !important;
+    }
+    
+    /* ===== RESERVATIONS PAGE IMPROVEMENTS ===== */
+    
+    /* Reservations hero */
+    #reservations-hero {
+        height: clamp(400px, 55vh, 520px) !important;
+        min-height: 400px !important;
+        max-height: 520px !important;
+    }
+    
+    #reservations-hero h1 {
+        font-size: clamp(2.2rem, 8vw, 3rem) !important;
+        line-height: 1.2 !important;
+    }
+    
+    #reservations-hero p {
+        font-size: clamp(1rem, 4vw, 1.2rem) !important;
+        line-height: 1.6 !important;
+    }
+    
+    /* Reservation form wrapper */
+    #reservation-form-section .container {
+        padding: 2rem 1rem !important;
+    }
+    
+    /* OpenTable badge */
+    .opentable-badge {
+        margin-bottom: 2rem !important;
+        padding: 1.25rem !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* Reservation card */
+    .reservation-card {
+        padding: 1.75rem 1.25rem !important;
+        box-sizing: border-box !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 auto !important;
+    }
+    
+    /* Form title */
+    .reservation-form-wrapper h2 {
+        font-size: clamp(1.75rem, 6vw, 2.25rem) !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    /* Form description */
+    .reservation-form-wrapper > p {
+        font-size: clamp(0.95rem, 3.5vw, 1.1rem) !important;
+        margin-bottom: 2rem !important;
+        line-height: 1.6 !important;
+    }
+    
+    /* Form groups */
+    .form-group {
+        margin-bottom: 1.5rem !important;
+    }
+    
+    .form-group label {
+        font-size: 0.9rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 0.85rem 1rem !important;
+        font-size: 1rem !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* Form row for date/time */
+    .form-row {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+    }
+    
+    /* Buttons on reservation page */
+    #reservation-form-section .btn,
+    #reservation-form-section button {
+        width: 100% !important;
+        padding: 1rem 1.5rem !important;
+        font-size: 1rem !important;
+        margin-bottom: 0.75rem !important;
+        box-sizing: border-box !important;
+        min-height: 48px !important;
+    }
+    
+    /* CTA buttons container */
+    .reservation-cta-container {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 1rem !important;
+        margin-top: 2rem !important;
+    }
+    
+    /* WhatsApp button styling */
+    .whatsapp-btn {
+        background: #25D366 !important;
+        color: white !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 0.5rem !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .whatsapp-btn:active {
+        transform: scale(0.98) !important;
+        background: #1ea952 !important;
+    }
+    
+    /* ===== GLOBAL MOBILE APP POLISH ===== */
+    
+    /* Better tap targets - ensure minimum 44x44 */
+    a, button, .btn, input[type="submit"], input[type="button"] {
+        min-height: 44px !important;
+        min-width: 44px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        touch-action: manipulation !important;
+    }
+    
+    /* Smooth button interactions */
+    .btn, button:not(.mobile-menu-toggle):not(.lang-btn):not(.menu-tab) {
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        cursor: pointer !important;
+    }
+    
+    .btn:active, button:active {
+        transform: scale(0.97) !important;
+        opacity: 0.9 !important;
+    }
+    
+    /* Primary button hover states */
+    .btn-primary:hover {
+        box-shadow: 0 6px 20px rgba(0, 74, 159, 0.3) !important;
+    }
+    
+    /* Consistent border radius */
+    .card, .menu-item, .review-card, .feature-card {
+        border-radius: 12px !important;
+    }
+    
+    /* Input focus states */
+    input:focus, textarea:focus, select:focus {
+        outline: none !important;
+        border-color: var(--yellow-sun, #fbbf24) !important;
+        box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.1) !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    /* Prevent text selection on UI elements */
+    .hero-overlay,
+    header,
+    footer,
+    .btn,
+    button {
+        user-select: none !important;
+        -webkit-user-select: none !important;
+    }
+    
+    /* Smooth page scrolling */
+    html {
+        scroll-behavior: smooth !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+    
+    /* Remove webkit input styling */
+    input, textarea, select {
+        -webkit-appearance: none !important;
+        appearance: none !important;
+    }
+    
+    /* Better link tap feedback */
+    a:active {
+        opacity: 0.7 !important;
+    }
+    
+    /* Consistent spacing scale - 8px base */
+    .container {
+        --spacing-xs: 8px;
+        --spacing-sm: 12px;
+        --spacing-md: 16px;
+        --spacing-lg: 24px;
+        --spacing-xl: 32px;
     }
 }
