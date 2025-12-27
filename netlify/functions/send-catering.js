@@ -1,18 +1,15 @@
 /**
  * Netlify Function: Send Catering Email
  * 
- * Sends catering quote requests to samantha@solomonslanding.com.mx
- * Uses Nodemailer with SMTP (Gmail/Google Workspace/Zoho/Outlook)
+ * Sends catering quote requests via Resend
  * 
  * Environment Variables Required:
- * - SMTP_HOST (e.g., smtp.gmail.com)
- * - SMTP_PORT (e.g., 587)
- * - SMTP_USER (email address)
- * - SMTP_PASS (app password or account password)
- * - CATERING_EMAIL (samantha@solomonslanding.com.mx)
+ * - RESEND_API_KEY
+ * - EMAIL_FROM (Resend verified sender)
+ * - CATERING_TO_EMAIL (samantha@solomonslanding.com.mx or testing email)
  */
 
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
 exports.handler = async (event, context) => {
     // Only allow POST requests
@@ -68,15 +65,13 @@ exports.handler = async (event, context) => {
         }
 
         // Get environment variables
-        const smtpHost = process.env.SMTP_HOST;
-        const smtpPort = parseInt(process.env.SMTP_PORT || '587');
-        const smtpUser = process.env.SMTP_USER;
-        const smtpPass = process.env.SMTP_PASS;
-        const cateringEmail = process.env.CATERING_EMAIL || 'samantha@solomonslanding.com.mx';
+        const resendApiKey = process.env.RESEND_API_KEY;
+        const emailFrom = process.env.EMAIL_FROM;
+        const cateringEmail = process.env.CATERING_TO_EMAIL || process.env.CATERING_EMAIL || 'samantha@solomonslanding.com.mx';
 
-        // Validate SMTP configuration
-        if (!smtpHost || !smtpUser || !smtpPass) {
-            console.error('❌ SMTP configuration missing');
+        // Validate configuration
+        if (!resendApiKey || !emailFrom) {
+            console.error('❌ Resend configuration missing');
             return {
                 statusCode: 500,
                 headers: {
@@ -99,19 +94,8 @@ exports.handler = async (event, context) => {
             day: 'numeric' 
         });
 
-        // Create transporter
-        const transporter = nodemailer.createTransport({
-            host: smtpHost,
-            port: smtpPort,
-            secure: smtpPort === 465,
-            auth: {
-                user: smtpUser,
-                pass: smtpPass
-            }
-        });
-
-        // Verify connection
-        await transporter.verify();
+        // Initialize Resend
+        const resend = new Resend(resendApiKey);
 
         // Build email HTML
         const emailHTML = `
@@ -184,18 +168,16 @@ ${data.message ? `Additional Details:\n${data.message}` : ''}
         `.trim();
 
         // Send email
-        const mailOptions = {
-            from: `"Solomon's Landing Catering" <${smtpUser}>`,
+        const emailResult = await resend.emails.send({
+            from: emailFrom,
             to: cateringEmail,
             replyTo: data.email,
             subject: `Catering Quote Request - ${data.name} - ${data.eventType} on ${formattedDate}`,
-            text: emailText,
-            html: emailHTML
-        };
+            html: emailHTML,
+            text: emailText
+        });
 
-        const info = await transporter.sendMail(mailOptions);
-
-        console.log('✅ Catering email sent:', info.messageId);
+        console.log('✅ Catering email sent:', emailResult.data?.id);
 
         return {
             statusCode: 200,
@@ -205,7 +187,7 @@ ${data.message ? `Additional Details:\n${data.message}` : ''}
             },
             body: JSON.stringify({ 
                 success: true, 
-                messageId: info.messageId,
+                messageId: emailResult.data?.id,
                 message: 'Catering quote request sent successfully' 
             })
         };
@@ -226,4 +208,3 @@ ${data.message ? `Additional Details:\n${data.message}` : ''}
         };
     }
 };
-

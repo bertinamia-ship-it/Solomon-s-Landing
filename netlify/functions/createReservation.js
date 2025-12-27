@@ -109,7 +109,7 @@ exports.handler = async (event, context) => {
         const supabaseUrl = process.env.SUPABASE_URL;
         const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
         const resendApiKey = process.env.RESEND_API_KEY;
-        const emailRestaurant = process.env.EMAIL_RESTAURANT || 'contact@solomonslanding.com.mx';
+        const emailRestaurant = process.env.RESERVATIONS_TO_EMAIL || process.env.EMAIL_RESTAURANT || 'contact@solomonslanding.com.mx';
         const emailFrom = process.env.EMAIL_FROM;
 
         // Validate environment variables
