@@ -182,7 +182,7 @@
     bottom: 100px;
     right: 20px;
     width: 400px;
-    max-width: calc(100vw - 40px);
+    max-width: calc(100% - 40px);
     height: 580px;
     max-height: calc(100vh - 140px);
     background: #ffffff;
@@ -193,6 +193,7 @@
     overflow: hidden !important;
     animation: slideUp 0.3s ease-out;
     z-index: 9998;
+    box-sizing: border-box;
 }
 
 .chatbot-window.open {
@@ -202,7 +203,7 @@
 /* Mobile responsive - more compact and app-like, no white corners */
 @media (max-width: 768px) {
     .chatbot-window {
-        width: calc(100vw - 24px);
+        width: calc(100% - 24px);
         max-width: 100%;
         height: clamp(420px, 60vh, 550px);
         max-height: clamp(420px, 60vh, 550px);
@@ -760,8 +761,10 @@
     .chatbot-window {
         bottom: 80px;
         right: 10px;
-        width: calc(100vw - 20px);
+        width: calc(100% - 20px);
+        max-width: 100%;
         height: calc(100vh - 120px);
+        box-sizing: border-box;
     }
     
     .message-content {
