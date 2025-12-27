@@ -1727,33 +1727,97 @@ async function checkOpenTableAvailability(date, time, guests) {
 async function sendReservationToBackend(reservationData) {
     console.log('Sending reservation email with data:', reservationData);
     
-    // Generate confirmation code if not provided
-    const confirmationCode = reservationData.confirmationCode || 'RES-' + Date.now().toString().slice(-6);
+    // Check if we're on GitHub Pages (functions won't exist there)
+    const isGitHubPages = window.location.hostname.includes('github.io') || 
+                         window.location.hostname.includes('github.com');
     
-    // Build confirmation URL if needed
-    const confirmUrl = reservationData.confirmUrl || `${window.location.origin}/website/confirm-reservation.html?code=${confirmationCode}`;
-    
-    // Send email via Netlify Function (with EmailJS fallback)
-    const emailResult = await sendReservationEmail({
-        ...reservationData,
-        confirmationCode,
-        confirmUrl,
-        customerLanguage: reservationData.customerLanguage || 'English'
-    });
-    
-    if (!emailResult.success) {
-    return {
-            success: false,
-            message: emailResult.error || 'Failed to send reservation email'
-    };
+    // Try Netlify Function first (unless on GitHub Pages)
+    if (!isGitHubPages) {
+        try {
+            const netlifyUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                ? 'http://localhost:8888/.netlify/functions/createReservation'
+                : `/.netlify/functions/createReservation`;
+            
+            const response = await fetch(netlifyUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: reservationData.name,
+                    email: reservationData.email,
+                    phone: reservationData.phone,
+                    date: reservationData.date,
+                    time: reservationData.time,
+                    guests: reservationData.guests,
+                    notes: reservationData.notes || '',
+                    language: reservationData.language || (currentLanguage || 'en')
+                })
+            });
+
+            const result = await response.json();
+            
+            if (result.success) {
+                console.log('✅ Reservation created via Netlify Function:', result.reservationId);
+                return {
+                    success: true,
+                    reservationId: result.reservationId,
+                    message: 'Reservation request sent successfully',
+                    method: 'netlify'
+                };
+            } else {
+                throw new Error(result.error || 'Netlify function failed');
+            }
+        } catch (netlifyError) {
+            console.warn('⚠️ Netlify Function failed, falling back to EmailJS:', netlifyError);
+            // Fall through to EmailJS fallback
+        }
     }
     
-    return {
-        success: true,
-        reservationId: confirmationCode,
-        message: 'Reservation request sent successfully',
-        emailMethod: emailResult.method
-    };
+    // Fallback to EmailJS (for GitHub Pages or if Netlify Function fails)
+    if (typeof emailjs !== 'undefined') {
+        try {
+            // Generate confirmation code if not provided
+            const confirmationCode = reservationData.confirmationCode || 'RES-' + Date.now().toString().slice(-6);
+            
+            // Build confirmation URL if needed
+            const confirmUrl = reservationData.confirmUrl || `${window.location.origin}/website/confirm-reservation.html?code=${confirmationCode}`;
+            
+            // Send email via EmailJS
+            const emailResult = await sendReservationEmail({
+                ...reservationData,
+                confirmationCode,
+                confirmUrl,
+                customerLanguage: reservationData.customerLanguage || (currentLanguage === 'es' ? 'Español' : 'English')
+            });
+            
+            if (!emailResult.success) {
+                return {
+                    success: false,
+                    message: emailResult.error || 'Failed to send reservation email'
+                };
+            }
+            
+            return {
+                success: true,
+                reservationId: confirmationCode,
+                message: 'Reservation request sent successfully',
+                method: 'emailjs'
+            };
+        } catch (emailjsError) {
+            console.error('❌ EmailJS fallback also failed:', emailjsError);
+            return {
+                success: false,
+                message: 'Failed to send reservation. Please try again or call +52 624 219 3228.'
+            };
+        }
+    } else {
+        console.error('❌ No email service available');
+        return {
+            success: false,
+            message: 'Email service unavailable. Please call +52 624 219 3228.'
+        };
+    }
 }
 
 async function syncReservationWithOpenTable(reservationData) {

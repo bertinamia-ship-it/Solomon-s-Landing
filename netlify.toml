@@ -8,6 +8,8 @@
   directory = "netlify/functions"
   # Node.js version for functions
   node_bundler = "esbuild"
+  # Node.js runtime version
+  node_version = "18"
 
 [[redirects]]
   # Redirect root to website folder
