@@ -1,0 +1,63 @@
+/* ============================================
+   GLOBAL PERFORMANCE OPTIMIZATIONS
+   Critical CSS for above-the-fold content
+   ============================================ */
+
+/* Smooth scrolling for entire page */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Hardware acceleration for animations */
+.hero-slide,
+.features-scroll-track,
+.chatbot-button,
+.feature-mini-card {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+/* Optimize reflows */
+* {
+    box-sizing: border-box;
+}
+
+/* Smooth transitions globally */
+button,
+a,
+input,
+select,
+textarea {
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Scroll Indicator Animations */
+@keyframes scroll-down {
+    0% {
+        opacity: 0;
+        top: 8px;
+    }
+    50% {
+        opacity: 1;
+        top: 20px;
+    }
+    100% {
+        opacity: 0;
+        top: 8px;
+    }
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateX(-50%) translateY(0);
+    }
+    50% {
+        transform: translateX(-50%) translateY(-10px);
+    }
+}
+
+/* Preload critical resources hint */
+.preload-hint {
+    display: none;
+}

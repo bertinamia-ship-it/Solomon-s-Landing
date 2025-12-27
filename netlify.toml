@@ -1,0 +1,27 @@
+[build]
+  # No build command needed for static site
+  command = ""
+  publish = "website"
+
+[functions]
+  # Functions directory
+  directory = "netlify/functions"
+  # Node.js version for functions
+  node_bundler = "esbuild"
+
+[[redirects]]
+  # Redirect root to website folder
+  from = "/"
+  to = "/website/index.html"
+  status = 200
+
+[[redirects]]
+  # Redirect all website paths
+  from = "/*"
+  to = "/website/:splat"
+  status = 200
+
+# Environment variables (set in Netlify dashboard)
+# SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS
+# RESERVATION_EMAIL, CATERING_EMAIL
+

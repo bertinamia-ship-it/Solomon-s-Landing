@@ -1,15 +1,30 @@
 # Environment variables
-server/.env
 .env
+.env.local
+.env.*.local
 
 # Dependencies
-server/node_modules/
 node_modules/
+package-lock.json
 
-# IDE
-.vscode/
-.idea/
+# Netlify
+.netlify/
+.netlify.toml.local
+
+# Logs
+*.log
+npm-debug.log*
 
 # OS
 .DS_Store
 Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build
+dist/
+build/
