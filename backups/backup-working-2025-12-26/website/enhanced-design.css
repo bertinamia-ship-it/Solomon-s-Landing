@@ -1,0 +1,749 @@
+/* ========================================
+   ENHANCED DESIGN SYSTEM v1.0
+   Solomon's Landing - Premium Restaurant Design
+   ======================================== */
+
+:root {
+    /* Brand Colors - Refined */
+    --yellow-sun: #FFC93C;
+    --orange-sun: #FF8C00;
+    --deep-ocean: #0A2540;
+    --ocean-blue: #1e3a8a;
+    --ocean-dark: #0f172a;
+    --light-ocean: #3b82f6;
+    --sand-beige: #F5F1E8;
+    --dark-text: #1e293b;
+    --light-text: #64748b;
+    --gold-accent: #d4af37;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, var(--ocean-blue) 0%, var(--light-ocean) 100%);
+    --gradient-gold: linear-gradient(135deg, var(--yellow-sun) 0%, var(--orange-sun) 100%);
+    --gradient-overlay: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6));
+    
+    /* Shadows */
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 20px rgba(0,0,0,0.15);
+    --shadow-lg: 0 10px 40px rgba(0,0,0,0.2);
+    --shadow-xl: 0 20px 60px rgba(0,0,0,0.3);
+    
+    /* Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+}
+
+/* ========================================
+   SMOOTH ANIMATIONS
+   ======================================== */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* ========================================
+   ENHANCED BUTTONS
+   ======================================== */
+
+.btn-enhanced {
+    position: relative;
+    display: inline-block;
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 50px;
+    transition: all var(--transition-normal);
+    overflow: hidden;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+}
+
+.btn-enhanced::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+}
+
+.btn-enhanced:hover::before {
+    left: 100%;
+}
+
+.btn-primary-enhanced {
+    background: var(--gradient-gold);
+    color: white;
+    box-shadow: 0 4px 15px rgba(255, 201, 60, 0.4);
+}
+
+.btn-primary-enhanced:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(255, 201, 60, 0.5);
+}
+
+.btn-secondary-enhanced {
+    background: var(--gradient-primary);
+    color: white;
+    box-shadow: 0 4px 15px rgba(30, 58, 138, 0.4);
+}
+
+.btn-secondary-enhanced:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(30, 58, 138, 0.5);
+}
+
+.btn-outline-enhanced {
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+    backdrop-filter: blur(10px);
+}
+
+.btn-outline-enhanced:hover {
+    background: white;
+    color: var(--ocean-blue);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(255,255,255,0.3);
+}
+
+/* ========================================
+   ENHANCED CARDS
+   ======================================== */
+
+.card-enhanced {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-normal);
+    animation: scaleIn 0.6s ease-out backwards;
+}
+
+.card-enhanced:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-xl);
+}
+
+.card-image {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    transition: transform var(--transition-slow);
+}
+
+.card-enhanced:hover .card-image {
+    transform: scale(1.1);
+}
+
+.card-content {
+    padding: 2rem;
+}
+
+.card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--dark-text);
+}
+
+.card-text {
+    color: var(--light-text);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+/* ========================================
+   ENHANCED SECTIONS
+   ======================================== */
+
+.section-enhanced {
+    padding: 6rem 0;
+    position: relative;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.5rem;
+    font-weight: 300;
+    color: var(--dark-text);
+    margin-bottom: 1rem;
+    letter-spacing: 1px;
+}
+
+.section-subtitle {
+    font-size: 1.2rem;
+    color: var(--light-text);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* ========================================
+   ENHANCED HERO SECTIONS
+   ======================================== */
+
+.hero-enhanced {
+    position: relative;
+    height: 70vh;
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    overflow: hidden;
+}
+
+.hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+}
+
+/* DISABLED - Conflicts with existing hero styles
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-overlay);
+    z-index: -1;
+}
+*/
+
+.hero-content {
+    z-index: 1;
+    max-width: 800px;
+    padding: 2rem;
+}
+
+.hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 4.5rem;
+    font-weight: 300;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    animation: fadeInUp 1s ease-out;
+    letter-spacing: 2px;
+}
+
+.hero-description {
+    font-size: 1.4rem;
+    margin-bottom: 2rem;
+    opacity: 0.95;
+    animation: fadeInUp 1s ease-out 0.2s backwards;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: fadeInUp 1s ease-out 0.4s backwards;
+}
+
+/* ========================================
+   ENHANCED GRID LAYOUTS
+   ======================================== */
+
+.grid-enhanced {
+    display: grid;
+    gap: 2.5rem;
+    animation: fadeIn 0.8s ease-out;
+}
+
+.grid-2 {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+}
+
+.grid-3 {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.grid-4 {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+/* ========================================
+   ENHANCED IMAGES
+   ======================================== */
+
+.image-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 15px;
+}
+
+.image-enhanced {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-slow);
+}
+
+.image-container:hover .image-enhanced {
+    transform: scale(1.1);
+}
+
+.image-overlay-text {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2rem;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    color: white;
+    transform: translateY(100%);
+    transition: transform var(--transition-normal);
+}
+
+.image-container:hover .image-overlay-text {
+    transform: translateY(0);
+}
+
+/* ========================================
+   ENHANCED FORMS
+   ======================================== */
+
+.form-enhanced {
+    background: white;
+    padding: 3rem;
+    border-radius: 20px;
+    box-shadow: var(--shadow-lg);
+}
+
+.form-group-enhanced {
+    margin-bottom: 1.5rem;
+}
+
+.form-label-enhanced {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--dark-text);
+}
+
+.form-input-enhanced,
+.form-select-enhanced,
+.form-textarea-enhanced {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all var(--transition-fast);
+    background: white;
+}
+
+.form-input-enhanced:focus,
+.form-select-enhanced:focus,
+.form-textarea-enhanced:focus {
+    outline: none;
+    border-color: var(--yellow-sun);
+    box-shadow: 0 0 0 4px rgba(255, 201, 60, 0.1);
+}
+
+/* ========================================
+   ENHANCED NAVIGATION - Premium Restaurant Style
+   ======================================== */
+
+.nav-enhanced {
+    background: linear-gradient(135deg, rgba(10, 37, 64, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%);
+    backdrop-filter: blur(15px);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    transition: all var(--transition-normal);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.nav-enhanced.scrolled {
+    background: linear-gradient(135deg, rgba(10, 37, 64, 1) 0%, rgba(15, 23, 42, 1) 100%);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+}
+
+.nav-enhanced nav ul {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-enhanced nav a {
+    position: relative;
+    padding: 0.75rem 1.25rem;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    transition: all var(--transition-normal);
+    font-family: 'Montserrat', sans-serif;
+}
+
+.nav-enhanced nav a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--yellow-sun), var(--gold-accent));
+    transition: all var(--transition-normal);
+    transform: translateX(-50%);
+    box-shadow: 0 0 10px rgba(255, 201, 60, 0.5);
+}
+
+.nav-enhanced nav a:hover,
+.nav-enhanced nav a.active {
+    color: var(--yellow-sun);
+    text-shadow: 0 0 20px rgba(255, 201, 60, 0.3);
+}
+
+.nav-enhanced nav a:hover::after,
+.nav-enhanced nav a.active::after {
+    width: 100%;
+}
+
+.nav-enhanced .header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.nav-enhanced .logo img {
+    height: 60px;
+    width: auto;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+    transition: transform var(--transition-normal);
+}
+
+.nav-enhanced .logo img:hover {
+    transform: scale(1.05);
+}
+
+.nav-enhanced .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.nav-enhanced .language-toggle {
+    display: flex;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.25rem;
+    border-radius: 50px;
+    backdrop-filter: blur(10px);
+}
+
+.nav-enhanced .lang-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 50px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    font-size: 0.9rem;
+}
+
+.nav-enhanced .lang-btn.active {
+    background: var(--gradient-gold);
+    color: var(--ocean-dark);
+    box-shadow: 0 4px 15px rgba(255, 201, 60, 0.3);
+}
+
+.nav-enhanced .lang-btn:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+}
+
+.nav-link-enhanced {
+    position: relative;
+    padding: 0.5rem 1rem;
+    color: var(--dark-text);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+.nav-link-enhanced::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--yellow-sun);
+    transition: all var(--transition-normal);
+    transform: translateX(-50%);
+}
+
+.nav-link-enhanced:hover::after,
+.nav-link-enhanced.active::after {
+    width: 80%;
+}
+
+/* ========================================
+   ENHANCED TESTIMONIALS
+   ======================================== */
+
+.testimonial-enhanced {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: var(--shadow-md);
+    position: relative;
+    transition: all var(--transition-normal);
+}
+
+.testimonial-enhanced::before {
+    content: '"';
+    position: absolute;
+    top: -20px;
+    left: 20px;
+    font-size: 6rem;
+    color: var(--yellow-sun);
+    opacity: 0.2;
+    font-family: Georgia, serif;
+}
+
+.testimonial-enhanced:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.testimonial-text {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--light-text);
+    margin-bottom: 1.5rem;
+    font-style: italic;
+}
+
+.testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.author-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.author-info h4 {
+    margin: 0;
+    color: var(--dark-text);
+    font-weight: 600;
+}
+
+.author-info p {
+    margin: 0;
+    color: var(--light-text);
+    font-size: 0.9rem;
+}
+
+/* ========================================
+   ENHANCED STATS/COUNTERS
+   ======================================== */
+
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    text-align: center;
+}
+
+.stat-item {
+    padding: 2rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-normal);
+}
+
+.stat-item:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-lg);
+}
+
+.stat-number {
+    font-size: 3rem;
+    font-weight: 700;
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: var(--light-text);
+    font-size: 1.1rem;
+}
+
+/* ========================================
+   ENHANCED BADGES
+   ======================================== */
+
+.badge-enhanced {
+    display: inline-block;
+    padding: 0.5rem 1.2rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.badge-primary {
+    background: var(--gradient-gold);
+    color: white;
+}
+
+.badge-secondary {
+    background: var(--gradient-primary);
+    color: white;
+}
+
+.badge-outline {
+    background: transparent;
+    border: 2px solid var(--yellow-sun);
+    color: var(--yellow-sun);
+}
+
+/* ========================================
+   ENHANCED LOADING STATES
+   ======================================== */
+
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 8px;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 201, 60, 0.3);
+    border-top-color: var(--yellow-sun);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ========================================
+   ENHANCED UTILITY CLASSES
+   ======================================== */
+
+.text-center { text-align: center; }
+.text-gradient {
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.backdrop-blur {
+    backdrop-filter: blur(10px);
+    background: rgba(255,255,255,0.9);
+}
+
+.hover-lift {
+    transition: transform var(--transition-normal);
+}
+
+.hover-lift:hover {
+    transform: translateY(-5px);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 3rem;
+    }
+    
+    .section-title {
+        font-size: 2.5rem;
+    }
+    
+    .grid-2,
+    .grid-3,
+    .grid-4 {
+        grid-template-columns: 1fr;
+    }
+    
+    .btn-enhanced {
+        padding: 0.9rem 2rem;
+        font-size: 1rem;
+    }
+    
+    .hero-actions {
+        flex-direction: column;
+    }
+}

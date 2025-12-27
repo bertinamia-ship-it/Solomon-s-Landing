@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservation Confirmed - Solomon's Landing</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7fa;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f7fa; padding: 40px 20px;">
+        <tr>
+            <td align="center">
+                <!-- Main Container -->
+                <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); overflow: hidden;">
+                    
+                    <!-- Elegant Header -->
+                    <tr>
+                        <td style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%); padding: 50px 30px; text-align: center; position: relative;">
+                            <img src="{{logo_url}}" alt="Solomon's Landing" style="max-width: 220px; height: auto; margin-bottom: 20px;" />
+                            <h1 style="margin: 0; color: #ffffff; font-size: 36px; font-weight: bold; letter-spacing: 2px;">
+                                SOLOMON'S LANDING
+                            </h1>
+                            <p style="margin: 15px 0 0 0; color: #cbd5e1; font-size: 16px; font-style: italic;">
+                                Fine Dining Experience
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <!-- Main Message -->
+                    <tr>
+                        <td style="padding: 40px 30px 30px 30px; text-align: center;">
+                            <div style="font-size: 56px; margin-bottom: 15px;">✅</div>
+                            <h2 style="margin: 0 0 15px 0; color: #1e293b; font-size: 28px; font-weight: bold;">
+                                Reservation Confirmed!
+                            </h2>
+                            <p style="margin: 0; color: #64748b; font-size: 16px; line-height: 1.6;">
+                                Hello <strong style="color: #1e293b;">{{customer_name}}</strong>,<br>
+                                Your reservation at Solomon's Landing has been confirmed.
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <!-- Confirmation Code -->
+                    <tr>
+                        <td style="padding: 0 30px 30px 30px;">
+                            <div style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); padding: 25px; border-radius: 12px; text-align: center; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);">
+                                <p style="margin: 0 0 8px 0; font-size: 14px; color: #78350f; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
+                                    Your Confirmation Code
+                                </p>
+                                <p style="margin: 0; font-size: 40px; font-weight: bold; color: #ffffff; font-family: 'Courier New', monospace; letter-spacing: 4px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">
+                                    {{confirmation_code}}
+                                </p>
+                                <p style="margin: 12px 0 0 0; font-size: 13px; color: #fef3c7; opacity: 0.9;">
+                                    Please save this code for future reference
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- Reservation Details -->
+                    <tr>
+                        <td style="padding: 0 30px 30px 30px;">
+                            <div style="background-color: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 25px;">
+                                <h3 style="margin: 0 0 20px 0; color: #1e293b; font-size: 20px; font-weight: bold; text-align: center; border-bottom: 2px solid #3b82f6; padding-bottom: 10px;">
+                                    📋 Reservation Details
+                                </h3>
+                                
+                                <table role="presentation" width="100%" cellpadding="10" cellspacing="0">
+                                    <tr>
+                                        <td style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">
+                                            <p style="margin: 0; font-size: 14px; color: #64748b; font-weight: 600;">📅 DATE</p>
+                                            <p style="margin: 5px 0 0 0; font-size: 18px; color: #1e293b; font-weight: bold;">
+                                                {{reservation_date}}
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">
+                                            <table role="presentation" width="100%">
+                                                <tr>
+                                                    <td width="50%">
+                                                        <p style="margin: 0; font-size: 14px; color: #64748b; font-weight: 600;">🕐 TIME</p>
+                                                        <p style="margin: 5px 0 0 0; font-size: 18px; color: #1e293b; font-weight: bold;">
+                                                            {{reservation_time}}
+                                                        </p>
+                                                    </td>
+                                                    <td width="50%">
+                                                        <p style="margin: 0; font-size: 14px; color: #64748b; font-weight: 600;">👥 PARTY SIZE</p>
+                                                        <p style="margin: 5px 0 0 0; font-size: 18px; color: #1e293b; font-weight: bold;">
+                                                            {{party_size}} guests
+                                                        </p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- Important Information -->
+                    <tr>
+                        <td style="padding: 0 30px 30px 30px;">
+                            <div style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); padding: 25px; border-radius: 12px;">
+                                <h3 style="margin: 0 0 15px 0; color: #ffffff; font-size: 20px; font-weight: bold; text-align: center;">
+                                    📌 Important Information
+                                </h3>
+                                <div style="background-color: rgba(255,255,255,0.15); padding: 20px; border-radius: 8px;">
+                                    <p style="margin: 0; color: #ffffff; font-size: 15px; line-height: 1.8;">
+                                        • Please arrive 10 minutes before your reservation<br>
+                                        • Bring your confirmation code<br>
+                                        • Our dress code is smart casual<br>
+                                        • For groups of 8+, please contact us directly
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- Contact Information -->
+                    <tr>
+                        <td style="padding: 0 30px 30px 30px;">
+                            <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 20px; border-radius: 8px;">
+                                <h4 style="margin: 0 0 12px 0; color: #92400e; font-size: 16px; font-weight: bold;">
+                                    ℹ️ Need to Change or Cancel?
+                                </h4>
+                                <p style="margin: 0; color: #78350f; font-size: 14px; line-height: 1.6;">
+                                    If you have any questions or need to make changes,<br>
+                                    please contact us directly:
+                                </p>
+                                <p style="margin: 12px 0 0 0; text-align: center;">
+                                    <a href="tel:{{restaurant_phone}}" style="display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; text-decoration: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);">
+                                        📱 {{restaurant_phone}}
+                                    </a>
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- Location -->
+                    <tr>
+                        <td style="padding: 0 30px 30px 30px;">
+                            <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; text-align: center;">
+                                <h4 style="margin: 0 0 10px 0; color: #1e293b; font-size: 16px; font-weight: bold;">
+                                    📍 How to Find Us
+                                </h4>
+                                <p style="margin: 0; color: #64748b; font-size: 14px; line-height: 1.6;">
+                                    Solomon's Landing<br>
+                                    Cabo San Lucas, México<br>
+                                    <a href="https://maps.google.com" style="color: #3b82f6; text-decoration: none; font-weight: 600;">View on Map →</a>
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); padding: 30px; text-align: center;">
+                            <p style="margin: 0 0 10px 0; color: #ffffff; font-size: 18px; font-weight: bold;">
+                                Solomon's Landing
+                            </p>
+                            <p style="margin: 0 0 15px 0; color: #cbd5e1; font-size: 14px; line-height: 1.6;">
+                                📍 Cabo San Lucas, México<br>
+                                📞 {{restaurant_phone}}<br>
+                                🌐 www.solomonslanding.com
+                            </p>
+                            <div style="margin: 20px 0 0 0; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.2);">
+                                <p style="margin: 0; color: #94a3b8; font-size: 12px;">
+                                    © 2025 Solomon's Landing. All rights reserved.<br>
+                                    We look forward to serving you!
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

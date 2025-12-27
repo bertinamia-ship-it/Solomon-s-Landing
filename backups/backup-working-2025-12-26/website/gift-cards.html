@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Compra Gift Cards de Solomon's Landing. Regalo perfecto para experiencias gastronómicas inolvidables en Cabo San Lucas.">
+    <meta name="keywords" content="gift card Solomon's Landing, certificado regalo restaurante Cabo, tarjeta regalo Los Cabos, gift certificate restaurant">
+    <title>Gift Cards | Solomon's Landing Cabo San Lucas</title>
+    
+    <link rel="stylesheet" href="styles.css?v=7">
+    <link rel="stylesheet" href="enhanced-design.css?v=1">
+    <link rel="stylesheet" href="mobile-complete.css?v=1">
+    <link rel="stylesheet" href="mobile-iphone-ultra.css?v=1">
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <style>
+        .gift-card-hero {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/mh1') center/cover;
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            color: white;
+        }
+
+        .gift-card-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .gift-card-container {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .gift-card-preview {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .card-design {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            border-radius: 20px;
+            padding: 3rem;
+            color: white;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-design::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        }
+
+        .card-design .logo {
+            width: 120px;
+            margin-bottom: 2rem;
+            filter: brightness(0) invert(1);
+        }
+
+        .card-design h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .card-design .amount {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin: 2rem 0;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .card-design .folio {
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            opacity: 0.9;
+            margin-top: 2rem;
+        }
+
+        .card-design .recipient {
+            margin-top: 1.5rem;
+            font-size: 1.2rem;
+            font-style: italic;
+        }
+
+        .gift-card-form {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .gift-card-form h3 {
+            margin: 0 0 1.5rem 0;
+            color: #1e293b;
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #475569;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.875rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .amount-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .amount-option {
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .amount-option:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .amount-option.selected {
+            border-color: #3b82f6;
+            background: #3b82f6;
+            color: white;
+        }
+
+        .amount-option .price {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.125rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .success-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .success-modal.active {
+            display: flex;
+        }
+
+        .success-content {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            margin: 2rem;
+        }
+
+        .success-content .icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+
+        .success-content h2 {
+            color: #10b981;
+            margin-bottom: 1rem;
+        }
+
+        .download-btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: #10b981;
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .gift-card-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .gift-card-preview {
+                position: relative;
+                top: 0;
+            }
+
+            .amount-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header style="background: linear-gradient(135deg, rgba(0, 74, 159, 0.95) 0%, rgba(0, 38, 84, 0.95) 50%, rgba(0, 74, 159, 0.95) 100%); backdrop-filter: blur(10px); padding: 0.5rem 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000;">
+        <div class="container">
+            <div class="header-content" style="display: flex; align-items: center; justify-content: space-between; padding: 0;">
+                <div class="logo">
+                    <a href="index.html"><img src="solomons-logo.png" alt="Solomon's Landing" style="height: 50px;"></a>
+                </div>
+                
+                <!-- Mobile Menu Toggle -->
+                <button class="mobile-menu-toggle" aria-label="Toggle navigation menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                
+                <nav>
+                    <ul style="display: flex; gap: 1.8rem; list-style: none; margin: 0; padding: 0;">
+                        <li><a href="index.html" style="color: white; text-decoration: none; font-size: 0.95rem; transition: color 0.3s;">Home</a></li>
+                        <li><a href="menus.html" style="color: white; text-decoration: none; font-size: 0.95rem; transition: color 0.3s;">Menus</a></li>
+                        <li><a href="reviews.html" style="color: white; text-decoration: none; font-size: 0.95rem; transition: color 0.3s;">Reviews</a></li>
+                        <li><a href="catering.html" style="color: white; text-decoration: none; font-size: 0.95rem; transition: color 0.3s;">Catering</a></li>
+                        <li><a href="location.html" style="color: white; text-decoration: none; font-size: 0.95rem; transition: color 0.3s;">Location</a></li>
+                    </ul>
+                </nav>
+                <div class="header-actions" style="display: flex; align-items: center; gap: 1rem;">
+                    <div class="language-toggle" style="display: flex; gap: 0.4rem;">
+                        <button class="lang-btn active" data-lang="en" style="background: white; color: #065f46; padding: 0.4rem 0.7rem; border: none; border-radius: 5px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">EN</button>
+                        <button class="lang-btn" data-lang="es" style="background: rgba(255,255,255,0.2); color: white; padding: 0.4rem 0.7rem; border: none; border-radius: 5px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">ES</button>
+                    </div>
+                    <a href="reservations.html" class="btn btn-primary" style="background: #fbbf24; color: #065f46; padding: 0.7rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 700; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.25); font-size: 0.95rem;"> Reserve</a>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Overlay -->
+        <div class="mobile-nav-overlay"></div>
+    </header>
+
+    <section class="gift-card-hero">
+        <h1> Gift the Experience</h1>
+        <p style="font-size: 1.25rem; max-width: 600px; margin: 0 auto;">Give the perfect gift: an unforgettable dining experience at Solomon's Landing</p>
+    </section>
+
+    <div class="gift-card-container">
+        <!-- Preview -->
+        <div class="gift-card-preview">
+            <div class="card-design">
+                <img src="solomons-logo.png" alt="Solomon's Landing" class="logo">
+                <h2>GIFT CERTIFICATE</h2>
+                <div class="amount" id="preview-amount">$100.00</div>
+                <div class="recipient" id="preview-recipient">To: Select recipient below</div>
+                <div class="folio">Folio: <span id="preview-folio">LOADING...</span></div>
+            </div>
+            <p style="text-align: center; margin-top: 1.5rem; color: #64748b; font-size: 0.875rem;">
+                📧 Gift card will be sent to the buyer's email<br>
+                💾 Download PDF to forward to your recipient
+            </p>
+        </div>
+
+        <!-- Form -->
+        <div class="gift-card-form">
+            <h3>Purchase Gift Card</h3>
+            
+            <form id="giftCardForm">
+                <!-- Amount Selection -->
+                <div class="form-group">
+                    <label>Select Amount (USD)</label>
+                    <div class="amount-options">
+                        <div class="amount-option" data-amount="50">
+                            <div class="price">$50</div>
+                            <div>Appetizers</div>
+                        </div>
+                        <div class="amount-option selected" data-amount="100">
+                            <div class="price">$100</div>
+                            <div>Popular</div>
+                        </div>
+                        <div class="amount-option" data-amount="200">
+                            <div class="price">$200</div>
+                            <div>Premium</div>
+                        </div>
+                        <div class="amount-option" data-amount="500">
+                            <div class="price">$500</div>
+                            <div>Celebration</div>
+                        </div>
+                        <div class="amount-option" data-amount="1000">
+                            <div class="price">$1000</div>
+                            <div>VIP</div>
+                        </div>
+                        <div class="amount-option" data-amount="custom">
+                            <div class="price">💎</div>
+                            <div>Custom</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" id="customAmountGroup" style="display: none;">
+                    <label>Custom Amount (USD)</label>
+                    <input type="number" id="customAmount" min="25" step="1" placeholder="Enter amount">
+                </div>
+
+                <!-- Recipient Info -->
+                <div class="form-group">
+                    <label>Recipient Name *</label>
+                    <input type="text" id="recipientName" required placeholder="Who is this gift for?">
+                </div>
+
+                <div class="form-group">
+                    <label>Personal Message (Optional)</label>
+                    <textarea id="message" rows="3" placeholder="Add a personal message..."></textarea>
+                </div>
+
+                <!-- Buyer Info -->
+                <div class="form-group">
+                    <label>Your Name *</label>
+                    <input type="text" id="buyerName" required placeholder="Your full name">
+                </div>
+
+                <div class="form-group">
+                    <label>Your Email *</label>
+                    <input type="email" id="buyerEmail" required placeholder="your@email.com">
+                </div>
+
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="buyerPhone" placeholder="+1 (555) 123-4567">
+                </div>
+
+                <button type="submit" class="submit-btn">
+                     Purchase Gift Card
+                </button>
+
+                <p style="text-align: center; margin-top: 1rem; font-size: 0.875rem; color: #64748b;">
+                    After purchase, you'll receive the gift card PDF via email.<br>
+                    You can then forward it to your recipient.
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="success-modal" id="successModal">
+        <div class="success-content">
+            <div class="icon">✅</div>
+            <h2>Gift Card Created!</h2>
+            <p>Your gift card has been generated and sent to <strong id="confirmEmail"></strong></p>
+            <p style="margin: 1.5rem 0; color: #64748b;">
+                Folio Number: <strong id="confirmFolio"></strong>
+            </p>
+            <button onclick="downloadPDF()" class="download-btn">
+                📥 Download PDF Gift Card
+            </button>
+            <br><br>
+            <a href="index.html" style="color: #3b82f6; text-decoration: none;">← Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        // Initialize EmailJS
+        emailjs.init('YOUR_EMAILJS_PUBLIC_KEY'); // Replace with your EmailJS public key
+
+        let selectedAmount = 100;
+        let currentFolio = '';
+        let giftCardData = {};
+
+        // Generate folio number
+        function generateFolio() {
+            const prefix = 'SL-GC';
+            const timestamp = Date.now().toString(36).toUpperCase();
+            const random = Math.random().toString(36).substr(2, 4).toUpperCase();
+            return `${prefix}-${timestamp}-${random}`;
+        }
+
+        // Update folio on load
+        window.addEventListener('load', () => {
+            currentFolio = generateFolio();
+            document.getElementById('preview-folio').textContent = currentFolio;
+        });
+
+        // Amount selection
+        document.querySelectorAll('.amount-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.amount-option').forEach(o => o.classList.remove('selected'));
+                this.classList.add('selected');
+                
+                const amount = this.dataset.amount;
+                if (amount === 'custom') {
+                    document.getElementById('customAmountGroup').style.display = 'block';
+                    selectedAmount = parseFloat(document.getElementById('customAmount').value) || 100;
+                } else {
+                    document.getElementById('customAmountGroup').style.display = 'none';
+                    selectedAmount = parseInt(amount);
+                }
+                
+                updatePreview();
+            });
+        });
+
+        // Custom amount input
+        document.getElementById('customAmount')?.addEventListener('input', function() {
+            selectedAmount = parseFloat(this.value) || 0;
+            updatePreview();
+        });
+
+        // Recipient name input
+        document.getElementById('recipientName').addEventListener('input', function() {
+            updatePreview();
+        });
+
+        // Update preview
+        function updatePreview() {
+            document.getElementById('preview-amount').textContent = `$${selectedAmount.toFixed(2)}`;
+            const recipientName = document.getElementById('recipientName').value || 'Select recipient below';
+            document.getElementById('preview-recipient').textContent = `To: ${recipientName}`;
+        }
+
+        // Form submission
+        document.getElementById('giftCardForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = this.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Processing...';
+
+            giftCardData = {
+                folio: currentFolio,
+                amount: selectedAmount,
+                recipientName: document.getElementById('recipientName').value,
+                message: document.getElementById('message').value,
+                buyerName: document.getElementById('buyerName').value,
+                buyerEmail: document.getElementById('buyerEmail').value,
+                buyerPhone: document.getElementById('buyerPhone').value,
+                date: new Date().toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                })
+            };
+
+            try {
+                // Send email via EmailJS
+                await emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', {
+                    to_email: giftCardData.buyerEmail,
+                    buyer_name: giftCardData.buyerName,
+                    recipient_name: giftCardData.recipientName,
+                    amount: giftCardData.amount,
+                    folio: giftCardData.folio,
+                    message: giftCardData.message,
+                    date: giftCardData.date
+                });
+
+                // Show success modal
+                document.getElementById('confirmEmail').textContent = giftCardData.buyerEmail;
+                document.getElementById('confirmFolio').textContent = giftCardData.folio;
+                document.getElementById('successModal').classList.add('active');
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error sending gift card. Please try again or contact support.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = ' Purchase Gift Card';
+            }
+        });
+
+        // Download PDF
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({
+                orientation: 'landscape',
+                unit: 'mm',
+                format: [200, 120]
+            });
+
+            // Background gradient
+            doc.setFillColor(30, 58, 138);
+            doc.rect(0, 0, 200, 120, 'F');
+
+            // Solomon's Landing
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(28);
+            doc.setFont(undefined, 'bold');
+            doc.text("SOLOMON'S LANDING", 100, 25, { align: 'center' });
+
+            // Gift Certificate
+            doc.setFontSize(18);
+            doc.setFont(undefined, 'normal');
+            doc.text('GIFT CERTIFICATE', 100, 35, { align: 'center' });
+
+            // Amount
+            doc.setFontSize(40);
+            doc.setFont(undefined, 'bold');
+            doc.text(`$${giftCardData.amount.toFixed(2)}`, 100, 55, { align: 'center' });
+
+            // Recipient
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'italic');
+            doc.text(`To: ${giftCardData.recipientName}`, 100, 70, { align: 'center' });
+
+            // Message
+            if (giftCardData.message) {
+                doc.setFontSize(10);
+                doc.setFont(undefined, 'normal');
+                const splitMessage = doc.splitTextToSize(giftCardData.message, 160);
+                doc.text(splitMessage, 100, 80, { align: 'center', maxWidth: 160 });
+            }
+
+            // Folio
+            doc.setFontSize(10);
+            doc.setFont('courier', 'normal');
+            doc.text(`Folio: ${giftCardData.folio}`, 100, 100, { align: 'center' });
+
+            // Date
+            doc.setFont(undefined, 'normal');
+            doc.text(`Valid from: ${giftCardData.date}`, 100, 107, { align: 'center' });
+
+            // Footer
+            doc.setFontSize(8);
+            doc.text('Solomon\'s Landing | Cabo San Lucas Marina | +52-624-XXX-XXXX', 100, 115, { align: 'center' });
+
+            // Save
+            doc.save(`Solomon's_Landing_GiftCard_${giftCardData.folio}.pdf`);
+        }
+    </script>
+
+    <!-- Footer (reuse from index.html) -->
+    <footer style="background: #1e293b; color: white; padding: 2rem 1.5rem 1.5rem 1.5rem; text-align: center; margin-top: 3rem;">
+        <p>&copy; 2025 Solomon's Landing. All rights reserved.</p>
+    </footer>
+    
+    <!-- Chatbot Scripts -->
+    <script src="chatbot.js"></script>
+    <script src="chatbot-init.js"></script>
+    
+    <script src="app.js"></script>
+</body>
+</html>
