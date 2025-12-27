@@ -1,0 +1,47 @@
+/* ============================================
+   QUICK REFERENCE - CSS Variables
+   Use these throughout the site
+   ============================================ */
+
+:root {
+    /* Brand Colors */
+    --blue-main: #004A9F;
+    --yellow-sun: #FFC93C;
+    --orange-sun: #FF8A3C;
+    --navy-dark: #002654;
+    --white: #FFFFFF;
+    --sand: #F3E1C5;
+    
+    /* Shadows */
+    --shadow-sm: 0 2px 8px rgba(0, 74, 159, 0.08);
+    --shadow-md: 0 4px 16px rgba(0, 74, 159, 0.12);
+    --shadow-lg: 0 8px 32px rgba(0, 74, 159, 0.16);
+    
+    /* Max Width */
+    --max-width: 1100px;
+}
+
+/* ============================================
+   USAGE EXAMPLES
+   ============================================ */
+
+/* Button with brand colors */
+.btn-primary {
+    background: var(--yellow-sun);
+    color: var(--navy-dark);
+    box-shadow: var(--shadow-md);
+}
+
+/* Card with shadow */
+.card {
+    background: var(--white);
+    box-shadow: var(--shadow-lg);
+    border-radius: 12px;
+}
+
+/* Container with max-width */
+.container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}

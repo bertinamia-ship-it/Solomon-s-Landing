@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Payment Hold - Solomon's Landing</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 100%;
+            padding: 40px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .amount {
+            font-size: 42px;
+            font-weight: bold;
+            color: #10b981;
+            margin: 20px 0;
+        }
+        .info-box {
+            background: #f8f9fa;
+            border-left: 4px solid #10b981;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .info-box h3 {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .info-box p {
+            color: #333;
+            margin: 5px 0;
+        }
+        #payment-form {
+            margin-top: 30px;
+        }
+        #payment-element {
+            margin-bottom: 20px;
+        }
+        .submit-btn {
+            width: 100%;
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 18px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .submit-btn:hover {
+            background: #059669;
+        }
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .success {
+            text-align: center;
+            display: none;
+        }
+        .success .icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: bounce 1s ease-in-out;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        .error {
+            color: #dc3545;
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            display: none;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #10b981;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🏖️</div>
+            <h1>Solomon's Landing</h1>
+            <p style="color: #666;">Reservation Pre-Authorization</p>
+        </div>
+
+        <div id="payment-section">
+            <div class="amount" id="amount-display">$0.00 USD</div>
+            
+            <div class="info-box">
+                <h3>RESERVATION HOLD - NOT A CHARGE</h3>
+                <p><strong id="customer-name"></strong></p>
+                <p>This is a pre-authorization hold that will be released when you arrive at the restaurant.</p>
+                <p style="margin-top: 10px; font-size: 12px; color: #666;">The hold is only captured if you don't show up for your reservation.</p>
+            </div>
+
+            <div class="note">
+                <strong>💳 Accepted Payment Methods:</strong><br>
+                • Credit/Debit Cards<br>
+                • Apple Pay<br>
+                • Google Pay
+            </div>
+
+            <form id="payment-form">
+                <div id="payment-element"></div>
+                <button type="submit" id="submit-btn" class="submit-btn">
+                    Authorize $<span id="btn-amount">0</span> Hold
+                </button>
+                <div id="error-message" class="error"></div>
+            </form>
+        </div>
+
+        <div id="loading-section" class="loading">
+            <div class="spinner"></div>
+            <p>Processing payment...</p>
+        </div>
+
+        <div id="success-section" class="success">
+            <div class="icon">✅</div>
+            <h2 style="color: #10b981; margin-bottom: 15px;">Hold Authorized!</h2>
+            <p style="margin-bottom: 20px;">Your reservation is now confirmed.</p>
+            <p style="font-size: 14px; color: #666;">You can close this window.</p>
+        </div>
+    </div>
+
+    <script>
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const clientSecret = urlParams.get('pi');
+        const amount = urlParams.get('amount');
+        const customerName = urlParams.get('name');
+
+        // Display info
+        document.getElementById('amount-display').textContent = `$${amount}.00 USD`;
+        document.getElementById('btn-amount').textContent = amount;
+        document.getElementById('customer-name').textContent = customerName || 'Guest';
+
+        // Initialize Stripe
+        const stripe = Stripe('pk_live_51SdT3eCkgxNT4xn7oZQM6supkIubUTYNGuZSEfQq90Ym5OGxhDWWUkdQzeD2L4YTpN18YNWAXqs2eYOEIAbYPxp100AWHUglOa');
+        
+        const elements = stripe.elements({
+            clientSecret: clientSecret,
+            appearance: {
+                theme: 'stripe',
+                variables: {
+                    colorPrimary: '#10b981',
+                }
+            }
+        });
+
+        const paymentElement = elements.create('payment');
+        paymentElement.mount('#payment-element');
+
+        // Handle form submission
+        const form = document.getElementById('payment-form');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submit-btn');
+            const paymentSection = document.getElementById('payment-section');
+            const loadingSection = document.getElementById('loading-section');
+            const successSection = document.getElementById('success-section');
+            const errorMessage = document.getElementById('error-message');
+
+            submitBtn.disabled = true;
+            paymentSection.style.display = 'none';
+            loadingSection.style.display = 'block';
+
+            const {error} = await stripe.confirmPayment({
+                elements,
+                confirmParams: {
+                    return_url: window.location.origin + '/reservation-confirmed.html',
+                },
+                redirect: 'if_required'
+            });
+
+            if (error) {
+                // Show error
+                loadingSection.style.display = 'none';
+                paymentSection.style.display = 'block';
+                errorMessage.textContent = error.message;
+                errorMessage.style.display = 'block';
+                submitBtn.disabled = false;
+            } else {
+                // Success
+                loadingSection.style.display = 'none';
+                successSection.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

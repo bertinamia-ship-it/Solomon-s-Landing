@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  
+  <!-- Homepage Images -->
+  <url>
+    <loc>https://solomonslanding.com/</loc>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/dpmozdkfh/image/upload/v1765665222/solomons_logo_hj2qlw.png</image:loc>
+      <image:caption>Solomon's Landing Restaurant Logo</image:caption>
+      <image:title>Solomon's Landing - International Restaurant Cabo San Lucas</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/sh1.jpg</image:loc>
+      <image:caption>Fresh Seafood at Solomon's Landing Marina Restaurant</image:caption>
+      <image:title>Fresh Seafood Cabo San Lucas</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/sh2.jpg</image:loc>
+      <image:caption>Premium Sushi Selection at Solomon's Landing</image:caption>
+      <image:title>Premium Sushi Cabo San Lucas</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/sh3.jpg</image:loc>
+      <image:caption>Marina Views Dining at Solomon's Landing</image:caption>
+      <image:title>Oceanfront Dining Cabo Marina</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/sh4.jpg</image:loc>
+      <image:caption>Elegant Restaurant Interior with Marina Views</image:caption>
+      <image:title>Fine Dining Atmosphere Cabo San Lucas</image:title>
+    </image:image>
+  </url>
+  
+  <!-- Menus Page Images -->
+  <url>
+    <loc>https://solomonslanding.com/menus.html</loc>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/mh1.jpg</image:loc>
+      <image:caption>Solomon's Landing Menu - Fresh Seafood Dishes</image:caption>
+      <image:title>Seafood Menu Cabo San Lucas</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/mh2.jpg</image:loc>
+      <image:caption>Premium Cuts and Steaks Menu</image:caption>
+      <image:title>Steak Menu Los Cabos</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/mh3.jpg</image:loc>
+      <image:caption>International Cuisine Menu Selection</image:caption>
+      <image:title>International Menu Cabo Restaurant</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/mh4.jpg</image:loc>
+      <image:caption>Craft Cocktails and Beverage Menu</image:caption>
+      <image:title>Cocktail Menu Cabo San Lucas</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/mh5.jpg</image:loc>
+      <image:caption>Desserts and Sweets Menu</image:caption>
+      <image:title>Dessert Menu Los Cabos</image:title>
+    </image:image>
+  </url>
+  
+  <!-- Reviews Page Images -->
+  <url>
+    <loc>https://solomonslanding.com/reviews.html</loc>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/dpmozdkfh/image/upload/q_auto:good/f_auto/solomons-landing/reviews1.jpg</image:loc>
+      <image:caption>Happy Guests at Solomon's Landing Restaurant</image:caption>
+      <image:title>Customer Reviews Cabo San Lucas</image:title>
+    </image:image>
+  </url>
+
+</urlset>
