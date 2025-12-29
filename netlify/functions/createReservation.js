@@ -11,8 +11,8 @@
  * - SUPABASE_URL
  * - SUPABASE_SERVICE_ROLE_KEY
  * - RESEND_API_KEY
- * - EMAIL_RESTAURANT (contact@solomonslanding.com.mx)
- * - EMAIL_FROM (Resend verified sender)
+ * - RESERVATIONS_TO_EMAIL (recipient email, e.g., contact@solomonslanding.com.mx)
+ * - RESEND_FROM_EMAIL (Resend verified sender, e.g., onboarding@resend.dev)
  */
 
 const { createClient } = require('@supabase/supabase-js');
@@ -110,7 +110,17 @@ exports.handler = async (event, context) => {
         const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
         const resendApiKey = process.env.RESEND_API_KEY;
         const emailRestaurant = process.env.RESERVATIONS_TO_EMAIL || process.env.EMAIL_RESTAURANT || 'contact@solomonslanding.com.mx';
-        const emailFrom = process.env.EMAIL_FROM;
+        const emailFrom = process.env.RESEND_FROM_EMAIL || process.env.EMAIL_FROM;
+
+        // Log environment variable status (without exposing secrets)
+        console.log('🔍 Environment Variables Check:');
+        console.log('  SUPABASE_URL:', !!supabaseUrl ? '✅ Set' : '❌ Missing');
+        console.log('  SUPABASE_SERVICE_ROLE_KEY:', !!supabaseKey ? '✅ Set' : '❌ Missing');
+        console.log('  RESEND_API_KEY:', !!resendApiKey ? '✅ Set' : '❌ Missing');
+        console.log('  RESERVATIONS_TO_EMAIL:', !!process.env.RESERVATIONS_TO_EMAIL ? '✅ Set' : '❌ Missing');
+        console.log('  RESEND_FROM_EMAIL:', !!process.env.RESEND_FROM_EMAIL ? '✅ Set' : '❌ Missing');
+        console.log('  Using emailFrom:', emailFrom || 'NOT SET');
+        console.log('  Using emailRestaurant:', emailRestaurant);
 
         // Validate environment variables
         if (!supabaseUrl || !supabaseKey) {
@@ -130,6 +140,9 @@ exports.handler = async (event, context) => {
 
         if (!resendApiKey || !emailFrom) {
             console.error('❌ Resend configuration missing');
+            console.error('  RESEND_API_KEY:', !!resendApiKey ? 'Set' : 'MISSING');
+            console.error('  RESEND_FROM_EMAIL:', !!process.env.RESEND_FROM_EMAIL ? 'Set' : 'MISSING');
+            console.error('  EMAIL_FROM (fallback):', !!process.env.EMAIL_FROM ? 'Set' : 'MISSING');
             return {
                 statusCode: 500,
                 headers: {
@@ -271,6 +284,11 @@ Status: Pending
         `.trim();
 
         try {
+            console.log('📧 Sending restaurant email...');
+            console.log('  From:', emailFrom);
+            console.log('  To:', emailRestaurant);
+            console.log('  Subject: New Reservation -', data.name);
+            
             const emailResult = await resend.emails.send({
                 from: emailFrom,
                 to: emailRestaurant,
@@ -280,9 +298,13 @@ Status: Pending
                 text: restaurantEmailText
             });
 
-            console.log('✅ Restaurant email sent:', emailResult.data?.id);
+            console.log('✅ Restaurant email sent successfully');
+            console.log('  Email ID:', emailResult.data?.id);
+            console.log('  Response:', JSON.stringify(emailResult, null, 2));
         } catch (emailError) {
             console.error('❌ Error sending restaurant email:', emailError);
+            console.error('  Error message:', emailError.message);
+            console.error('  Error details:', JSON.stringify(emailError, null, 2));
             // Don't fail the request if email fails - reservation is already saved
         }
 
@@ -354,6 +376,11 @@ Marina Cabo San Lucas
         `.trim();
 
         try {
+            console.log('📧 Sending customer confirmation email...');
+            console.log('  From:', emailFrom);
+            console.log('  To:', data.email);
+            console.log('  Subject: Reservation Request Received');
+            
             const customerEmailResult = await resend.emails.send({
                 from: emailFrom,
                 to: data.email,
@@ -362,9 +389,13 @@ Marina Cabo San Lucas
                 text: customerEmailText
             });
 
-            console.log('✅ Customer confirmation email sent:', customerEmailResult.data?.id);
+            console.log('✅ Customer confirmation email sent successfully');
+            console.log('  Email ID:', customerEmailResult.data?.id);
+            console.log('  Response:', JSON.stringify(customerEmailResult, null, 2));
         } catch (emailError) {
             console.error('❌ Error sending customer email:', emailError);
+            console.error('  Error message:', emailError.message);
+            console.error('  Error details:', JSON.stringify(emailError, null, 2));
             // Don't fail the request if email fails
         }
 

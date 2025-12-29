@@ -5,8 +5,8 @@
  * 
  * Environment Variables Required:
  * - RESEND_API_KEY
- * - EMAIL_FROM (Resend verified sender)
- * - CATERING_TO_EMAIL (samantha@solomonslanding.com.mx or testing email)
+ * - RESEND_FROM_EMAIL (Resend verified sender, e.g., onboarding@resend.dev)
+ * - CATERING_TO_EMAIL (recipient email, e.g., samantha@solomonslanding.com.mx)
  */
 
 const { Resend } = require('resend');
@@ -66,12 +66,23 @@ exports.handler = async (event, context) => {
 
         // Get environment variables
         const resendApiKey = process.env.RESEND_API_KEY;
-        const emailFrom = process.env.EMAIL_FROM;
+        const emailFrom = process.env.RESEND_FROM_EMAIL || process.env.EMAIL_FROM;
         const cateringEmail = process.env.CATERING_TO_EMAIL || process.env.CATERING_EMAIL || 'samantha@solomonslanding.com.mx';
+
+        // Log environment variable status (without exposing secrets)
+        console.log('🔍 Environment Variables Check:');
+        console.log('  RESEND_API_KEY:', !!resendApiKey ? '✅ Set' : '❌ Missing');
+        console.log('  RESEND_FROM_EMAIL:', !!process.env.RESEND_FROM_EMAIL ? '✅ Set' : '❌ Missing');
+        console.log('  CATERING_TO_EMAIL:', !!process.env.CATERING_TO_EMAIL ? '✅ Set' : '❌ Missing');
+        console.log('  Using emailFrom:', emailFrom || 'NOT SET');
+        console.log('  Using cateringEmail:', cateringEmail);
 
         // Validate configuration
         if (!resendApiKey || !emailFrom) {
             console.error('❌ Resend configuration missing');
+            console.error('  RESEND_API_KEY:', !!resendApiKey ? 'Set' : 'MISSING');
+            console.error('  RESEND_FROM_EMAIL:', !!process.env.RESEND_FROM_EMAIL ? 'Set' : 'MISSING');
+            console.error('  EMAIL_FROM (fallback):', !!process.env.EMAIL_FROM ? 'Set' : 'MISSING');
             return {
                 statusCode: 500,
                 headers: {
@@ -168,6 +179,11 @@ ${data.message ? `Additional Details:\n${data.message}` : ''}
         `.trim();
 
         // Send email
+        console.log('📧 Sending catering email...');
+        console.log('  From:', emailFrom);
+        console.log('  To:', cateringEmail);
+        console.log('  Subject: Catering Quote Request -', data.name);
+        
         const emailResult = await resend.emails.send({
             from: emailFrom,
             to: cateringEmail,
@@ -177,7 +193,9 @@ ${data.message ? `Additional Details:\n${data.message}` : ''}
             text: emailText
         });
 
-        console.log('✅ Catering email sent:', emailResult.data?.id);
+        console.log('✅ Catering email sent successfully');
+        console.log('  Email ID:', emailResult.data?.id);
+        console.log('  Response:', JSON.stringify(emailResult, null, 2));
 
         return {
             statusCode: 200,
