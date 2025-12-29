@@ -1387,31 +1387,56 @@ function initReservationForm() {
         submitBtn.textContent = 'Checking availability...';
 
         try {
-            const availabilityCheck = await checkOpenTableAvailability(formData.date, formData.time, formData.guests);
+            // Fail-open availability check with timeout
+            console.log('🔍 Checking availability for:', formData);
+            let availabilityCheck;
+            try {
+                const timeoutPromise = new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('Availability check timeout')), 5000)
+                );
+                availabilityCheck = await Promise.race([
+                    checkOpenTableAvailability(formData.date, formData.time, formData.guests),
+                    timeoutPromise
+                ]);
+                console.log('✅ Availability check result:', availabilityCheck);
+            } catch (availError) {
+                console.warn('⚠️ Availability check failed (continuing anyway):', availError);
+                availabilityCheck = { available: true, message: 'Availability check skipped' };
+            }
             
+            // Continue with submission even if availability check failed
             if (!availabilityCheck.available) {
-                showMessage(availabilityCheck.message || 'Lo sentimos, no hay disponibilidad para el horario seleccionado. Por favor intenta otro horario.', 'error');
-                return;
+                console.warn('⚠️ No availability reported, but continuing with submission');
+                // Don't return - continue to send the reservation
             }
 
+            console.log('📤 Sending reservation to backend...');
+            submitBtn.textContent = 'Sending reservation...';
+            
             const backendResponse = await sendReservationToBackend(formData);
+            console.log('📨 Backend response:', backendResponse);
             
             if (!backendResponse.success) {
+                console.error('❌ Reservation submission failed:', backendResponse);
                 showMessage(backendResponse.message || 'No se pudo procesar la reservación. Por favor intenta de nuevo o llámanos.', 'error');
                 return;
             }
 
+            console.log('✅ Syncing with internal system...');
             await syncReservationWithOpenTable(formData);
 
+            console.log('✅ Reservation complete! ID:', backendResponse.reservationId);
             showMessage('¡Reservación enviada con éxito! Recibirás un correo de confirmación en las próximas 2 horas. ID: ' + backendResponse.reservationId, 'success');
             reservationForm.reset();
 
         } catch (error) {
-            console.error('Reservation error:', error);
-            showMessage('Ocurrió un error inesperado. Por favor intenta de nuevo o contáctanos al +52 624 219 3228', 'error');
+            console.error('❌ Reservation submission error:', error);
+            console.error('Error stack:', error.stack);
+            showMessage('Ocurrió un error inesperado: ' + error.message + '. Por favor intenta de nuevo o contáctanos al +52 624 219 3228', 'error');
         } finally {
             submitBtn.disabled = false;
             submitBtn.textContent = 'Reservar Mesa';
+            console.log('🔄 Form submit handler complete');
         }
     });
 }
@@ -1725,11 +1750,13 @@ async function checkOpenTableAvailability(date, time, guests) {
 }
 
 async function sendReservationToBackend(reservationData) {
-    console.log('Sending reservation email with data:', reservationData);
+    console.log('📧 sendReservationToBackend called with:', reservationData);
     
     // Check if we're on GitHub Pages (functions won't exist there)
     const isGitHubPages = window.location.hostname.includes('github.io') || 
                          window.location.hostname.includes('github.com');
+    
+    console.log('🌐 Hostname:', window.location.hostname, '| isGitHubPages:', isGitHubPages);
     
     // Try Netlify Function first (unless on GitHub Pages)
     if (!isGitHubPages) {
@@ -1737,6 +1764,18 @@ async function sendReservationToBackend(reservationData) {
             const netlifyUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
                 ? 'http://localhost:8888/.netlify/functions/send-reservation'
                 : `/.netlify/functions/send-reservation`;
+            
+            console.log('🚀 Calling Netlify Function at:', netlifyUrl);
+            console.log('📦 Payload:', {
+                name: reservationData.name,
+                email: reservationData.email,
+                phone: reservationData.phone,
+                date: reservationData.date,
+                time: reservationData.time,
+                guests: reservationData.guests,
+                notes: reservationData.notes || '',
+                language: reservationData.language || (currentLanguage || 'en')
+            });
             
             const response = await fetch(netlifyUrl, {
                 method: 'POST',
@@ -1755,7 +1794,9 @@ async function sendReservationToBackend(reservationData) {
                 })
             });
 
+            console.log('📡 Fetch response status:', response.status, response.statusText);
             const result = await response.json();
+            console.log('📨 Parsed result:', result);
             
             if (result.success) {
                 console.log('✅ Reservation created via Netlify Function:', result.reservationId);
