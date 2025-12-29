@@ -1735,8 +1735,8 @@ async function sendReservationToBackend(reservationData) {
     if (!isGitHubPages) {
         try {
             const netlifyUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-                ? 'http://localhost:8888/.netlify/functions/createReservation'
-                : `/.netlify/functions/createReservation`;
+                ? 'http://localhost:8888/.netlify/functions/send-reservation'
+                : `/.netlify/functions/send-reservation`;
             
             const response = await fetch(netlifyUrl, {
                 method: 'POST',

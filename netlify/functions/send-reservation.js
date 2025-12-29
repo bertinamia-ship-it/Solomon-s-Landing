@@ -1,18 +1,22 @@
 /**
  * Netlify Function: Send Reservation Email
  * 
- * Sends reservation emails to contact@solomonslanding.com.mx
- * Uses Nodemailer with SMTP (Gmail/Google Workspace/Zoho/Outlook)
+ * Handles reservation submissions:
+ * 1. Validates inputs
+ * 2. Writes to Supabase database
+ * 3. Sends email to restaurant via Resend
+ * 4. Optionally sends confirmation email to customer
  * 
  * Environment Variables Required:
- * - SMTP_HOST (e.g., smtp.gmail.com)
- * - SMTP_PORT (e.g., 587)
- * - SMTP_USER (email address)
- * - SMTP_PASS (app password or account password)
- * - RESERVATION_EMAIL (contact@solomonslanding.com.mx)
+ * - SUPABASE_URL
+ * - SUPABASE_SERVICE_ROLE_KEY
+ * - RESEND_API_KEY
+ * - RESERVATIONS_TO_EMAIL (recipient email, e.g., contact@solomonslanding.com.mx)
+ * - RESEND_FROM_EMAIL (Resend verified sender, e.g., onboarding@resend.dev)
  */
 
-const nodemailer = require('nodemailer');
+const { createClient } = require('@supabase/supabase-js');
+const { Resend } = require('resend');
 
 exports.handler = async (event, context) => {
     // Only allow POST requests
@@ -67,16 +71,78 @@ exports.handler = async (event, context) => {
             };
         }
 
-        // Get environment variables
-        const smtpHost = process.env.SMTP_HOST;
-        const smtpPort = parseInt(process.env.SMTP_PORT || '587');
-        const smtpUser = process.env.SMTP_USER;
-        const smtpPass = process.env.SMTP_PASS;
-        const reservationEmail = process.env.RESERVATION_EMAIL || 'contact@solomonslanding.com.mx';
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(data.email)) {
+            return {
+                statusCode: 400,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                body: JSON.stringify({ 
+                    success: false, 
+                    error: 'Invalid email address' 
+                })
+            };
+        }
 
-        // Validate SMTP configuration
-        if (!smtpHost || !smtpUser || !smtpPass) {
-            console.error('❌ SMTP configuration missing');
+        // Validate date is in the future
+        const reservationDate = new Date(data.date + 'T00:00:00');
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (reservationDate < today) {
+            return {
+                statusCode: 400,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                body: JSON.stringify({ 
+                    success: false, 
+                    error: 'Reservation date must be in the future' 
+                })
+            };
+        }
+
+        // Get environment variables
+        const supabaseUrl = process.env.SUPABASE_URL;
+        const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+        const resendApiKey = process.env.RESEND_API_KEY;
+        const emailRestaurant = process.env.RESERVATIONS_TO_EMAIL || process.env.EMAIL_RESTAURANT || 'contact@solomonslanding.com.mx';
+        const emailFrom = process.env.RESEND_FROM_EMAIL || process.env.EMAIL_FROM;
+
+        // Log environment variable status (without exposing secrets)
+        console.log('🔍 Environment Variables Check:');
+        console.log('  SUPABASE_URL:', !!supabaseUrl ? '✅ Set' : '❌ Missing');
+        console.log('  SUPABASE_SERVICE_ROLE_KEY:', !!supabaseKey ? '✅ Set' : '❌ Missing');
+        console.log('  RESEND_API_KEY:', !!resendApiKey ? '✅ Set' : '❌ Missing');
+        console.log('  RESERVATIONS_TO_EMAIL:', !!process.env.RESERVATIONS_TO_EMAIL ? '✅ Set' : '❌ Missing');
+        console.log('  RESEND_FROM_EMAIL:', !!process.env.RESEND_FROM_EMAIL ? '✅ Set' : '❌ Missing');
+        console.log('  Using emailFrom:', emailFrom || 'NOT SET');
+        console.log('  Using emailRestaurant:', emailRestaurant);
+
+        // Validate environment variables
+        if (!supabaseUrl || !supabaseKey) {
+            console.error('❌ Supabase configuration missing');
+            return {
+                statusCode: 500,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                body: JSON.stringify({ 
+                    success: false, 
+                    error: 'Server configuration error. Please contact support.' 
+                })
+            };
+        }
+
+        if (!resendApiKey || !emailFrom) {
+            console.error('❌ Resend configuration missing');
+            console.error('  RESEND_API_KEY:', !!resendApiKey ? 'Set' : 'MISSING');
+            console.error('  RESEND_FROM_EMAIL:', !!process.env.RESEND_FROM_EMAIL ? 'Set' : 'MISSING');
+            console.error('  EMAIL_FROM (fallback):', !!process.env.EMAIL_FROM ? 'Set' : 'MISSING');
             return {
                 statusCode: 500,
                 headers: {
@@ -90,6 +156,9 @@ exports.handler = async (event, context) => {
             };
         }
 
+        // Initialize Supabase client
+        const supabase = createClient(supabaseUrl, supabaseKey);
+
         // Format date for display
         const dateObj = new Date(data.date + 'T00:00:00');
         const formattedDate = dateObj.toLocaleDateString('en-US', { 
@@ -99,22 +168,48 @@ exports.handler = async (event, context) => {
             day: 'numeric' 
         });
 
-        // Create transporter
-        const transporter = nodemailer.createTransport({
-            host: smtpHost,
-            port: smtpPort,
-            secure: smtpPort === 465,
-            auth: {
-                user: smtpUser,
-                pass: smtpPass
-            }
-        });
+        // Insert reservation into database
+        const { data: reservation, error: dbError } = await supabase
+            .from('reservations')
+            .insert([
+                {
+                    name: data.name,
+                    email: data.email,
+                    phone: data.phone,
+                    date: data.date,
+                    time: data.time,
+                    party_size: parseInt(data.guests),
+                    notes: data.notes || null,
+                    language: data.language || 'en',
+                    source: 'web',
+                    status: 'pending'
+                }
+            ])
+            .select()
+            .single();
 
-        // Verify connection
-        await transporter.verify();
+        if (dbError) {
+            console.error('❌ Database error:', dbError);
+            return {
+                statusCode: 500,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                body: JSON.stringify({ 
+                    success: false, 
+                    error: 'Failed to save reservation. Please try again.' 
+                })
+            };
+        }
 
-        // Build email HTML
-        const emailHTML = `
+        console.log('✅ Reservation saved to database:', reservation.id);
+
+        // Initialize Resend
+        const resend = new Resend(resendApiKey);
+
+        // Send email to restaurant
+        const restaurantEmailHTML = `
             <!DOCTYPE html>
             <html>
             <head>
@@ -136,6 +231,9 @@ exports.handler = async (event, context) => {
                     </div>
                     <div class="content">
                         <div class="info-row">
+                            <span class="label">Reservation ID:</span> ${reservation.id}
+                        </div>
+                        <div class="info-row">
                             <span class="label">Customer Name:</span> ${data.name}
                         </div>
                         <div class="info-row">
@@ -154,22 +252,26 @@ exports.handler = async (event, context) => {
                             <span class="label">Party Size:</span> ${data.guests} guests
                         </div>
                         ${data.notes ? `<div class="info-row"><span class="label">Special Requests:</span> ${data.notes}</div>` : ''}
-                        ${data.confirmationCode ? `<div class="info-row"><span class="label">Confirmation Code:</span> ${data.confirmationCode}</div>` : ''}
-                        ${data.confirmUrl ? `<div class="info-row"><span class="label">Confirmation Link:</span> <a href="${data.confirmUrl}">${data.confirmUrl}</a></div>` : ''}
-                        ${data.customerLanguage ? `<div class="info-row"><span class="label">Customer Language:</span> ${data.customerLanguage}</div>` : ''}
+                        <div class="info-row">
+                            <span class="label">Language:</span> ${data.language === 'es' ? 'Español' : 'English'}
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Status:</span> Pending
+                        </div>
                     </div>
                     <div class="footer">
                         <p>This is an automated email from Solomon's Landing reservation system.</p>
+                        <p>Reservation ID: ${reservation.id}</p>
                     </div>
                 </div>
             </body>
             </html>
         `;
 
-        // Email text version
-        const emailText = `
+        const restaurantEmailText = `
 New Reservation Request
 
+Reservation ID: ${reservation.id}
 Customer Name: ${data.name}
 Email: ${data.email}
 Phone: ${data.phone}
@@ -177,24 +279,125 @@ Date: ${formattedDate}
 Time: ${data.time}
 Party Size: ${data.guests} guests
 ${data.notes ? `Special Requests: ${data.notes}` : ''}
-${data.confirmationCode ? `Confirmation Code: ${data.confirmationCode}` : ''}
-${data.confirmUrl ? `Confirmation Link: ${data.confirmUrl}` : ''}
-${data.customerLanguage ? `Customer Language: ${data.customerLanguage}` : ''}
+Language: ${data.language === 'es' ? 'Español' : 'English'}
+Status: Pending
         `.trim();
 
-        // Send email
-        const mailOptions = {
-            from: `"Solomon's Landing" <${smtpUser}>`,
-            to: reservationEmail,
-            replyTo: data.email,
-            subject: `New Reservation Request - ${data.name} - ${formattedDate} at ${data.time}`,
-            text: emailText,
-            html: emailHTML
-        };
+        try {
+            console.log('📧 Sending restaurant email...');
+            console.log('  From:', emailFrom);
+            console.log('  To:', emailRestaurant);
+            console.log('  Subject: New Reservation -', data.name);
+            
+            const emailResult = await resend.emails.send({
+                from: emailFrom,
+                to: emailRestaurant,
+                replyTo: data.email,
+                subject: `New Reservation - ${data.name} - ${formattedDate} at ${data.time}`,
+                html: restaurantEmailHTML,
+                text: restaurantEmailText
+            });
 
-        const info = await transporter.sendMail(mailOptions);
+            console.log('✅ Restaurant email sent successfully');
+            console.log('  Email ID:', emailResult.data?.id);
+            console.log('  Response:', JSON.stringify(emailResult, null, 2));
+        } catch (emailError) {
+            console.error('❌ Error sending restaurant email:', emailError);
+            console.error('  Error message:', emailError.message);
+            console.error('  Error details:', JSON.stringify(emailError, null, 2));
+            // Don't fail the request if email fails - reservation is already saved
+        }
 
-        console.log('✅ Reservation email sent:', info.messageId);
+        // Send confirmation email to customer (optional but recommended)
+        const customerEmailHTML = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <style>
+                    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                    .header { background: linear-gradient(135deg, #004A9F, #0066CC); color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+                    .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 8px 8px; }
+                    .info-row { margin: 15px 0; padding: 10px; background: white; border-radius: 5px; }
+                    .label { font-weight: bold; color: #004A9F; }
+                    .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h2>Reservation Request Received</h2>
+                    </div>
+                    <div class="content">
+                        <p>Dear ${data.name},</p>
+                        <p>Thank you for your reservation request at Solomon's Landing!</p>
+                        <div class="info-row">
+                            <span class="label">Reservation ID:</span> ${reservation.id}
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Date:</span> ${formattedDate}
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Time:</span> ${data.time}
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Party Size:</span> ${data.guests} guests
+                        </div>
+                        <p style="margin-top: 20px;">We have received your request and will confirm your reservation within 2 hours. You will receive a confirmation email once your table is confirmed.</p>
+                        <p>If you have any questions, please contact us at +52 624 219 3228 or reply to this email.</p>
+                    </div>
+                    <div class="footer">
+                        <p>Solomon's Landing Restaurant<br>Marina Cabo San Lucas</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+        `;
+
+        const customerEmailText = `
+Reservation Request Received
+
+Dear ${data.name},
+
+Thank you for your reservation request at Solomon's Landing!
+
+Reservation ID: ${reservation.id}
+Date: ${formattedDate}
+Time: ${data.time}
+Party Size: ${data.guests} guests
+
+We have received your request and will confirm your reservation within 2 hours. You will receive a confirmation email once your table is confirmed.
+
+If you have any questions, please contact us at +52 624 219 3228 or reply to this email.
+
+Solomon's Landing Restaurant
+Marina Cabo San Lucas
+        `.trim();
+
+        try {
+            console.log('📧 Sending customer confirmation email...');
+            console.log('  From:', emailFrom);
+            console.log('  To:', data.email);
+            console.log('  Subject: Reservation Request Received');
+            
+            const customerEmailResult = await resend.emails.send({
+                from: emailFrom,
+                to: data.email,
+                subject: `Reservation Request Received - ${formattedDate} at ${data.time}`,
+                html: customerEmailHTML,
+                text: customerEmailText
+            });
+
+            console.log('✅ Customer confirmation email sent successfully');
+            console.log('  Email ID:', customerEmailResult.data?.id);
+            console.log('  Response:', JSON.stringify(customerEmailResult, null, 2));
+        } catch (emailError) {
+            console.error('❌ Error sending customer email:', emailError);
+            console.error('  Error message:', emailError.message);
+            console.error('  Error details:', JSON.stringify(emailError, null, 2));
+            // Don't fail the request if email fails
+        }
 
         return {
             statusCode: 200,
@@ -204,13 +407,13 @@ ${data.customerLanguage ? `Customer Language: ${data.customerLanguage}` : ''}
             },
             body: JSON.stringify({ 
                 success: true, 
-                messageId: info.messageId,
-                message: 'Reservation email sent successfully' 
+                reservationId: reservation.id,
+                message: 'Reservation request received successfully' 
             })
         };
 
     } catch (error) {
-        console.error('❌ Error sending reservation email:', error);
+        console.error('❌ Error processing reservation:', error);
         
         return {
             statusCode: 500,
@@ -220,9 +423,8 @@ ${data.customerLanguage ? `Customer Language: ${data.customerLanguage}` : ''}
             },
             body: JSON.stringify({ 
                 success: false, 
-                error: error.message || 'Failed to send reservation email. Please try again.' 
+                error: error.message || 'Failed to process reservation. Please try again.' 
             })
         };
     }
 };
-
