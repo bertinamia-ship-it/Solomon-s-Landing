@@ -1,26 +1,7 @@
 [build]
-  # No build command needed for static site
+  publish = "."
+  functions = "netlify/functions"
   command = ""
-  publish = "website"
 
 [functions]
-  # Functions directory (relative to repo root)
   directory = "netlify/functions"
-  # Node.js version for functions
-  node_bundler = "esbuild"
-  node_version = "18"
-
-# Redirects - Netlify automatically excludes /.netlify/* paths
-[[redirects]]
-  # Redirect root to website folder
-  from = "/"
-  to = "/website/index.html"
-  status = 200
-
-[[redirects]]
-  # Redirect all other paths to website folder
-  from = "/*"
-  to = "/website/:splat"
-  status = 200
-
-# Note: /.netlify/functions/* paths are automatically excluded from redirects by Netlify
