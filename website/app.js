@@ -1343,7 +1343,8 @@ function initReservationForm() {
             date: document.getElementById('date').value,
             time: document.getElementById('time').value,
             guests: document.getElementById('guests').value,
-            notes: document.getElementById('notes').value.trim()
+            notes: document.getElementById('notes').value.trim(),
+            language: currentLanguage || 'en'
         };
 
         // Validaciones
@@ -1410,24 +1411,59 @@ function initReservationForm() {
                 // Don't return - continue to send the reservation
             }
 
-            console.log('📤 Sending reservation to backend...');
+            console.log('📤 Submitting reservation to Netlify Function...');
             submitBtn.textContent = 'Sending reservation...';
             
-            const backendResponse = await sendReservationToBackend(formData);
-            console.log('📨 Backend response:', backendResponse);
+            // Prepare payload
+            const payload = {
+                name: formData.name,
+                email: formData.email,
+                phone: formData.phone,
+                date: formData.date,
+                time: formData.time,
+                guests: formData.guests,
+                notes: formData.notes || '',
+                language: formData.language || 'en'
+            };
             
-            if (!backendResponse.success) {
-                console.error('❌ Reservation submission failed:', backendResponse);
-                showMessage(backendResponse.message || 'No se pudo procesar la reservación. Por favor intenta de nuevo o llámanos.', 'error');
+            console.log('📦 Payload:', payload);
+            
+            // Determine Netlify function URL
+            const netlifyUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                ? 'http://localhost:8888/.netlify/functions/send-reservation'
+                : `/.netlify/functions/send-reservation`;
+            
+            console.log('🚀 Calling Netlify Function at:', netlifyUrl);
+            
+            try {
+                const response = await fetch(netlifyUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                console.log('📡 Response status:', response.status, response.statusText);
+                
+                const result = await response.json();
+                console.log('📨 Response JSON:', result);
+                
+                if (!response.ok || !result.success) {
+                    const errorMessage = result.error || 'Failed to process reservation. Please try again.';
+                    console.error('❌ Reservation submission failed:', errorMessage);
+                    showMessage(errorMessage, 'error');
+                    return;
+                }
+                
+                console.log('✅ Reservation created successfully! ID:', result.reservationId);
+                showMessage('¡Reservación enviada con éxito! Recibirás un correo de confirmación en las próximas 2 horas. ID: ' + result.reservationId, 'success');
+                reservationForm.reset();
+            } catch (fetchError) {
+                console.error('❌ Network error submitting reservation:', fetchError);
+                showMessage('Error de conexión. Por favor intenta de nuevo o llámanos al +52 624 219 3228', 'error');
                 return;
             }
-
-            console.log('✅ Syncing with internal system...');
-            await syncReservationWithOpenTable(formData);
-
-            console.log('✅ Reservation complete! ID:', backendResponse.reservationId);
-            showMessage('¡Reservación enviada con éxito! Recibirás un correo de confirmación en las próximas 2 horas. ID: ' + backendResponse.reservationId, 'success');
-            reservationForm.reset();
 
         } catch (error) {
             console.error('❌ Reservation submission error:', error);
