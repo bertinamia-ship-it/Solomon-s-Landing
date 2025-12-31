@@ -1732,8 +1732,21 @@ function initCateringForm() {
 // RESERVE BUTTON
 // ============================================
 function initReserveButton() {
-    // No OpenTable button needed - users go directly to reservations.html
-    console.log('Direct reservation system active');
+    const reserveBtn = document.getElementById('reserveBtn');
+    if (!reserveBtn) {
+        console.log('Reserve button not found on this page');
+        return;
+    }
+
+    reserveBtn.addEventListener('click', async function(e) {
+        e.preventDefault();
+        console.log('🔘 Reserve button clicked');
+        
+        // Redirect to reservations page where the full form is available
+        window.location.href = 'reservations.html';
+    });
+    
+    console.log('✅ Reserve button initialized');
 }
 
 // ============================================
