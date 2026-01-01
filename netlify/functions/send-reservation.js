@@ -53,9 +53,14 @@ exports.handler = async (event, context) => {
         // Parse request body
         const data = JSON.parse(event.body);
 
-        // Validate required fields
-        const requiredFields = ['name', 'email', 'phone', 'date', 'time', 'guests'];
+        // Validate required fields (accept both old and new field names for backward compatibility)
+        const fullName = data.full_name || data.name;
+        const partySize = data.party_size || data.guests;
+        const requiredFields = ['email', 'phone', 'date', 'time'];
         const missingFields = requiredFields.filter(field => !data[field]);
+        
+        if (!fullName) missingFields.push('full_name/name');
+        if (!partySize) missingFields.push('party_size/guests');
         
         if (missingFields.length > 0) {
             return {

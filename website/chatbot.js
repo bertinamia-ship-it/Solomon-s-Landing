@@ -5,17 +5,14 @@ class RestaurantChatbot {
     constructor() {
         this.conversationState = 'idle';
         this.reservationData = {
-            name: null,
+            full_name: null,
             email: null,
             phone: null,
             date: null,
             time: null,
-            guests: null,
-            celebration: null,
-            allergies: null,
-            allergyDetails: null,
-            specialRequests: null,
-            hotelStaying: null
+            party_size: null,
+            staying_place: null,
+            notes: null
         };
         this.currentLanguage = 'en';
         this.awaitingField = null;
@@ -62,18 +59,14 @@ class RestaurantChatbot {
             askSpecialRequests: "**Any special seating preferences or requests?**\n\n(Type your preference or 'none' if no special requests)",
             
             confirmReservation: (data) => {
-                let summary = `✅ **Reservation Summary:**\n\n👤 Name: ${data.name}\n📧 Email: ${data.email}\n📱 Phone: ${data.phone}\n📅 Date: ${data.date}\n⏰ Time: ${data.time}\n👥 Guests: ${data.guests}\n🏨 Hotel: ${data.hotelStaying || 'Not specified'}`;
+                let summary = `✅ **Reservation Summary:**\n\n👤 Name: ${data.full_name}\n📧 Email: ${data.email}\n📱 Phone: ${data.phone}\n📅 Date: ${data.date}\n⏰ Time: ${data.time}\n👥 Guests: ${data.party_size}`;
                 
-                if (data.celebration && data.celebration !== 'None') {
-                    summary += `\n🎉 Celebration: ${data.celebration}`;
+                if (data.staying_place) {
+                    summary += `\n🏨 Staying: ${data.staying_place}`;
                 }
                 
-                if (data.allergies && data.allergies !== 'None') {
-                    summary += `\n⚠️ Allergies: ${data.allergies}`;
-                }
-                
-                if (data.specialRequests && data.specialRequests !== 'none') {
-                    summary += `\n📝 Special Requests: ${data.specialRequests}`;
+                if (data.notes) {
+                    summary += `\n📝 Notes: ${data.notes}`;
                 }
                 
                 summary += `\n\n**Is this information correct?** (Type 'yes' to confirm or 'no' to start over)`;
@@ -120,18 +113,14 @@ class RestaurantChatbot {
             askSpecialRequests: "**¿Alguna preferencia de asiento o solicitud especial?**\n\n(Escribe tu preferencia o 'ninguna' si no tienes solicitudes)",
             
             confirmReservation: (data) => {
-                let summary = `✅ **Resumen de Reservación:**\n\n👤 Nombre: ${data.name}\n📧 Email: ${data.email}\n📱 Teléfono: ${data.phone}\n📅 Fecha: ${data.date}\n⏰ Hora: ${data.time}\n👥 Comensales: ${data.guests}\n🏨 Hotel: ${data.hotelStaying || 'No especificado'}`;
+                let summary = `✅ **Resumen de Reservación:**\n\n👤 Nombre: ${data.full_name}\n📧 Email: ${data.email}\n📱 Teléfono: ${data.phone}\n📅 Fecha: ${data.date}\n⏰ Hora: ${data.time}\n👥 Comensales: ${data.party_size}`;
                 
-                if (data.celebration && data.celebration !== 'None') {
-                    summary += `\n🎉 Celebración: ${data.celebration}`;
+                if (data.staying_place) {
+                    summary += `\n🏨 Hospedaje: ${data.staying_place}`;
                 }
                 
-                if (data.allergies && data.allergies !== 'None') {
-                    summary += `\n⚠️ Alergias: ${data.allergies}`;
-                }
-                
-                if (data.specialRequests && data.specialRequests !== 'ninguna' && data.specialRequests !== 'none') {
-                    summary += `\n📝 Solicitudes Especiales: ${data.specialRequests}`;
+                if (data.notes) {
+                    summary += `\n📝 Notas: ${data.notes}`;
                 }
                 
                 summary += `\n\n**¿Es correcta esta información?** (Escribe 'sí' para confirmar o 'no' para empezar de nuevo)`;
@@ -186,7 +175,7 @@ class RestaurantChatbot {
                 break;
             
             case 'awaiting_name':
-                this.reservationData.name = userMessage;
+                this.reservationData.full_name = userMessage;
                 this.conversationState = 'awaiting_email';
                 response = this.responses[this.currentLanguage].askEmail;
                 break;
@@ -269,7 +258,31 @@ class RestaurantChatbot {
                 break;
             
             case 'awaiting_time':
-                this.reservationData.time = userMessage;
+                // Validate time is in 5:30 PM - 9:30 PM range
+                const timeMatch = userMessage.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+                if (timeMatch) {
+                    let hour = parseInt(timeMatch[1]);
+                    const minute = parseInt(timeMatch[2]);
+                    const period = timeMatch[3].toUpperCase();
+                    
+                    if (period === 'PM' && hour !== 12) hour += 12;
+                    if (period === 'AM' && hour === 12) hour = 0;
+                    
+                    const time24 = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                    // Check if time is between 17:30 and 21:30
+                    if (time24 >= '17:30' && time24 <= '21:30') {
+                        this.reservationData.time = time24;
+                    } else {
+                        response = this.currentLanguage === 'en'
+                            ? "Please select a time between 5:30 PM and 9:30 PM"
+                            : "Por favor selecciona una hora entre 5:30 PM y 9:30 PM";
+                        break;
+                    }
+                } else {
+                    // Try to parse as 24-hour format or direct time
+                    this.reservationData.time = userMessage;
+                }
+                
                 this.conversationState = 'awaiting_guests';
                 response = this.responses[this.currentLanguage].askGuests;
                 
@@ -278,38 +291,37 @@ class RestaurantChatbot {
                     if (typeof window.showChatbotOptions === 'function') {
                         const lang = this.currentLanguage;
                         const guestOptions = lang === 'en' 
-                            ? ['2 guests', '4 guests', '6 guests', '8 guests', 'More than 8']
-                            : ['2 personas', '4 personas', '6 personas', '8 personas', 'Más de 8'];
+                            ? ['1 pax', '2 pax', '3 pax', '4 pax', '5 pax', '6 pax', '7 pax', '8 pax', '9 pax', '10+ pax']
+                            : ['1 pax', '2 pax', '3 pax', '4 pax', '5 pax', '6 pax', '7 pax', '8 pax', '9 pax', '10+ pax'];
                         window.showChatbotOptions(guestOptions);
                     }
                 }, 100);
                 break;
             
             case 'awaiting_guests':
-                // Parse guests from button text
+                // Parse party_size from button text
                 const guestMatch = userMessage.match(/(\d+)/);
                 const guests = guestMatch ? parseInt(guestMatch[0]) : null;
                 
                 if (guests && guests > 0) {
-                    this.reservationData.guests = guests;
-                    this.conversationState = 'awaiting_celebration';
-                    response = this.responses[this.currentLanguage].askCelebration;
+                    this.reservationData.party_size = guests.toString();
+                    this.conversationState = 'awaiting_staying_place';
+                    response = this.responses[this.currentLanguage].askStayingPlace;
                     
-                    // Show celebration options
+                    // Show staying place options
                     setTimeout(() => {
                         if (typeof window.showChatbotOptions === 'function') {
                             const lang = this.currentLanguage;
-                            const celebrationOptions = lang === 'en' 
-                                ? ['🎂 Birthday', '💍 Anniversary', '🎉 Other', '❌ No celebration']
-                                : ['🎂 Cumpleaños', '💍 Aniversario', '🎉 Otra', '❌ Sin celebración'];
-                            window.showChatbotOptions(celebrationOptions);
+                            const stayingOptions = lang === 'en' 
+                                ? ['Hotel', 'Airbnb', 'Other', 'None']
+                                : ['Hotel', 'Airbnb', 'Otro', 'Ninguno'];
+                            window.showChatbotOptions(stayingOptions);
                         }
                     }, 100);
-                } else if (userMessage.toLowerCase().includes('more') || userMessage.toLowerCase().includes('más')) {
-                    response = this.currentLanguage === 'en'
-                        ? "For parties larger than 8 guests, please call us at +52 624 219 3228 or email reservations@solomonslanding.com"
-                        : "Para grupos mayores a 8 personas, por favor llámanos al +52 624 219 3228 o envía un email a reservations@solomonslanding.com";
-                    this.resetReservation();
+                } else if (userMessage.toLowerCase().includes('more') || userMessage.toLowerCase().includes('más') || userMessage.toLowerCase().includes('10+')) {
+                    this.reservationData.party_size = '10';
+                    this.conversationState = 'awaiting_staying_place';
+                    response = this.responses[this.currentLanguage].askStayingPlace;
                 } else {
                     response = this.currentLanguage === 'en'
                         ? "Please select a valid number of guests"
@@ -317,60 +329,53 @@ class RestaurantChatbot {
                 }
                 break;
             
-            case 'awaiting_celebration':
-                if (userMessage.toLowerCase().includes('birthday') || userMessage.toLowerCase().includes('cumpleaños')) {
-                    this.reservationData.celebration = 'Birthday';
-                } else if (userMessage.toLowerCase().includes('anniversary') || userMessage.toLowerCase().includes('aniversario')) {
-                    this.reservationData.celebration = 'Anniversary';
-                } else if (userMessage.toLowerCase().includes('other') || userMessage.toLowerCase().includes('otra')) {
-                    this.reservationData.celebration = 'Other celebration';
+            case 'awaiting_staying_place':
+                // Store staying place type
+                const stayingType = userMessage.toLowerCase();
+                if (stayingType.includes('hotel')) {
+                    this.reservationData.staying_place_type = 'hotel';
+                } else if (stayingType.includes('airbnb')) {
+                    this.reservationData.staying_place_type = 'airbnb';
+                } else if (stayingType.includes('other') || stayingType.includes('otro')) {
+                    this.reservationData.staying_place_type = 'other';
                 } else {
-                    this.reservationData.celebration = 'None';
+                    this.reservationData.staying_place_type = '';
+                    this.reservationData.staying_place = '';
+                    this.conversationState = 'awaiting_notes';
+                    response = this.currentLanguage === 'en'
+                        ? "**Any special requests or notes?** (optional)\n\nType your requests or 'none' to continue."
+                        : "**¿Alguna solicitud especial o nota?** (opcional)\n\nEscribe tus solicitudes o 'ninguna' para continuar.";
+                    break;
                 }
                 
-                this.conversationState = 'awaiting_allergies';
-                response = this.responses[this.currentLanguage].askAllergies;
-                
-                // Show allergy options
-                setTimeout(() => {
-                    if (typeof window.showChatbotOptions === 'function') {
-                        const lang = this.currentLanguage;
-                        const allergyOptions = lang === 'en' 
-                            ? ['✅ Yes, I have allergies', '❌ No allergies']
-                            : ['✅ Sí, tengo alergias', '❌ Sin alergias'];
-                        window.showChatbotOptions(allergyOptions);
-                    }
-                }, 100);
-                break;
-            
-            case 'awaiting_allergies':
-                if (userMessage.toLowerCase().includes('yes') || userMessage.toLowerCase().includes('sí')) {
-                    this.conversationState = 'awaiting_allergy_details';
-                    response = this.responses[this.currentLanguage].askAllergyDetails;
-                } else {
-                    this.reservationData.allergies = 'None';
-                    this.conversationState = 'awaiting_special_requests';
-                    response = this.responses[this.currentLanguage].askSpecialRequests;
-                }
-                break;
-            
-            case 'awaiting_allergy_details':
-                this.reservationData.allergyDetails = userMessage;
-                this.reservationData.allergies = userMessage;
-                this.conversationState = 'awaiting_special_requests';
-                response = this.responses[this.currentLanguage].askSpecialRequests;
-                break;
-            
-            case 'awaiting_special_requests':
-                this.reservationData.specialRequests = userMessage;
-                this.conversationState = 'awaiting_hotel';
+                // Ask for name of accommodation
+                this.conversationState = 'awaiting_staying_place_name';
                 response = this.currentLanguage === 'en'
-                    ? "**Where are you staying at?** 🏨\n\nPlease let us know your hotel or accommodation name (or type 'not applicable' if you're a local)."
-                    : "**¿Dónde se hospeda?** 🏨\n\nPor favor indícanos el nombre de tu hotel o alojamiento (o escribe 'no aplica' si eres local).";
+                    ? "**What is the name of the hotel/accommodation?**\n\nPlease provide the name."
+                    : "**¿Cuál es el nombre del hotel/alojamiento?**\n\nPor favor proporciona el nombre.";
                 break;
             
-            case 'awaiting_hotel':
-                this.reservationData.hotelStaying = userMessage;
+            case 'awaiting_staying_place_name':
+                // Build staying_place: "Hotel: Name" or "Airbnb: Name" or "Other: Name"
+                const typeLabels = {
+                    'hotel': this.currentLanguage === 'en' ? 'Hotel' : 'Hotel',
+                    'airbnb': this.currentLanguage === 'en' ? 'Airbnb' : 'Airbnb',
+                    'other': this.currentLanguage === 'en' ? 'Other' : 'Otro'
+                };
+                const typeLabel = typeLabels[this.reservationData.staying_place_type] || this.reservationData.staying_place_type;
+                this.reservationData.staying_place = `${typeLabel}: ${userMessage}`;
+                this.conversationState = 'awaiting_notes';
+                response = this.currentLanguage === 'en'
+                    ? "**Any special requests or notes?** (optional)\n\nType your requests or 'none' to continue."
+                    : "**¿Alguna solicitud especial o nota?** (opcional)\n\nEscribe tus solicitudes o 'ninguna' para continuar.";
+                break;
+            
+            case 'awaiting_notes':
+                if (userMessage.toLowerCase() === 'none' || userMessage.toLowerCase() === 'ninguna') {
+                    this.reservationData.notes = '';
+                } else {
+                    this.reservationData.notes = userMessage;
+                }
                 this.conversationState = 'confirming';
                 response = this.responses[this.currentLanguage].confirmReservation(this.reservationData);
                 break;
@@ -389,34 +394,16 @@ class RestaurantChatbot {
                     this.conversationState = 'submitting';
 
                     try {
-                        // Build notes field combining all special requests
-                        let notesParts = [];
-                        if (this.reservationData.celebration && this.reservationData.celebration !== 'None') {
-                            notesParts.push(`Celebration: ${this.reservationData.celebration}`);
-                        }
-                        if (this.reservationData.allergies && this.reservationData.allergies !== 'None') {
-                            const allergyText = this.reservationData.allergyDetails 
-                                ? `${this.reservationData.allergies} - ${this.reservationData.allergyDetails}`
-                                : this.reservationData.allergies;
-                            notesParts.push(`Allergies: ${allergyText}`);
-                        }
-                        if (this.reservationData.specialRequests && this.reservationData.specialRequests !== 'none' && this.reservationData.specialRequests !== 'ninguna') {
-                            notesParts.push(`Special Requests: ${this.reservationData.specialRequests}`);
-                        }
-                        if (this.reservationData.hotelStaying) {
-                            notesParts.push(`Hotel: ${this.reservationData.hotelStaying}`);
-                        }
-                        const notes = notesParts.length > 0 ? notesParts.join(' | ') : '';
-
-                        // Build payload matching form structure
+                        // Build payload matching form structure (unified field names)
                         const payload = {
-                            name: this.reservationData.name,
-                            email: this.reservationData.email,
-                            phone: this.reservationData.phone,
-                            date: this.reservationData.date,
-                            time: this.reservationData.time,
-                            guests: this.reservationData.guests,
-                            notes: notes,
+                            full_name: this.reservationData.full_name || '',
+                            email: this.reservationData.email || '',
+                            phone: this.reservationData.phone || '',
+                            date: this.reservationData.date || '',
+                            time: this.reservationData.time || '',
+                            party_size: this.reservationData.party_size || '',
+                            staying_place: this.reservationData.staying_place || '',
+                            notes: this.reservationData.notes || '',
                             language: this.currentLanguage || 'en'
                         };
 
@@ -449,8 +436,8 @@ class RestaurantChatbot {
                             );
 
                             response = this.currentLanguage === 'en'
-                                ? `✅ **Reservation Confirmed!**\n\n📧 You will receive a confirmation email within 2 hours.\n\n**Reservation ID:** ${result.reservationId}\n\n**Reservation Details:**\n• Name: ${this.reservationData.name}\n• Date: ${formattedDate}\n• Time: ${this.reservationData.time}\n• Guests: ${this.reservationData.guests}\n\n🍽️ We're looking forward to serving you!\n\n📱 **Questions? Call us: +52 624 219 3228**`
-                                : `✅ **¡Reservación Confirmada!**\n\n📧 Recibirás un correo de confirmación en las próximas 2 horas.\n\n**ID de Reservación:** ${result.reservationId}\n\n**Detalles de Reservación:**\n• Nombre: ${this.reservationData.name}\n• Fecha: ${formattedDate}\n• Hora: ${this.reservationData.time}\n• Comensales: ${this.reservationData.guests}\n\n🍽️ ¡Esperamos servirte pronto!\n\n📱 **¿Preguntas? Llámanos: +52 624 219 3228**`;
+                                ? `✅ **Reservation Confirmed!**\n\n📧 You will receive a confirmation email within 2 hours.\n\n**Reservation ID:** ${result.reservationId}\n\n**Reservation Details:**\n• Name: ${this.reservationData.full_name}\n• Date: ${formattedDate}\n• Time: ${this.reservationData.time}\n• Guests: ${this.reservationData.party_size}\n\n🍽️ We're looking forward to serving you!\n\n📱 **Questions? Call us: +52 624 219 3228**`
+                                : `✅ **¡Reservación Confirmada!**\n\n📧 Recibirás un correo de confirmación en las próximas 2 horas.\n\n**ID de Reservación:** ${result.reservationId}\n\n**Detalles de Reservación:**\n• Nombre: ${this.reservationData.full_name}\n• Fecha: ${formattedDate}\n• Hora: ${this.reservationData.time}\n• Comensales: ${this.reservationData.party_size}\n\n🍽️ ¡Esperamos servirte pronto!\n\n📱 **¿Preguntas? Llámanos: +52 624 219 3228**`;
                         } else {
                             throw new Error(result.error || 'Reservation failed');
                         }
@@ -603,17 +590,15 @@ class RestaurantChatbot {
         this.conversationState = 'chatting';
         this.isSubmittingReservation = false;
         this.reservationData = {
-            name: null,
+            full_name: null,
             email: null,
             phone: null,
             date: null,
             time: null,
-            guests: null,
-            specialRequests: null,
-            celebration: null,
-            allergies: null,
-            allergyDetails: null,
-            hotelStaying: null
+            party_size: null,
+            staying_place: null,
+            staying_place_type: null,
+            notes: null
         };
     }
 

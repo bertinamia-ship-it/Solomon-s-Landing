@@ -146,36 +146,35 @@
                                 </div>
                             </div>
 
-                            <!-- Guests and Occasion Row -->
-                            <div class="form-row" style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 1.2rem; margin-bottom: 1.8rem;">
-                                <div class="form-group">
-                                    <label for="guests" style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.6rem; font-size: 0.95rem;"><span data-i18n="form.guests">Guests</span> <span class="required" style="color: #dc2626;">*</span></label>
-                                    <select id="guests" name="guests" required style="width: 100%; padding: 0.7rem 1rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 0.95rem; background: white url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e') no-repeat right 0.75rem center; background-size: 1rem; appearance: none; cursor: pointer; transition: all 0.3s;" onfocus="this.style.borderColor='#fbbf24'; this.style.boxShadow='0 0 0 3px rgba(251,191,36,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
-                                        <option value="" data-i18n="form.selectGuestsPax">Select guests...</option>
-                                        <option value="1" data-i18n="form.guestPax1">1 pax</option>
-                                        <option value="2" data-i18n="form.guestPax2">2 pax</option>
-                                        <option value="3" data-i18n="form.guestPax3">3 pax</option>
-                                        <option value="4" data-i18n="form.guestPax4">4 pax</option>
-                                        <option value="5" data-i18n="form.guestPax5">5 pax</option>
-                                        <option value="6" data-i18n="form.guestPax6">6 pax</option>
-                                        <option value="7" data-i18n="form.guestPax7">7 pax</option>
-                                        <option value="8" data-i18n="form.guestPax8">8 pax</option>
-                                        <option value="9" data-i18n="form.guestPax9">9 pax</option>
-                                        <option value="10" data-i18n="form.guestPax10">10+ pax</option>
-                                    </select>
-                                </div>
+                            <!-- Guests -->
+                            <div class="form-group" style="margin-bottom: 1.8rem;">
+                                <label for="guests" style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.6rem; font-size: 0.95rem;"><span data-i18n="form.guests">Guests</span> <span class="required" style="color: #dc2626;">*</span></label>
+                                <select id="guests" name="guests" required style="width: 100%; padding: 0.7rem 1rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 0.95rem; background: white url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e') no-repeat right 0.75rem center; background-size: 1rem; appearance: none; cursor: pointer; transition: all 0.3s;" onfocus="this.style.borderColor='#fbbf24'; this.style.boxShadow='0 0 0 3px rgba(251,191,36,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+                                    <option value="" data-i18n="form.selectGuestsPax">Select guests...</option>
+                                    <option value="1" data-i18n="form.guestPax1">1 pax</option>
+                                    <option value="2" data-i18n="form.guestPax2">2 pax</option>
+                                    <option value="3" data-i18n="form.guestPax3">3 pax</option>
+                                    <option value="4" data-i18n="form.guestPax4">4 pax</option>
+                                    <option value="5" data-i18n="form.guestPax5">5 pax</option>
+                                    <option value="6" data-i18n="form.guestPax6">6 pax</option>
+                                    <option value="7" data-i18n="form.guestPax7">7 pax</option>
+                                    <option value="8" data-i18n="form.guestPax8">8 pax</option>
+                                    <option value="9" data-i18n="form.guestPax9">9 pax</option>
+                                    <option value="10" data-i18n="form.guestPax10">10+ pax</option>
+                                </select>
+                            </div>
 
-                                <div class="form-group">
-                                    <label for="occasion" style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.6rem; font-size: 0.95rem;"><span data-i18n="form.occasion">Special Occasion (optional)</span></label>
-                                    <select id="occasion" name="occasion" style="width: 100%; padding: 0.9rem 1.2rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; background: white url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e') no-repeat right 1rem center; background-size: 1.2rem; appearance: none; cursor: pointer; transition: all 0.3s;" onfocus="this.style.borderColor='#fbbf24'; this.style.boxShadow='0 0 0 3px rgba(251,191,36,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+                            <!-- Where are you staying? -->
+                            <div class="form-group" style="margin-bottom: 1.8rem;">
+                                <label for="stayingPlaceType" style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.6rem; font-size: 0.95rem;"><span data-i18n="form.stayingPlace">Where are you staying?</span> <span data-i18n="form.stayingPlaceOptional" style="color: #6B7280; font-weight: 400;">(optional)</span></label>
+                                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 1rem;">
+                                    <select id="stayingPlaceType" name="stayingPlaceType" style="width: 100%; padding: 0.9rem 1.2rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; background: white url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e') no-repeat right 1rem center; background-size: 1.2rem; appearance: none; cursor: pointer; transition: all 0.3s;" onfocus="this.style.borderColor='#fbbf24'; this.style.boxShadow='0 0 0 3px rgba(251,191,36,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
                                         <option value="" data-i18n="form.occasionNone">None</option>
-                                        <option value="birthday" data-i18n="form.occasionBirthday">🎂 Birthday</option>
-                                        <option value="anniversary" data-i18n="form.occasionAnniversary">💕 Anniversary</option>
-                                        <option value="proposal" data-i18n="form.occasionProposal">💍 Proposal</option>
-                                        <option value="business" data-i18n="form.occasionBusiness">💼 Business Dinner</option>
-                                        <option value="celebration" data-i18n="form.occasionCelebration">🎉 Celebration</option>
-                                        <option value="other" data-i18n="form.occasionOther">✨ Other</option>
+                                        <option value="hotel" data-i18n="form.stayingPlaceHotel">Hotel</option>
+                                        <option value="airbnb" data-i18n="form.stayingPlaceAirbnb">Airbnb</option>
+                                        <option value="other" data-i18n="form.stayingPlaceOther">Other</option>
                                     </select>
+                                    <input type="text" id="stayingPlaceName" name="stayingPlaceName" data-i18n-placeholder="form.stayingPlaceName" placeholder="Name of hotel/accommodation" style="width: 100%; padding: 0.9rem 1.2rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; transition: all 0.3s; background: white;" onfocus="this.style.borderColor='#fbbf24'; this.style.boxShadow='0 0 0 3px rgba(251,191,36,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
                                 </div>
                             </div>
 

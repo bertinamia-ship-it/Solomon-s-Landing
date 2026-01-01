@@ -233,6 +233,13 @@ const translations = {
         'form.guestPax9': '9 pax',
         'form.guestPax10': '10+ pax',
         'form.selectGuestsPax': 'Seleccionar comensales...',
+        'form.stayingPlace': '¿Dónde te hospedas?',
+        'form.stayingPlacePlaceholder': 'Hotel / Airbnb / Otro + nombre',
+        'form.stayingPlaceHotel': 'Hotel',
+        'form.stayingPlaceAirbnb': 'Airbnb',
+        'form.stayingPlaceOther': 'Otro',
+        'form.stayingPlaceName': 'Nombre del hotel/alojamiento',
+        'form.stayingPlaceOptional': '(opcional)',
         'reservations.needHelp': '¿Necesitas asistencia inmediata?',
         'reservations.callUs': 'Llámanos directamente:',
         'reservations.hours': 'Abierto 7 días: 8:00 AM - 11:00 PM',
@@ -1497,7 +1504,7 @@ function initReservationForm() {
         const completeRequiredMsg = getTranslation('form.completeRequired');
 
         // Validate full name: required, min 2 chars
-        if (!payload.name || payload.name.length < 2) {
+        if (!payload.full_name || payload.full_name.length < 2) {
             showMessage(completeRequiredMsg, 'error');
             nameField?.focus();
             return;
@@ -1546,13 +1553,13 @@ function initReservationForm() {
             return;
         }
 
-        // Validate guests: required, must be integer >= 1
-        if (!payload.guests) {
+        // Validate party_size: required, must be integer >= 1
+        if (!payload.party_size) {
             showMessage(completeRequiredMsg, 'error');
             guestsField?.focus();
             return;
         }
-        if (!validateGuests(payload.guests)) {
+        if (!validateGuests(payload.party_size)) {
             showMessage(lang === 'es' ? 'Por favor selecciona un número válido de comensales (mínimo 1).' : 'Please select a valid number of guests (minimum 1).', 'error');
             guestsField?.focus();
             return;
