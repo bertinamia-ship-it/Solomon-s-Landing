@@ -67,6 +67,10 @@ const translations = {
         'form.notes': 'Special Requests or Notes',
         'form.notesPlaceholder': 'Allergies, special occasions, seating preferences...',
         'form.reserveBtn': 'Reserve Table',
+        'form.sending': 'Sending...',
+        'form.reservationSent': 'Reservation sent!',
+        'form.completeRequired': 'Please complete all required fields.',
+        'form.serverError': 'Server error. Try again.',
 
         // Holiday Banner
         'holiday.banner': 'Celebrate the Holidays with Us! Special Festive Menu Available',
@@ -1305,6 +1309,17 @@ function validateDate(dateString) {
     return selectedDate >= todayDate;
 }
 
+function validatePhone(phone) {
+    // Allow +, spaces, digits; must have at least 8 digits
+    const digitsOnly = phone.replace(/[^\d]/g, '');
+    return digitsOnly.length >= 8;
+}
+
+function validateGuests(guests) {
+    const num = parseInt(guests);
+    return !isNaN(num) && num >= 1;
+}
+
 // ============================================
 // FORMULARIO DE RESERVACIONES
 // ============================================
@@ -1320,8 +1335,15 @@ function initReservationForm() {
         dateInput.setAttribute('min', today);
     }
 
+    let isSubmitting = false; // Anti-double-submit flag
+
+    function getTranslation(key) {
+        return translations[currentLanguage]?.[key] || translations['en'][key] || key;
+    }
+
     function showMessage(message, type) {
         if (!formMessage) return;
+        formMessage.style.display = 'block';
         formMessage.textContent = message;
         formMessage.className = 'form-message ' + type;
         formMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -1329,66 +1351,151 @@ function initReservationForm() {
         if (type === 'success') {
             setTimeout(() => {
                 formMessage.style.display = 'none';
-            }, 3000);
+            }, 5000);
         }
     }
 
     reservationForm.addEventListener('submit', async function(e) {
         e.preventDefault();
-        console.log('🟢 submit intercepted');
+
+        // Anti-double-submit: prevent if already submitting
+        if (isSubmitting) {
+            return;
+        }
 
         const submitBtn = reservationForm.querySelector('.btn-submit');
         const originalText = submitBtn.textContent;
+        const sendingText = getTranslation('form.sending');
+
+        // Map fields using the REAL input name/id attributes from the page
+        const nameField = document.querySelector('[name="name"], #name');
+        const emailField = document.querySelector('[name="email"], #email');
+        const phoneField = document.querySelector('[name="phone"], #phone');
+        const dateField = document.querySelector('[name="date"], #date');
+        const timeField = document.querySelector('[name="time"], #time');
+        const guestsField = document.querySelector('[name="guests"], #guests');
+        const notesField = document.querySelector('[name="notes"], #notes');
+        const languageField = document.querySelector('[name="language"], #language');
+
+        const payload = {
+            name: nameField?.value?.trim() || '',
+            email: emailField?.value?.trim() || '',
+            phone: phoneField?.value?.trim() || '',
+            date: dateField?.value || '',
+            time: timeField?.value || '',
+            guests: guestsField?.value || '',
+            notes: notesField?.value?.trim() || '',
+            language: languageField?.value || (currentLanguage || 'en')
+        };
+
+        // Client-side validation BEFORE fetch
+        const lang = payload.language || currentLanguage || 'en';
+        const completeRequiredMsg = getTranslation('form.completeRequired');
+
+        // Validate full name: required, min 2 chars
+        if (!payload.name || payload.name.length < 2) {
+            showMessage(completeRequiredMsg, 'error');
+            nameField?.focus();
+            return;
+        }
+
+        // Validate email: required, valid format
+        if (!payload.email) {
+            showMessage(completeRequiredMsg, 'error');
+            emailField?.focus();
+            return;
+        }
+        if (!validateEmail(payload.email)) {
+            showMessage(lang === 'es' ? 'Por favor ingresa un correo electrónico válido.' : 'Please enter a valid email address.', 'error');
+            emailField?.focus();
+            return;
+        }
+
+        // Validate phone: required, basic validation
+        if (!payload.phone) {
+            showMessage(completeRequiredMsg, 'error');
+            phoneField?.focus();
+            return;
+        }
+        if (!validatePhone(payload.phone)) {
+            showMessage(lang === 'es' ? 'Por favor ingresa un número de teléfono válido (mínimo 8 dígitos).' : 'Please enter a valid phone number (minimum 8 digits).', 'error');
+            phoneField?.focus();
+            return;
+        }
+
+        // Validate date: required, must be today or future
+        if (!payload.date) {
+            showMessage(completeRequiredMsg, 'error');
+            dateField?.focus();
+            return;
+        }
+        if (!validateDate(payload.date)) {
+            showMessage(lang === 'es' ? 'Por favor selecciona una fecha de hoy en adelante.' : 'Please select a date from today onwards.', 'error');
+            dateField?.focus();
+            return;
+        }
+
+        // Validate time: required
+        if (!payload.time) {
+            showMessage(completeRequiredMsg, 'error');
+            timeField?.focus();
+            return;
+        }
+
+        // Validate guests: required, must be integer >= 1
+        if (!payload.guests) {
+            showMessage(completeRequiredMsg, 'error');
+            guestsField?.focus();
+            return;
+        }
+        if (!validateGuests(payload.guests)) {
+            showMessage(lang === 'es' ? 'Por favor selecciona un número válido de comensales (mínimo 1).' : 'Please select a valid number of guests (minimum 1).', 'error');
+            guestsField?.focus();
+            return;
+        }
+
+        // All validations passed - proceed with submission
+        isSubmitting = true;
         submitBtn.disabled = true;
-        submitBtn.textContent = 'Sending...';
+        submitBtn.textContent = sendingText;
+        if (formMessage) formMessage.style.display = 'none';
 
         try {
-            // Map fields using the REAL input name/id attributes from the page
-            const payload = {
-                name: document.querySelector('[name="name"], #name')?.value?.trim() || '',
-                email: document.querySelector('[name="email"], #email')?.value?.trim() || '',
-                phone: document.querySelector('[name="phone"], #phone')?.value?.trim() || '',
-                date: document.querySelector('[name="date"], #date')?.value || '',
-                time: document.querySelector('[name="time"], #time')?.value || '',
-                guests: document.querySelector('[name="guests"], #guests')?.value || '',
-                notes: document.querySelector('[name="notes"], #notes')?.value?.trim() || '',
-                language: document.querySelector('[name="language"], #language')?.value || (currentLanguage || 'en')
-            };
-
-            console.log('📦 Payload:', payload);
-
-            // Validate required fields
-            if (!payload.name || !payload.email || !payload.date || !payload.time || !payload.guests) {
-                showMessage('Please fill in all required fields', 'error');
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalText;
-                return;
-            }
-
             const res = await fetch('/.netlify/functions/send-reservation', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
-            console.log('🟢 function status:', res.status);
-
             const json = await res.json().catch(() => ({}));
-            console.log('🟢 function response:', json);
 
             if (!res.ok || !json.success) {
-                const errorMsg = json.error || 'Failed to process reservation. Please try again.';
-                console.error('❌ Reservation failed:', errorMsg);
+                // Error case: log and show friendly message
+                console.error('❌ Reservation failed:', res.status, json);
+                const errorMsg = json.error || getTranslation('form.serverError');
                 showMessage(errorMsg, 'error');
             } else {
-                console.log('✅ Reservation success! ID:', json.reservationId);
-                showMessage('¡Reservación enviada con éxito! Recibirás un correo de confirmación en las próximas 2 horas. ID: ' + json.reservationId, 'success');
+                // Success case
+                const successMsg = lang === 'es' 
+                    ? `¡${getTranslation('form.reservationSent')} Recibirás un correo de confirmación en las próximas 2 horas. ID: ${json.reservationId}`
+                    : `${getTranslation('form.reservationSent')} You will receive a confirmation email within 2 hours. ID: ${json.reservationId}`;
+                showMessage(successMsg, 'success');
                 reservationForm.reset();
+                // Reset date min attribute
+                if (dateInput) {
+                    dateInput.setAttribute('min', today);
+                }
             }
         } catch (error) {
-            console.error('❌ Reservation error:', error);
-            showMessage('Error de conexión. Por favor intenta de nuevo o llámanos al +52 624 219 3228', 'error');
+            // Network error: log and show friendly message
+            console.error('❌ Reservation network error:', error);
+            const errorMsg = lang === 'es'
+                ? 'Error de conexión. Por favor intenta de nuevo o llámanos al +52 624 219 3228'
+                : 'Connection error. Please try again or call us at +52 624 219 3228';
+            showMessage(errorMsg, 'error');
         } finally {
+            // Always re-enable button after response
+            isSubmitting = false;
             submitBtn.disabled = false;
             submitBtn.textContent = originalText;
         }
