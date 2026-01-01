@@ -178,12 +178,13 @@ exports.handler = async (event, context) => {
             .from('reservations')
             .insert([
                 {
-                    name: data.name,
+                    name: fullName,
                     email: data.email,
                     phone: data.phone,
                     date: data.date,
                     time: data.time,
-                    party_size: parseInt(data.guests),
+                    party_size: parseInt(partySize),
+                    staying_place: data.staying_place || null,
                     notes: data.notes || null,
                     language: data.language || 'en',
                     source: 'web',
@@ -239,7 +240,7 @@ exports.handler = async (event, context) => {
                             <span class="label">Reservation ID:</span> ${reservation.id}
                         </div>
                         <div class="info-row">
-                            <span class="label">Customer Name:</span> ${data.name}
+                            <span class="label">Customer Name:</span> ${fullName}
                         </div>
                         <div class="info-row">
                             <span class="label">Email:</span> ${data.email}
@@ -254,8 +255,9 @@ exports.handler = async (event, context) => {
                             <span class="label">Time:</span> ${data.time}
                         </div>
                         <div class="info-row">
-                            <span class="label">Party Size:</span> ${data.guests} guests
+                            <span class="label">Party Size:</span> ${partySize} guests
                         </div>
+                        ${data.staying_place ? `<div class="info-row"><span class="label">Staying:</span> ${data.staying_place}</div>` : ''}
                         ${data.notes ? `<div class="info-row"><span class="label">Special Requests:</span> ${data.notes}</div>` : ''}
                         <div class="info-row">
                             <span class="label">Language:</span> ${data.language === 'es' ? 'Español' : 'English'}
@@ -277,12 +279,13 @@ exports.handler = async (event, context) => {
 New Reservation Request
 
 Reservation ID: ${reservation.id}
-Customer Name: ${data.name}
+Customer Name: ${fullName}
 Email: ${data.email}
 Phone: ${data.phone}
 Date: ${formattedDate}
 Time: ${data.time}
-Party Size: ${data.guests} guests
+Party Size: ${partySize} guests
+${data.staying_place ? `Staying: ${data.staying_place}` : ''}
 ${data.notes ? `Special Requests: ${data.notes}` : ''}
 Language: ${data.language === 'es' ? 'Español' : 'English'}
 Status: Pending
@@ -292,13 +295,13 @@ Status: Pending
             console.log('📧 Sending restaurant email...');
             console.log('  From:', emailFrom);
             console.log('  To:', emailRestaurant);
-            console.log('  Subject: New Reservation -', data.name);
+            console.log('  Subject: New Reservation -', fullName);
             
             const emailResult = await resend.emails.send({
                 from: emailFrom,
                 to: emailRestaurant,
                 replyTo: data.email,
-                subject: `New Reservation - ${data.name} - ${formattedDate} at ${data.time}`,
+                subject: `New Reservation - ${fullName} - ${formattedDate} at ${data.time}`,
                 html: restaurantEmailHTML,
                 text: restaurantEmailText
             });
