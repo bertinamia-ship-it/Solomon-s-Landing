@@ -376,74 +376,93 @@ class RestaurantChatbot {
             
             case 'confirming':
                 if (message.includes('yes') || message.includes('sí') || message.includes('si') || message === 'y') {
+                    // Prevent duplicate submissions
+                    if (this.isSubmittingReservation) {
+                        response = this.currentLanguage === 'en'
+                            ? '⏳ Processing your reservation...'
+                            : '⏳ Procesando tu reservación...';
+                        return response;
+                    }
+
+                    this.isSubmittingReservation = true;
+                    this.conversationState = 'submitting';
+
                     try {
-                        // Generate confirmation code
-                        const confirmationCode = 'SL' + Date.now();
-                        
-                        // Format date for display
-                        const reservationDate = new Date(this.reservationData.date);
-                        const formattedDate = reservationDate.toLocaleDateString('en-US', {
-                            weekday: 'long',
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                        });
-                        
-                        // Build confirmation URL with all parameters (GitHub Pages compatible)
-                        // Detect base path from current location
-                        const basePath = window.location.pathname.includes('/Solomon-s-Landing/') 
-                            ? '/Solomon-s-Landing/website/' 
-                            : window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1) || '/';
-                        const confirmUrl = `${window.location.origin}${basePath}confirm-reservation.html?` + 
-                            `code=${encodeURIComponent(confirmationCode)}` +
-                            `&name=${encodeURIComponent(this.reservationData.name)}` +
-                            `&email=${encodeURIComponent(this.reservationData.email)}` +
-                            `&date=${encodeURIComponent(formattedDate)}` +
-                            `&time=${encodeURIComponent(this.reservationData.time)}` +
-                            `&guests=${encodeURIComponent(this.reservationData.guests)}` +
-                            `&language=${encodeURIComponent(this.currentLanguage)}`;
-                        
-                        // Build special requests text
-                        let specialRequestsText = [];
+                        // Build notes field combining all special requests
+                        let notesParts = [];
                         if (this.reservationData.celebration && this.reservationData.celebration !== 'None') {
-                            specialRequestsText.push(`Celebration: ${this.reservationData.celebration}`);
+                            notesParts.push(`Celebration: ${this.reservationData.celebration}`);
                         }
                         if (this.reservationData.allergies && this.reservationData.allergies !== 'None') {
-                            specialRequestsText.push(`Allergies: ${this.reservationData.allergies}`);
+                            const allergyText = this.reservationData.allergyDetails 
+                                ? `${this.reservationData.allergies} - ${this.reservationData.allergyDetails}`
+                                : this.reservationData.allergies;
+                            notesParts.push(`Allergies: ${allergyText}`);
                         }
                         if (this.reservationData.specialRequests && this.reservationData.specialRequests !== 'none' && this.reservationData.specialRequests !== 'ninguna') {
-                            specialRequestsText.push(`Preferences: ${this.reservationData.specialRequests}`);
+                            notesParts.push(`Special Requests: ${this.reservationData.specialRequests}`);
                         }
-                        const finalSpecialRequests = specialRequestsText.length > 0 ? specialRequestsText.join(' | ') : 'None';
-                        
-                        // Send email to restaurant using EmailJS
-                        await emailjs.send('service_u021fxi', 'template_ij3p83j', {
-                            to_email: 'reservations@solomonslanding.com',
-                            customer_name: this.reservationData.name,
-                            customer_email: this.reservationData.email,
-                            customer_phone: this.reservationData.phone,
-                            reservation_date: formattedDate,
-                            reservation_time: this.reservationData.time,
-                            party_size: this.reservationData.guests,
-                            special_requests: finalSpecialRequests,
-                            hotel_staying: this.reservationData.hotelStaying || 'Not specified',
-                            confirmation_code: confirmationCode,
-                            confirm_url: confirmUrl,
-                            customer_language: this.currentLanguage === 'en' ? 'English (🇺🇸)' : 'Español (🇲🇽)'
+                        if (this.reservationData.hotelStaying) {
+                            notesParts.push(`Hotel: ${this.reservationData.hotelStaying}`);
+                        }
+                        const notes = notesParts.length > 0 ? notesParts.join(' | ') : '';
+
+                        // Build payload matching form structure
+                        const payload = {
+                            name: this.reservationData.name,
+                            email: this.reservationData.email,
+                            phone: this.reservationData.phone,
+                            date: this.reservationData.date,
+                            time: this.reservationData.time,
+                            guests: this.reservationData.guests,
+                            notes: notes,
+                            language: this.currentLanguage || 'en'
+                        };
+
+                        console.log('🤖 Chatbot sending reservation to Netlify Function:', payload);
+
+                        // Send to Netlify Function
+                        const netlifyUrl = `/.netlify/functions/send-reservation`;
+                        const res = await fetch(netlifyUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(payload)
                         });
-                        
-                        response = this.currentLanguage === 'en'
-                            ? `✅ **Perfect! Your reservation request has been sent!**\n\n📧 We've notified our team and will confirm your reservation shortly.\n\n**Confirmation Code:** ${confirmationCode}\n\n**Reservation Details:**\n• Name: ${this.reservationData.name}\n• Date: ${formattedDate}\n• Time: ${this.reservationData.time}\n• Party Size: ${this.reservationData.guests} guests\n• Hotel: ${this.reservationData.hotelStaying || 'Not specified'}\n\n📧 You'll receive a confirmation email once our team approves your reservation.\n\n📱 **Questions? Call us: +52 624 219 3228**`
-                            : `✅ **¡Perfecto! Tu solicitud de reservación ha sido enviada!**\n\n📧 Hemos notificado a nuestro equipo y confirmaremos tu reservación pronto.\n\n**Código de Confirmación:** ${confirmationCode}\n\n**Detalles de Reservación:**\n• Nombre: ${this.reservationData.name}\n• Fecha: ${formattedDate}\n• Hora: ${this.reservationData.time}\n• Personas: ${this.reservationData.guests}\n• Hotel: ${this.reservationData.hotelStaying || 'No especificado'}\n\n📧 Recibirás un correo de confirmación una vez que nuestro equipo apruebe tu reservación.\n\n📱 **¿Preguntas? Llámanos: +52 624 219 3228**`;
+
+                        const result = await res.json().catch(() => ({}));
+                        console.log('🤖 Chatbot reservation response:', res.status, result);
+
+                        if (res.ok && result.success) {
+                            // Format date for display
+                            const reservationDate = new Date(this.reservationData.date);
+                            const formattedDate = reservationDate.toLocaleDateString(
+                                this.currentLanguage === 'es' ? 'es-MX' : 'en-US',
+                                {
+                                    weekday: 'long',
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric'
+                                }
+                            );
+
+                            response = this.currentLanguage === 'en'
+                                ? `✅ **Reservation Confirmed!**\n\n📧 You will receive a confirmation email within 2 hours.\n\n**Reservation ID:** ${result.reservationId}\n\n**Reservation Details:**\n• Name: ${this.reservationData.name}\n• Date: ${formattedDate}\n• Time: ${this.reservationData.time}\n• Guests: ${this.reservationData.guests}\n\n🍽️ We're looking forward to serving you!\n\n📱 **Questions? Call us: +52 624 219 3228**`
+                                : `✅ **¡Reservación Confirmada!**\n\n📧 Recibirás un correo de confirmación en las próximas 2 horas.\n\n**ID de Reservación:** ${result.reservationId}\n\n**Detalles de Reservación:**\n• Nombre: ${this.reservationData.name}\n• Fecha: ${formattedDate}\n• Hora: ${this.reservationData.time}\n• Comensales: ${this.reservationData.guests}\n\n🍽️ ¡Esperamos servirte pronto!\n\n📱 **¿Preguntas? Llámanos: +52 624 219 3228**`;
+                        } else {
+                            throw new Error(result.error || 'Reservation failed');
+                        }
 
                     } catch (error) {
-                        console.error('Error sending reservation email:', error);
+                        console.error('❌ Chatbot reservation error:', error);
                         response = this.currentLanguage === 'en'
-                            ? `❌ Sorry, there was an error sending your reservation. Please try again or call us directly at +52 624 219 3228`
-                            : `❌ Lo siento, hubo un error al enviar tu reservación. Por favor intenta de nuevo o llámanos al +52 624 219 3228`;
+                            ? `❌ **Sorry, there was an error processing your reservation.**\n\nPlease try again or call us directly:\n📱 **+52 624 219 3228**\n\nWe're here to help!`
+                            : `❌ **Lo siento, hubo un error al procesar tu reservación.**\n\nPor favor intenta de nuevo o llámanos directamente:\n📱 **+52 624 219 3228**\n\n¡Estamos aquí para ayudarte!`;
+                    } finally {
+                        this.isSubmittingReservation = false;
+                        this.resetReservation();
                     }
-                    
-                    this.resetReservation();
                 } else if (message.includes('no') || message === 'n') {
                     this.resetReservation();
                     response = this.currentLanguage === 'en'
