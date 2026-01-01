@@ -64,10 +64,30 @@ const translations = {
         'form.guests8': '8 Guests',
         'form.guests9': '9 Guests',
         'form.guests10': '10+ Guests',
-        'form.notes': 'Special Requests or Notes',
-        'form.notesPlaceholder': 'Allergies, special occasions, seating preferences...',
+        'form.notes': 'Special Requests',
+        'form.notesPlaceholder': 'Allergies, dietary requirements, or special requests...',
         'form.reserveBtn': 'Reserve Table',
         'form.sending': 'Sending...',
+        'form.occasion': 'Special Occasion (optional)',
+        'form.occasionNone': 'None',
+        'form.occasionBirthday': '🎂 Birthday',
+        'form.occasionAnniversary': '💕 Anniversary',
+        'form.occasionProposal': '💍 Proposal',
+        'form.occasionBusiness': '💼 Business Dinner',
+        'form.occasionCelebration': '🎉 Celebration',
+        'form.occasionOther': '✨ Other',
+        'form.selectTime': 'Select time...',
+        'form.guestPax1': '1 pax',
+        'form.guestPax2': '2 pax',
+        'form.guestPax3': '3 pax',
+        'form.guestPax4': '4 pax',
+        'form.guestPax5': '5 pax',
+        'form.guestPax6': '6 pax',
+        'form.guestPax7': '7 pax',
+        'form.guestPax8': '8 pax',
+        'form.guestPax9': '9 pax',
+        'form.guestPax10': '10+ pax',
+        'form.selectGuestsPax': 'Select guests...',
         'form.reservationSent': 'Reservation sent!',
         'form.completeRequired': 'Please complete all required fields.',
         'form.serverError': 'Server error. Try again.',
@@ -190,9 +210,32 @@ const translations = {
         'form.guests8': '8 Personas',
         'form.guests9': '9 Personas',
         'form.guests10': '10+ Personas',
-        'form.notes': 'Solicitudes Especiales o Notas',
-        'form.notesPlaceholder': 'Alergias, ocasiones especiales, preferencias de asientos...',
+        'form.notes': 'Solicitudes Especiales',
+        'form.notesPlaceholder': 'Alergias, requerimientos dietéticos o solicitudes especiales...',
         'form.reserveBtn': 'Reservar Mesa',
+        'form.occasion': 'Ocasión Especial (opcional)',
+        'form.occasionNone': 'Ninguna',
+        'form.occasionBirthday': '🎂 Cumpleaños',
+        'form.occasionAnniversary': '💕 Aniversario',
+        'form.occasionProposal': '💍 Propuesta de Matrimonio',
+        'form.occasionBusiness': '💼 Cena de Negocios',
+        'form.occasionCelebration': '🎉 Celebración',
+        'form.occasionOther': '✨ Otra',
+        'form.selectTime': 'Seleccionar hora...',
+        'form.guestPax1': '1 pax',
+        'form.guestPax2': '2 pax',
+        'form.guestPax3': '3 pax',
+        'form.guestPax4': '4 pax',
+        'form.guestPax5': '5 pax',
+        'form.guestPax6': '6 pax',
+        'form.guestPax7': '7 pax',
+        'form.guestPax8': '8 pax',
+        'form.guestPax9': '9 pax',
+        'form.guestPax10': '10+ pax',
+        'form.selectGuestsPax': 'Seleccionar comensales...',
+        'reservations.needHelp': '¿Necesitas asistencia inmediata?',
+        'reservations.callUs': 'Llámanos directamente:',
+        'reservations.hours': 'Abierto 7 días: 8:00 AM - 11:00 PM',
 
         // Banner Navideño
         'holiday.banner': '¡Celebra las Fiestas con Nosotros! Menú Festivo Especial Disponible',
@@ -322,6 +365,9 @@ function setLanguage(lang) {
     }
 
     console.log('Language changed to:', lang);
+    
+    // Dispatch custom event for language change
+    document.dispatchEvent(new CustomEvent('languageChanged', { detail: { language: lang } }));
 }
 
 // Inicializar idioma al cargar la página
@@ -1341,6 +1387,64 @@ function initReservationForm() {
         return translations[currentLanguage]?.[key] || translations['en'][key] || key;
     }
 
+    // Update form option labels dynamically with translations
+    function updateFormOptions() {
+        const timeSelect = document.getElementById('time');
+        const guestsSelect = document.getElementById('guests');
+        const occasionSelect = document.getElementById('occasion');
+        const lang = currentLanguage || 'en';
+
+        // Update time placeholder
+        if (timeSelect) {
+            const placeholderOption = timeSelect.querySelector('option[value=""]');
+            if (placeholderOption) {
+                placeholderOption.textContent = getTranslation('form.selectTime');
+            }
+        }
+
+        // Update guests options
+        if (guestsSelect) {
+            const placeholderOption = guestsSelect.querySelector('option[value=""]');
+            if (placeholderOption) {
+                placeholderOption.textContent = getTranslation('form.selectGuestsPax');
+            }
+            // Update guest option labels
+            for (let i = 1; i <= 10; i++) {
+                const option = guestsSelect.querySelector(`option[value="${i}"]`);
+                if (option) {
+                    option.textContent = getTranslation(`form.guestPax${i}`);
+                }
+            }
+        }
+
+        // Update occasion options
+        if (occasionSelect) {
+            const placeholderOption = occasionSelect.querySelector('option[value=""]');
+            if (placeholderOption) {
+                placeholderOption.textContent = getTranslation('form.occasionNone');
+            }
+            const occasionMap = {
+                'birthday': 'form.occasionBirthday',
+                'anniversary': 'form.occasionAnniversary',
+                'proposal': 'form.occasionProposal',
+                'business': 'form.occasionBusiness',
+                'celebration': 'form.occasionCelebration',
+                'other': 'form.occasionOther'
+            };
+            Object.keys(occasionMap).forEach(value => {
+                const option = occasionSelect.querySelector(`option[value="${value}"]`);
+                if (option) {
+                    option.textContent = getTranslation(occasionMap[value]);
+                }
+            });
+        }
+    }
+
+    // Update form options when language changes
+    updateFormOptions();
+    // Listen for language changes (if setLanguage function exists globally)
+    document.addEventListener('languageChanged', updateFormOptions);
+
     function showMessage(message, type) {
         if (!formMessage) return;
         formMessage.style.display = 'block';
@@ -1375,7 +1479,7 @@ function initReservationForm() {
         const timeField = document.querySelector('[name="time"], #time');
         const guestsField = document.querySelector('[name="guests"], #guests');
         const notesField = document.querySelector('[name="notes"], #notes');
-        const languageField = document.querySelector('[name="language"], #language');
+        const occasionField = document.querySelector('[name="occasion"], #occasion');
 
         const payload = {
             name: nameField?.value?.trim() || '',
@@ -1385,11 +1489,11 @@ function initReservationForm() {
             time: timeField?.value || '',
             guests: guestsField?.value || '',
             notes: notesField?.value?.trim() || '',
-            language: languageField?.value || (currentLanguage || 'en')
+            language: currentLanguage || 'en'
         };
 
         // Client-side validation BEFORE fetch
-        const lang = payload.language || currentLanguage || 'en';
+        const lang = currentLanguage || 'en';
         const completeRequiredMsg = getTranslation('form.completeRequired');
 
         // Validate full name: required, min 2 chars

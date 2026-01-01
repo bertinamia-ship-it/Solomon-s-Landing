@@ -267,6 +267,18 @@ nav a:hover, nav a.active {
     background: linear-gradient(135deg, #0066CC 0%, var(--blue-main) 100%);
 }
 
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    color: var(--white);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
 .language-toggle {
     display: flex;
     gap: 0;

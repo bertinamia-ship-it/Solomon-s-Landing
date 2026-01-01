@@ -102,58 +102,37 @@
                         <span data-i18n="reservations.formDescription">Llena el formulario y te confirmaremos tu reservación por correo en menos de 2 horas</span>
                     </p>
 
-                    <div class="reservation-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,250,252,0.95)); padding: 3rem; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.15); border: 1px solid rgba(255,215,0,0.3);">
+                    <div class="reservation-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,250,252,0.95)); padding: 3rem; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.15); border: 1px solid rgba(255,215,0,0.3); max-width: 700px; margin: 0 auto;">
                         <form id="reservationForm">
-                            <!-- Nombre -->
+                            <!-- Full Name -->
                             <div class="form-group" style="margin-bottom: 1.8rem;">
-                                <label for="name" style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.6rem; font-size: 0.95rem;"><span data-i18n="form.name">Nombre Completo</span> <span class="required" style="color: #dc2626;">*</span></label>
-                                <input type="text" id="name" name="name" data-i18n-placeholder="form.namePlaceholder" placeholder="Juan Pérez" required style="width: 100%; padding: 0.9rem 1.2rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; transition: all 0.3s; background: white;" onfocus="this.style.borderColor='#fbbf24'; this.style.boxShadow='0 0 0 3px rgba(251,191,36,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
-                            </div>
-                            
-                            <!-- Idioma -->
-                            <div class="form-group" style="margin-bottom: 1.8rem;">
-                                <label for="language" style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.6rem; font-size: 0.95rem;">Idioma / Language <span class="required" style="color: #dc2626;">*</span></label>
-                                <select id="language" name="language" required style="width: 100%; padding: 0.9rem 1.2rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; background: white url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e') no-repeat right 1rem center; background-size: 1.2rem; appearance: none; cursor: pointer; transition: all 0.3s;" onfocus="this.style.borderColor='#fbbf24'; this.style.boxShadow='0 0 0 3px rgba(251,191,36,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
-                                    <option value="">Seleccionar / Select...</option>
-                                    <option value="es">🇲🇽 Español</option>
-                                    <option value="en">🇺🇸 English</option>
-                                </select>
+                                <label for="name" style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.6rem; font-size: 0.95rem;"><span data-i18n="form.name">Full Name</span> <span class="required" style="color: #dc2626;">*</span></label>
+                                <input type="text" id="name" name="name" data-i18n-placeholder="form.namePlaceholder" placeholder="John Doe" required style="width: 100%; padding: 0.9rem 1.2rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; transition: all 0.3s; background: white;" onfocus="this.style.borderColor='#fbbf24'; this.style.boxShadow='0 0 0 3px rgba(251,191,36,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
                             </div>
 
                             <!-- Email -->
                             <div class="form-group" style="margin-bottom: 1.8rem;">
                                 <label for="email" style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.6rem; font-size: 0.95rem;"><span data-i18n="form.email">Email</span> <span class="required" style="color: #dc2626;">*</span></label>
-                                <input type="email" id="email" name="email" data-i18n-placeholder="form.emailPlaceholder" placeholder="juan@ejemplo.com" required style="width: 100%; padding: 0.9rem 1.2rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; transition: all 0.3s; background: white;" onfocus="this.style.borderColor='#fbbf24'; this.style.boxShadow='0 0 0 3px rgba(251,191,36,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+                                <input type="email" id="email" name="email" data-i18n-placeholder="form.emailPlaceholder" placeholder="john@example.com" required style="width: 100%; padding: 0.9rem 1.2rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; transition: all 0.3s; background: white;" onfocus="this.style.borderColor='#fbbf24'; this.style.boxShadow='0 0 0 3px rgba(251,191,36,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
                             </div>
 
-                            <!-- Teléfono -->
+                            <!-- Phone -->
                             <div class="form-group" style="margin-bottom: 1.8rem;">
-                                <label for="phone" style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.6rem; font-size: 0.95rem;" data-i18n="form.phone">Teléfono</label>
+                                <label for="phone" style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.6rem; font-size: 0.95rem;" data-i18n="form.phone">Phone Number</label>
                                 <input type="tel" id="phone" name="phone" data-i18n-placeholder="form.phonePlaceholder" placeholder="+52 624 123 4567" style="width: 100%; padding: 0.9rem 1.2rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; transition: all 0.3s; background: white;" onfocus="this.style.borderColor='#fbbf24'; this.style.boxShadow='0 0 0 3px rgba(251,191,36,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
                             </div>
 
-                            <!-- Fecha y Hora -->
+                            <!-- Date and Time -->
                             <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-bottom: 1.8rem;">
                                 <div class="form-group">
-                                    <label for="date" style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.6rem; font-size: 0.95rem;"><span data-i18n="form.date">Fecha</span> <span class="required" style="color: #dc2626;">*</span></label>
+                                    <label for="date" style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.6rem; font-size: 0.95rem;"><span data-i18n="form.date">Date</span> <span class="required" style="color: #dc2626;">*</span></label>
                                     <input type="date" id="date" name="date" required style="width: 100%; padding: 0.9rem 1.2rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; transition: all 0.3s; background: white;" onfocus="this.style.borderColor='#fbbf24'; this.style.boxShadow='0 0 0 3px rgba(251,191,36,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="time" style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.6rem; font-size: 0.95rem;"><span data-i18n="form.time">Hora</span> <span class="required" style="color: #dc2626;">*</span></label>
+                                    <label for="time" style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.6rem; font-size: 0.95rem;"><span data-i18n="form.time">Time</span> <span class="required" style="color: #dc2626;">*</span></label>
                                     <select id="time" name="time" required style="width: 100%; padding: 0.9rem 1.2rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; background: white url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e') no-repeat right 1rem center; background-size: 1.2rem; appearance: none; cursor: pointer; transition: all 0.3s;" onfocus="this.style.borderColor='#fbbf24'; this.style.boxShadow='0 0 0 3px rgba(251,191,36,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
-                                        <option value="">Seleccionar hora...</option>
-                                        <option value="12:00">12:00 PM</option>
-                                        <option value="12:30">12:30 PM</option>
-                                        <option value="13:00">1:00 PM</option>
-                                        <option value="13:30">1:30 PM</option>
-                                        <option value="14:00">2:00 PM</option>
-                                        <option value="14:30">2:30 PM</option>
-                                        <option value="15:00">3:00 PM</option>
-                                        <option value="15:30">3:30 PM</option>
-                                        <option value="16:00">4:00 PM</option>
-                                        <option value="16:30">4:30 PM</option>
-                                        <option value="17:00">5:00 PM</option>
+                                        <option value="" data-i18n="form.selectTime">Select time...</option>
                                         <option value="17:30">5:30 PM</option>
                                         <option value="18:00">6:00 PM</option>
                                         <option value="18:30">6:30 PM</option>
@@ -163,75 +142,62 @@
                                         <option value="20:30">8:30 PM</option>
                                         <option value="21:00">9:00 PM</option>
                                         <option value="21:30">9:30 PM</option>
-                                        <option value="22:00">10:00 PM</option>
-                                        <option value="22:30">10:30 PM</option>
                                     </select>
                                 </div>
                             </div>
 
-                            <!-- Número de Personas -->
-                            <div class="form-group" style="margin-bottom: 1.8rem;">
-                                <label for="guests" style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.6rem; font-size: 0.95rem;"><span data-i18n="form.guests">Número de Personas</span> <span class="required" style="color: #dc2626;">*</span></label>
-                                <select id="guests" name="guests" required style="width: 100%; padding: 0.9rem 1.2rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; background: white url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e') no-repeat right 1rem center; background-size: 1.2rem; appearance: none; cursor: pointer; transition: all 0.3s;" onfocus="this.style.borderColor='#fbbf24'; this.style.boxShadow='0 0 0 3px rgba(251,191,36,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
-                                    <option value="" data-i18n="form.selectGuests">Seleccionar personas...</option>
-                                    <option value="1">1 Persona</option>
-                                    <option value="2">2 Personas</option>
-                                    <option value="3">3 Personas</option>
-                                    <option value="4">4 Personas</option>
-                                    <option value="5">5 Personas</option>
-                                    <option value="6">6 Personas</option>
-                                    <option value="7">7 Personas</option>
-                                    <option value="8">8 Personas</option>
-                                    <option value="9">9 Personas</option>
-                                    <option value="10">10+ Personas (Grupo)</option>
-                                </select>
+                            <!-- Guests and Occasion Row -->
+                            <div class="form-row" style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 1.2rem; margin-bottom: 1.8rem;">
+                                <div class="form-group">
+                                    <label for="guests" style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.6rem; font-size: 0.95rem;"><span data-i18n="form.guests">Guests</span> <span class="required" style="color: #dc2626;">*</span></label>
+                                    <select id="guests" name="guests" required style="width: 100%; padding: 0.7rem 1rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 0.95rem; background: white url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e') no-repeat right 0.75rem center; background-size: 1rem; appearance: none; cursor: pointer; transition: all 0.3s;" onfocus="this.style.borderColor='#fbbf24'; this.style.boxShadow='0 0 0 3px rgba(251,191,36,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+                                        <option value="" data-i18n="form.selectGuestsPax">Select guests...</option>
+                                        <option value="1" data-i18n="form.guestPax1">1 pax</option>
+                                        <option value="2" data-i18n="form.guestPax2">2 pax</option>
+                                        <option value="3" data-i18n="form.guestPax3">3 pax</option>
+                                        <option value="4" data-i18n="form.guestPax4">4 pax</option>
+                                        <option value="5" data-i18n="form.guestPax5">5 pax</option>
+                                        <option value="6" data-i18n="form.guestPax6">6 pax</option>
+                                        <option value="7" data-i18n="form.guestPax7">7 pax</option>
+                                        <option value="8" data-i18n="form.guestPax8">8 pax</option>
+                                        <option value="9" data-i18n="form.guestPax9">9 pax</option>
+                                        <option value="10" data-i18n="form.guestPax10">10+ pax</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="occasion" style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.6rem; font-size: 0.95rem;"><span data-i18n="form.occasion">Special Occasion (optional)</span></label>
+                                    <select id="occasion" name="occasion" style="width: 100%; padding: 0.9rem 1.2rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; background: white url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e') no-repeat right 1rem center; background-size: 1.2rem; appearance: none; cursor: pointer; transition: all 0.3s;" onfocus="this.style.borderColor='#fbbf24'; this.style.boxShadow='0 0 0 3px rgba(251,191,36,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+                                        <option value="" data-i18n="form.occasionNone">None</option>
+                                        <option value="birthday" data-i18n="form.occasionBirthday">🎂 Birthday</option>
+                                        <option value="anniversary" data-i18n="form.occasionAnniversary">💕 Anniversary</option>
+                                        <option value="proposal" data-i18n="form.occasionProposal">💍 Proposal</option>
+                                        <option value="business" data-i18n="form.occasionBusiness">💼 Business Dinner</option>
+                                        <option value="celebration" data-i18n="form.occasionCelebration">🎉 Celebration</option>
+                                        <option value="other" data-i18n="form.occasionOther">✨ Other</option>
+                                    </select>
+                                </div>
                             </div>
 
-                            <!-- Ocasión Especial -->
-                            <div class="form-group" style="margin-bottom: 1.8rem;">
-                                <label for="occasion" style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.6rem; font-size: 0.95rem;">Ocasión Especial (opcional)</label>
-                                <select id="occasion" name="occasion" style="width: 100%; padding: 0.9rem 1.2rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; background: white url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e') no-repeat right 1rem center; background-size: 1.2rem; appearance: none; cursor: pointer; transition: all 0.3s;" onfocus="this.style.borderColor='#fbbf24'; this.style.boxShadow='0 0 0 3px rgba(251,191,36,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
-                                    <option value="">Ninguna</option>
-                                    <option value="birthday">🎂 Cumpleaños</option>
-                                    <option value="anniversary">💕 Aniversario</option>
-                                    <option value="proposal">💍 Propuesta de Matrimonio</option>
-                                    <option value="business">💼 Cena de Negocios</option>
-                                    <option value="celebration">🎉 Celebración</option>
-                                    <option value="other">✨ Otra Ocasión</option>
-                                </select>
-                            </div>
-
-                            <!-- Preferencia de Mesa -->
-                            <div class="form-group" style="margin-bottom: 1.8rem;">
-                                <label for="seating" style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.6rem; font-size: 0.95rem;">Preferencia de Mesa (opcional)</label>
-                                <select id="seating" name="seating" style="width: 100%; padding: 0.9rem 1.2rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; background: white url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e') no-repeat right 1rem center; background-size: 1.2rem; appearance: none; cursor: pointer; transition: all 0.3s;" onfocus="this.style.borderColor='#fbbf24'; this.style.boxShadow='0 0 0 3px rgba(251,191,36,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
-                                    <option value="">Sin preferencia</option>
-                                    <option value="outdoor">🌊 Terraza con vista al mar</option>
-                                    <option value="indoor">🏠 Interior con clima</option>
-                                    <option value="bar">🍸 Cerca del bar</option>
-                                    <option value="quiet">🤫 Zona tranquila</option>
-                                </select>
-                            </div>
-
-                            <!-- Notas Adicionales -->
+                            <!-- Special Requests -->
                             <div class="form-group" style="margin-bottom: 2rem;">
-                                <label for="notes" style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.6rem; font-size: 0.95rem;" data-i18n="form.notes">Notas Adicionales (opcional)</label>
-                                <textarea id="notes" name="notes" data-i18n-placeholder="form.notesPlaceholder" placeholder="Alergias, requerimientos dietéticos..." style="width: 100%; padding: 0.9rem 1.2rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; transition: all 0.3s; background: white; min-height: 100px; resize: vertical; font-family: inherit;" onfocus="this.style.borderColor='#fbbf24'; this.style.boxShadow='0 0 0 3px rgba(251,191,36,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'"></textarea>
+                                <label for="notes" style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.6rem; font-size: 0.95rem;" data-i18n="form.notes">Special Requests</label>
+                                <textarea id="notes" name="notes" data-i18n-placeholder="form.notesPlaceholder" placeholder="Allergies, dietary requirements, or special requests..." style="width: 100%; padding: 1rem 1.25rem; border: 2px solid #e2e8f0; border-radius: 14px; font-size: 0.95rem; transition: all 0.3s; background: white; min-height: 110px; resize: vertical; font-family: inherit; line-height: 1.6;" onfocus="this.style.borderColor='#fbbf24'; this.style.boxShadow='0 0 0 3px rgba(251,191,36,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'"></textarea>
                             </div>
 
-                            <button type="submit" class="btn-submit" data-i18n="form.reserveBtn" style="width: 100%; padding: 1.1rem 2rem; background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #1e293b; font-size: 1.1rem; font-weight: 700; border: none; border-radius: 12px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(251,191,36,0.4); text-transform: uppercase; letter-spacing: 0.5px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(251,191,36,0.5)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(251,191,36,0.4)'"> Reservar Mesa Ahora</button>
+                            <button type="submit" class="btn-submit" data-i18n="form.reserveBtn" style="width: 100%; padding: 1rem 2rem; background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #1e293b; font-size: 1rem; font-weight: 700; border: none; border-radius: 12px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(251,191,36,0.4); letter-spacing: 0.3px;">Reserve Table</button>
 
                             <div id="formMessage" class="form-message" style="margin-top: 1.5rem; padding: 1rem; border-radius: 10px; display: none;"></div>
                         </form>
 
                         <!-- Contact Information -->
-                        <div class="contact-info-section">
-                            <strong>¿Necesitas asistencia inmediata?</strong>
+                        <div class="contact-info-section" style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e2e8f0; text-align: center;">
+                            <strong data-i18n="reservations.needHelp" style="color: #1e293b; font-size: 1rem;">Need immediate assistance?</strong>
                             <p style="color: #6B7280; font-size: 1.05rem; margin: 1rem 0;">
-                                Llámanos directamente: <a href="tel:+526242193228">+52 624 219 3228</a>
+                                <span data-i18n="reservations.callUs">Call us directly:</span> <a href="tel:+526242193228" style="color: #004A9F; font-weight: 600; text-decoration: none;">+52 624 219 3228</a>
                             </p>
-                            <p style="color: #9CA3AF; font-size: 0.95rem; margin-top: 0.75rem;">
-                                Abierto 7 días: 8:00 AM - 11:00 PM
+                            <p style="color: #9CA3AF; font-size: 0.95rem; margin-top: 0.75rem;" data-i18n="reservations.hours">
+                                Open 7 days: 8:00 AM - 11:00 PM
                             </p>
                         </div>
                     </div>
