@@ -92,7 +92,60 @@ exports.handler = async (event, context) => {
             };
         }
 
-        // Validate date is in the future
+        // Validate date format (YYYY-MM-DD)
+        if (!data.date.match(/^\d{4}-\d{2}-\d{2}$/)) {
+            return {
+                statusCode: 400,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                body: JSON.stringify({ 
+                    success: false, 
+                    error: 'Invalid date format. Expected YYYY-MM-DD' 
+                })
+            };
+        }
+
+        // Validate time format (HH:MM)
+        if (!data.time.match(/^\d{2}:\d{2}$/)) {
+            return {
+                statusCode: 400,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                body: JSON.stringify({ 
+                    success: false, 
+                    error: 'Invalid time format. Expected HH:MM' 
+                })
+            };
+        }
+
+        // Validate ISO datetime if provided, or build it
+        let datetimeIso = null;
+        if (data.datetime_iso) {
+            const parsedDate = new Date(data.datetime_iso);
+            if (Number.isNaN(parsedDate.getTime())) {
+                return {
+                    statusCode: 400,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    body: JSON.stringify({ 
+                        success: false, 
+                        error: 'Invalid datetime_iso format' 
+                    })
+                };
+            }
+            datetimeIso = data.datetime_iso;
+        } else {
+            // Build ISO datetime from date and time
+            datetimeIso = `${data.date}T${data.time}:00`;
+        }
+
+        // Validate date is today or in the future
         const reservationDate = new Date(data.date + 'T00:00:00');
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -105,7 +158,7 @@ exports.handler = async (event, context) => {
                 },
                 body: JSON.stringify({ 
                     success: false, 
-                    error: 'Reservation date must be in the future' 
+                    error: 'Reservation date must be today or in the future' 
                 })
             };
         }
@@ -173,6 +226,15 @@ exports.handler = async (event, context) => {
             day: 'numeric' 
         });
 
+        // Validate ISO datetime if provided
+        let datetimeIso = null;
+        if (data.datetime_iso) {
+            const parsedDate = new Date(data.datetime_iso);
+            if (!Number.isNaN(parsedDate.getTime())) {
+                datetimeIso = data.datetime_iso;
+            }
+        }
+
         // Insert reservation into database
         const { data: reservation, error: dbError } = await supabase
             .from('reservations')
@@ -188,7 +250,9 @@ exports.handler = async (event, context) => {
                     notes: data.notes || null,
                     language: data.language || 'en',
                     source: 'web',
-                    status: 'pending'
+                    status: 'pending',
+                    payment_intent_id: data.payment_intent_id || null,
+                    datetime_iso: datetimeIso
                 }
             ])
             .select()

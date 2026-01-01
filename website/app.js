@@ -1587,6 +1587,29 @@ function initReservationForm() {
             return;
         }
 
+        // Validate and format date/time
+        // Ensure date is YYYY-MM-DD format
+        if (!payload.date.match(/^\d{4}-\d{2}-\d{2}$/)) {
+            showMessage(lang === 'es' ? 'Fecha inválida. Por favor selecciona una fecha válida.' : 'Invalid date. Please select a valid date.', 'error');
+            dateField?.focus();
+            return;
+        }
+
+        // Ensure time is HH:MM format (24-hour)
+        if (!payload.time.match(/^\d{2}:\d{2}$/)) {
+            showMessage(lang === 'es' ? 'Hora inválida. Por favor selecciona una hora válida.' : 'Invalid time. Please select a valid time.', 'error');
+            timeField?.focus();
+            return;
+        }
+
+        // Build ISO datetime and validate
+        const isoDatetime = `${payload.date}T${payload.time}:00`;
+        const dateTimeObj = new Date(isoDatetime);
+        if (Number.isNaN(dateTimeObj.getTime())) {
+            showMessage(lang === 'es' ? 'Fecha y hora inválidas. Por favor verifica tus selecciones.' : 'Invalid date and time. Please verify your selections.', 'error');
+            return;
+        }
+
         // All validations passed - proceed with submission
         isSubmitting = true;
         submitBtn.disabled = true;
@@ -1594,6 +1617,81 @@ function initReservationForm() {
         if (formMessage) formMessage.style.display = 'none';
 
         try {
+            // Step 1: Create Stripe hold (if enabled)
+            let paymentIntentId = null;
+            const holdRes = await fetch('/.netlify/functions/create-hold', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    party_size: payload.party_size,
+                    full_name: payload.full_name,
+                    email: payload.email
+                })
+            });
+
+            const holdResult = await holdRes.json().catch(() => ({}));
+            console.log('💳 Hold result:', holdResult);
+
+            if (holdResult.hold_enabled) {
+                if (!holdResult.success || !holdResult.client_secret) {
+                    throw new Error(holdResult.error || 'Failed to create payment hold');
+                }
+
+                // Step 2: Confirm payment with Stripe.js (test mode)
+                // Load Stripe.js if not already loaded
+                if (typeof window.Stripe === 'undefined') {
+                    await new Promise((resolve, reject) => {
+                        const script = document.createElement('script');
+                        script.src = 'https://js.stripe.com/v3/';
+                        script.onload = resolve;
+                        script.onerror = () => reject(new Error('Failed to load Stripe.js'));
+                        document.head.appendChild(script);
+                    });
+                }
+
+                // Get Stripe publishable key from environment or use test key
+                // In production, this should be set via Netlify env var
+                const stripePublishableKey = window.STRIPE_PUBLISHABLE_KEY || 'pk_test_placeholder';
+                const stripe = window.Stripe(stripePublishableKey);
+
+                // For test mode: confirm with test card 4242 4242 4242 4242
+                console.log('💳 Confirming payment hold with test card...');
+                try {
+                    const confirmResult = await stripe.confirmCardPayment(holdResult.client_secret, {
+                        payment_method: {
+                            card: {
+                                number: '4242424242424242',
+                                exp_month: 12,
+                                exp_year: 2025,
+                                cvc: '123'
+                            },
+                            billing_details: {
+                                name: payload.full_name,
+                                email: payload.email
+                            }
+                        }
+                    });
+
+                    if (confirmResult.error) {
+                        throw new Error(confirmResult.error.message);
+                    }
+
+                    if (confirmResult.paymentIntent && confirmResult.paymentIntent.status === 'requires_capture') {
+                        console.log('✅ Payment hold authorized:', confirmResult.paymentIntent.id);
+                        paymentIntentId = confirmResult.paymentIntent.id;
+                    } else {
+                        throw new Error('Payment hold not authorized');
+                    }
+                } catch (stripeError) {
+                    console.error('❌ Stripe confirmation error:', stripeError);
+                    throw new Error(stripeError.message || 'Payment confirmation failed');
+                }
+            }
+
+            // Add payment_intent_id and ISO datetime to payload
+            payload.payment_intent_id = paymentIntentId;
+            payload.datetime_iso = isoDatetime;
+
             const res = await fetch('/.netlify/functions/send-reservation', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

@@ -407,9 +407,65 @@ class RestaurantChatbot {
                             language: this.currentLanguage || 'en'
                         };
 
+                        // Validate and format date/time
+                        // Ensure date is YYYY-MM-DD format
+                        if (!payload.date.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                            throw new Error(this.currentLanguage === 'es' 
+                                ? 'Fecha inválida' 
+                                : 'Invalid date');
+                        }
+
+                        // Ensure time is HH:MM format (24-hour)
+                        if (!payload.time.match(/^\d{2}:\d{2}$/)) {
+                            throw new Error(this.currentLanguage === 'es' 
+                                ? 'Hora inválida' 
+                                : 'Invalid time');
+                        }
+
+                        // Build ISO datetime and validate
+                        const isoDatetime = `${payload.date}T${payload.time}:00`;
+                        const dateTimeObj = new Date(isoDatetime);
+                        if (Number.isNaN(dateTimeObj.getTime())) {
+                            throw new Error(this.currentLanguage === 'es' 
+                                ? 'Fecha y hora inválidas' 
+                                : 'Invalid date and time');
+                        }
+
+                        payload.datetime_iso = isoDatetime;
+
+                        // Step 1: Create Stripe hold (if enabled)
+                        let paymentIntentId = null;
+                        const holdRes = await fetch('/.netlify/functions/create-hold', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                party_size: payload.party_size,
+                                full_name: payload.full_name,
+                                email: payload.email
+                            })
+                        });
+
+                        const holdResult = await holdRes.json().catch(() => ({}));
+                        console.log('🤖 Chatbot hold result:', holdResult);
+
+                        if (holdResult.hold_enabled) {
+                            if (!holdResult.success || !holdResult.client_secret) {
+                                throw new Error(holdResult.error || 'Failed to create payment hold');
+                            }
+
+                            // For chatbot, we'll skip the actual Stripe confirmation UI
+                            // In production, you might want to redirect to a payment page
+                            // For now, we'll proceed with the hold created (test mode)
+                            console.log('💳 Payment hold created (test mode):', holdResult.payment_intent_id);
+                            paymentIntentId = holdResult.payment_intent_id;
+                        }
+
+                        // Add payment_intent_id to payload
+                        payload.payment_intent_id = paymentIntentId;
+
                         console.log('🤖 Chatbot sending reservation to Netlify Function:', payload);
 
-                        // Send to Netlify Function
+                        // Step 2: Send to Netlify Function
                         const netlifyUrl = `/.netlify/functions/send-reservation`;
                         const res = await fetch(netlifyUrl, {
                             method: 'POST',
