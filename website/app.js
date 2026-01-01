@@ -1335,144 +1335,62 @@ function initReservationForm() {
 
     reservationForm.addEventListener('submit', async function(e) {
         e.preventDefault();
-        
-        const formData = {
-            name: document.getElementById('name').value.trim(),
-            email: document.getElementById('email').value.trim(),
-            phone: document.getElementById('phone').value.trim(),
-            date: document.getElementById('date').value,
-            time: document.getElementById('time').value,
-            guests: document.getElementById('guests').value,
-            notes: document.getElementById('notes').value.trim(),
-            language: currentLanguage || 'en'
-        };
-
-        // Validaciones
-        if (!formData.name) {
-            showMessage('Please enter your name', 'error');
-            return;
-        }
-
-        if (!formData.email) {
-            showMessage('Please enter your email', 'error');
-            return;
-        }
-
-        if (!validateEmail(formData.email)) {
-            showMessage('Please enter a valid email address', 'error');
-            return;
-        }
-
-        if (!formData.date) {
-            showMessage('Please select a date', 'error');
-            return;
-        }
-
-        if (!validateDate(formData.date)) {
-            showMessage('Please select a future date', 'error');
-            return;
-        }
-
-        if (!formData.time) {
-            showMessage('Please select a time', 'error');
-            return;
-        }
-
-        if (!formData.guests) {
-            showMessage('Please select number of guests', 'error');
-            return;
-        }
+        console.log('🟢 submit intercepted');
 
         const submitBtn = reservationForm.querySelector('.btn-submit');
+        const originalText = submitBtn.textContent;
         submitBtn.disabled = true;
-        submitBtn.textContent = 'Checking availability...';
+        submitBtn.textContent = 'Sending...';
 
         try {
-            // Fail-open availability check with timeout
-            console.log('🔍 Checking availability for:', formData);
-            let availabilityCheck;
-            try {
-                const timeoutPromise = new Promise((_, reject) => 
-                    setTimeout(() => reject(new Error('Availability check timeout')), 5000)
-                );
-                availabilityCheck = await Promise.race([
-                    checkOpenTableAvailability(formData.date, formData.time, formData.guests),
-                    timeoutPromise
-                ]);
-                console.log('✅ Availability check result:', availabilityCheck);
-            } catch (availError) {
-                console.warn('⚠️ Availability check failed (continuing anyway):', availError);
-                availabilityCheck = { available: true, message: 'Availability check skipped' };
-            }
-            
-            // Continue with submission even if availability check failed
-            if (!availabilityCheck.available) {
-                console.warn('⚠️ No availability reported, but continuing with submission');
-                // Don't return - continue to send the reservation
-            }
-
-            console.log('📤 Submitting reservation to Netlify Function...');
-            submitBtn.textContent = 'Sending reservation...';
-            
-            // Prepare payload
+            // Map fields using the REAL input name/id attributes from the page
             const payload = {
-                name: formData.name,
-                email: formData.email,
-                phone: formData.phone,
-                date: formData.date,
-                time: formData.time,
-                guests: formData.guests,
-                notes: formData.notes || '',
-                language: formData.language || 'en'
+                name: document.querySelector('[name="name"], #name')?.value?.trim() || '',
+                email: document.querySelector('[name="email"], #email')?.value?.trim() || '',
+                phone: document.querySelector('[name="phone"], #phone')?.value?.trim() || '',
+                date: document.querySelector('[name="date"], #date')?.value || '',
+                time: document.querySelector('[name="time"], #time')?.value || '',
+                guests: document.querySelector('[name="guests"], #guests')?.value || '',
+                notes: document.querySelector('[name="notes"], #notes')?.value?.trim() || '',
+                language: document.querySelector('[name="language"], #language')?.value || (currentLanguage || 'en')
             };
-            
+
             console.log('📦 Payload:', payload);
-            
-            // Determine Netlify function URL
-            const netlifyUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-                ? 'http://localhost:8888/.netlify/functions/send-reservation'
-                : `/.netlify/functions/send-reservation`;
-            
-            console.log('🚀 Calling Netlify Function at:', netlifyUrl);
-            
-            try {
-                const response = await fetch(netlifyUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(payload)
-                });
-                
-                console.log('📡 Response status:', response.status, response.statusText);
-                
-                const result = await response.json();
-                console.log('📨 Response JSON:', result);
-                
-                if (!response.ok || !result.success) {
-                    const errorMessage = result.error || 'Failed to process reservation. Please try again.';
-                    console.error('❌ Reservation submission failed:', errorMessage);
-                    showMessage(errorMessage, 'error');
-                    return;
-                }
-                
-                console.log('✅ Reservation created successfully! ID:', result.reservationId);
-                showMessage('¡Reservación enviada con éxito! Recibirás un correo de confirmación en las próximas 2 horas. ID: ' + result.reservationId, 'success');
-                reservationForm.reset();
-            } catch (fetchError) {
-                console.error('❌ Network error submitting reservation:', fetchError);
-                showMessage('Error de conexión. Por favor intenta de nuevo o llámanos al +52 624 219 3228', 'error');
+
+            // Validate required fields
+            if (!payload.name || !payload.email || !payload.date || !payload.time || !payload.guests) {
+                showMessage('Please fill in all required fields', 'error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
                 return;
             }
 
+            const res = await fetch('/.netlify/functions/send-reservation', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            console.log('🟢 function status:', res.status);
+
+            const json = await res.json().catch(() => ({}));
+            console.log('🟢 function response:', json);
+
+            if (!res.ok || !json.success) {
+                const errorMsg = json.error || 'Failed to process reservation. Please try again.';
+                console.error('❌ Reservation failed:', errorMsg);
+                showMessage(errorMsg, 'error');
+            } else {
+                console.log('✅ Reservation success! ID:', json.reservationId);
+                showMessage('¡Reservación enviada con éxito! Recibirás un correo de confirmación en las próximas 2 horas. ID: ' + json.reservationId, 'success');
+                reservationForm.reset();
+            }
         } catch (error) {
-            console.error('❌ Reservation submission error:', error);
-            console.error('Error stack:', error.stack);
-            showMessage('Ocurrió un error inesperado: ' + error.message + '. Por favor intenta de nuevo o contáctanos al +52 624 219 3228', 'error');
+            console.error('❌ Reservation error:', error);
+            showMessage('Error de conexión. Por favor intenta de nuevo o llámanos al +52 624 219 3228', 'error');
         } finally {
             submitBtn.disabled = false;
-            submitBtn.textContent = 'Reservar Mesa';
-            console.log('🔄 Form submit handler complete');
+            submitBtn.textContent = originalText;
         }
     });
 }
