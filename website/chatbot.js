@@ -20,6 +20,7 @@ class RestaurantChatbot {
         this.currentLanguage = 'en';
         this.awaitingField = null;
         this.messageHistory = [];
+        this.isSubmittingReservation = false;
         
         // Initialize menu search system
         this.menuSearch = typeof MenuSearchSystem !== 'undefined' 
@@ -461,8 +462,10 @@ class RestaurantChatbot {
                             : `❌ **Lo siento, hubo un error al procesar tu reservación.**\n\nPor favor intenta de nuevo o llámanos directamente:\n📱 **+52 624 219 3228**\n\n¡Estamos aquí para ayudarte!`;
                     } finally {
                         this.isSubmittingReservation = false;
-                        this.resetReservation();
                     }
+                    
+                    // Reset reservation data after submission (success or error)
+                    this.resetReservation();
                 } else if (message.includes('no') || message === 'n') {
                     this.resetReservation();
                     response = this.currentLanguage === 'en'
@@ -598,6 +601,7 @@ class RestaurantChatbot {
     // Reset reservation data
     resetReservation() {
         this.conversationState = 'chatting';
+        this.isSubmittingReservation = false;
         this.reservationData = {
             name: null,
             email: null,
@@ -606,7 +610,10 @@ class RestaurantChatbot {
             time: null,
             guests: null,
             specialRequests: null,
-            celebration: null
+            celebration: null,
+            allergies: null,
+            allergyDetails: null,
+            hotelStaying: null
         };
     }
 
