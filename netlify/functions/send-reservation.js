@@ -338,7 +338,7 @@ Status: Pending
                         <h2>Reservation Request Received</h2>
                     </div>
                     <div class="content">
-                        <p>Dear ${data.name},</p>
+                        <p>Dear ${fullName},</p>
                         <p>Thank you for your reservation request at Solomon's Landing!</p>
                         <div class="info-row">
                             <span class="label">Reservation ID:</span> ${reservation.id}
@@ -350,7 +350,7 @@ Status: Pending
                             <span class="label">Time:</span> ${data.time}
                         </div>
                         <div class="info-row">
-                            <span class="label">Party Size:</span> ${data.guests} guests
+                            <span class="label">Party Size:</span> ${partySize} guests
                         </div>
                         <p style="margin-top: 20px;">We have received your request and will confirm your reservation within 2 hours. You will receive a confirmation email once your table is confirmed.</p>
                         <p>If you have any questions, please contact us at +52 624 219 3228 or reply to this email.</p>
@@ -366,14 +366,14 @@ Status: Pending
         const customerEmailText = `
 Reservation Request Received
 
-Dear ${data.name},
+Dear ${fullName},
 
 Thank you for your reservation request at Solomon's Landing!
 
 Reservation ID: ${reservation.id}
 Date: ${formattedDate}
 Time: ${data.time}
-Party Size: ${data.guests} guests
+Party Size: ${partySize} guests
 
 We have received your request and will confirm your reservation within 2 hours. You will receive a confirmation email once your table is confirmed.
 
