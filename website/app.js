@@ -1486,15 +1486,37 @@ function initReservationForm() {
         const timeField = document.querySelector('[name="time"], #time');
         const guestsField = document.querySelector('[name="guests"], #guests');
         const notesField = document.querySelector('[name="notes"], #notes');
-        const occasionField = document.querySelector('[name="occasion"], #occasion');
+        const stayingPlaceTypeField = document.querySelector('[name="stayingPlaceType"], #stayingPlaceType');
+        const stayingPlaceNameField = document.querySelector('[name="stayingPlaceName"], #stayingPlaceName');
+
+        // Build staying_place: "Hotel: Name" or "Airbnb: Name" or "Other: Name"
+        let stayingPlace = '';
+        const stayingType = stayingPlaceTypeField?.value || '';
+        const stayingName = stayingPlaceNameField?.value?.trim() || '';
+        if (stayingType && stayingName) {
+            const typeLabels = {
+                'hotel': getTranslation('form.stayingPlaceHotel'),
+                'airbnb': getTranslation('form.stayingPlaceAirbnb'),
+                'other': getTranslation('form.stayingPlaceOther')
+            };
+            stayingPlace = `${typeLabels[stayingType] || stayingType}: ${stayingName}`;
+        } else if (stayingType) {
+            const typeLabels = {
+                'hotel': getTranslation('form.stayingPlaceHotel'),
+                'airbnb': getTranslation('form.stayingPlaceAirbnb'),
+                'other': getTranslation('form.stayingPlaceOther')
+            };
+            stayingPlace = typeLabels[stayingType] || stayingType;
+        }
 
         const payload = {
-            name: nameField?.value?.trim() || '',
+            full_name: nameField?.value?.trim() || '',
             email: emailField?.value?.trim() || '',
             phone: phoneField?.value?.trim() || '',
             date: dateField?.value || '',
             time: timeField?.value || '',
-            guests: guestsField?.value || '',
+            party_size: guestsField?.value || '',
+            staying_place: stayingPlace,
             notes: notesField?.value?.trim() || '',
             language: currentLanguage || 'en'
         };
