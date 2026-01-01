@@ -226,16 +226,7 @@ exports.handler = async (event, context) => {
             day: 'numeric' 
         });
 
-        // Validate ISO datetime if provided
-        let datetimeIso = null;
-        if (data.datetime_iso) {
-            const parsedDate = new Date(data.datetime_iso);
-            if (!Number.isNaN(parsedDate.getTime())) {
-                datetimeIso = data.datetime_iso;
-            }
-        }
-
-        // Insert reservation into database
+        // Insert reservation into database (datetimeIso already validated above)
         const { data: reservation, error: dbError } = await supabase
             .from('reservations')
             .insert([
