@@ -2479,5 +2479,86 @@ function initScrollIndicator() {
 // Initialize scroll indicator
 initScrollIndicator();
 
+// ============================================
+// RESERVATIONS DASHBOARD LOGIN MODAL
+// ============================================
+
+// Open reservations login modal
+function openReservationsLogin(event) {
+    if (event) {
+        event.preventDefault();
+    }
+    const modal = document.getElementById('reservationsLoginModal');
+    if (modal) {
+        modal.style.display = 'flex';
+        const passwordInput = document.getElementById('reservationsPassword');
+        if (passwordInput) {
+            passwordInput.focus();
+            passwordInput.value = '';
+        }
+        const errorDiv = document.getElementById('reservationsPasswordError');
+        if (errorDiv) {
+            errorDiv.style.display = 'none';
+            errorDiv.textContent = '';
+        }
+    }
+}
+
+// Close reservations login modal
+function closeReservationsLogin() {
+    const modal = document.getElementById('reservationsLoginModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+    const passwordInput = document.getElementById('reservationsPassword');
+    if (passwordInput) {
+        passwordInput.value = '';
+    }
+    const errorDiv = document.getElementById('reservationsPasswordError');
+    if (errorDiv) {
+        errorDiv.style.display = 'none';
+        errorDiv.textContent = '';
+    }
+}
+
+// Check reservations password and redirect
+function checkReservationsPassword() {
+    const passwordInput = document.getElementById('reservationsPassword');
+    const errorDiv = document.getElementById('reservationsPasswordError');
+    const ADMIN_PASSWORD = 'solomons2024'; // Must match hostess-dashboard.html
+    
+    if (!passwordInput || !errorDiv) {
+        // Fallback: just open dashboard in new tab
+        window.open('hostess-dashboard.html', '_blank');
+        return;
+    }
+    
+    const password = passwordInput.value;
+    
+    if (password === ADMIN_PASSWORD) {
+        // Close modal and redirect
+        closeReservationsLogin();
+        window.location.href = 'hostess-dashboard.html';
+    } else {
+        // Show error
+        errorDiv.textContent = 'Incorrect password';
+        errorDiv.style.display = 'block';
+        passwordInput.value = '';
+        passwordInput.focus();
+    }
+}
+
+// Close modal when clicking outside
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('reservationsLoginModal');
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeReservationsLogin();
+            }
+        });
+    }
+});
+
 
 
