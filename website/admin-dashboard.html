@@ -707,21 +707,19 @@
                 shape.className = `table-shape ${table.seats === 2 ? 'round' : ''}`;
                 shape.textContent = table.seats;
                 
-                // Calculate seat positions (need actual dimensions)
+                // Calculate seat positions
                 const shapeWidth = table.seats === 2 ? 72 : 96;
                 const shapeHeight = table.seats === 2 ? 72 : 64;
                 const seats = seatPositions(table.seats, shapeWidth, shapeHeight);
                 
-                // Create seats after shape is rendered
-                setTimeout(() => {
-                    seats.forEach(pos => {
-                        const seat = document.createElement('div');
-                        seat.className = 'seat';
-                        seat.style.left = `${pos.left}px`;
-                        seat.style.top = `${pos.top}px`;
-                        shape.appendChild(seat);
-                    });
-                }, 0);
+                // Create seats immediately
+                seats.forEach(pos => {
+                    const seat = document.createElement('div');
+                    seat.className = 'seat';
+                    seat.style.left = `${pos.left}px`;
+                    seat.style.top = `${pos.top}px`;
+                    shape.appendChild(seat);
+                });
                 
                 node.appendChild(shape);
                 
