@@ -75,6 +75,33 @@ exports.handler = async (event, context) => {
         // Parse request body
         const data = JSON.parse(event.body);
 
+        // Determine language (default to 'en' if not provided)
+        const headerLang = event.headers?.['accept-language']?.slice(0, 2);
+        const userLang = (data.lang || data.language || headerLang || 'en').toLowerCase();
+        const langCode = userLang === 'es' ? 'es' : 'en';
+        const isSpanish = langCode === 'es';
+
+        // Language translations object
+        const lang = {
+            newReservation: isSpanish ? 'Nueva Reservación' : 'New Reservation',
+            confirmationCode: isSpanish ? 'Código de Confirmación' : 'Confirmation Code',
+            customerName: isSpanish ? 'Nombre del Cliente' : 'Customer Name',
+            date: isSpanish ? 'Fecha' : 'Date',
+            time: isSpanish ? 'Hora' : 'Time',
+            partySize: isSpanish ? 'Comensales' : 'Party Size',
+            assignedTables: isSpanish ? 'Mesas Asignadas' : 'Assigned Tables',
+            staying: isSpanish ? 'Hospedaje' : 'Staying',
+            specialRequests: isSpanish ? 'Solicitudes Especiales' : 'Special Requests',
+            paymentHold: isSpanish ? 'Depósito Temporal' : 'Payment Hold',
+            yes: isSpanish ? 'Sí' : 'Yes',
+            language: isSpanish ? 'Idioma' : 'Language',
+            status: isSpanish ? 'Estado' : 'Status',
+            reservationReceived: isSpanish ? 'Solicitud de Reservación Recibida' : 'Reservation Request Received',
+            thankYou: isSpanish ? 'Gracias por tu solicitud de reservación en Solomon\'s Landing. Hemos recibido tu solicitud y confirmaremos tu reservación en las próximas 2 horas.' : 'Thank you for your reservation request at Solomon\'s Landing. We have received your request and will confirm your reservation within 2 hours.',
+            confirmationNote: isSpanish ? 'Recibirás un correo de confirmación una vez que tu mesa sea confirmada.' : 'You will receive a confirmation email once your table is confirmed.',
+            questions: isSpanish ? 'Si tienes alguna pregunta, por favor contáctanos al +52 624 219 3228 o responde a este correo.' : 'If you have any questions, please contact us at +52 624 219 3228 or reply to this email.'
+        };
+
         // Validate required fields (accept both old and new field names for backward compatibility)
         const fullName = data.full_name || data.name;
         const partySize = data.party_size || data.guests;
@@ -300,7 +327,7 @@ exports.handler = async (event, context) => {
         // Format date for display (supabase already initialized above)
         // Use America/Mazatlan timezone (same as Los Cabos)
         const dateObj = new Date(data.date + 'T00:00:00');
-        const formattedDate = dateObj.toLocaleDateString(data.language === 'es' ? 'es-MX' : 'en-US', { 
+        const formattedDate = dateObj.toLocaleDateString(langCode === 'es' ? 'es-MX' : 'en-US', { 
             weekday: 'long', 
             year: 'numeric', 
             month: 'long', 
@@ -450,7 +477,7 @@ exports.handler = async (event, context) => {
                     party_size: parseInt(partySize),
                     staying_place: data.staying_place || null,
                     notes: data.notes || null,
-                    language: data.language || 'en',
+                    language: langCode,
                     source: data.source || 'web',
                     status: 'pending',
                     payment_intent_id: data.payment_intent_id || null,
