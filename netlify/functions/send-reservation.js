@@ -316,55 +316,58 @@ exports.handler = async (event, context) => {
         }
 
         function findTableCombination(partySize, availableTables) {
+            // Helper to map table to result format
+            const mapTable = (t) => ({
+                table_id: t.id,
+                table_number: t.table_number,
+                capacity: t.capacity,
+                name: t.name,
+                area: t.area
+            });
+
             // Prefer exact fit
             const exactFit = availableTables.find(t => t.capacity === partySize);
             if (exactFit) {
-                return [{ table_id: exactFit.id, table_number: exactFit.table_number, capacity: exactFit.capacity }];
+                return [mapTable(exactFit)];
             }
             if (partySize <= 4) {
                 const tables2 = availableTables.filter(t => t.capacity === 2).slice(0, 2);
                 if (tables2.length === 2 && tables2[0].capacity * 2 >= partySize) {
-                    return tables2.map(t => ({ table_id: t.id, table_number: t.table_number, capacity: t.capacity }));
+                    return tables2.map(mapTable);
                 }
             }
             if (partySize <= 6) {
                 const table6 = availableTables.find(t => t.capacity === 6);
-                if (table6) return [{ table_id: table6.id, table_number: table6.table_number, capacity: table6.capacity }];
+                if (table6) return [mapTable(table6)];
                 const table4 = availableTables.find(t => t.capacity === 4);
                 const table2 = availableTables.find(t => t.capacity === 2);
                 if (table4 && table2 && table4.capacity + table2.capacity >= partySize) {
-                    return [
-                        { table_id: table4.id, table_number: table4.table_number, capacity: table4.capacity },
-                        { table_id: table2.id, table_number: table2.table_number, capacity: table2.capacity }
-                    ];
+                    return [mapTable(table4), mapTable(table2)];
                 }
             }
             if (partySize <= 8) {
                 const tables4 = availableTables.filter(t => t.capacity === 4).slice(0, 2);
                 if (tables4.length === 2) {
-                    return tables4.map(t => ({ table_id: t.id, table_number: t.table_number, capacity: t.capacity }));
+                    return tables4.map(mapTable);
                 }
             }
             if (partySize <= 10) {
                 const table6 = availableTables.find(t => t.capacity === 6);
                 const table4 = availableTables.find(t => t.capacity === 4);
                 if (table6 && table4) {
-                    return [
-                        { table_id: table6.id, table_number: table6.table_number, capacity: table6.capacity },
-                        { table_id: table4.id, table_number: table4.table_number, capacity: table4.capacity }
-                    ];
+                    return [mapTable(table6), mapTable(table4)];
                 }
             }
             if (partySize <= 12) {
                 const tables6 = availableTables.filter(t => t.capacity === 6).slice(0, 2);
                 if (tables6.length === 2) {
-                    return tables6.map(t => ({ table_id: t.id, table_number: t.table_number, capacity: t.capacity }));
+                    return tables6.map(mapTable);
                 }
             }
             const tables4 = availableTables.filter(t => t.capacity === 4);
             const needed = Math.ceil(partySize / 4);
             if (tables4.length >= needed) {
-                return tables4.slice(0, needed).map(t => ({ table_id: t.id, table_number: t.table_number, capacity: t.capacity }));
+                return tables4.slice(0, needed).map(mapTable);
             }
             return null;
         }
