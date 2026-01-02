@@ -247,8 +247,7 @@ exports.handler = async (event, context) => {
             };
         }
 
-        // Initialize Supabase client (reuse from availability check if possible, otherwise create new)
-        const supabase = createClient(supabaseUrl, supabaseKey);
+        // Get environment variables for email
         const resendApiKey = process.env.RESEND_API_KEY;
         const emailRestaurant = process.env.RESERVATIONS_TO_EMAIL || process.env.EMAIL_RESTAURANT || 'contact@solomonslanding.com.mx';
         const emailFrom = process.env.RESEND_FROM_EMAIL || process.env.EMAIL_FROM;
