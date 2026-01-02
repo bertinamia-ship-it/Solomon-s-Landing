@@ -50,6 +50,28 @@ exports.handler = async (event, context) => {
     }
 
     try {
+        // Get environment variables and initialize Supabase client ONCE at the start
+        const supabaseUrl = process.env.SUPABASE_URL;
+        const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+        
+        if (!supabaseUrl || !supabaseKey) {
+            console.error('❌ Supabase configuration missing');
+            return {
+                statusCode: 500,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                body: JSON.stringify({ 
+                    success: false, 
+                    error: 'Server configuration error. Please contact support.' 
+                })
+            };
+        }
+
+        // Initialize Supabase client once at function scope
+        const supabase = createClient(supabaseUrl, supabaseKey);
+
         // Parse request body
         const data = JSON.parse(event.body);
 
@@ -153,56 +175,50 @@ exports.handler = async (event, context) => {
         const occupiedSlots = getOccupiedSlots(data.time);
         const seatsNeeded = calculateSeatsNeeded(parseInt(partySize));
 
-        // Initialize Supabase client early for availability check
-        const supabaseUrl = process.env.SUPABASE_URL;
-        const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-        if (supabaseUrl && supabaseKey) {
-            const supabase = createClient(supabaseUrl, supabaseKey);
-            
-            for (const slotTime of occupiedSlots) {
-                // Get existing reservations
-                const { data: reservations } = await supabase
-                    .from('reservations')
-                    .select('party_size, status')
-                    .eq('date', data.date)
-                    .eq('time', slotTime)
-                    .in('status', ['pending', 'confirmed']);
+        // Check availability using supabase (already initialized above)
+        for (const slotTime of occupiedSlots) {
+            // Get existing reservations
+            const { data: reservations } = await supabase
+                .from('reservations')
+                .select('party_size, status')
+                .eq('date', data.date)
+                .eq('time', slotTime)
+                .in('status', ['pending', 'confirmed']);
 
-                let seatsUsed = 0;
-                if (reservations) {
-                    reservations.forEach(res => {
-                        seatsUsed += calculateSeatsNeeded(res.party_size);
-                    });
-                }
+            let seatsUsed = 0;
+            if (reservations) {
+                reservations.forEach(res => {
+                    seatsUsed += calculateSeatsNeeded(res.party_size);
+                });
+            }
 
-                // Get blocked seats
-                const { data: blocks } = await supabase
-                    .from('blocked_slots')
-                    .select('seats_blocked')
-                    .eq('date', data.date)
-                    .eq('time', slotTime);
+            // Get blocked seats
+            const { data: blocks } = await supabase
+                .from('blocked_slots')
+                .select('seats_blocked')
+                .eq('date', data.date)
+                .eq('time', slotTime);
 
-                let seatsBlocked = 0;
-                if (blocks) {
-                    blocks.forEach(block => {
-                        seatsBlocked += block.seats_blocked || 0;
-                    });
-                }
+            let seatsBlocked = 0;
+            if (blocks) {
+                blocks.forEach(block => {
+                    seatsBlocked += block.seats_blocked || 0;
+                });
+            }
 
-                const seatsAvailable = TOTAL_SEATS - seatsUsed - seatsBlocked;
-                if (seatsAvailable < seatsNeeded) {
-                    return {
-                        statusCode: 400,
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Access-Control-Allow-Origin': '*'
-                        },
-                        body: JSON.stringify({ 
-                            success: false, 
-                            error: `No availability for ${slotTime}. Only ${seatsAvailable} seats available, need ${seatsNeeded}.` 
-                        })
-                    };
-                }
+            const seatsAvailable = TOTAL_SEATS - seatsUsed - seatsBlocked;
+            if (seatsAvailable < seatsNeeded) {
+                return {
+                    statusCode: 400,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    body: JSON.stringify({ 
+                        success: false, 
+                        error: `No availability for ${slotTime}. Only ${seatsAvailable} seats available, need ${seatsNeeded}.` 
+                    })
+                };
             }
         }
 
@@ -262,22 +278,7 @@ exports.handler = async (event, context) => {
         console.log('  Using emailFrom:', emailFrom || 'NOT SET');
         console.log('  Using emailRestaurant:', emailRestaurant);
 
-        // Validate environment variables
-        if (!supabaseUrl || !supabaseKey) {
-            console.error('❌ Supabase configuration missing');
-            return {
-                statusCode: 500,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
-                },
-                body: JSON.stringify({ 
-                    success: false, 
-                    error: 'Server configuration error. Please contact support.' 
-                })
-            };
-        }
-
+        // Validate email environment variables
         if (!resendApiKey || !emailFrom) {
             console.error('❌ Resend configuration missing');
             console.error('  RESEND_API_KEY:', !!resendApiKey ? 'Set' : 'MISSING');
