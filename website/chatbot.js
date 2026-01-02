@@ -433,7 +433,27 @@ class RestaurantChatbot {
 
                         payload.datetime_iso = isoDatetime;
 
-                        // Step 1: Create Stripe hold (if enabled)
+                        // Step 1: Check availability
+                        const availabilityRes = await fetch('/.netlify/functions/check-availability', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                date: payload.date,
+                                time: payload.time,
+                                party_size: payload.party_size
+                            })
+                        });
+
+                        const availabilityResult = await availabilityRes.json().catch(() => ({}));
+                        console.log('🤖 Chatbot availability check:', availabilityResult);
+
+                        if (!availabilityResult.success || !availabilityResult.available) {
+                            throw new Error(this.currentLanguage === 'es'
+                                ? 'No hay disponibilidad para esta fecha y hora. Por favor selecciona otra opción.'
+                                : 'No availability for this date and time. Please select another option.');
+                        }
+
+                        // Step 2: Create Stripe hold (if enabled)
                         let paymentIntentId = null;
                         const holdRes = await fetch('/.netlify/functions/create-hold', {
                             method: 'POST',

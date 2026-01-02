@@ -107,8 +107,9 @@ exports.handler = async (event, context) => {
             };
         }
 
-        // Validate time format (HH:MM)
-        if (!data.time.match(/^\d{2}:\d{2}$/)) {
+        // Validate time format (HH:MM) and is valid reservation time
+        const VALID_TIMES = ['17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30'];
+        if (!data.time.match(/^\d{2}:\d{2}$/) || !VALID_TIMES.includes(data.time)) {
             return {
                 statusCode: 400,
                 headers: {
@@ -117,9 +118,92 @@ exports.handler = async (event, context) => {
                 },
                 body: JSON.stringify({ 
                     success: false, 
-                    error: 'Invalid time format. Expected HH:MM' 
+                    error: `Invalid time. Must be one of: ${VALID_TIMES.join(', ')}` 
                 })
             };
+        }
+
+        // Server-side availability check (reuse check-availability logic)
+        // Import the availability check logic directly
+        const TOTAL_SEATS = 106;
+        const RESERVATION_WINDOW_SLOTS = 3;
+        const VALID_TIMES = ['17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30'];
+        
+        function getOccupiedSlots(time) {
+            const timeIndex = VALID_TIMES.indexOf(time);
+            if (timeIndex === -1) return [];
+            const slots = [];
+            for (let i = 0; i < RESERVATION_WINDOW_SLOTS && (timeIndex + i) < VALID_TIMES.length; i++) {
+                slots.push(VALID_TIMES[timeIndex + i]);
+            }
+            return slots;
+        }
+
+        function calculateSeatsNeeded(partySize) {
+            if (partySize <= 2) return 2;
+            if (partySize <= 4) return 4;
+            if (partySize <= 6) return 6;
+            if (partySize <= 8) return 8;
+            if (partySize <= 10) return 10;
+            if (partySize <= 12) return 12;
+            return Math.ceil(partySize / 4) * 4;
+        }
+
+        // Check availability server-side
+        const occupiedSlots = getOccupiedSlots(data.time);
+        const seatsNeeded = calculateSeatsNeeded(parseInt(partySize));
+
+        // Initialize Supabase client early for availability check
+        const supabaseUrl = process.env.SUPABASE_URL;
+        const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+        if (supabaseUrl && supabaseKey) {
+            const supabase = createClient(supabaseUrl, supabaseKey);
+            
+            for (const slotTime of occupiedSlots) {
+                // Get existing reservations
+                const { data: reservations } = await supabase
+                    .from('reservations')
+                    .select('party_size, status')
+                    .eq('date', data.date)
+                    .eq('time', slotTime)
+                    .in('status', ['pending', 'confirmed']);
+
+                let seatsUsed = 0;
+                if (reservations) {
+                    reservations.forEach(res => {
+                        seatsUsed += calculateSeatsNeeded(res.party_size);
+                    });
+                }
+
+                // Get blocked seats
+                const { data: blocks } = await supabase
+                    .from('blocked_slots')
+                    .select('seats_blocked')
+                    .eq('date', data.date)
+                    .eq('time', slotTime);
+
+                let seatsBlocked = 0;
+                if (blocks) {
+                    blocks.forEach(block => {
+                        seatsBlocked += block.seats_blocked || 0;
+                    });
+                }
+
+                const seatsAvailable = TOTAL_SEATS - seatsUsed - seatsBlocked;
+                if (seatsAvailable < seatsNeeded) {
+                    return {
+                        statusCode: 400,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        body: JSON.stringify({ 
+                            success: false, 
+                            error: `No availability for ${slotTime}. Only ${seatsAvailable} seats available, need ${seatsNeeded}.` 
+                        })
+                    };
+                }
+            }
         }
 
         // Validate ISO datetime if provided, or build it
@@ -163,9 +247,8 @@ exports.handler = async (event, context) => {
             };
         }
 
-        // Get environment variables
-        const supabaseUrl = process.env.SUPABASE_URL;
-        const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+        // Initialize Supabase client (reuse from availability check if possible, otherwise create new)
+        const supabase = createClient(supabaseUrl, supabaseKey);
         const resendApiKey = process.env.RESEND_API_KEY;
         const emailRestaurant = process.env.RESERVATIONS_TO_EMAIL || process.env.EMAIL_RESTAURANT || 'contact@solomonslanding.com.mx';
         const emailFrom = process.env.RESEND_FROM_EMAIL || process.env.EMAIL_FROM;

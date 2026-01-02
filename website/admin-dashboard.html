@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Reservations | Solomon's Landing</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .admin-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .admin-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .date-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            align-items: center;
+        }
+        .date-selector input {
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        .slots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .slot-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            background: #f9fafb;
+        }
+        .slot-card.overbooked {
+            border-color: #dc2626;
+            background: #fef2f2;
+        }
+        .slot-card.full {
+            border-color: #f59e0b;
+            background: #fffbeb;
+        }
+        .slot-card.available {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+        .slot-time {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        .slot-stats {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+        .block-form {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: end;
+        }
+        .block-form input, .block-form select {
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+        }
+        .block-form button {
+            padding: 0.75rem 1.5rem;
+            background: #004A9F;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .block-form button:hover {
+            background: #003d82;
+        }
+        .reservations-list {
+            margin-top: 1rem;
+        }
+        .reservation-item {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .reservation-item:last-child {
+            border-bottom: none;
+        }
+        .password-gate {
+            max-width: 400px;
+            margin: 10rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+        .password-gate input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+        .password-gate button {
+            width: 100%;
+            padding: 0.75rem;
+            background: #004A9F;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .error-message {
+            color: #dc2626;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="passwordGate" class="password-gate">
+        <h2>Admin Access</h2>
+        <input type="password" id="adminPassword" placeholder="Enter admin password" autocomplete="off">
+        <button onclick="checkPassword()">Login</button>
+        <div id="passwordError" class="error-message" style="display: none;"></div>
+    </div>
+
+    <div id="adminDashboard" style="display: none;">
+        <div class="admin-container">
+            <div class="admin-header">
+                <h1>Reservations Dashboard</h1>
+                <button onclick="logout()" style="padding: 0.5rem 1rem; background: #dc2626; color: white; border: none; border-radius: 6px; cursor: pointer;">Logout</button>
+            </div>
+
+            <div class="admin-section">
+                <h2>View Reservations by Date</h2>
+                <div class="date-selector">
+                    <label>Select Date:</label>
+                    <input type="date" id="viewDate" onchange="loadReservations()">
+                    <button onclick="loadReservations()" style="padding: 0.75rem 1.5rem; background: #004A9F; color: white; border: none; border-radius: 8px; cursor: pointer;">Load</button>
+                </div>
+                <div id="slotsContainer" class="slots-grid"></div>
+            </div>
+
+            <div class="admin-section">
+                <h2>Add Manual Block (OpenTable)</h2>
+                <div class="block-form">
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem;">Date:</label>
+                        <input type="date" id="blockDate" required>
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem;">Time:</label>
+                        <select id="blockTime" required>
+                            <option value="17:30">5:30 PM</option>
+                            <option value="18:00">6:00 PM</option>
+                            <option value="18:30">6:30 PM</option>
+                            <option value="19:00">7:00 PM</option>
+                            <option value="19:30">7:30 PM</option>
+                            <option value="20:00">8:00 PM</option>
+                            <option value="20:30">8:30 PM</option>
+                            <option value="21:00">9:00 PM</option>
+                            <option value="21:30">9:30 PM</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem;">Seats Blocked:</label>
+                        <input type="number" id="blockSeats" min="1" max="106" value="4" required>
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem;">Reason:</label>
+                        <input type="text" id="blockReason" value="OpenTable" placeholder="OpenTable">
+                    </div>
+                    <button onclick="addBlock()">Add Block</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ADMIN_PASSWORD = 'solomons2024'; // Change this in production
+        const TOTAL_SEATS = 106;
+        const VALID_TIMES = ['17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30'];
+
+        function checkPassword() {
+            const password = document.getElementById('adminPassword').value;
+            const errorDiv = document.getElementById('passwordError');
+            
+            if (password === ADMIN_PASSWORD) {
+                sessionStorage.setItem('adminAuthenticated', 'true');
+                document.getElementById('passwordGate').style.display = 'none';
+                document.getElementById('adminDashboard').style.display = 'block';
+                errorDiv.style.display = 'none';
+                // Set today's date as default
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('viewDate').value = today;
+                loadReservations();
+            } else {
+                errorDiv.textContent = 'Incorrect password';
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        function logout() {
+            sessionStorage.removeItem('adminAuthenticated');
+            document.getElementById('passwordGate').style.display = 'block';
+            document.getElementById('adminDashboard').style.display = 'none';
+            document.getElementById('adminPassword').value = '';
+        }
+
+        // Check authentication on load
+        if (sessionStorage.getItem('adminAuthenticated') === 'true') {
+            document.getElementById('passwordGate').style.display = 'none';
+            document.getElementById('adminDashboard').style.display = 'block';
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('viewDate').value = today;
+            loadReservations();
+        }
+
+        async function loadReservations() {
+            const date = document.getElementById('viewDate').value;
+            if (!date) return;
+
+            const container = document.getElementById('slotsContainer');
+            container.innerHTML = '<p>Loading...</p>';
+
+            try {
+                // Load reservations for this date
+                const resRes = await fetch(`/.netlify/functions/get-reservations?date=${date}`);
+                const reservations = await resRes.json().catch(() => []);
+
+                // Load blocks for this date
+                const blockRes = await fetch(`/.netlify/functions/get-blocks?date=${date}`);
+                const blocks = await blockRes.json().catch(() => []);
+
+                // Calculate availability for each slot
+                container.innerHTML = '';
+                VALID_TIMES.forEach(time => {
+                    const slotReservations = reservations.filter(r => r.time === time && ['pending', 'confirmed'].includes(r.status));
+                    const slotBlocks = blocks.filter(b => b.time === time);
+                    
+                    let seatsUsed = 0;
+                    slotReservations.forEach(r => {
+                        seatsUsed += calculateSeatsNeeded(r.party_size);
+                    });
+
+                    let seatsBlocked = 0;
+                    slotBlocks.forEach(b => {
+                        seatsBlocked += b.seats_blocked || 0;
+                    });
+
+                    const seatsAvailable = TOTAL_SEATS - seatsUsed - seatsBlocked;
+                    const status = seatsAvailable < 10 ? 'overbooked' : seatsAvailable < 30 ? 'full' : 'available';
+
+                    const card = document.createElement('div');
+                    card.className = `slot-card ${status}`;
+                    card.innerHTML = `
+                        <div class="slot-time">${formatTime(time)}</div>
+                        <div class="slot-stats">
+                            <div>Used: ${seatsUsed} seats</div>
+                            <div>Blocked: ${seatsBlocked} seats</div>
+                            <div><strong>Available: ${seatsAvailable} seats</strong></div>
+                            <div style="margin-top: 0.5rem; font-size: 0.85rem;">Reservations: ${slotReservations.length}</div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                container.innerHTML = `<p style="color: #dc2626;">Error loading reservations: ${error.message}</p>`;
+            }
+        }
+
+        function calculateSeatsNeeded(partySize) {
+            if (partySize <= 2) return 2;
+            if (partySize <= 4) return 4;
+            if (partySize <= 6) return 6;
+            if (partySize <= 8) return 8;
+            if (partySize <= 10) return 10;
+            if (partySize <= 12) return 12;
+            return Math.ceil(partySize / 4) * 4;
+        }
+
+        function formatTime(time) {
+            const [hour, minute] = time.split(':');
+            const h = parseInt(hour);
+            const period = h >= 12 ? 'PM' : 'AM';
+            const displayHour = h > 12 ? h - 12 : h === 0 ? 12 : h;
+            return `${displayHour}:${minute} ${period}`;
+        }
+
+        async function addBlock() {
+            const date = document.getElementById('blockDate').value;
+            const time = document.getElementById('blockTime').value;
+            const seats = parseInt(document.getElementById('blockSeats').value);
+            const reason = document.getElementById('blockReason').value || 'OpenTable';
+
+            if (!date || !time || !seats) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            try {
+                const res = await fetch('/.netlify/functions/add-block', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ date, time, seats_blocked: seats, reason })
+                });
+
+                const result = await res.json();
+                if (result.success) {
+                    alert('Block added successfully');
+                    document.getElementById('blockDate').value = '';
+                    document.getElementById('blockSeats').value = '4';
+                    if (date === document.getElementById('viewDate').value) {
+                        loadReservations();
+                    }
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('Error adding block: ' + error.message);
+            }
+        }
+
+        // Allow Enter key on password field
+        document.getElementById('adminPassword')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') checkPassword();
+        });
+    </script>
+</body>
+</html>
+
