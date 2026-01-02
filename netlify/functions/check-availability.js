@@ -208,40 +208,59 @@ exports.handler = async (event, context) => {
 
         const endDatetime = getEndDatetime(datetimeIso);
 
-        // Get all active tables
-        const { data: allTables, error: tablesError } = await supabase
-            .from('tables')
-            .select('id, table_number, capacity')
-            .eq('is_active', true);
+        // Try to get tables from Supabase, fall back to hardcoded inventory if table doesn't exist
+        let allTables = null;
+        let tablesError = null;
+        
+        try {
+            const tablesResult = await supabase
+                .from('tables')
+                .select('id, table_number, capacity')
+                .eq('is_active', true);
+            
+            allTables = tablesResult.data;
+            tablesError = tablesResult.error;
+        } catch (err) {
+            tablesError = err;
+        }
 
-        if (tablesError) {
+        // If tables table doesn't exist, use hardcoded inventory
+        if (tablesError && (tablesError.message?.includes('schema cache') || tablesError.message?.includes('does not exist'))) {
+            console.warn('⚠️ Tables table not found, using hardcoded inventory');
+            // Hardcoded inventory: 17 tables of 4, 6 tables of 6, 1 table of 2
+            allTables = [
+                ...Array.from({ length: 17 }, (_, i) => ({ id: `hardcoded-${i + 1}`, table_number: i + 1, capacity: 4 })),
+                ...Array.from({ length: 6 }, (_, i) => ({ id: `hardcoded-${i + 18}`, table_number: i + 18, capacity: 6 })),
+                { id: 'hardcoded-24', table_number: 24, capacity: 2 }
+            ];
+        } else if (tablesError) {
             throw tablesError;
         }
 
-        // Get tables that are already assigned during this time window
-        const { data: assignments, error: assignmentsError } = await supabase
-            .from('table_assignments')
-            .select('table_id, datetime_iso')
-            .eq('status', 'active')
-            .gte('datetime_iso', datetimeIso)
-            .lt('datetime_iso', endDatetime);
+        // Get tables that are already assigned during this time window (only if table_assignments exists)
+        let occupiedTableIds = new Set();
+        try {
+            const { data: assignments, error: assignmentsError } = await supabase
+                .from('table_assignments')
+                .select('table_id, datetime_iso')
+                .eq('status', 'active')
+                .gte('datetime_iso', datetimeIso)
+                .lt('datetime_iso', endDatetime);
 
-        if (assignmentsError) {
-            throw assignmentsError;
-        }
-
-        // Get list of occupied table IDs
-        const occupiedTableIds = new Set();
-        if (assignments) {
-            assignments.forEach(assignment => {
-                const assignmentStart = new Date(assignment.datetime_iso);
-                const assignmentEnd = new Date(assignmentStart.getTime() + RESERVATION_DURATION_MINUTES * 60 * 1000);
-                const ourStart = new Date(datetimeIso);
-                const ourEnd = new Date(endDatetime);
-                if (assignmentStart < ourEnd && assignmentEnd > ourStart) {
-                    occupiedTableIds.add(assignment.table_id);
-                }
-            });
+            if (!assignmentsError && assignments) {
+                assignments.forEach(assignment => {
+                    const assignmentStart = new Date(assignment.datetime_iso);
+                    const assignmentEnd = new Date(assignmentStart.getTime() + RESERVATION_DURATION_MINUTES * 60 * 1000);
+                    const ourStart = new Date(datetimeIso);
+                    const ourEnd = new Date(endDatetime);
+                    if (assignmentStart < ourEnd && assignmentEnd > ourStart) {
+                        occupiedTableIds.add(assignment.table_id);
+                    }
+                });
+            }
+        } catch (err) {
+            // If table_assignments doesn't exist, just continue without it
+            console.warn('⚠️ table_assignments table not found, skipping table-level checks');
         }
 
         // Filter out occupied tables
