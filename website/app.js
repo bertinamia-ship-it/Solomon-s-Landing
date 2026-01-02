@@ -1701,17 +1701,17 @@ function initReservationForm() {
                 }
             }
 
-            // Step 3: Use hold result from check above (already created)
+            // Step 3: Process hold result
             let paymentIntentId = null;
             const holdResult = holdCheckResult;
 
-            if (holdResult.hold_enabled) {
-                if (!holdResult.success || !holdResult.client_secret) {
+            // Only run Stripe confirmation if holds are enabled AND client_secret exists
+            if (holdResult.hold_enabled === true && holdResult.client_secret) {
+                if (!holdResult.success) {
                     console.error('❌ Hold creation failed:', holdCheckRes.status, holdResult);
                     throw new Error(holdResult.error || 'Failed to create payment hold');
                 }
 
-                // Step 2: Confirm payment with Stripe.js (test mode)
                 // Load Stripe.js if not already loaded
                 if (typeof window.Stripe === 'undefined') {
                     await new Promise((resolve, reject) => {
@@ -1724,11 +1724,10 @@ function initReservationForm() {
                 }
 
                 // Get Stripe publishable key from environment or use test key
-                // In production, this should be set via Netlify env var
                 const stripePublishableKey = window.STRIPE_PUBLISHABLE_KEY || 'pk_test_placeholder';
                 const stripe = window.Stripe(stripePublishableKey);
 
-                // For test mode: confirm with test card 4242 4242 4242 4242
+                // Confirm payment with Stripe.js (test mode)
                 console.log('💳 Confirming payment hold with test card...');
                 try {
                     const confirmResult = await stripe.confirmCardPayment(holdResult.client_secret, {
@@ -1760,6 +1759,10 @@ function initReservationForm() {
                     console.error('❌ Stripe confirmation error:', stripeError);
                     throw new Error(stripeError.message || 'Payment confirmation failed');
                 }
+            } else if (holdResult.hold_enabled === false) {
+                // Holds are disabled - skip Stripe and proceed directly to reservation
+                console.log('ℹ️ Payment holds are disabled, proceeding directly to reservation');
+                paymentIntentId = null;
             }
 
             // Add payment_intent_id, ISO datetime, and source to payload

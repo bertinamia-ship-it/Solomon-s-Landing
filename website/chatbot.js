@@ -480,16 +480,16 @@ class RestaurantChatbot {
                                 : `Error checking payment system (${holdCheckRes.status}). Please try again.`);
                         }
 
-                        // Step 3: Create Stripe hold (if enabled)
+                        // Step 3: Process Stripe hold (only if enabled)
                         let paymentIntentId = null;
                         const holdResult = holdCheckResult;
 
-                        if (holdResult.hold_enabled) {
-                            if (!holdResult.success || !holdResult.client_secret) {
+                        // Only run Stripe confirmation if holds are enabled AND client_secret exists
+                        if (holdResult.hold_enabled === true && holdResult.client_secret) {
+                            if (!holdResult.success) {
                                 throw new Error(holdResult.error || 'Failed to create payment hold');
                             }
 
-                            // For chatbot, confirm payment with Stripe.js (test mode)
                             // Load Stripe.js if not already loaded
                             if (typeof window.Stripe === 'undefined') {
                                 await new Promise((resolve, reject) => {
@@ -535,6 +535,10 @@ class RestaurantChatbot {
                                 console.error('❌ Stripe confirmation error:', stripeError);
                                 throw new Error(stripeError.message || 'Payment confirmation failed');
                             }
+                        } else if (holdResult.hold_enabled === false) {
+                            // Holds are disabled - skip Stripe and proceed directly to reservation
+                            console.log('ℹ️ Payment holds are disabled, proceeding directly to reservation');
+                            paymentIntentId = null;
                         }
 
                         // Add payment_intent_id, datetime_iso, and source to payload
