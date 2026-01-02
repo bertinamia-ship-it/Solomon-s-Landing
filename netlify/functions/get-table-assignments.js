@@ -67,7 +67,7 @@ exports.handler = async (event, context) => {
             .select(`
                 *,
                 tables!inner(name, table_number, area, seats),
-                reservations(name, party_size)
+                reservations(name, full_name, party_size)
             `)
             .eq('date', date)
             .in('status', ['reserved', 'blocked', 'unavailable'])
@@ -90,7 +90,7 @@ exports.handler = async (event, context) => {
             table_number: a.tables?.table_number,
             table_area: a.tables?.area,
             seats: a.tables?.seats || a.tables?.capacity, // Support both 'seats' and 'capacity'
-            reservation_name: a.reservations?.name,
+            reservation_name: a.reservations?.name || a.reservations?.full_name,
             reservation_party_size: a.reservations?.party_size
         }));
 

@@ -1,18 +1,18 @@
 /**
  * Netlify Function: Get Reservations by Date
- * Admin dashboard function to fetch reservations for a specific date
+ * Returns reservations for a specific date
  */
 
 const { createClient } = require('@supabase/supabase-js');
 
 exports.handler = async (event, context) => {
-    // Handle CORS
+    // CORS handling
     if (event.httpMethod === 'OPTIONS') {
         return {
             statusCode: 200,
             headers: {
                 'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
                 'Access-Control-Allow-Methods': 'GET, OPTIONS'
             },
             body: ''
@@ -59,15 +59,14 @@ exports.handler = async (event, context) => {
 
         const supabase = createClient(supabaseUrl, supabaseKey);
 
+        // Get reservations for this date
         const { data: reservations, error } = await supabase
             .from('reservations')
             .select('*')
             .eq('date', date)
             .order('time', { ascending: true });
 
-        if (error) {
-            throw error;
-        }
+        if (error) throw error;
 
         return {
             statusCode: 200,
@@ -79,15 +78,14 @@ exports.handler = async (event, context) => {
         };
 
     } catch (error) {
-        console.error('Error fetching reservations:', error);
+        console.error('❌ Error fetching reservations:', error);
         return {
             statusCode: 500,
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'
             },
-            body: JSON.stringify({ success: false, error: error.message })
+            body: JSON.stringify({ success: false, error: error.message || 'Internal server error' })
         };
     }
 };
-

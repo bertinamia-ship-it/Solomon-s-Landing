@@ -4,749 +4,737 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hostess Dashboard - Solomon's Landing</title>
-    <link rel="stylesheet" href="styles.css">
     <style>
-        * { box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; background: #f5f5f5; }
-        .dashboard-container { max-width: 1600px; margin: 0 auto; padding: 2rem; }
-        .dashboard-header { background: white; padding: 1.5rem 2rem; border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; }
-        .dashboard-header h1 { margin: 0; color: #004A9F; }
-        .section { background: white; border-radius: 12px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .section h2 { margin-top: 0; color: #1e293b; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; }
-        .date-controls { display: flex; gap: 1rem; align-items: center; margin-bottom: 2rem; }
-        .date-controls input, .date-controls select { padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem; }
-        .date-controls button { padding: 0.75rem 1.5rem; background: #004A9F; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
-        .date-controls button:hover { background: #003d82; }
-        .slots-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
-        .slot-card { border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; background: #f9fafb; transition: all 0.3s; }
-        .slot-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .slot-card.overbooked { border-color: #dc2626; background: #fef2f2; }
-        .slot-card.full { border-color: #f59e0b; background: #fffbeb; }
-        .slot-card.available { border-color: #10b981; background: #f0fdf4; }
-        .slot-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-        .slot-time { font-weight: 700; font-size: 1.2rem; color: #1e293b; }
-        .slot-status { padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.85rem; font-weight: 600; }
-        .slot-status.available { background: #10b981; color: white; }
-        .slot-status.full { background: #f59e0b; color: white; }
-        .slot-status.overbooked { background: #dc2626; color: white; }
-        .slot-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem; }
-        .stat-item { padding: 0.75rem; background: white; border-radius: 8px; }
-        .stat-label { font-size: 0.85rem; color: #6b7280; margin-bottom: 0.25rem; }
-        .stat-value { font-size: 1.1rem; font-weight: 700; color: #1e293b; }
-        .reservations-list { margin-top: 1rem; max-height: 300px; overflow-y: auto; }
-        .reservation-item { padding: 1rem; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
-        .reservation-item:last-child { border-bottom: none; }
-        .reservation-info { flex: 1; }
-        .reservation-name { font-weight: 600; color: #1e293b; margin-bottom: 0.25rem; }
-        .reservation-details { font-size: 0.9rem; color: #6b7280; }
-        .reservation-tables { font-size: 0.85rem; color: #004A9F; font-weight: 600; }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
-        .form-group { display: flex; flex-direction: column; }
-        .form-group label { margin-bottom: 0.5rem; font-weight: 600; color: #1e293b; font-size: 0.9rem; }
-        .form-group input, .form-group select, .form-group textarea { padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem; }
-        .form-group textarea { resize: vertical; min-height: 80px; }
-        .btn-primary { padding: 0.75rem 1.5rem; background: #004A9F; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #1e293b;
+        }
+        .dashboard-container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .dashboard-header {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .dashboard-header h1 {
+            color: #004A9F;
+            font-size: 1.75rem;
+        }
+        .btn-logout {
+            padding: 0.75rem 1.5rem;
+            background: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        .btn-logout:hover { background: #b91c1c; }
+        .controls-section {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .controls-row {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .controls-row label {
+            font-weight: 600;
+            color: #374151;
+        }
+        .controls-row input,
+        .controls-row select {
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        .area-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        .area-tab {
+            padding: 0.75rem 1.5rem;
+            background: #e2e8f0;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #6b7280;
+        }
+        .area-tab.active {
+            background: #004A9F;
+            color: white;
+        }
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+        @media (max-width: 1200px) {
+            .main-content { grid-template-columns: 1fr; }
+        }
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .section h2 {
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            color: #1e293b;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.75rem;
+        }
+        .floor-plan-container {
+            position: relative;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            background: #f9fafb;
+            min-height: 600px;
+            overflow: auto;
+        }
+        .floor-plan-canvas {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            background: white;
+        }
+        .table-element {
+            position: absolute;
+            border: 3px solid;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            user-select: none;
+            transition: all 0.2s;
+        }
+        .table-element:hover {
+            transform: scale(1.05);
+            z-index: 100;
+        }
+        .table-element.available {
+            background: #d1fae5;
+            border-color: #10b981;
+            color: #065f46;
+        }
+        .table-element.reserved {
+            background: #dbeafe;
+            border-color: #3b82f6;
+            color: #1e40af;
+        }
+        .table-element.blocked {
+            background: #fef3c7;
+            border-color: #f59e0b;
+            color: #92400e;
+        }
+        .table-element.unavailable {
+            background: #fee2e2;
+            border-color: #ef4444;
+            color: #991b1b;
+        }
+        .status-legend {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        .legend-color {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            border: 2px solid;
+        }
+        .legend-color.available {
+            background: #d1fae5;
+            border-color: #10b981;
+        }
+        .legend-color.reserved {
+            background: #dbeafe;
+            border-color: #3b82f6;
+        }
+        .legend-color.blocked {
+            background: #fef3c7;
+            border-color: #f59e0b;
+        }
+        .legend-color.unavailable {
+            background: #fee2e2;
+            border-color: #ef4444;
+        }
+        .reservations-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .reservation-item,
+        .block-item {
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        .reservation-name {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+        .reservation-details {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+        .reservation-table {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: #004A9F;
+            font-weight: 600;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-content h3 {
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            color: #1e293b;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #374151;
+        }
+        .form-group select,
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+        .btn-primary {
+            padding: 0.75rem 1.5rem;
+            background: #004A9F;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+        }
         .btn-primary:hover { background: #003d82; }
-        .btn-secondary { padding: 0.75rem 1.5rem; background: #6b7280; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
+        .btn-secondary {
+            padding: 0.75rem 1.5rem;
+            background: #6b7280;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+        }
         .btn-secondary:hover { background: #4b5563; }
-        .btn-danger { padding: 0.75rem 1.5rem; background: #dc2626; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
-        .btn-danger:hover { background: #b91c1c; }
-        .password-gate { max-width: 400px; margin: 10rem auto; padding: 2rem; background: white; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
-        .password-gate input { width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 8px; margin-bottom: 1rem; font-size: 1rem; }
-        .password-gate button { width: 100%; padding: 0.75rem; background: #004A9F; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
-        .error-message { color: #dc2626; margin-top: 0.5rem; font-size: 0.9rem; }
-        .success-message { color: #10b981; margin-top: 0.5rem; font-size: 0.9rem; }
-        .tabs { display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 2px solid #e2e8f0; }
-        .tab { padding: 1rem 1.5rem; background: none; border: none; cursor: pointer; font-weight: 600; color: #6b7280; border-bottom: 3px solid transparent; margin-bottom: -2px; }
-        .tab.active { color: #004A9F; border-bottom-color: #004A9F; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .table-assignments { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 1rem; }
-        .table-badge { padding: 0.5rem 1rem; background: #e2e8f0; border-radius: 8px; text-align: center; font-weight: 600; }
-        .table-badge.assigned { background: #dbeafe; color: #1e40af; }
-        .capacity-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem; }
-        .capacity-card { padding: 1.5rem; background: #f9fafb; border-radius: 8px; border: 2px solid #e2e8f0; }
-        .capacity-card h3 { margin-top: 0; font-size: 1rem; color: #6b7280; }
-        .capacity-card .number { font-size: 2rem; font-weight: 700; color: #1e293b; }
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #6b7280;
+        }
+        .message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        .message.success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .message.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
     </style>
 </head>
 <body>
-    <div id="passwordGate" class="password-gate">
-        <h2>Hostess Dashboard Access</h2>
-        <input type="password" id="adminPassword" placeholder="Enter password" autocomplete="off">
-        <button onclick="checkPassword()">Login</button>
-        <div id="passwordError" class="error-message" style="display: none;"></div>
-    </div>
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1>🍽️ Hostess Dashboard</h1>
+            <button class="btn-logout" onclick="logout()">Logout</button>
+        </div>
 
-    <div id="hostessDashboard" style="display: none;">
-        <div class="dashboard-container">
-            <div class="dashboard-header">
-                <h1>🍽️ Hostess Dashboard</h1>
-                <button onclick="logout()" class="btn-danger">Logout</button>
+        <div class="controls-section">
+            <div class="controls-row">
+                <label>Date:</label>
+                <input type="date" id="selectedDate" onchange="loadFloorPlan()">
+                <label>Time:</label>
+                <select id="selectedTime" onchange="loadFloorPlan()">
+                    <option value="17:30">5:30 PM</option>
+                    <option value="18:00">6:00 PM</option>
+                    <option value="18:30">6:30 PM</option>
+                    <option value="19:00">7:00 PM</option>
+                    <option value="19:30">7:30 PM</option>
+                    <option value="20:00">8:00 PM</option>
+                    <option value="20:30">8:30 PM</option>
+                    <option value="21:00">9:00 PM</option>
+                    <option value="21:30">9:30 PM</option>
+                </select>
             </div>
-
-            <div class="tabs">
-                <button class="tab active" onclick="switchTab('overview')">Overview</button>
-                <button class="tab" onclick="switchTab('floorplan')">Floor Plan</button>
-                <button class="tab" onclick="switchTab('reservations')">Reservations</button>
-                <button class="tab" onclick="switchTab('opentable')">Quick Add OpenTable</button>
-                <button class="tab" onclick="switchTab('blocks')">Block Tables</button>
-                <button class="tab" onclick="switchTab('manual')">Manual Reservation</button>
+            <div class="area-tabs">
+                <button class="area-tab active" onclick="switchArea('Main Floor')">Main Floor</button>
+                <button class="area-tab" onclick="switchArea('Sushi Bar')">Sushi Bar</button>
             </div>
+        </div>
 
-            <!-- Overview Tab -->
-            <div id="overviewTab" class="tab-content active">
-                <div class="section">
-                    <h2>Occupancy by Date & Time</h2>
-                    <div class="date-controls">
-                        <label>Date:</label>
-                        <input type="date" id="overviewDate" onchange="loadOverview()">
-                        <button onclick="loadOverview()" class="btn-primary">Load</button>
+        <div class="main-content">
+            <!-- LEFT: Floor Plan -->
+            <div class="section">
+                <h2>Floor Plan</h2>
+                <div class="status-legend">
+                    <div class="legend-item">
+                        <div class="legend-color available"></div>
+                        <span>Available</span>
                     </div>
-                    <div id="overviewSlots" class="slots-grid"></div>
-                </div>
-            </div>
-
-            <!-- Floor Plan Tab -->
-            <div id="floorplanTab" class="tab-content">
-                <div class="section">
-                    <h2>Floor Plan View</h2>
-                    <div class="date-controls">
-                        <label>Date:</label>
-                        <input type="date" id="floorplanDate" onchange="loadFloorPlan()">
-                        <label>Time:</label>
-                        <select id="floorplanTime" onchange="loadFloorPlan()">
-                            <option value="17:30">5:30 PM</option>
-                            <option value="18:00">6:00 PM</option>
-                            <option value="18:30">6:30 PM</option>
-                            <option value="19:00">7:00 PM</option>
-                            <option value="19:30">7:30 PM</option>
-                            <option value="20:00">8:00 PM</option>
-                            <option value="20:30">8:30 PM</option>
-                            <option value="21:00">9:00 PM</option>
-                            <option value="21:30">9:30 PM</option>
-                        </select>
-                        <button onclick="loadFloorPlan()" class="btn-primary">Load</button>
+                    <div class="legend-item">
+                        <div class="legend-color reserved"></div>
+                        <span>Reserved</span>
                     </div>
-                    <div id="floorplanContainer"></div>
-                </div>
-            </div>
-
-            <!-- Reservations Tab -->
-            <div id="reservationsTab" class="tab-content">
-                <div class="section">
-                    <h2>View Reservations</h2>
-                    <div class="date-controls">
-                        <label>Date:</label>
-                        <input type="date" id="reservationsDate" onchange="loadReservations()">
-                        <button onclick="loadReservations()" class="btn-primary">Load</button>
+                    <div class="legend-item">
+                        <div class="legend-color blocked"></div>
+                        <span>Blocked</span>
                     </div>
-                    <div id="reservationsList"></div>
+                    <div class="legend-item">
+                        <div class="legend-color unavailable"></div>
+                        <span>Unavailable</span>
+                    </div>
+                </div>
+                <div class="floor-plan-container">
+                    <div id="floorPlanCanvas" class="floor-plan-canvas">
+                        <div class="loading">Loading floor plan...</div>
+                    </div>
                 </div>
             </div>
 
-            <!-- OpenTable Quick Add Tab -->
-            <div id="opentableTab" class="tab-content">
-                <div class="section">
-                    <h2>Quick Add OpenTable Reservation</h2>
-                    <form id="opentableForm" onsubmit="addOpenTableReservation(event)">
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label>Name (Optional):</label>
-                                <input type="text" id="otName">
-                            </div>
-                            <div class="form-group">
-                                <label>Guests:</label>
-                                <input type="number" id="otGuests" min="1" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Date:</label>
-                                <input type="date" id="otDate" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Time:</label>
-                                <select id="otTime" required>
-                                    <option value="17:30">5:30 PM</option>
-                                    <option value="18:00">6:00 PM</option>
-                                    <option value="18:30">6:30 PM</option>
-                                    <option value="19:00">7:00 PM</option>
-                                    <option value="19:30">7:30 PM</option>
-                                    <option value="20:00">8:00 PM</option>
-                                    <option value="20:30">8:30 PM</option>
-                                    <option value="21:00">9:00 PM</option>
-                                    <option value="21:30">9:30 PM</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Auto-assign tables</label>
-                                <input type="checkbox" id="otAutoAssign" checked>
-                            </div>
-                            <div class="form-group">
-                                <label>Manual table selection</label>
-                                <input type="checkbox" id="otManualSelect" onchange="toggleManualTableSelect()">
-                            </div>
-                            <div class="form-group">
-                                <label>Notes:</label>
-                                <textarea id="otNotes" placeholder="e.g., OpenTable confirmation #"></textarea>
-                            </div>
-                        </div>
-                        <div id="manualTableSelect" style="display: none; margin-top: 1rem;">
-                            <div id="tableSelectContainer"></div>
-                        </div>
-                        <button type="submit" class="btn-primary">Add OpenTable Reservation</button>
-                        <div id="otMessage"></div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Block Tables Tab -->
-            <div id="blocksTab" class="tab-content">
-                <div class="section">
-                    <h2>Block Tables (OpenTable)</h2>
-                    <form id="blockForm" onsubmit="addBlock(event)">
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label>Date:</label>
-                                <input type="date" id="blockDate" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Time:</label>
-                                <select id="blockTime" required>
-                                    <option value="17:30">5:30 PM</option>
-                                    <option value="18:00">6:00 PM</option>
-                                    <option value="18:30">6:30 PM</option>
-                                    <option value="19:00">7:00 PM</option>
-                                    <option value="19:30">7:30 PM</option>
-                                    <option value="20:00">8:00 PM</option>
-                                    <option value="20:30">8:30 PM</option>
-                                    <option value="21:00">9:00 PM</option>
-                                    <option value="21:30">9:30 PM</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Seats to Block:</label>
-                                <input type="number" id="blockSeats" min="1" max="106" value="4" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Reason:</label>
-                                <input type="text" id="blockReason" value="OpenTable" placeholder="OpenTable">
-                            </div>
-                        </div>
-                        <button type="submit" class="btn-primary">Add Block</button>
-                        <div id="blockMessage"></div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Manual Reservation Tab -->
-            <div id="manualTab" class="tab-content">
-                <div class="section">
-                    <h2>Add Manual Reservation (Phone)</h2>
-                    <form id="manualReservationForm" onsubmit="addManualReservation(event)">
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label>Full Name:</label>
-                                <input type="text" id="manualName" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Email:</label>
-                                <input type="email" id="manualEmail" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Phone:</label>
-                                <input type="tel" id="manualPhone" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Date:</label>
-                                <input type="date" id="manualDate" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Time:</label>
-                                <select id="manualTime" required>
-                                    <option value="17:30">5:30 PM</option>
-                                    <option value="18:00">6:00 PM</option>
-                                    <option value="18:30">6:30 PM</option>
-                                    <option value="19:00">7:00 PM</option>
-                                    <option value="19:30">7:30 PM</option>
-                                    <option value="20:00">8:00 PM</option>
-                                    <option value="20:30">8:30 PM</option>
-                                    <option value="21:00">9:00 PM</option>
-                                    <option value="21:30">9:30 PM</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Party Size:</label>
-                                <input type="number" id="manualPartySize" min="1" max="106" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Notes:</label>
-                                <textarea id="manualNotes"></textarea>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn-primary">Create Reservation</button>
-                        <div id="manualMessage"></div>
-                    </form>
+            <!-- RIGHT: Reservations & Blocks -->
+            <div class="section">
+                <h2>Reservations & Blocks</h2>
+                <div id="reservationsList" class="reservations-list">
+                    <div class="loading">Loading...</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        const ADMIN_PASSWORD = 'solomons2024'; // Change this in production
-        const TOTAL_SEATS = 106;
-        const VALID_TIMES = ['17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30'];
+    <!-- Table Action Modal -->
+    <div id="tableModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle">Table Actions</h3>
+            <div id="modalBody"></div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
 
-        function checkPassword() {
-            const password = document.getElementById('adminPassword').value;
-            const errorDiv = document.getElementById('passwordError');
+    <script>
+        // Auth check
+        const role = sessionStorage.getItem('dashboardRole');
+        const token = sessionStorage.getItem('dashboardAuthToken');
+        
+        if (!role || !token || (role !== 'hostess' && role !== 'admin')) {
+            alert('Unauthorized. Redirecting to login...');
+            window.location.href = '/index.html';
+        }
+
+        // API helper
+        async function api(path, opts = {}) {
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                ...(opts.headers || {})
+            };
             
-            if (password === ADMIN_PASSWORD) {
-                sessionStorage.setItem('hostessAuthenticated', 'true');
-                document.getElementById('passwordGate').style.display = 'none';
-                document.getElementById('hostessDashboard').style.display = 'block';
-                errorDiv.style.display = 'none';
-                const today = new Date().toISOString().split('T')[0];
-                document.getElementById('overviewDate').value = today;
-                document.getElementById('reservationsDate').value = today;
-                loadOverview();
-            } else {
-                errorDiv.textContent = 'Incorrect password';
-                errorDiv.style.display = 'block';
+            const response = await fetch(path, {
+                ...opts,
+                headers
+            });
+            
+            if (response.status === 401) {
+                alert('Session expired. Please login again.');
+                logout();
+                return null;
             }
+            
+            return response;
         }
 
         function logout() {
-            sessionStorage.removeItem('hostessAuthenticated');
-            document.getElementById('passwordGate').style.display = 'block';
-            document.getElementById('hostessDashboard').style.display = 'none';
-            document.getElementById('adminPassword').value = '';
+            sessionStorage.removeItem('dashboardRole');
+            sessionStorage.removeItem('dashboardAuthToken');
+            sessionStorage.removeItem('dashboardUsername');
+            window.location.href = '/index.html';
         }
 
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            event.target.classList.add('active');
-            document.getElementById(tabName + 'Tab').classList.add('active');
-        }
+        // State
+        let currentArea = 'Main Floor';
+        let allTables = [];
+        let currentLayout = [];
+        let assignments = [];
+        let reservations = [];
+        let selectedTableId = null;
 
-        if (sessionStorage.getItem('hostessAuthenticated') === 'true') {
-            document.getElementById('passwordGate').style.display = 'none';
-            document.getElementById('hostessDashboard').style.display = 'block';
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('overviewDate').value = today;
-            document.getElementById('reservationsDate').value = today;
-            loadOverview();
-        }
+        // Initialize
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('selectedDate').value = today;
+        document.getElementById('selectedTime').value = '19:00';
 
-        async function loadOverview() {
-            const date = document.getElementById('overviewDate').value;
-            if (!date) return;
-
-            const container = document.getElementById('overviewSlots');
-            container.innerHTML = '<p>Loading...</p>';
-
-            try {
-                const resRes = await fetch(`/.netlify/functions/get-reservations?date=${date}`);
-                const reservations = await resRes.json().catch(() => []);
-
-                const blockRes = await fetch(`/.netlify/functions/get-blocks?date=${date}`);
-                const blocks = await blockRes.json().catch(() => []);
-
-                // Get table assignments
-                const assignmentsRes = await fetch(`/.netlify/functions/get-table-assignments?date=${date}`);
-                const assignments = await assignmentsRes.json().catch(() => []);
-
-                container.innerHTML = '';
-                VALID_TIMES.forEach(time => {
-                    const slotReservations = reservations.filter(r => r.time === time && ['pending', 'confirmed'].includes(r.status));
-                    const slotBlocks = blocks.filter(b => b.time === time);
-                    const slotAssignments = assignments.filter(a => a.time === time);
-
-                    let seatsUsed = 0;
-                    slotReservations.forEach(r => {
-                        seatsUsed += calculateSeatsNeeded(r.party_size);
-                    });
-
-                    let seatsBlocked = 0;
-                    slotBlocks.forEach(b => {
-                        seatsBlocked += b.seats_blocked || 0;
-                    });
-
-                    const seatsAvailable = TOTAL_SEATS - seatsUsed - seatsBlocked;
-                    const status = seatsAvailable < 10 ? 'overbooked' : seatsAvailable < 30 ? 'full' : 'available';
-                    const statusText = seatsAvailable < 10 ? 'Overbooked' : seatsAvailable < 30 ? 'Full' : 'Available';
-
-                    const card = document.createElement('div');
-                    card.className = `slot-card ${status}`;
-                    card.innerHTML = `
-                        <div class="slot-header">
-                            <div class="slot-time">${formatTime(time)}</div>
-                            <div class="slot-status ${status}">${statusText}</div>
-                        </div>
-                        <div class="slot-stats">
-                            <div class="stat-item">
-                                <div class="stat-label">Booked</div>
-                                <div class="stat-value">${seatsUsed}</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-label">Blocked</div>
-                                <div class="stat-value">${seatsBlocked}</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-label">Available</div>
-                                <div class="stat-value">${seatsAvailable}</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-label">Reservations</div>
-                                <div class="stat-value">${slotReservations.length}</div>
-                            </div>
-                        </div>
-                        <div class="reservations-list">
-                            ${slotReservations.map(r => `
-                                <div class="reservation-item">
-                                    <div class="reservation-info">
-                                        <div class="reservation-name">${r.name}</div>
-                                        <div class="reservation-details">${r.party_size} guests • ${r.source || 'web'}</div>
-                                    </div>
-                                    <div class="reservation-tables">
-                                        ${slotAssignments.filter(a => a.reservation_id === r.id).map(a => `${a.table_name || `T${a.table_number || ''}`} (${a.table_area || ''})`).join(', ') || 'Unassigned'}
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    `;
-                    container.appendChild(card);
-                });
-            } catch (error) {
-                container.innerHTML = `<p style="color: #dc2626;">Error: ${error.message}</p>`;
-            }
-        }
-
-        async function loadReservations() {
-            const date = document.getElementById('reservationsDate').value;
-            if (!date) return;
-
-            const container = document.getElementById('reservationsList');
-            container.innerHTML = '<p>Loading...</p>';
-
-            try {
-                const res = await fetch(`/.netlify/functions/get-reservations?date=${date}`);
-                const reservations = await res.json().catch(() => []);
-                
-                if (reservations.length === 0) {
-                    container.innerHTML = '<p>No reservations for this date.</p>';
-                    return;
-                }
-
-                container.innerHTML = reservations.map(r => `
-                    <div class="reservation-item">
-                        <div class="reservation-info">
-                            <div class="reservation-name">${r.name}</div>
-                            <div class="reservation-details">
-                                ${r.email} • ${r.phone} • ${r.party_size} guests • ${formatTime(r.time)} • ${r.source || 'web'}
-                            </div>
-                            ${r.notes ? `<div style="margin-top: 0.5rem; font-size: 0.85rem; color: #6b7280;">${r.notes}</div>` : ''}
-                        </div>
-                        <div style="font-size: 0.85rem; color: #6b7280;">${r.status}</div>
-                    </div>
-                `).join('');
-            } catch (error) {
-                container.innerHTML = `<p style="color: #dc2626;">Error: ${error.message}</p>`;
-            }
-        }
-
-        async function addBlock(event) {
-            event.preventDefault();
-            const date = document.getElementById('blockDate').value;
-            const time = document.getElementById('blockTime').value;
-            const seats = parseInt(document.getElementById('blockSeats').value);
-            const reason = document.getElementById('blockReason').value || 'OpenTable';
-            const messageDiv = document.getElementById('blockMessage');
-
-            try {
-                const res = await fetch('/.netlify/functions/add-block', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ date, time, seats_blocked: seats, reason })
-                });
-
-                const result = await res.json();
-                if (result.success) {
-                    messageDiv.innerHTML = `<div class="success-message">Block added successfully</div>`;
-                    document.getElementById('blockForm').reset();
-                    if (date === document.getElementById('overviewDate').value) {
-                        loadOverview();
-                    }
-                } else {
-                    messageDiv.innerHTML = `<div class="error-message">Error: ${result.error}</div>`;
-                }
-            } catch (error) {
-                messageDiv.innerHTML = `<div class="error-message">Error: ${error.message}</div>`;
-            }
-        }
-
-        async function addManualReservation(event) {
-            event.preventDefault();
-            const messageDiv = document.getElementById('manualMessage');
-            const payload = {
-                full_name: document.getElementById('manualName').value,
-                email: document.getElementById('manualEmail').value,
-                phone: document.getElementById('manualPhone').value,
-                date: document.getElementById('manualDate').value,
-                time: document.getElementById('manualTime').value,
-                party_size: parseInt(document.getElementById('manualPartySize').value),
-                notes: document.getElementById('manualNotes').value || '',
-                source: 'phone',
-                language: 'en'
-            };
-
-            // Build datetime_iso
-            payload.datetime_iso = `${payload.date}T${payload.time}:00`;
-
-            try {
-                const res = await fetch('/.netlify/functions/send-reservation', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const result = await res.json();
-                if (result.success) {
-                    messageDiv.innerHTML = `<div class="success-message">Reservation created successfully! ID: ${result.reservationId}</div>`;
-                    document.getElementById('manualReservationForm').reset();
-                    loadOverview();
-                } else {
-                    messageDiv.innerHTML = `<div class="error-message">Error: ${result.error}</div>`;
-                }
-            } catch (error) {
-                messageDiv.innerHTML = `<div class="error-message">Error: ${error.message}</div>`;
-            }
-        }
-
-        function calculateSeatsNeeded(partySize) {
-            if (partySize <= 2) return 2;
-            if (partySize <= 4) return 4;
-            if (partySize <= 6) return 6;
-            if (partySize <= 8) return 8;
-            if (partySize <= 10) return 10;
-            if (partySize <= 12) return 12;
-            return Math.ceil(partySize / 4) * 4;
-        }
-
-        function formatTime(time) {
-            const [hour, minute] = time.split(':');
-            const h = parseInt(hour);
-            const period = h >= 12 ? 'PM' : 'AM';
-            const displayHour = h > 12 ? h - 12 : h === 0 ? 12 : h;
-            return `${displayHour}:${minute} ${period}`;
-        }
-
-        document.getElementById('adminPassword')?.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') checkPassword();
-        });
-
-        let allTablesData = {};
-        let selectedTablesForOT = [];
-
-        async function loadTables() {
-            try {
-                const res = await fetch('/.netlify/functions/get-tables');
-                const tables = await res.json().catch(() => []);
-                // Group tables by area
-                allTablesData = tables.reduce((acc, table) => {
-                    const area = table.area || 'Unassigned Area';
-                    if (!acc[area]) acc[area] = [];
-                    acc[area].push(table);
-                    return acc;
-                }, {});
-                populateTableSelect();
-            } catch (error) {
-                console.error('Error loading tables:', error);
-            }
-        }
-
-        function populateTableSelect() {
-            const container = document.getElementById('tableSelectContainer');
-            if (!container) return;
-            container.innerHTML = '';
-            Object.keys(allTablesData).forEach(area => {
-                const areaDiv = document.createElement('div');
-                areaDiv.style.gridColumn = '1 / -1';
-                areaDiv.style.fontWeight = '600';
-                areaDiv.style.marginTop = '1rem';
-                areaDiv.style.color = '#004A9F';
-                areaDiv.textContent = area;
-                container.appendChild(areaDiv);
-                allTablesData[area].forEach(table => {
-                    const checkbox = document.createElement('label');
-                    checkbox.style.display = 'flex';
-                    checkbox.style.alignItems = 'center';
-                    checkbox.style.gap = '0.5rem';
-                    checkbox.style.padding = '0.5rem';
-                    checkbox.style.background = '#f9fafb';
-                    checkbox.style.borderRadius = '4px';
-                    checkbox.innerHTML = `
-                        <input type="checkbox" value="${table.id}" onchange="updateSelectedTables(this)">
-                        <span>${table.name} (${table.capacity} pax)</span>
-                    `;
-                    container.appendChild(checkbox);
-                });
+        function switchArea(area) {
+            currentArea = area;
+            document.querySelectorAll('.area-tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.textContent === area) tab.classList.add('active');
             });
-        }
-
-        function updateSelectedTables(checkbox) {
-            if (checkbox.checked) {
-                selectedTablesForOT.push(checkbox.value);
-            } else {
-                selectedTablesForOT = selectedTablesForOT.filter(id => id !== checkbox.value);
-            }
-        }
-
-        function toggleManualTableSelect() {
-            const manualSelect = document.getElementById('manualTableSelect');
-            const checkbox = document.getElementById('otManualSelect');
-            if (checkbox.checked) {
-                manualSelect.style.display = 'block';
-                if (Object.keys(allTablesData).length === 0) {
-                    loadTables();
-                }
-            } else {
-                manualSelect.style.display = 'none';
-                selectedTablesForOT = [];
-            }
+            loadFloorPlan();
         }
 
         async function loadFloorPlan() {
-            const date = document.getElementById('floorplanDate')?.value;
-            const time = document.getElementById('floorplanTime')?.value;
+            const date = document.getElementById('selectedDate').value;
+            const time = document.getElementById('selectedTime').value;
+            
             if (!date || !time) return;
-
-            const container = document.getElementById('floorplanContainer');
-            container.innerHTML = '<p>Loading...</p>';
-
+            
+            const canvas = document.getElementById('floorPlanCanvas');
+            canvas.innerHTML = '<div class="loading">Loading floor plan...</div>';
+            
             try {
+                // Load layout
+                const layoutRes = await api(`/.netlify/functions/get-layout?area=${encodeURIComponent(currentArea)}`);
+                if (!layoutRes) return;
+                
+                const layoutData = await layoutRes.json();
+                currentLayout = layoutData.success && layoutData.layout?.layout_json ? layoutData.layout.layout_json : [];
+                
                 // Load tables
-                const tablesRes = await fetch('/.netlify/functions/get-tables');
-                const allTables = await tablesRes.json().catch(() => []);
-
+                const tablesRes = await api('/.netlify/functions/get-tables');
+                if (!tablesRes) return;
+                
+                const tablesData = await tablesRes.json();
+                allTables = (tablesData.all || []).filter(t => t.area === currentArea && t.is_active);
+                
                 // Load assignments for this date/time
-                const assignmentsRes = await fetch(`/.netlify/functions/get-table-assignments?date=${date}`);
-                const assignments = await assignmentsRes.json().catch(() => []);
-
-                // Filter assignments for this time slot
-                const slotAssignments = assignments.filter(a => a.time === time && a.status === 'active');
-
-                const occupiedTableIds = new Set(slotAssignments.map(a => a.table_id));
-
-                // Group tables by area
-                const tablesByArea = allTables.reduce((acc, table) => {
-                    const area = table.area || 'Unassigned Area';
-                    if (!acc[area]) acc[area] = [];
-                    acc[area].push(table);
-                    return acc;
-                }, {});
-
-                container.innerHTML = '';
-                Object.keys(tablesByArea).forEach(area => {
-                    const areaSection = document.createElement('div');
-                    areaSection.style.marginBottom = '2rem';
-                    areaSection.innerHTML = `<h3 style="color: #004A9F; margin-bottom: 1rem;">${area}</h3>`;
-                    const tablesGrid = document.createElement('div');
-                    tablesGrid.style.display = 'grid';
-                    tablesGrid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(150px, 1fr))';
-                    tablesGrid.style.gap = '1rem';
-
-                    tablesByArea[area].forEach(table => {
-                        const isOccupied = occupiedTableIds.has(table.id);
-                        const assignment = slotAssignments.find(a => a.table_id === table.id);
-                        const tableCard = document.createElement('div');
-                        tableCard.style.padding = '1rem';
-                        tableCard.style.border = `2px solid ${isOccupied ? '#dc2626' : '#10b981'}`;
-                        tableCard.style.borderRadius = '8px';
-                        tableCard.style.background = isOccupied ? '#fef2f2' : '#f0fdf4';
-                        tableCard.style.cursor = 'pointer';
-                        tableCard.onclick = () => blockTable(table.id, date, time);
-                        tableCard.innerHTML = `
-                            <div style="font-weight: 700; color: #1e293b;">${table.name}</div>
-                            <div style="font-size: 0.85rem; color: #6b7280;">${table.capacity} pax</div>
-                            ${isOccupied ? `<div style="font-size: 0.8rem; color: #dc2626; margin-top: 0.5rem;">${assignment?.source || 'Occupied'}</div>` : '<div style="font-size: 0.8rem; color: #10b981; margin-top: 0.5rem;">Available</div>'}
-                        `;
-                        tablesGrid.appendChild(tableCard);
-                    });
-
-                    areaSection.appendChild(tablesGrid);
-                    container.appendChild(areaSection);
-                });
+                const assignmentsRes = await api(`/.netlify/functions/get-table-assignments?date=${date}&time=${time}`);
+                if (!assignmentsRes) return;
+                
+                assignments = await assignmentsRes.json().catch(() => []);
+                
+                // Load reservations for this date
+                const reservationsRes = await api(`/.netlify/functions/get-reservations?date=${date}`);
+                if (!reservationsRes) return;
+                
+                reservations = await reservationsRes.json().catch(() => []);
+                
+                renderFloorPlan();
+                renderReservationsList();
             } catch (error) {
-                container.innerHTML = `<p style="color: #dc2626;">Error: ${error.message}</p>`;
+                canvas.innerHTML = `<div class="message error">Error: ${error.message}</div>`;
             }
         }
 
-        async function blockTable(tableId, date, time) {
-            if (!confirm('Block this table for this time slot?')) return;
-            // Implementation for blocking a single table
-            // Similar to addBlock but for a specific table
+        function renderFloorPlan() {
+            const canvas = document.getElementById('floorPlanCanvas');
+            canvas.innerHTML = '';
+            
+            allTables.forEach(table => {
+                const assignment = assignments.find(a => a.table_id === table.id);
+                const status = assignment ? assignment.status : 'available';
+                
+                const savedPos = currentLayout.find(l => l.table_id === table.id);
+                const x = savedPos?.x || 50;
+                const y = savedPos?.y || 50;
+                const w = savedPos?.w || (table.seats === 2 ? 60 : table.seats === 4 ? 80 : 100);
+                const h = savedPos?.h || (table.seats === 2 ? 40 : table.seats === 4 ? 60 : 80);
+                
+                const elem = document.createElement('div');
+                elem.className = `table-element ${status}`;
+                elem.dataset.tableId = table.id;
+                elem.style.left = `${x}px`;
+                elem.style.top = `${y}px`;
+                elem.style.width = `${w}px`;
+                elem.style.height = `${h}px`;
+                elem.textContent = table.name || `T${table.table_number}`;
+                elem.title = `${table.name || `Table ${table.table_number}`} (${table.seats} seats) - ${status}`;
+                
+                elem.addEventListener('click', () => openTableModal(table, assignment));
+                
+                canvas.appendChild(elem);
+            });
         }
 
-        async function addOpenTableReservation(event) {
-            event.preventDefault();
-            const messageDiv = document.getElementById('otMessage');
-            const payload = {
-                name: document.getElementById('otName').value.trim() || null,
-                date: document.getElementById('otDate').value,
-                time: document.getElementById('otTime').value,
-                party_size: parseInt(document.getElementById('otGuests').value),
-                notes: document.getElementById('otNotes').value.trim() || null
-            };
-
-            if (document.getElementById('otManualSelect').checked && selectedTablesForOT.length > 0) {
-                payload.table_ids = selectedTablesForOT;
-            }
-
-            try {
-                const res = await fetch('/.netlify/functions/add-opentable-reservation', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+        function renderReservationsList() {
+            const container = document.getElementById('reservationsList');
+            const time = document.getElementById('selectedTime').value;
+            
+            const timeReservations = reservations.filter(r => r.time === time);
+            const timeAssignments = assignments.filter(a => a.time === time);
+            const blocks = timeAssignments.filter(a => a.status === 'blocked' || a.status === 'unavailable');
+            
+            let html = '<h3 style="margin-bottom: 1rem; font-size: 1.1rem;">Reservations</h3>';
+            
+            if (timeReservations.length === 0) {
+                html += '<div class="loading">No reservations for this time slot</div>';
+            } else {
+                timeReservations.forEach(res => {
+                    const assignment = timeAssignments.find(a => a.reservation_id === res.id);
+                    html += `
+                        <div class="reservation-item">
+                            <div class="reservation-name">${res.name || res.full_name || 'Guest'}</div>
+                            <div class="reservation-details">${res.party_size} guests • ${res.phone || 'No phone'}</div>
+                            ${assignment ? `<div class="reservation-table">Table: ${assignment.table_name || assignment.table_number || 'N/A'}</div>` : '<div class="reservation-table" style="color: #dc2626;">No table assigned</div>'}
+                        </div>
+                    `;
                 });
+            }
+            
+            html += '<h3 style="margin-top: 2rem; margin-bottom: 1rem; font-size: 1.1rem;">Blocks</h3>';
+            
+            if (blocks.length === 0) {
+                html += '<div class="loading">No blocks for this time slot</div>';
+            } else {
+                blocks.forEach(block => {
+                    const table = allTables.find(t => t.id === block.table_id);
+                    html += `
+                        <div class="block-item">
+                            <div class="reservation-name">${table?.name || `Table ${block.table_number}`}</div>
+                            <div class="reservation-details">${block.status} • ${block.notes || 'No notes'}</div>
+                        </div>
+                    `;
+                });
+            }
+            
+            container.innerHTML = html;
+        }
 
-                const result = await res.json();
-                if (result.success) {
-                    const tableNames = result.tables ? result.tables.map(t => t.name || t.area).join(', ') : 'Assigned';
-                    messageDiv.innerHTML = `<div class="success-message">OpenTable reservation added! Tables: ${tableNames}</div>`;
-                    document.getElementById('opentableForm').reset();
-                    selectedTablesForOT = [];
-                    document.getElementById('otManualSelect').checked = false;
-                    document.getElementById('manualTableSelect').style.display = 'none';
-                    if (payload.date === document.getElementById('overviewDate')?.value) {
-                        loadOverview();
+        function openTableModal(table, assignment) {
+            selectedTableId = table.id;
+            const date = document.getElementById('selectedDate').value;
+            const time = document.getElementById('selectedTime').value;
+            
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+            const modal = document.getElementById('tableModal');
+            
+            modalTitle.textContent = `${table.name || `Table ${table.table_number}`} (${table.seats} seats)`;
+            
+            let html = '';
+            
+            if (assignment) {
+                html += `<div class="message">Current status: <strong>${assignment.status}</strong></div>`;
+            }
+            
+            html += `
+                <div class="form-group">
+                    <label>Action:</label>
+                    <select id="tableAction" onchange="updateActionForm()">
+                        <option value="assign">Assign Reservation</option>
+                        <option value="block">Quick Block</option>
+                        <option value="unavailable">Mark Unavailable</option>
+                        ${assignment ? '<option value="release">Release</option>' : ''}
+                    </select>
+                </div>
+                <div id="actionForm"></div>
+            `;
+            
+            modalBody.innerHTML = html;
+            updateActionForm();
+            modal.classList.add('active');
+        }
+
+        function updateActionForm() {
+            const action = document.getElementById('tableAction').value;
+            const form = document.getElementById('actionForm');
+            const date = document.getElementById('selectedDate').value;
+            const time = document.getElementById('selectedTime').value;
+            
+            let html = '';
+            
+            if (action === 'assign') {
+                const unassigned = reservations.filter(r => {
+                    if (r.time !== time) return false;
+                    return !assignments.some(a => a.reservation_id === r.id);
+                });
+                
+                if (unassigned.length === 0) {
+                    html = '<div class="message error">No unassigned reservations for this time slot</div>';
+                } else {
+                    html = `
+                        <div class="form-group">
+                            <label>Select Reservation:</label>
+                            <select id="reservationSelect">
+                                ${unassigned.map(r => `<option value="${r.id}">${r.name || r.full_name || 'Guest'} - ${r.party_size} guests</option>`).join('')}
+                            </select>
+                        </div>
+                        <button class="btn-primary" onclick="executeTableAction()" style="width: 100%;">Assign</button>
+                    `;
+                }
+            } else if (action === 'block') {
+                html = `
+                    <div class="form-group">
+                        <label>Reason (default: OpenTable):</label>
+                        <input type="text" id="blockReason" value="OpenTable" placeholder="OpenTable">
+                    </div>
+                    <button class="btn-primary" onclick="executeTableAction()" style="width: 100%;">Block Table</button>
+                `;
+            } else if (action === 'unavailable') {
+                html = `
+                    <div class="message">Mark this table as unavailable for this time slot?</div>
+                    <button class="btn-primary" onclick="executeTableAction()" style="width: 100%;">Mark Unavailable</button>
+                `;
+            } else if (action === 'release') {
+                html = `
+                    <div class="message">Release this table assignment?</div>
+                    <button class="btn-primary" onclick="executeTableAction()" style="width: 100%;">Release</button>
+                `;
+            }
+            
+            form.innerHTML = html;
+        }
+
+        async function executeTableAction() {
+            const action = document.getElementById('tableAction').value;
+            const date = document.getElementById('selectedDate').value;
+            const time = document.getElementById('selectedTime').value;
+            
+            try {
+                if (action === 'release') {
+                    const assignment = assignments.find(a => a.table_id === selectedTableId && a.time === time);
+                    if (!assignment) {
+                        alert('No assignment found to release');
+                        return;
+                    }
+                    
+                    const res = await api('/.netlify/functions/release-assignment', {
+                        method: 'POST',
+                        body: JSON.stringify({ id: assignment.id })
+                    });
+                    
+                    if (!res) return;
+                    
+                    const data = await res.json();
+                    if (data.success) {
+                        alert('Table released successfully');
+                        closeModal();
+                        loadFloorPlan();
+                    } else {
+                        alert(`Error: ${data.error}`);
                     }
                 } else {
-                    messageDiv.innerHTML = `<div class="error-message">Error: ${result.error}</div>`;
+                    let payload = {
+                        table_id: selectedTableId,
+                        date: date,
+                        time: time,
+                        status: action === 'assign' ? 'reserved' : action === 'block' ? 'blocked' : 'unavailable'
+                    };
+                    
+                    if (action === 'assign') {
+                        const reservationId = document.getElementById('reservationSelect').value;
+                        payload.reservation_id = reservationId;
+                    }
+                    
+                    if (action === 'block') {
+                        payload.notes = document.getElementById('blockReason').value || 'OpenTable';
+                    }
+                    
+                    const res = await api('/.netlify/functions/set-assignment', {
+                        method: 'POST',
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    if (!res) return;
+                    
+                    const data = await res.json();
+                    if (data.success) {
+                        alert('Action completed successfully');
+                        closeModal();
+                        loadFloorPlan();
+                    } else {
+                        alert(`Error: ${data.error}`);
+                    }
                 }
             } catch (error) {
-                messageDiv.innerHTML = `<div class="error-message">Error: ${error.message}</div>`;
+                alert(`Error: ${error.message}`);
             }
         }
 
-        // Load tables on page load
-        if (sessionStorage.getItem('hostessAuthenticated') === 'true') {
-            loadTables();
-            const today = new Date().toISOString().split('T')[0];
-            if (document.getElementById('floorplanDate')) {
-                document.getElementById('floorplanDate').value = today;
-            }
-            if (document.getElementById('otDate')) {
-                document.getElementById('otDate').value = today;
-            }
-            if (document.getElementById('blockDate')) {
-                document.getElementById('blockDate').value = today;
-            }
-            if (document.getElementById('manualDate')) {
-                document.getElementById('manualDate').value = today;
-            }
+        function closeModal() {
+            document.getElementById('tableModal').classList.remove('active');
+            selectedTableId = null;
         }
+
+        // Close modal on outside click
+        document.getElementById('tableModal').addEventListener('click', (e) => {
+            if (e.target.id === 'tableModal') closeModal();
+        });
+
+        // Initialize
+        loadFloorPlan();
     </script>
 </body>
 </html>
-

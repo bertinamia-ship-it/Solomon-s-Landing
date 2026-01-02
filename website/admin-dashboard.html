@@ -3,86 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Reservations | Solomon's Landing</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Admin Dashboard - Solomon's Landing</title>
     <style>
-        .admin-container {
-            max-width: 1400px;
-            margin: 2rem auto;
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #1e293b;
+        }
+        .dashboard-container {
+            max-width: 1800px;
+            margin: 0 auto;
             padding: 2rem;
         }
-        .admin-header {
+        .dashboard-header {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #e2e8f0;
         }
-        .admin-section {
+        .dashboard-header h1 {
+            color: #004A9F;
+            font-size: 1.75rem;
+        }
+        .btn-logout {
+            padding: 0.75rem 1.5rem;
+            background: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        .btn-logout:hover { background: #b91c1c; }
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        @media (max-width: 1200px) {
+            .two-column { grid-template-columns: 1fr; }
+        }
+        .section {
             background: white;
             border-radius: 12px;
             padding: 2rem;
-            margin-bottom: 2rem;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-        .date-selector {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            align-items: center;
+        .section h2 {
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            color: #1e293b;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.75rem;
         }
-        .date-selector input {
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
             padding: 0.75rem;
             border: 2px solid #e2e8f0;
             border-radius: 8px;
             font-size: 1rem;
         }
-        .slots-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #004A9F;
         }
-        .slot-card {
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 1rem;
-            background: #f9fafb;
-        }
-        .slot-card.overbooked {
-            border-color: #dc2626;
-            background: #fef2f2;
-        }
-        .slot-card.full {
-            border-color: #f59e0b;
-            background: #fffbeb;
-        }
-        .slot-card.available {
-            border-color: #10b981;
-            background: #f0fdf4;
-        }
-        .slot-time {
-            font-weight: 700;
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
-        }
-        .slot-stats {
-            font-size: 0.9rem;
-            color: #6b7280;
-        }
-        .block-form {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            align-items: end;
-        }
-        .block-form input, .block-form select {
-            padding: 0.75rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-        }
-        .block-form button {
+        .btn-primary {
             padding: 0.75rem 1.5rem;
             background: #004A9F;
             color: white;
@@ -90,266 +93,588 @@
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
+            font-size: 1rem;
         }
-        .block-form button:hover {
-            background: #003d82;
+        .btn-primary:hover { background: #003d82; }
+        .btn-secondary {
+            padding: 0.5rem 1rem;
+            background: #6b7280;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
         }
-        .reservations-list {
-            margin-top: 1rem;
+        .btn-secondary:hover { background: #4b5563; }
+        .btn-danger {
+            padding: 0.5rem 1rem;
+            background: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
         }
-        .reservation-item {
+        .btn-danger:hover { background: #b91c1c; }
+        .btn-small {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+        }
+        .tables-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .table-item {
             padding: 1rem;
-            border-bottom: 1px solid #e2e8f0;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .reservation-item:last-child {
-            border-bottom: none;
+        .table-item.inactive {
+            opacity: 0.6;
+            background: #f9fafb;
         }
-        .password-gate {
-            max-width: 400px;
-            margin: 10rem auto;
-            padding: 2rem;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        .table-info {
+            flex: 1;
         }
-        .password-gate input {
-            width: 100%;
-            padding: 0.75rem;
+        .table-name {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+        .table-details {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+        .table-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .area-group {
+            margin-bottom: 2rem;
+        }
+        .area-group h3 {
+            color: #004A9F;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        .floor-plan-container {
+            position: relative;
             border: 2px solid #e2e8f0;
             border-radius: 8px;
-            margin-bottom: 1rem;
-            font-size: 1rem;
+            background: #f9fafb;
+            min-height: 500px;
+            overflow: auto;
         }
-        .password-gate button {
+        .floor-plan-canvas {
+            position: relative;
             width: 100%;
-            padding: 0.75rem;
-            background: #004A9F;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
+            height: 500px;
+            background: white;
         }
-        .error-message {
-            color: #dc2626;
-            margin-top: 0.5rem;
-            font-size: 0.9rem;
+        .table-element {
+            position: absolute;
+            border: 2px solid #004A9F;
+            background: #dbeafe;
+            border-radius: 4px;
+            cursor: move;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #1e40af;
+            user-select: none;
+        }
+        .table-element:hover {
+            background: #bfdbfe;
+            border-color: #003d82;
+        }
+        .table-element.dragging {
+            opacity: 0.7;
+            z-index: 1000;
+        }
+        .floor-plan-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            align-items: center;
+        }
+        .area-selector {
+            flex: 1;
+        }
+        .message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        .message.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+        .message.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #dc2626;
+        }
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #6b7280;
         }
     </style>
 </head>
 <body>
-    <div id="passwordGate" class="password-gate">
-        <h2>Admin Access</h2>
-        <input type="password" id="adminPassword" placeholder="Enter admin password" autocomplete="off">
-        <button onclick="checkPassword()">Login</button>
-        <div id="passwordError" class="error-message" style="display: none;"></div>
-    </div>
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1>🍽️ Admin Dashboard - Table Management</h1>
+            <button class="btn-logout" onclick="logout()">Logout</button>
+        </div>
 
-    <div id="adminDashboard" style="display: none;">
-        <div class="admin-container">
-            <div class="admin-header">
-                <h1>Reservations Dashboard</h1>
-                <button onclick="logout()" style="padding: 0.5rem 1rem; background: #dc2626; color: white; border: none; border-radius: 6px; cursor: pointer;">Logout</button>
-            </div>
-
-            <div class="admin-section">
-                <h2>View Reservations by Date</h2>
-                <div class="date-selector">
-                    <label>Select Date:</label>
-                    <input type="date" id="viewDate" onchange="loadReservations()">
-                    <button onclick="loadReservations()" style="padding: 0.75rem 1.5rem; background: #004A9F; color: white; border: none; border-radius: 8px; cursor: pointer;">Load</button>
-                </div>
-                <div id="slotsContainer" class="slots-grid"></div>
-            </div>
-
-            <div class="admin-section">
-                <h2>Add Manual Block (OpenTable)</h2>
-                <div class="block-form">
-                    <div>
-                        <label style="display: block; margin-bottom: 0.5rem;">Date:</label>
-                        <input type="date" id="blockDate" required>
-                    </div>
-                    <div>
-                        <label style="display: block; margin-bottom: 0.5rem;">Time:</label>
-                        <select id="blockTime" required>
-                            <option value="17:30">5:30 PM</option>
-                            <option value="18:00">6:00 PM</option>
-                            <option value="18:30">6:30 PM</option>
-                            <option value="19:00">7:00 PM</option>
-                            <option value="19:30">7:30 PM</option>
-                            <option value="20:00">8:00 PM</option>
-                            <option value="20:30">8:30 PM</option>
-                            <option value="21:00">9:00 PM</option>
-                            <option value="21:30">9:30 PM</option>
+        <div class="two-column">
+            <!-- LEFT: Tables Management -->
+            <div class="section">
+                <h2>Tables</h2>
+                <div id="messageArea"></div>
+                
+                <div class="form-group">
+                    <label>Add New Table</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 0.5rem;">
+                        <input type="number" id="newTableNumber" placeholder="Table #" min="1">
+                        <select id="newTableSeats">
+                            <option value="2">2 seats</option>
+                            <option value="4" selected>4 seats</option>
+                            <option value="6">6 seats</option>
                         </select>
+                        <input type="text" id="newTableArea" placeholder="Area" list="areaList">
+                        <datalist id="areaList">
+                            <option value="Main Floor">
+                            <option value="Sushi Bar">
+                        </datalist>
+                        <button class="btn-primary btn-small" onclick="addTable()">Add</button>
                     </div>
-                    <div>
-                        <label style="display: block; margin-bottom: 0.5rem;">Seats Blocked:</label>
-                        <input type="number" id="blockSeats" min="1" max="106" value="4" required>
-                    </div>
-                    <div>
-                        <label style="display: block; margin-bottom: 0.5rem;">Reason:</label>
-                        <input type="text" id="blockReason" value="OpenTable" placeholder="OpenTable">
-                    </div>
-                    <button onclick="addBlock()">Add Block</button>
+                    <input type="text" id="newTableName" placeholder="Name (optional)" style="margin-top: 0.5rem;">
+                </div>
+
+                <div id="tablesList" class="tables-list">
+                    <div class="loading">Loading tables...</div>
+                </div>
+            </div>
+
+            <!-- RIGHT: Floor Plan Editor -->
+            <div class="section">
+                <h2>Floor Plan Editor</h2>
+                <div class="floor-plan-controls">
+                    <select id="floorPlanArea" class="area-selector" onchange="loadFloorPlan()">
+                        <option value="Main Floor">Main Floor</option>
+                        <option value="Sushi Bar">Sushi Bar</option>
+                    </select>
+                    <button class="btn-primary" onclick="saveFloorPlan()">Save Layout</button>
+                    <button class="btn-secondary" onclick="resetFloorPlan()">Reset</button>
+                </div>
+                <div class="floor-plan-container">
+                    <div id="floorPlanCanvas" class="floor-plan-canvas"></div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        const ADMIN_PASSWORD = 'solomons2024'; // Change this in production
-        const TOTAL_SEATS = 106;
-        const VALID_TIMES = ['17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30'];
+        // Auth check
+        const role = sessionStorage.getItem('dashboardRole');
+        const token = sessionStorage.getItem('dashboardAuthToken');
+        
+        if (!role || !token || role !== 'admin') {
+            alert('Unauthorized. Redirecting to login...');
+            window.location.href = '/index.html';
+        }
 
-        function checkPassword() {
-            const password = document.getElementById('adminPassword').value;
-            const errorDiv = document.getElementById('passwordError');
+        // API helper
+        async function api(path, opts = {}) {
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                ...(opts.headers || {})
+            };
             
-            if (password === ADMIN_PASSWORD) {
-                sessionStorage.setItem('adminAuthenticated', 'true');
-                document.getElementById('passwordGate').style.display = 'none';
-                document.getElementById('adminDashboard').style.display = 'block';
-                errorDiv.style.display = 'none';
-                // Set today's date as default
-                const today = new Date().toISOString().split('T')[0];
-                document.getElementById('viewDate').value = today;
-                loadReservations();
-            } else {
-                errorDiv.textContent = 'Incorrect password';
-                errorDiv.style.display = 'block';
+            const response = await fetch(path, {
+                ...opts,
+                headers
+            });
+            
+            if (response.status === 401) {
+                alert('Session expired. Please login again.');
+                logout();
+                return null;
             }
+            
+            return response;
         }
 
         function logout() {
-            sessionStorage.removeItem('adminAuthenticated');
-            document.getElementById('passwordGate').style.display = 'block';
-            document.getElementById('adminDashboard').style.display = 'none';
-            document.getElementById('adminPassword').value = '';
+            sessionStorage.removeItem('dashboardRole');
+            sessionStorage.removeItem('dashboardAuthToken');
+            sessionStorage.removeItem('dashboardUsername');
+            window.location.href = '/index.html';
         }
 
-        // Check authentication on load
-        if (sessionStorage.getItem('adminAuthenticated') === 'true') {
-            document.getElementById('passwordGate').style.display = 'none';
-            document.getElementById('adminDashboard').style.display = 'block';
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('viewDate').value = today;
-            loadReservations();
-        }
+        // Tables management
+        let allTables = [];
+        let editingTableId = null;
 
-        async function loadReservations() {
-            const date = document.getElementById('viewDate').value;
-            if (!date) return;
-
-            const container = document.getElementById('slotsContainer');
-            container.innerHTML = '<p>Loading...</p>';
-
+        async function loadTables() {
+            const container = document.getElementById('tablesList');
+            container.innerHTML = '<div class="loading">Loading tables...</div>';
+            
             try {
-                // Load reservations for this date
-                const resRes = await fetch(`/.netlify/functions/get-reservations?date=${date}`);
-                const reservations = await resRes.json().catch(() => []);
-
-                // Load blocks for this date
-                const blockRes = await fetch(`/.netlify/functions/get-blocks?date=${date}`);
-                const blocks = await blockRes.json().catch(() => []);
-
-                // Calculate availability for each slot
-                container.innerHTML = '';
-                VALID_TIMES.forEach(time => {
-                    const slotReservations = reservations.filter(r => r.time === time && ['pending', 'confirmed'].includes(r.status));
-                    const slotBlocks = blocks.filter(b => b.time === time);
-                    
-                    let seatsUsed = 0;
-                    slotReservations.forEach(r => {
-                        seatsUsed += calculateSeatsNeeded(r.party_size);
-                    });
-
-                    let seatsBlocked = 0;
-                    slotBlocks.forEach(b => {
-                        seatsBlocked += b.seats_blocked || 0;
-                    });
-
-                    const seatsAvailable = TOTAL_SEATS - seatsUsed - seatsBlocked;
-                    const status = seatsAvailable < 10 ? 'overbooked' : seatsAvailable < 30 ? 'full' : 'available';
-
-                    const card = document.createElement('div');
-                    card.className = `slot-card ${status}`;
-                    card.innerHTML = `
-                        <div class="slot-time">${formatTime(time)}</div>
-                        <div class="slot-stats">
-                            <div>Used: ${seatsUsed} seats</div>
-                            <div>Blocked: ${seatsBlocked} seats</div>
-                            <div><strong>Available: ${seatsAvailable} seats</strong></div>
-                            <div style="margin-top: 0.5rem; font-size: 0.85rem;">Reservations: ${slotReservations.length}</div>
-                        </div>
-                    `;
-                    container.appendChild(card);
-                });
-            } catch (error) {
-                container.innerHTML = `<p style="color: #dc2626;">Error loading reservations: ${error.message}</p>`;
-            }
-        }
-
-        function calculateSeatsNeeded(partySize) {
-            if (partySize <= 2) return 2;
-            if (partySize <= 4) return 4;
-            if (partySize <= 6) return 6;
-            if (partySize <= 8) return 8;
-            if (partySize <= 10) return 10;
-            if (partySize <= 12) return 12;
-            return Math.ceil(partySize / 4) * 4;
-        }
-
-        function formatTime(time) {
-            const [hour, minute] = time.split(':');
-            const h = parseInt(hour);
-            const period = h >= 12 ? 'PM' : 'AM';
-            const displayHour = h > 12 ? h - 12 : h === 0 ? 12 : h;
-            return `${displayHour}:${minute} ${period}`;
-        }
-
-        async function addBlock() {
-            const date = document.getElementById('blockDate').value;
-            const time = document.getElementById('blockTime').value;
-            const seats = parseInt(document.getElementById('blockSeats').value);
-            const reason = document.getElementById('blockReason').value || 'OpenTable';
-
-            if (!date || !time || !seats) {
-                alert('Please fill in all fields');
-                return;
-            }
-
-            try {
-                const res = await fetch('/.netlify/functions/add-block', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ date, time, seats_blocked: seats, reason })
-                });
-
-                const result = await res.json();
-                if (result.success) {
-                    alert('Block added successfully');
-                    document.getElementById('blockDate').value = '';
-                    document.getElementById('blockSeats').value = '4';
-                    if (date === document.getElementById('viewDate').value) {
-                        loadReservations();
-                    }
+                const res = await api('/.netlify/functions/get-tables');
+                if (!res) return;
+                
+                const data = await res.json();
+                if (data.success) {
+                    allTables = data.all || [];
+                    renderTables();
                 } else {
-                    alert('Error: ' + result.error);
+                    container.innerHTML = `<div class="message error">Error: ${data.error}</div>`;
                 }
             } catch (error) {
-                alert('Error adding block: ' + error.message);
+                container.innerHTML = `<div class="message error">Error loading tables: ${error.message}</div>`;
             }
         }
 
-        // Allow Enter key on password field
-        document.getElementById('adminPassword')?.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') checkPassword();
-        });
+        function renderTables() {
+            const container = document.getElementById('tablesList');
+            const grouped = {};
+            
+            allTables.forEach(table => {
+                if (!grouped[table.area]) grouped[table.area] = [];
+                grouped[table.area].push(table);
+            });
+            
+            let html = '';
+            Object.keys(grouped).sort().forEach(area => {
+                html += `<div class="area-group"><h3>${area}</h3>`;
+                grouped[area].sort((a, b) => a.table_number - b.table_number).forEach(table => {
+                    html += `
+                        <div class="table-item ${table.is_active ? '' : 'inactive'}">
+                            <div class="table-info">
+                                <div class="table-name">${table.name || `Table ${table.table_number}`}</div>
+                                <div class="table-details">#${table.table_number} • ${table.seats} seats • ${table.is_active ? 'Active' : 'Inactive'}</div>
+                            </div>
+                            <div class="table-actions">
+                                <button class="btn-secondary btn-small" onclick="editTable('${table.id}')">Edit</button>
+                                <button class="btn-secondary btn-small" onclick="toggleTableActive('${table.id}', ${!table.is_active})">${table.is_active ? 'Deactivate' : 'Activate'}</button>
+                                <button class="btn-danger btn-small" onclick="deleteTable('${table.id}')">Delete</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            });
+            
+            container.innerHTML = html || '<div class="loading">No tables found. Add your first table above.</div>';
+        }
+
+        async function addTable() {
+            const tableNumber = parseInt(document.getElementById('newTableNumber').value);
+            const seats = parseInt(document.getElementById('newTableSeats').value);
+            const area = document.getElementById('newTableArea').value.trim();
+            const name = document.getElementById('newTableName').value.trim() || null;
+            
+            if (!tableNumber || !seats || !area) {
+                showMessage('Please fill in table number, seats, and area', 'error');
+                return;
+            }
+            
+            try {
+                const res = await api('/.netlify/functions/upsert-table', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        table_number: tableNumber,
+                        seats: seats,
+                        area: area,
+                        name: name,
+                        is_active: true
+                    })
+                });
+                
+                if (!res) return;
+                
+                const data = await res.json();
+                if (data.success) {
+                    showMessage('Table added successfully', 'success');
+                    document.getElementById('newTableNumber').value = '';
+                    document.getElementById('newTableName').value = '';
+                    await loadTables();
+                    await loadFloorPlan(); // Refresh floor plan
+                } else {
+                    showMessage(`Error: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showMessage(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function editTable(id) {
+            const table = allTables.find(t => t.id === id);
+            if (!table) return;
+            
+            const name = prompt('Table name:', table.name || `Table ${table.table_number}`);
+            if (name === null) return;
+            
+            const seats = prompt('Seats (2, 4, or 6):', table.seats);
+            if (!seats || !['2', '4', '6'].includes(seats)) {
+                alert('Seats must be 2, 4, or 6');
+                return;
+            }
+            
+            const area = prompt('Area:', table.area);
+            if (!area) return;
+            
+            try {
+                const res = await api('/.netlify/functions/upsert-table', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        id: id,
+                        table_number: table.table_number,
+                        seats: parseInt(seats),
+                        area: area,
+                        name: name || null,
+                        is_active: table.is_active
+                    })
+                });
+                
+                if (!res) return;
+                
+                const data = await res.json();
+                if (data.success) {
+                    showMessage('Table updated successfully', 'success');
+                    await loadTables();
+                    await loadFloorPlan();
+                } else {
+                    showMessage(`Error: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showMessage(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function toggleTableActive(id, isActive) {
+            const table = allTables.find(t => t.id === id);
+            if (!table) return;
+            
+            try {
+                const res = await api('/.netlify/functions/upsert-table', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        id: id,
+                        table_number: table.table_number,
+                        seats: table.seats,
+                        area: table.area,
+                        name: table.name,
+                        is_active: isActive
+                    })
+                });
+                
+                if (!res) return;
+                
+                const data = await res.json();
+                if (data.success) {
+                    showMessage(`Table ${isActive ? 'activated' : 'deactivated'}`, 'success');
+                    await loadTables();
+                } else {
+                    showMessage(`Error: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showMessage(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function deleteTable(id) {
+            if (!confirm('Are you sure you want to delete this table?')) return;
+            
+            try {
+                const res = await api('/.netlify/functions/delete-table', {
+                    method: 'POST',
+                    body: JSON.stringify({ id: id })
+                });
+                
+                if (!res) return;
+                
+                const data = await res.json();
+                if (data.success) {
+                    showMessage('Table deleted successfully', 'success');
+                    await loadTables();
+                    await loadFloorPlan();
+                } else {
+                    showMessage(`Error: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showMessage(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        function showMessage(text, type) {
+            const area = document.getElementById('messageArea');
+            area.innerHTML = `<div class="message ${type}">${text}</div>`;
+            setTimeout(() => {
+                area.innerHTML = '';
+            }, 3000);
+        }
+
+        // Floor Plan Editor
+        let currentLayout = [];
+        let draggedElement = null;
+        let dragOffset = { x: 0, y: 0 };
+
+        async function loadFloorPlan() {
+            const area = document.getElementById('floorPlanArea').value;
+            const canvas = document.getElementById('floorPlanCanvas');
+            canvas.innerHTML = '<div class="loading">Loading floor plan...</div>';
+            
+            try {
+                // Load layout
+                const layoutRes = await api(`/.netlify/functions/get-layout?area=${encodeURIComponent(area)}`);
+                if (!layoutRes) return;
+                
+                const layoutData = await layoutRes.json();
+                currentLayout = layoutData.success && layoutData.layout?.layout_json ? layoutData.layout.layout_json : [];
+                
+                // Load tables for this area
+                const tablesRes = await api('/.netlify/functions/get-tables');
+                if (!tablesRes) return;
+                
+                const tablesData = await tablesRes.json();
+                const areaTables = (tablesData.all || []).filter(t => t.area === area && t.is_active);
+                
+                renderFloorPlan(areaTables);
+            } catch (error) {
+                canvas.innerHTML = `<div class="message error">Error: ${error.message}</div>`;
+            }
+        }
+
+        function renderFloorPlan(tables) {
+            const canvas = document.getElementById('floorPlanCanvas');
+            canvas.innerHTML = '';
+            
+            tables.forEach(table => {
+                const savedPos = currentLayout.find(l => l.table_id === table.id);
+                const x = savedPos?.x || 50;
+                const y = savedPos?.y || 50;
+                const w = savedPos?.w || (table.seats === 2 ? 60 : table.seats === 4 ? 80 : 100);
+                const h = savedPos?.h || (table.seats === 2 ? 40 : table.seats === 4 ? 60 : 80);
+                
+                const elem = document.createElement('div');
+                elem.className = 'table-element';
+                elem.dataset.tableId = table.id;
+                elem.style.left = `${x}px`;
+                elem.style.top = `${y}px`;
+                elem.style.width = `${w}px`;
+                elem.style.height = `${h}px`;
+                elem.textContent = table.name || `T${table.table_number}`;
+                elem.title = `${table.name || `Table ${table.table_number}`} (${table.seats} seats)`;
+                
+                // Drag handlers
+                elem.addEventListener('mousedown', (e) => startDrag(e, elem));
+                
+                canvas.appendChild(elem);
+            });
+        }
+
+        function startDrag(e, elem) {
+            draggedElement = elem;
+            const rect = elem.getBoundingClientRect();
+            const canvasRect = document.getElementById('floorPlanCanvas').getBoundingClientRect();
+            dragOffset.x = e.clientX - rect.left;
+            dragOffset.y = e.clientY - rect.top;
+            
+            elem.classList.add('dragging');
+            document.addEventListener('mousemove', onDrag);
+            document.addEventListener('mouseup', stopDrag);
+            e.preventDefault();
+        }
+
+        function onDrag(e) {
+            if (!draggedElement) return;
+            
+            const canvas = document.getElementById('floorPlanCanvas');
+            const canvasRect = canvas.getBoundingClientRect();
+            const x = e.clientX - canvasRect.left - dragOffset.x;
+            const y = e.clientY - canvasRect.top - dragOffset.y;
+            
+            draggedElement.style.left = `${Math.max(0, x)}px`;
+            draggedElement.style.top = `${Math.max(0, y)}px`;
+        }
+
+        function stopDrag() {
+            if (draggedElement) {
+                draggedElement.classList.remove('dragging');
+                draggedElement = null;
+            }
+            document.removeEventListener('mousemove', onDrag);
+            document.removeEventListener('mouseup', stopDrag);
+        }
+
+        async function saveFloorPlan() {
+            const area = document.getElementById('floorPlanArea').value;
+            const canvas = document.getElementById('floorPlanCanvas');
+            const elements = canvas.querySelectorAll('.table-element');
+            
+            const layout = [];
+            elements.forEach(elem => {
+                const rect = elem.getBoundingClientRect();
+                const canvasRect = canvas.getBoundingClientRect();
+                const table = allTables.find(t => t.id === elem.dataset.tableId);
+                if (table) {
+                    layout.push({
+                        table_id: table.id,
+                        x: rect.left - canvasRect.left,
+                        y: rect.top - canvasRect.top,
+                        w: rect.width,
+                        h: rect.height
+                    });
+                }
+            });
+            
+            try {
+                const res = await api('/.netlify/functions/save-layout', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        area: area,
+                        layout_json: layout
+                    })
+                });
+                
+                if (!res) return;
+                
+                const data = await res.json();
+                if (data.success) {
+                    showMessage('Floor plan saved successfully', 'success');
+                    currentLayout = layout;
+                } else {
+                    showMessage(`Error: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showMessage(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        function resetFloorPlan() {
+            if (confirm('Reset floor plan to default positions?')) {
+                currentLayout = [];
+                loadFloorPlan();
+            }
+        }
+
+        // Initialize
+        loadTables();
+        loadFloorPlan();
     </script>
 </body>
 </html>
-
