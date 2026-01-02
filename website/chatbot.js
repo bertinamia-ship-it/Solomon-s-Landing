@@ -448,8 +448,8 @@ class RestaurantChatbot {
                         if (!availabilityRes.ok) {
                             console.error('❌ Availability check failed:', availabilityRes.status, availabilityResult);
                             throw new Error(this.currentLanguage === 'es'
-                                ? 'Error al verificar disponibilidad. Por favor intenta de nuevo.'
-                                : 'Error checking availability. Please try again.');
+                                ? `Error al verificar disponibilidad (${availabilityRes.status}). Por favor intenta de nuevo.`
+                                : `Error checking availability (${availabilityRes.status}). Please try again.`);
                         }
 
                         if (!availabilityResult.success || !availabilityResult.available) {
