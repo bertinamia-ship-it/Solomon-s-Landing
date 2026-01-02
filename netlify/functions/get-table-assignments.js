@@ -59,26 +59,28 @@ exports.handler = async (event, context) => {
 
         const supabase = createClient(supabaseUrl, supabaseKey);
 
-        // Get assignments for this date (datetime_iso starts with date)
+        // Get assignments for this date (using date field)
         const { data: assignments, error } = await supabase
             .from('table_assignments')
             .select(`
                 *,
-                tables!inner(table_number, capacity),
+                tables!inner(name, table_number, area, capacity),
                 reservations(name, party_size)
             `)
-            .like('datetime_iso', `${date}%`)
+            .eq('date', date)
             .eq('status', 'active')
-            .order('datetime_iso', { ascending: true });
+            .order('time', { ascending: true });
 
         if (error) {
             throw error;
         }
 
-        // Format response with table numbers
+        // Format response with table details
         const formatted = (assignments || []).map(a => ({
             ...a,
+            table_name: a.tables?.name,
             table_number: a.tables?.table_number,
+            table_area: a.tables?.area,
             capacity: a.tables?.capacity,
             reservation_name: a.reservations?.name,
             reservation_party_size: a.reservations?.party_size

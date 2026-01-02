@@ -107,6 +107,31 @@
                 </div>
             </div>
 
+            <!-- Floor Plan Tab -->
+            <div id="floorplanTab" class="tab-content">
+                <div class="section">
+                    <h2>Floor Plan View</h2>
+                    <div class="date-controls">
+                        <label>Date:</label>
+                        <input type="date" id="floorplanDate" onchange="loadFloorPlan()">
+                        <label>Time:</label>
+                        <select id="floorplanTime" onchange="loadFloorPlan()">
+                            <option value="17:30">5:30 PM</option>
+                            <option value="18:00">6:00 PM</option>
+                            <option value="18:30">6:30 PM</option>
+                            <option value="19:00">7:00 PM</option>
+                            <option value="19:30">7:30 PM</option>
+                            <option value="20:00">8:00 PM</option>
+                            <option value="20:30">8:30 PM</option>
+                            <option value="21:00">9:00 PM</option>
+                            <option value="21:30">9:30 PM</option>
+                        </select>
+                        <button onclick="loadFloorPlan()" class="btn-primary">Load</button>
+                    </div>
+                    <div id="floorplanContainer"></div>
+                </div>
+            </div>
+
             <!-- Reservations Tab -->
             <div id="reservationsTab" class="tab-content">
                 <div class="section">
@@ -117,6 +142,60 @@
                         <button onclick="loadReservations()" class="btn-primary">Load</button>
                     </div>
                     <div id="reservationsList"></div>
+                </div>
+            </div>
+
+            <!-- OpenTable Quick Add Tab -->
+            <div id="opentableTab" class="tab-content">
+                <div class="section">
+                    <h2>Quick Add OpenTable Reservation</h2>
+                    <form id="opentableForm" onsubmit="addOpenTableReservation(event)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Name (Optional):</label>
+                                <input type="text" id="otName">
+                            </div>
+                            <div class="form-group">
+                                <label>Guests:</label>
+                                <input type="number" id="otGuests" min="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Date:</label>
+                                <input type="date" id="otDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Time:</label>
+                                <select id="otTime" required>
+                                    <option value="17:30">5:30 PM</option>
+                                    <option value="18:00">6:00 PM</option>
+                                    <option value="18:30">6:30 PM</option>
+                                    <option value="19:00">7:00 PM</option>
+                                    <option value="19:30">7:30 PM</option>
+                                    <option value="20:00">8:00 PM</option>
+                                    <option value="20:30">8:30 PM</option>
+                                    <option value="21:00">9:00 PM</option>
+                                    <option value="21:30">9:30 PM</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Auto-assign tables</label>
+                                <input type="checkbox" id="otAutoAssign" checked>
+                            </div>
+                            <div class="form-group">
+                                <label>Manual table selection</label>
+                                <input type="checkbox" id="otManualSelect" onchange="toggleManualTableSelect()">
+                            </div>
+                            <div class="form-group">
+                                <label>Notes:</label>
+                                <textarea id="otNotes" placeholder="e.g., OpenTable confirmation #"></textarea>
+                            </div>
+                        </div>
+                        <div id="manualTableSelect" style="display: none; margin-top: 1rem;">
+                            <div id="tableSelectContainer"></div>
+                        </div>
+                        <button type="submit" class="btn-primary">Add OpenTable Reservation</button>
+                        <div id="otMessage"></div>
+                    </form>
                 </div>
             </div>
 
@@ -281,10 +360,7 @@
                 VALID_TIMES.forEach(time => {
                     const slotReservations = reservations.filter(r => r.time === time && ['pending', 'confirmed'].includes(r.status));
                     const slotBlocks = blocks.filter(b => b.time === time);
-                    const slotAssignments = assignments.filter(a => {
-                        const assignmentTime = a.datetime_iso ? a.datetime_iso.split('T')[1].slice(0, 5) : '';
-                        return assignmentTime === time;
-                    });
+                    const slotAssignments = assignments.filter(a => a.time === time);
 
                     let seatsUsed = 0;
                     slotReservations.forEach(r => {
@@ -333,7 +409,7 @@
                                         <div class="reservation-details">${r.party_size} guests • ${r.source || 'web'}</div>
                                     </div>
                                     <div class="reservation-tables">
-                                        ${slotAssignments.filter(a => a.reservation_id === r.id).map(a => `T${a.table_number || ''}`).join(', ') || 'Unassigned'}
+                                        ${slotAssignments.filter(a => a.reservation_id === r.id).map(a => `${a.table_name || `T${a.table_number || ''}`} (${a.table_area || ''})`).join(', ') || 'Unassigned'}
                                     </div>
                                 </div>
                             `).join('')}
@@ -475,11 +551,15 @@
         async function loadTables() {
             try {
                 const res = await fetch('/.netlify/functions/get-tables');
-                const result = await res.json();
-                if (result.success) {
-                    allTablesData = result.tables;
-                    populateTableSelect();
-                }
+                const tables = await res.json().catch(() => []);
+                // Group tables by area
+                allTablesData = tables.reduce((acc, table) => {
+                    const area = table.area || 'Unassigned Area';
+                    if (!acc[area]) acc[area] = [];
+                    acc[area].push(table);
+                    return acc;
+                }, {});
+                populateTableSelect();
             } catch (error) {
                 console.error('Error loading tables:', error);
             }
@@ -547,22 +627,27 @@
             try {
                 // Load tables
                 const tablesRes = await fetch('/.netlify/functions/get-tables');
-                const tablesResult = await tablesRes.json();
+                const allTables = await tablesRes.json().catch(() => []);
 
                 // Load assignments for this date/time
                 const assignmentsRes = await fetch(`/.netlify/functions/get-table-assignments?date=${date}`);
                 const assignments = await assignmentsRes.json().catch(() => []);
 
                 // Filter assignments for this time slot
-                const slotAssignments = assignments.filter(a => {
-                    const assignmentTime = a.datetime_iso ? a.datetime_iso.split('T')[1].slice(0, 5) : '';
-                    return assignmentTime === time && a.status === 'active';
-                });
+                const slotAssignments = assignments.filter(a => a.time === time && a.status === 'active');
 
                 const occupiedTableIds = new Set(slotAssignments.map(a => a.table_id));
 
+                // Group tables by area
+                const tablesByArea = allTables.reduce((acc, table) => {
+                    const area = table.area || 'Unassigned Area';
+                    if (!acc[area]) acc[area] = [];
+                    acc[area].push(table);
+                    return acc;
+                }, {});
+
                 container.innerHTML = '';
-                Object.keys(tablesResult.tables || {}).forEach(area => {
+                Object.keys(tablesByArea).forEach(area => {
                     const areaSection = document.createElement('div');
                     areaSection.style.marginBottom = '2rem';
                     areaSection.innerHTML = `<h3 style="color: #004A9F; margin-bottom: 1rem;">${area}</h3>`;
@@ -571,7 +656,7 @@
                     tablesGrid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(150px, 1fr))';
                     tablesGrid.style.gap = '1rem';
 
-                    tablesResult.tables[area].forEach(table => {
+                    tablesByArea[area].forEach(table => {
                         const isOccupied = occupiedTableIds.has(table.id);
                         const assignment = slotAssignments.find(a => a.table_id === table.id);
                         const tableCard = document.createElement('div');
@@ -627,12 +712,12 @@
 
                 const result = await res.json();
                 if (result.success) {
-                    messageDiv.innerHTML = `<div class="success-message">OpenTable reservation added! Tables: ${result.tables.map(t => t.name).join(', ')}</div>`;
+                    messageDiv.innerHTML = `<div class="success-message">OpenTable reservation added! Tables: ${result.assignedTables.map(t => t.name || `Table ${t.table_number}`).join(', ')}</div>`;
                     document.getElementById('opentableForm').reset();
                     selectedTablesForOT = [];
                     document.getElementById('otManualSelect').checked = false;
                     document.getElementById('manualTableSelect').style.display = 'none';
-                    if (date === document.getElementById('overviewDate')?.value) {
+                    if (payload.date === document.getElementById('overviewDate')?.value) {
                         loadOverview();
                     }
                 } else {
@@ -649,6 +734,15 @@
             const today = new Date().toISOString().split('T')[0];
             if (document.getElementById('floorplanDate')) {
                 document.getElementById('floorplanDate').value = today;
+            }
+            if (document.getElementById('otDate')) {
+                document.getElementById('otDate').value = today;
+            }
+            if (document.getElementById('blockDate')) {
+                document.getElementById('blockDate').value = today;
+            }
+            if (document.getElementById('manualDate')) {
+                document.getElementById('manualDate').value = today;
             }
         }
     </script>
