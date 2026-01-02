@@ -2402,9 +2402,13 @@ function openReservationsLogin(event) {
     const modal = document.getElementById('reservationsLoginModal');
     if (modal) {
         modal.style.display = 'flex';
+        const usernameInput = document.getElementById('reservationsUsername');
         const passwordInput = document.getElementById('reservationsPassword');
+        if (usernameInput) {
+            usernameInput.value = '';
+            usernameInput.focus();
+        }
         if (passwordInput) {
-            passwordInput.focus();
             passwordInput.value = '';
         }
         const errorDiv = document.getElementById('reservationsPasswordError');
@@ -2421,7 +2425,11 @@ function closeReservationsLogin() {
     if (modal) {
         modal.style.display = 'none';
     }
+    const usernameInput = document.getElementById('reservationsUsername');
     const passwordInput = document.getElementById('reservationsPassword');
+    if (usernameInput) {
+        usernameInput.value = '';
+    }
     if (passwordInput) {
         passwordInput.value = '';
     }
@@ -2432,31 +2440,58 @@ function closeReservationsLogin() {
     }
 }
 
-// Check reservations password and redirect
+// Check reservations password and redirect based on role
 function checkReservationsPassword() {
+    const usernameInput = document.getElementById('reservationsUsername');
     const passwordInput = document.getElementById('reservationsPassword');
     const errorDiv = document.getElementById('reservationsPasswordError');
-    const ADMIN_PASSWORD = 'solomons2024'; // Must match hostess-dashboard.html
+    const PASSWORD = 'solomons2025';
     
-    if (!passwordInput || !errorDiv) {
+    if (!usernameInput || !passwordInput || !errorDiv) {
         // Fallback: just open dashboard in new tab
         window.open('hostess-dashboard.html', '_blank');
         return;
     }
     
+    const username = usernameInput.value.trim().toLowerCase();
     const password = passwordInput.value;
     
-    if (password === ADMIN_PASSWORD) {
-        // Close modal and redirect
-        closeReservationsLogin();
-        window.location.href = 'hostess-dashboard.html';
-    } else {
-        // Show error
+    // Validate credentials
+    if (password !== PASSWORD) {
         errorDiv.textContent = 'Incorrect password';
         errorDiv.style.display = 'block';
         passwordInput.value = '';
         passwordInput.focus();
+        return;
     }
+    
+    // Route based on username
+    let dashboardUrl = null;
+    let role = null;
+    
+    if (username === 'hostess') {
+        dashboardUrl = 'hostess-dashboard.html';
+        role = 'hostess';
+    } else if (username === 'admin') {
+        dashboardUrl = 'admin-dashboard.html';
+        role = 'admin';
+    } else {
+        errorDiv.textContent = 'Invalid username. Use "hostess" or "admin"';
+        errorDiv.style.display = 'block';
+        usernameInput.value = '';
+        usernameInput.focus();
+        return;
+    }
+    
+    // Store session
+    const authToken = btoa(`${username}:${password}:${Date.now()}`); // Simple token
+    sessionStorage.setItem('dashboardRole', role);
+    sessionStorage.setItem('dashboardAuthToken', authToken);
+    sessionStorage.setItem('dashboardUsername', username);
+    
+    // Close modal and redirect
+    closeReservationsLogin();
+    window.location.href = dashboardUrl;
 }
 
 // Close modal when clicking outside

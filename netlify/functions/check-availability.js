@@ -215,7 +215,7 @@ exports.handler = async (event, context) => {
         try {
             const tablesResult = await supabase
                 .from('tables')
-                .select('id, table_number, capacity')
+                .select('id, table_number, seats')
                 .eq('is_active', true);
             
             allTables = tablesResult.data;
@@ -229,9 +229,9 @@ exports.handler = async (event, context) => {
             console.warn('⚠️ Tables table not found, using hardcoded inventory');
             // Hardcoded inventory: 17 tables of 4, 6 tables of 6, 1 table of 2
             allTables = [
-                ...Array.from({ length: 17 }, (_, i) => ({ id: `hardcoded-${i + 1}`, table_number: i + 1, capacity: 4 })),
-                ...Array.from({ length: 6 }, (_, i) => ({ id: `hardcoded-${i + 18}`, table_number: i + 18, capacity: 6 })),
-                { id: 'hardcoded-24', table_number: 24, capacity: 2 }
+                ...Array.from({ length: 17 }, (_, i) => ({ id: `hardcoded-${i + 1}`, table_number: i + 1, seats: 4 })),
+                ...Array.from({ length: 6 }, (_, i) => ({ id: `hardcoded-${i + 18}`, table_number: i + 18, seats: 6 })),
+                { id: 'hardcoded-24', table_number: 24, seats: 2 }
             ];
         } else if (tablesError) {
             throw tablesError;
@@ -242,15 +242,15 @@ exports.handler = async (event, context) => {
         try {
             const { data: assignments, error: assignmentsError } = await supabase
                 .from('table_assignments')
-                .select('table_id, datetime_iso')
-                .eq('status', 'active')
-                .gte('datetime_iso', datetimeIso)
-                .lt('datetime_iso', endDatetime);
+                .select('table_id, datetime_iso, duration_minutes')
+                .in('status', ['reserved', 'blocked', 'unavailable'])
+                .lte('datetime_iso', endDatetime)
+                .gte('datetime_iso', datetimeIso);
 
             if (!assignmentsError && assignments) {
                 assignments.forEach(assignment => {
                     const assignmentStart = new Date(assignment.datetime_iso);
-                    const assignmentEnd = new Date(assignmentStart.getTime() + RESERVATION_DURATION_MINUTES * 60 * 1000);
+                    const assignmentEnd = new Date(assignmentStart.getTime() + (assignment.duration_minutes || RESERVATION_DURATION_MINUTES) * 60 * 1000);
                     const ourStart = new Date(datetimeIso);
                     const ourEnd = new Date(endDatetime);
                     if (assignmentStart < ourEnd && assignmentEnd > ourStart) {
@@ -265,10 +265,61 @@ exports.handler = async (event, context) => {
 
         // Filter out occupied tables
         const availableTables = (allTables || []).filter(t => !occupiedTableIds.has(t.id));
-        const totalAvailableCapacity = availableTables.reduce((sum, t) => sum + t.capacity, 0);
 
-        // Check if we have enough capacity
-        const allAvailable = totalAvailableCapacity >= seatsNeeded;
+        // Greedy allocation algorithm: try to find suitable table combination
+        function greedyAllocate(partySize, tables) {
+            // Sort tables by seats (ascending)
+            const sorted = [...tables].sort((a, b) => (a.seats || a.capacity) - (b.seats || b.capacity));
+            
+            // Try exact fit first
+            const exactFit = sorted.find(t => (t.seats || t.capacity) === partySize);
+            if (exactFit) return true;
+
+            // For small parties (1-2), try 2-top or 4-top
+            if (partySize <= 2) {
+                const table2 = sorted.find(t => (t.seats || t.capacity) === 2);
+                if (table2) return true;
+                const table4 = sorted.find(t => (t.seats || t.capacity) === 4);
+                if (table4) return true;
+            }
+
+            // For 3-4, try 4-top
+            if (partySize <= 4) {
+                const table4 = sorted.find(t => (t.seats || t.capacity) === 4);
+                if (table4) return true;
+            }
+
+            // For 5-6, try 6-top
+            if (partySize <= 6) {
+                const table6 = sorted.find(t => (t.seats || t.capacity) === 6);
+                if (table6) return true;
+            }
+
+            // For larger parties, try combinations
+            let remaining = partySize;
+            const used = new Set();
+            
+            // Greedy: use largest tables first
+            const sortedDesc = [...sorted].sort((a, b) => (b.seats || b.capacity) - (a.seats || a.capacity));
+            
+            for (const table of sortedDesc) {
+                if (used.has(table.id)) continue;
+                const seats = table.seats || table.capacity;
+                if (seats >= remaining) {
+                    return true; // Found a table that fits
+                }
+                // Try combining tables
+                remaining -= seats;
+                used.add(table.id);
+                if (remaining <= 0) return true;
+            }
+
+            return false; // No suitable combination found
+        }
+
+        // Check availability using greedy allocation
+        const allAvailable = greedyAllocate(seatsNeeded, availableTables);
+        const totalAvailableCapacity = availableTables.reduce((sum, t) => sum + (t.seats || t.capacity || 0), 0);
 
         // Also check blocked_slots for backward compatibility
         let seatsBlocked = 0;

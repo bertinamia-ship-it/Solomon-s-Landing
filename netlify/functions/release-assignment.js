@@ -1,25 +1,25 @@
 /**
- * Netlify Function: Get Table Assignments by Date
- * Hostess dashboard function to fetch table assignments for a specific date
+ * Netlify Function: Release Table Assignment
+ * Hostess function to delete/release a table assignment
  */
 
 const { createClient } = require('@supabase/supabase-js');
 
 exports.handler = async (event, context) => {
-    // Handle CORS
+    // CORS handling
     if (event.httpMethod === 'OPTIONS') {
         return {
             statusCode: 200,
             headers: {
                 'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Headers': 'Content-Type',
-                'Access-Control-Allow-Methods': 'GET, OPTIONS'
+                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+                'Access-Control-Allow-Methods': 'DELETE, POST, OPTIONS'
             },
             body: ''
         };
     }
 
-    if (event.httpMethod !== 'GET') {
+    if (event.httpMethod !== 'DELETE' && event.httpMethod !== 'POST') {
         return {
             statusCode: 405,
             headers: {
@@ -30,16 +30,31 @@ exports.handler = async (event, context) => {
         };
     }
 
+    // Simple auth check
+    const authHeader = event.headers.authorization || event.headers.Authorization;
+    if (!authHeader) {
+        return {
+            statusCode: 401,
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            body: JSON.stringify({ success: false, error: 'Unauthorized' })
+        };
+    }
+
     try {
-        const date = event.queryStringParameters?.date;
-        if (!date) {
+        const data = event.httpMethod === 'POST' ? JSON.parse(event.body) : {};
+        const assignmentId = data.id || event.queryStringParameters?.id;
+
+        if (!assignmentId) {
             return {
                 statusCode: 400,
                 headers: {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*'
                 },
-                body: JSON.stringify({ success: false, error: 'Date parameter required' })
+                body: JSON.stringify({ success: false, error: 'Missing assignment id' })
             };
         }
 
@@ -59,40 +74,13 @@ exports.handler = async (event, context) => {
 
         const supabase = createClient(supabaseUrl, supabaseKey);
 
-        const time = event.queryStringParameters?.time; // Optional: filter by time slot
-
-        // Build query
-        let query = supabase
+        // Delete assignment
+        const { error } = await supabase
             .from('table_assignments')
-            .select(`
-                *,
-                tables!inner(name, table_number, area, seats),
-                reservations(name, party_size)
-            `)
-            .eq('date', date)
-            .in('status', ['reserved', 'blocked', 'unavailable'])
-            .order('time', { ascending: true });
+            .delete()
+            .eq('id', assignmentId);
 
-        if (time) {
-            query = query.eq('time', time);
-        }
-
-        const { data: assignments, error } = await query;
-
-        if (error) {
-            throw error;
-        }
-
-        // Format response with table details
-        const formatted = (assignments || []).map(a => ({
-            ...a,
-            table_name: a.tables?.name,
-            table_number: a.tables?.table_number,
-            table_area: a.tables?.area,
-            seats: a.tables?.seats || a.tables?.capacity, // Support both 'seats' and 'capacity'
-            reservation_name: a.reservations?.name,
-            reservation_party_size: a.reservations?.party_size
-        }));
+        if (error) throw error;
 
         return {
             statusCode: 200,
@@ -100,18 +88,18 @@ exports.handler = async (event, context) => {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'
             },
-            body: JSON.stringify(formatted)
+            body: JSON.stringify({ success: true, message: 'Assignment released successfully' })
         };
 
     } catch (error) {
-        console.error('Error fetching table assignments:', error);
+        console.error('❌ Error releasing assignment:', error);
         return {
             statusCode: 500,
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'
             },
-            body: JSON.stringify({ success: false, error: error.message })
+            body: JSON.stringify({ success: false, error: error.message || 'Internal server error' })
         };
     }
 };
