@@ -210,24 +210,16 @@ class RestaurantChatbot {
                 break;
             
             case 'awaiting_date':
-                // Handle date button selections
+                // Handle date button selections - always store as YYYY-MM-DD
                 if (message.includes('tonight') || message.includes('esta noche')) {
                     const today = new Date();
-                    this.reservationData.date = today.toLocaleDateString('en-US', { 
-                        weekday: 'long', 
-                        year: 'numeric', 
-                        month: 'long', 
-                        day: 'numeric' 
-                    });
+                    today.setHours(0, 0, 0, 0);
+                    this.reservationData.date = today.toISOString().split('T')[0]; // YYYY-MM-DD
                 } else if (message.includes('tomorrow') || message.includes('mañana')) {
                     const tomorrow = new Date();
                     tomorrow.setDate(tomorrow.getDate() + 1);
-                    this.reservationData.date = tomorrow.toLocaleDateString('en-US', { 
-                        weekday: 'long', 
-                        year: 'numeric', 
-                        month: 'long', 
-                        day: 'numeric' 
-                    });
+                    tomorrow.setHours(0, 0, 0, 0);
+                    this.reservationData.date = tomorrow.toISOString().split('T')[0]; // YYYY-MM-DD
                 } else if (message.includes('choose') || message.includes('elegir')) {
                     // Trigger date picker
                     setTimeout(() => {
@@ -239,7 +231,13 @@ class RestaurantChatbot {
                         ? "Please select a date from the calendar below:"
                         : "Por favor selecciona una fecha del calendario:";
                 } else {
-                    this.reservationData.date = this.parseDate(userMessage);
+                    const parsedDate = this.parseDate(userMessage);
+                    if (!parsedDate) {
+                        return this.currentLanguage === 'en'
+                            ? "❌ **Invalid date format.**\n\nPlease provide a date in one of these formats:\n• \"today\" or \"tonight\"\n• \"tomorrow\"\n• A specific date (e.g., \"January 15, 2025\")\n\nOr click \"Choose Date\" to use the calendar."
+                            : "❌ **Formato de fecha inválido.**\n\nPor favor proporciona una fecha en uno de estos formatos:\n• \"hoy\" o \"esta noche\"\n• \"mañana\"\n• Una fecha específica (ej: \"15 de enero de 2025\")\n\nO haz clic en \"Elegir Fecha\" para usar el calendario.";
+                    }
+                    this.reservationData.date = parsedDate;
                 }
                 
                 this.conversationState = 'awaiting_time';
@@ -445,7 +443,14 @@ class RestaurantChatbot {
                         });
 
                         const availabilityResult = await availabilityRes.json().catch(() => ({}));
-                        console.log('🤖 Chatbot availability check:', availabilityResult);
+                        console.log('🤖 Chatbot availability check:', availabilityRes.status, availabilityResult);
+
+                        if (!availabilityRes.ok) {
+                            console.error('❌ Availability check failed:', availabilityRes.status, availabilityResult);
+                            throw new Error(this.currentLanguage === 'es'
+                                ? 'Error al verificar disponibilidad. Por favor intenta de nuevo.'
+                                : 'Error checking availability. Please try again.');
+                        }
 
                         if (!availabilityResult.success || !availabilityResult.available) {
                             const errorMsg = availabilityResult.message || (this.currentLanguage === 'es'
@@ -454,9 +459,8 @@ class RestaurantChatbot {
                             throw new Error(errorMsg);
                         }
 
-                        // Step 2: Create Stripe hold (if enabled)
-                        let paymentIntentId = null;
-                        const holdRes = await fetch('/.netlify/functions/create-hold', {
+                        // Step 2: Check if holds are enabled and show confirmation
+                        const holdCheckRes = await fetch('/.netlify/functions/create-hold', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
@@ -466,27 +470,81 @@ class RestaurantChatbot {
                             })
                         });
 
-                        const holdResult = await holdRes.json().catch(() => ({}));
-                        console.log('🤖 Chatbot hold result:', holdResult);
+                        const holdCheckResult = await holdCheckRes.json().catch(() => ({}));
+                        console.log('🤖 Chatbot hold check:', holdCheckRes.status, holdCheckResult);
+
+                        if (!holdCheckRes.ok) {
+                            console.error('❌ Hold check failed:', holdCheckRes.status, holdCheckResult);
+                            throw new Error(this.currentLanguage === 'es'
+                                ? `Error al verificar el sistema de pagos (${holdCheckRes.status}). Por favor intenta de nuevo.`
+                                : `Error checking payment system (${holdCheckRes.status}). Please try again.`);
+                        }
+
+                        // Step 3: Create Stripe hold (if enabled)
+                        let paymentIntentId = null;
+                        const holdResult = holdCheckResult;
 
                         if (holdResult.hold_enabled) {
                             if (!holdResult.success || !holdResult.client_secret) {
                                 throw new Error(holdResult.error || 'Failed to create payment hold');
                             }
 
-                            // For chatbot, we'll skip the actual Stripe confirmation UI
-                            // In production, you might want to redirect to a payment page
-                            // For now, we'll proceed with the hold created (test mode)
-                            console.log('💳 Payment hold created (test mode):', holdResult.payment_intent_id);
-                            paymentIntentId = holdResult.payment_intent_id;
+                            // For chatbot, confirm payment with Stripe.js (test mode)
+                            // Load Stripe.js if not already loaded
+                            if (typeof window.Stripe === 'undefined') {
+                                await new Promise((resolve, reject) => {
+                                    const script = document.createElement('script');
+                                    script.src = 'https://js.stripe.com/v3/';
+                                    script.onload = resolve;
+                                    script.onerror = () => reject(new Error('Failed to load Stripe.js'));
+                                    document.head.appendChild(script);
+                                });
+                            }
+
+                            const stripePublishableKey = window.STRIPE_PUBLISHABLE_KEY || 'pk_test_placeholder';
+                            const stripe = window.Stripe(stripePublishableKey);
+
+                            console.log('💳 Chatbot confirming payment hold with test card...');
+                            try {
+                                const confirmResult = await stripe.confirmCardPayment(holdResult.client_secret, {
+                                    payment_method: {
+                                        card: {
+                                            number: '4242424242424242',
+                                            exp_month: 12,
+                                            exp_year: 2025,
+                                            cvc: '123'
+                                        },
+                                        billing_details: {
+                                            name: payload.full_name,
+                                            email: payload.email
+                                        }
+                                    }
+                                });
+
+                                if (confirmResult.error) {
+                                    throw new Error(confirmResult.error.message);
+                                }
+
+                                if (confirmResult.paymentIntent && confirmResult.paymentIntent.status === 'requires_capture') {
+                                    console.log('✅ Payment hold authorized:', confirmResult.paymentIntent.id);
+                                    paymentIntentId = confirmResult.paymentIntent.id;
+                                } else {
+                                    throw new Error('Payment hold not authorized');
+                                }
+                            } catch (stripeError) {
+                                console.error('❌ Stripe confirmation error:', stripeError);
+                                throw new Error(stripeError.message || 'Payment confirmation failed');
+                            }
                         }
 
-                        // Add payment_intent_id to payload
+                        // Add payment_intent_id, datetime_iso, and source to payload
                         payload.payment_intent_id = paymentIntentId;
+                        payload.datetime_iso = isoDatetime;
+                        payload.source = 'chatbot';
 
                         console.log('🤖 Chatbot sending reservation to Netlify Function:', payload);
 
-                        // Step 2: Send to Netlify Function
+                        // Step 4: Send to Netlify Function (only after hold is authorized)
                         const netlifyUrl = `/.netlify/functions/send-reservation`;
                         const res = await fetch(netlifyUrl, {
                             method: 'POST',
@@ -498,6 +556,13 @@ class RestaurantChatbot {
 
                         const result = await res.json().catch(() => ({}));
                         console.log('🤖 Chatbot reservation response:', res.status, result);
+
+                        if (!res.ok) {
+                            console.error('❌ Reservation failed:', res.status, result);
+                            throw new Error(result.error || (this.currentLanguage === 'es'
+                                ? `Error del servidor (${res.status}). Por favor intenta de nuevo o llámanos al +52 624 219 3228.`
+                                : `Server error (${res.status}). Please try again or call us at +52 624 219 3228.`));
+                        }
 
                         if (res.ok && result.success) {
                             // Format date for display
@@ -643,23 +708,39 @@ class RestaurantChatbot {
         return re.test(email);
     }
 
-    // Helper: Parse date from natural language
+    // Helper: Parse date from natural language and return YYYY-MM-DD format
     parseDate(input) {
-        const message = input.toLowerCase();
-        const today = new Date();
+        if (!input) return null;
         
-        if (message.includes('today') || message.includes('hoy')) {
-            return today.toLocaleDateString();
+        const message = input.toLowerCase().trim();
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        // Handle "today" or "tonight"
+        if (message.includes('today') || message.includes('hoy') || message.includes('tonight') || message.includes('esta noche')) {
+            return today.toISOString().split('T')[0]; // Returns YYYY-MM-DD
         }
         
+        // Handle "tomorrow"
         if (message.includes('tomorrow') || message.includes('mañana')) {
             const tomorrow = new Date(today);
             tomorrow.setDate(tomorrow.getDate() + 1);
-            return tomorrow.toLocaleDateString();
+            return tomorrow.toISOString().split('T')[0]; // Returns YYYY-MM-DD
         }
         
-        // Otherwise return as-is (user should provide formatted date)
+        // If already in YYYY-MM-DD format, return as-is
+        if (input.match(/^\d{4}-\d{2}-\d{2}$/)) {
         return input;
+        }
+        
+        // Try to parse as date and convert to YYYY-MM-DD
+        const parsed = new Date(input);
+        if (!Number.isNaN(parsed.getTime())) {
+            return parsed.toISOString().split('T')[0];
+        }
+        
+        // If can't parse, return null (will trigger error)
+        return null;
     }
 
     // Reset reservation data

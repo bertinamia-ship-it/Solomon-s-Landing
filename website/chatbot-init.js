@@ -391,7 +391,11 @@
             dateInput.max = maxDate.toISOString().split('T')[0];
             
             dateInput.addEventListener('change', (e) => {
-                const selectedDate = new Date(e.target.value + 'T00:00:00');
+                // Store the raw YYYY-MM-DD value
+                const dateValue = e.target.value; // Already in YYYY-MM-DD format
+                
+                // Display formatted date to user
+                const selectedDate = new Date(dateValue + 'T00:00:00');
                 const formattedDate = selectedDate.toLocaleDateString('en-US', { 
                     weekday: 'long', 
                     year: 'numeric', 
@@ -403,8 +407,9 @@
                 quickRepliesContainer.style.display = 'none';
                 showTyping();
                 
+                // Pass the YYYY-MM-DD value to chatbot (not the formatted string)
                 setTimeout(async () => {
-                    const response = await chatbot.processMessage(formattedDate);
+                    const response = await chatbot.processMessage(dateValue);
                     hideTyping();
                     sendBotMessage(response);
                 }, 800);
@@ -431,81 +436,16 @@
             }
         }, 3000);
 
-        // EmailJS Configuration
-        const EMAILJS_CONFIG = {
-            serviceID: 'service_u021fxi',
-            customerTemplateID: 'template_swvqncq',
-            restaurantTemplateID: 'template_ij3p83j',
-            publicKey: 'gCsJYvChpOqVACgUr'
-        };
-
-        // Initialize EmailJS
-        if (typeof emailjs !== 'undefined') {
-            emailjs.init(EMAILJS_CONFIG.publicKey);
-            console.log('✅ EmailJS initialized successfully');
-        }
-
-        // Override email sending function
+        // EmailJS removed - using Netlify Functions only
+        // Emails are sent by send-reservation Netlify Function
+        
+        // EmailJS removed - emails are sent by send-reservation Netlify Function
+        // Override email sending function (no-op, emails sent by Netlify Function)
         chatbot.sendReservationEmails = async function() {
-            try {
-                // Check if EmailJS is configured
-                if (typeof emailjs === 'undefined') {
-                    console.error('❌ EmailJS SDK not loaded. Please add the EmailJS script to your HTML.');
-                    return Promise.reject('EmailJS SDK not loaded');
-                }
-
-                const now = new Date();
-                
-                // Prepare data for customer email
-                const customerParams = {
-                    customer_name: this.reservationData.name,
-                    customer_email: this.reservationData.email,
-                    customer_phone: this.reservationData.phone,
-                    reservation_date: this.reservationData.date,
-                    reservation_time: this.reservationData.time,
-                    num_guests: this.reservationData.guests,
-                    special_requests: (this.reservationData.celebration || '') + 
-                                     (this.reservationData.celebration && this.reservationData.restrictions ? ' | ' : '') +
-                                     (this.reservationData.restrictions || '') || 'None'
-                };
-                
-                // Send to customer
-                console.log('📧 Sending confirmation email to customer...');
-                await emailjs.send(
-                    EMAILJS_CONFIG.serviceID,
-                    EMAILJS_CONFIG.customerTemplateID,
-                    customerParams
-                );
-                
-                console.log('✅ Customer email sent to:', this.reservationData.email);
-                
-                // Prepare data for restaurant email
-                const restaurantParams = {
-                    ...customerParams,
-                    request_time: now.toLocaleString('en-US', { 
-                        dateStyle: 'full', 
-                        timeStyle: 'short' 
-                    })
-                };
-                
-                // Send to restaurant
-                console.log('📧 Sending notification to restaurant...');
-                await emailjs.send(
-                    EMAILJS_CONFIG.serviceID,
-                    EMAILJS_CONFIG.restaurantTemplateID,
-                    restaurantParams
-                );
-                
-                console.log('✅ Restaurant notification sent successfully');
-                console.log('=== RESERVATION CONFIRMED ===');
-                
-                return Promise.resolve();
-            } catch (error) {
-                console.error('❌ Error sending emails:', error);
-                console.log('Reservation data:', this.reservationData);
-                // Don't fail the reservation if email fails
-                return Promise.resolve();
-            }
+            // Emails are sent by send-reservation Netlify Function
+            // This function is kept for compatibility but does nothing
+            console.log('📧 Emails will be sent by Netlify Function');
+            return Promise.resolve();
         };
     }
 })();

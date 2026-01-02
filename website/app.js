@@ -416,7 +416,12 @@ function initSmoothScroll() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
+            const href = this.getAttribute('href');
+            // Guard against empty hash or just "#"
+            if (!href || href === '#' || href.length <= 1) {
+                return;
+            }
+            const target = document.querySelector(href);
             if (target) {
                 target.scrollIntoView({
                     behavior: 'smooth',
@@ -1631,6 +1636,18 @@ function initReservationForm() {
             const availabilityResult = await availabilityRes.json().catch(() => ({}));
             console.log('📅 Availability check:', availabilityResult);
 
+            if (!availabilityRes.ok) {
+                console.error('❌ Availability check failed:', availabilityRes.status, availabilityResult);
+                const errorMsg = lang === 'es'
+                    ? `Error al verificar disponibilidad (${availabilityRes.status}). Por favor intenta de nuevo o llámanos al +52 624 219 3228.`
+                    : `Error checking availability (${availabilityRes.status}). Please try again or call us at +52 624 219 3228.`;
+                showMessage(errorMsg, 'error');
+                isSubmitting = false;
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+                return;
+            }
+
             if (!availabilityResult.success || !availabilityResult.available) {
                 const errorMsg = availabilityResult.message || (lang === 'es' 
                     ? 'No hay disponibilidad para esta fecha y hora. Por favor selecciona otra opción.'
@@ -1642,9 +1659,9 @@ function initReservationForm() {
                 return;
             }
 
-            // Step 2: Create Stripe hold (if enabled)
-            let paymentIntentId = null;
-            const holdRes = await fetch('/.netlify/functions/create-hold', {
+            // Step 2: Show Stripe hold confirmation (if enabled)
+            // Check if holds are enabled by attempting to create one
+            const holdCheckRes = await fetch('/.netlify/functions/create-hold', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -1654,11 +1671,43 @@ function initReservationForm() {
                 })
             });
 
-            const holdResult = await holdRes.json().catch(() => ({}));
-            console.log('💳 Hold result:', holdResult);
+            const holdCheckResult = await holdCheckRes.json().catch(() => ({}));
+            console.log('💳 Hold check:', holdCheckRes.status, holdCheckResult);
+
+            if (!holdCheckRes.ok) {
+                console.error('❌ Hold check failed:', holdCheckRes.status, holdCheckResult);
+                const errorMsg = lang === 'es'
+                    ? `Error al verificar el sistema de pagos (${holdCheckRes.status}). Por favor intenta de nuevo.`
+                    : `Error checking payment system (${holdCheckRes.status}). Please try again.`;
+                showMessage(errorMsg, 'error');
+                isSubmitting = false;
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+                return;
+            }
+
+            if (holdCheckResult.hold_enabled) {
+                // Show confirmation dialog
+                const holdAmount = parseInt(payload.party_size) * 10;
+                const confirmMessage = lang === 'es'
+                    ? `Se requiere un depósito temporal de $${holdAmount} USD ($${10} por persona) para confirmar esta reservación. ¿Deseas continuar?`
+                    : `A $${holdAmount} USD temporary hold ($${10} per person) is required to confirm this reservation. Do you want to continue?`;
+                
+                if (!confirm(confirmMessage)) {
+                    isSubmitting = false;
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
+                    return;
+                }
+            }
+
+            // Step 3: Use hold result from check above (already created)
+            let paymentIntentId = null;
+            const holdResult = holdCheckResult;
 
             if (holdResult.hold_enabled) {
                 if (!holdResult.success || !holdResult.client_secret) {
+                    console.error('❌ Hold creation failed:', holdCheckRes.status, holdResult);
                     throw new Error(holdResult.error || 'Failed to create payment hold');
                 }
 
@@ -1713,9 +1762,10 @@ function initReservationForm() {
                 }
             }
 
-            // Add payment_intent_id and ISO datetime to payload
+            // Add payment_intent_id, ISO datetime, and source to payload
             payload.payment_intent_id = paymentIntentId;
             payload.datetime_iso = isoDatetime;
+            payload.source = 'website';
 
             const res = await fetch('/.netlify/functions/send-reservation', {
                 method: 'POST',
@@ -1728,7 +1778,9 @@ function initReservationForm() {
             if (!res.ok || !json.success) {
                 // Error case: log and show friendly message
                 console.error('❌ Reservation failed:', res.status, json);
-                const errorMsg = json.error || getTranslation('form.serverError');
+                const errorMsg = json.error || (lang === 'es' 
+                    ? 'Error del servidor. Por favor intenta de nuevo o llámanos al +52 624 219 3228'
+                    : 'Server error. Please try again or call us at +52 624 219 3228');
                 showMessage(errorMsg, 'error');
             } else {
                 // Success case
@@ -1759,7 +1811,7 @@ function initReservationForm() {
 }
 
 /**
- * Send reservation email via Netlify Function (with EmailJS fallback)
+ * Send reservation email via Netlify Function (EmailJS removed - Netlify only)
  */
 async function sendReservationEmail(reservationData) {
     // Determine Netlify function URL
@@ -1768,7 +1820,6 @@ async function sendReservationEmail(reservationData) {
         : `/.netlify/functions/send-reservation`;
     
     try {
-        // Try Netlify Function first
         const response = await fetch(netlifyUrl, {
             method: 'POST',
             headers: {
@@ -1794,64 +1845,21 @@ async function sendReservationEmail(reservationData) {
             console.log('✅ Reservation email sent via Netlify Function');
             return { success: true, method: 'netlify' };
         } else {
+            console.error('❌ Netlify function failed:', response.status, result);
             throw new Error(result.error || 'Netlify function failed');
         }
-    } catch (netlifyError) {
-        console.warn('⚠️ Netlify Function failed, falling back to EmailJS:', netlifyError);
-        
-        // Fallback to EmailJS
-        if (typeof emailjs !== 'undefined') {
-            try {
-                // Initialize EmailJS if needed
-                if (!emailjs.init) {
-                    emailjs.init('gCsJYvChpOqVACgUr');
-                }
-                
-                const dateObj = new Date(reservationData.date + 'T00:00:00');
-                const formattedDate = dateObj.toLocaleDateString('en-US', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                });
-                
-                await emailjs.send('service_u021fxi', 'template_ij3p83j', {
-                    to_email: 'contact@solomonslanding.com.mx',
-                    customer_name: reservationData.name,
-                    customer_email: reservationData.email,
-                    customer_phone: reservationData.phone,
-                    reservation_date: formattedDate,
-                    reservation_time: reservationData.time,
-                    party_size: reservationData.guests,
-                    special_requests: reservationData.notes || 'None',
-                    confirmation_code: reservationData.confirmationCode || '',
-                    confirm_url: reservationData.confirmUrl || '',
-                    customer_language: reservationData.customerLanguage || 'English'
-                });
-                
-                console.log('✅ Reservation email sent via EmailJS (fallback)');
-                return { success: true, method: 'emailjs' };
-            } catch (emailjsError) {
-                console.error('❌ EmailJS fallback also failed:', emailjsError);
-                return { 
-                    success: false, 
-                    error: 'Failed to send email. Please try again or call +52 624 219 3228.',
-                    method: 'none'
-                };
-            }
-        } else {
-            console.error('❌ EmailJS not available as fallback');
-            return { 
-                success: false, 
-                error: 'Email service unavailable. Please call +52 624 219 3228.',
-                method: 'none'
-            };
-        }
+    } catch (error) {
+        console.error('❌ Failed to send reservation email:', error);
+        return { 
+            success: false, 
+            error: 'Failed to send email. Please try again or call +52 624 219 3228.',
+            method: 'none'
+        };
     }
 }
 
 /**
- * Send catering email via Netlify Function (with EmailJS fallback)
+ * Send catering email via Netlify Function (EmailJS removed - Netlify only)
  */
 async function sendCateringEmail(cateringData) {
     // Determine Netlify function URL
@@ -1860,7 +1868,6 @@ async function sendCateringEmail(cateringData) {
         : `/.netlify/functions/send-catering`;
     
     try {
-        // Try Netlify Function first
         const response = await fetch(netlifyUrl, {
             method: 'POST',
             headers: {
@@ -1883,70 +1890,16 @@ async function sendCateringEmail(cateringData) {
             console.log('✅ Catering email sent via Netlify Function');
             return { success: true, method: 'netlify' };
         } else {
+            console.error('❌ Netlify function failed:', response.status, result);
             throw new Error(result.error || 'Netlify function failed');
         }
-    } catch (netlifyError) {
-        console.warn('⚠️ Netlify Function failed, falling back to EmailJS:', netlifyError);
-        
-        // Fallback to EmailJS
-        if (typeof emailService !== 'undefined') {
-            try {
-                const result = await emailService.sendCateringQuote(cateringData);
-                if (result.success) {
-                    console.log('✅ Catering email sent via EmailJS (fallback)');
-                    return { success: true, method: 'emailjs' };
-                } else {
-                    throw new Error('EmailJS failed');
-                }
-            } catch (emailjsError) {
-                console.error('❌ EmailJS fallback also failed:', emailjsError);
-                return { 
-                    success: false, 
-                    error: 'Failed to send email. Please try again or call +52 624 219 3228.',
-                    method: 'none'
-                };
-            }
-        } else if (typeof emailjs !== 'undefined') {
-            // Direct EmailJS fallback
-            try {
-                if (!emailjs.init) {
-                    emailjs.init('gCsJYvChpOqVACgUr');
-                }
-                
-                await emailjs.send(
-                    'service_u021fxi',
-                    'template_catering_quote',
-                    {
-                        to_email: 'samantha@solomonslanding.com.mx',
-                        from_name: cateringData.name,
-                        from_email: cateringData.email,
-                        phone: cateringData.phone,
-                        event_date: cateringData.eventDate,
-                        guest_count: cateringData.guestCount,
-                        event_type: cateringData.eventType,
-                        message: cateringData.message || ''
-                    },
-                    'gCsJYvChpOqVACgUr'
-                );
-                
-                console.log('✅ Catering email sent via EmailJS (direct fallback)');
-                return { success: true, method: 'emailjs' };
-            } catch (emailjsError) {
-                console.error('❌ Direct EmailJS fallback also failed:', emailjsError);
-                return { 
-                    success: false, 
-                    error: 'Failed to send email. Please try again or call +52 624 219 3228.',
-                    method: 'none'
-                };
-            }
-        } else {
-            console.error('❌ EmailJS not available as fallback');
-            return { 
-                success: false, 
-                error: 'Email service unavailable. Please call +52 624 219 3228.',
-                method: 'none'
-            };
-        }
+    } catch (error) {
+        console.error('❌ Failed to send catering email:', error);
+        return { 
+            success: false, 
+            error: 'Failed to send email. Please try again or call +52 624 219 3228.',
+            method: 'none'
+        };
     }
 }
 
@@ -2140,54 +2093,9 @@ async function sendReservationToBackend(reservationData) {
                 throw new Error(result.error || 'Netlify function failed');
             }
         } catch (netlifyError) {
-            console.warn('⚠️ Netlify Function failed, falling back to EmailJS:', netlifyError);
-            // Fall through to EmailJS fallback
+            console.error('❌ Netlify Function failed:', netlifyError);
+            throw new Error('Failed to create reservation. Please try again or call +52 624 219 3228.');
         }
-    }
-    
-    // Fallback to EmailJS (for GitHub Pages or if Netlify Function fails)
-    if (typeof emailjs !== 'undefined') {
-        try {
-            // Generate confirmation code if not provided
-            const confirmationCode = reservationData.confirmationCode || 'RES-' + Date.now().toString().slice(-6);
-            
-            // Build confirmation URL if needed
-            const confirmUrl = reservationData.confirmUrl || `${window.location.origin}/website/confirm-reservation.html?code=${confirmationCode}`;
-            
-            // Send email via EmailJS
-            const emailResult = await sendReservationEmail({
-                ...reservationData,
-                confirmationCode,
-                confirmUrl,
-                customerLanguage: reservationData.customerLanguage || (currentLanguage === 'es' ? 'Español' : 'English')
-            });
-            
-            if (!emailResult.success) {
-                return {
-                    success: false,
-                    message: emailResult.error || 'Failed to send reservation email'
-                };
-            }
-            
-    return {
-        success: true,
-                reservationId: confirmationCode,
-                message: 'Reservation request sent successfully',
-                method: 'emailjs'
-            };
-        } catch (emailjsError) {
-            console.error('❌ EmailJS fallback also failed:', emailjsError);
-            return {
-                success: false,
-                message: 'Failed to send reservation. Please try again or call +52 624 219 3228.'
-            };
-        }
-    } else {
-        console.error('❌ No email service available');
-        return {
-            success: false,
-            message: 'Email service unavailable. Please call +52 624 219 3228.'
-        };
     }
 }
 
