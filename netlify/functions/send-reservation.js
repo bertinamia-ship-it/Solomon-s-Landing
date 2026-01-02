@@ -296,10 +296,7 @@ exports.handler = async (event, context) => {
             };
         }
 
-        // Initialize Supabase client
-        const supabase = createClient(supabaseUrl, supabaseKey);
-
-        // Format date for display
+        // Format date for display (supabase already initialized above)
         const dateObj = new Date(data.date + 'T00:00:00');
         const formattedDate = dateObj.toLocaleDateString('en-US', { 
             weekday: 'long', 
