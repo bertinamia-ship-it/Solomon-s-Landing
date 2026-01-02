@@ -712,7 +712,8 @@
 
                 const result = await res.json();
                 if (result.success) {
-                    messageDiv.innerHTML = `<div class="success-message">OpenTable reservation added! Tables: ${result.assignedTables.map(t => t.name || `Table ${t.table_number}`).join(', ')}</div>`;
+                    const tableNames = result.tables ? result.tables.map(t => t.name || t.area).join(', ') : 'Assigned';
+                    messageDiv.innerHTML = `<div class="success-message">OpenTable reservation added! Tables: ${tableNames}</div>`;
                     document.getElementById('opentableForm').reset();
                     selectedTablesForOT = [];
                     document.getElementById('otManualSelect').checked = false;
