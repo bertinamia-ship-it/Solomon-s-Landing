@@ -127,7 +127,7 @@ exports.handler = async (event, context) => {
         // Import the availability check logic directly
         const TOTAL_SEATS = 106;
         const RESERVATION_WINDOW_SLOTS = 3;
-        const VALID_TIMES = ['17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30'];
+        // VALID_TIMES already declared above, reuse it
         
         function getOccupiedSlots(time) {
             const timeIndex = VALID_TIMES.indexOf(time);
