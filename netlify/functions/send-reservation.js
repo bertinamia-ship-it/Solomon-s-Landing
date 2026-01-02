@@ -297,12 +297,14 @@ exports.handler = async (event, context) => {
         }
 
         // Format date for display (supabase already initialized above)
+        // Use America/Mazatlan timezone (same as Los Cabos)
         const dateObj = new Date(data.date + 'T00:00:00');
-        const formattedDate = dateObj.toLocaleDateString('en-US', { 
+        const formattedDate = dateObj.toLocaleDateString(data.language === 'es' ? 'es-MX' : 'en-US', { 
             weekday: 'long', 
             year: 'numeric', 
             month: 'long', 
-            day: 'numeric' 
+            day: 'numeric',
+            timeZone: 'America/Mazatlan'
         });
 
         // Find available tables before creating reservation (inline logic)
@@ -370,7 +372,7 @@ exports.handler = async (event, context) => {
         // Get all active tables
         const { data: allTables, error: tablesError } = await supabase
             .from('tables')
-            .select('id, table_number, capacity')
+            .select('id, name, table_number, area, capacity')
             .eq('is_active', true)
             .order('capacity', { ascending: true });
 
@@ -420,6 +422,17 @@ exports.handler = async (event, context) => {
             tableAssignments = tableCombination;
         }
 
+        // Generate confirmation code (6-8 chars: uppercase letters + numbers)
+        function generateConfirmationCode() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Exclude confusing chars (0, O, I, 1)
+            let code = '';
+            for (let i = 0; i < 7; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return code;
+        }
+        const confirmationCode = generateConfirmationCode();
+
         // Insert reservation into database (datetimeIso already validated above)
         const { data: reservation, error: dbError } = await supabase
             .from('reservations')
@@ -437,7 +450,8 @@ exports.handler = async (event, context) => {
                     source: data.source || 'web',
                     status: 'pending',
                     payment_intent_id: data.payment_intent_id || null,
-                    datetime_iso: datetimeIso
+                    datetime_iso: datetimeIso,
+                    confirmation_code: confirmationCode
                 }
             ])
             .select()
@@ -463,12 +477,15 @@ exports.handler = async (event, context) => {
         // Create table assignments
         if (tableAssignments.length > 0) {
             const assignmentInserts = tableAssignments.map(table => ({
-                reservation_id: reservation.id,
-                table_id: table.table_id,
+                date: data.date,
+                time: data.time,
                 datetime_iso: datetimeIso,
                 duration_minutes: 90,
+                table_id: table.table_id,
+                reservation_id: reservation.id,
                 source: data.source || 'web',
-                status: 'active'
+                status: 'active',
+                notes: null
             }));
 
             const { error: assignmentError } = await supabase
@@ -499,6 +516,12 @@ exports.handler = async (event, context) => {
         }
 
         console.log('✅ Reservation saved to database:', reservation.id);
+
+        // Get assigned table names for email
+        let assignedTablesText = 'Not assigned yet';
+        if (tableAssignments.length > 0) {
+            assignedTablesText = tableAssignments.map(t => `${t.name || `Table ${t.table_number}`} (${t.area})`).join(', ');
+        }
 
         // Initialize Resend
         const resend = new Resend(resendApiKey);
@@ -565,19 +588,23 @@ exports.handler = async (event, context) => {
         `;
 
         const restaurantEmailText = `
-New Reservation Request
+${lang.newReservation}
 
-Reservation ID: ${reservation.id}
-Customer Name: ${fullName}
+${lang.confirmationCode}: ${confirmationCode}
+${lang.customerName}: ${fullName}
 Email: ${data.email}
 Phone: ${data.phone}
-Date: ${formattedDate}
-Time: ${data.time}
-Party Size: ${partySize} guests
-${data.staying_place ? `Staying: ${data.staying_place}` : ''}
-${data.notes ? `Special Requests: ${data.notes}` : ''}
-Language: ${data.language === 'es' ? 'Español' : 'English'}
-Status: Pending
+${lang.date}: ${formattedDate}
+${lang.time}: ${data.time}
+${lang.partySize}: ${partySize} ${isSpanish ? 'comensales' : 'guests'}
+${lang.assignedTables}: ${assignedTablesText}
+${data.staying_place ? `${lang.staying}: ${data.staying_place}` : ''}
+${data.notes ? `${lang.specialRequests}: ${data.notes}` : ''}
+${data.payment_intent_id ? `${lang.paymentHold}: ${lang.yes}` : ''}
+${lang.language}: ${data.language === 'es' ? 'Español' : 'English'}
+${lang.status}: Pending
+
+Reservation ID: ${reservation.id}
         `.trim();
 
         try {
@@ -611,41 +638,66 @@ Status: Pending
             <html>
             <head>
                 <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <style>
-                    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-                    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                    .header { background: linear-gradient(135deg, #004A9F, #0066CC); color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
-                    .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 8px 8px; }
-                    .info-row { margin: 15px 0; padding: 10px; background: white; border-radius: 5px; }
-                    .label { font-weight: bold; color: #004A9F; }
-                    .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+                    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background: #f5f5f5; }
+                    .email-wrapper { max-width: 600px; margin: 0 auto; background: white; }
+                    .header { background: linear-gradient(135deg, #004A9F 0%, #0066CC 100%); color: white; padding: 40px 20px; text-align: center; }
+                    .logo { font-size: 28px; font-weight: 700; margin-bottom: 10px; letter-spacing: 1px; }
+                    .header-subtitle { font-size: 14px; opacity: 0.9; }
+                    .content { padding: 40px 30px; background: #ffffff; }
+                    .code-box { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); padding: 25px; border-radius: 12px; text-align: center; margin: 20px 0; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3); }
+                    .code-label { font-size: 12px; color: #78350f; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+                    .code-value { font-size: 36px; font-weight: bold; color: #ffffff; font-family: 'Courier New', monospace; letter-spacing: 4px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+                    .info-row { margin: 18px 0; padding: 15px; background: #f9fafb; border-radius: 8px; border-left: 4px solid #004A9F; }
+                    .label { font-weight: 600; color: #004A9F; display: inline-block; min-width: 140px; font-size: 14px; }
+                    .value { color: #1e293b; font-size: 14px; }
+                    .greeting { font-size: 16px; margin-bottom: 20px; color: #1e293b; }
+                    .message { margin: 20px 0; color: #4b5563; line-height: 1.8; }
+                    .footer { text-align: center; padding: 30px; background: #f9fafb; color: #6b7280; font-size: 12px; border-top: 1px solid #e5e7eb; }
+                    .footer p { margin: 5px 0; }
+                    .contact-info { margin-top: 25px; padding: 20px; background: #eff6ff; border-radius: 8px; text-align: center; }
+                    .contact-info strong { color: #004A9F; }
                 </style>
             </head>
             <body>
-                <div class="container">
+                <div class="email-wrapper">
                     <div class="header">
-                        <h2>Reservation Request Received</h2>
+                        <div class="logo">SOLOMON'S LANDING</div>
+                        <div class="header-subtitle">${lang.reservationReceived}</div>
                     </div>
                     <div class="content">
-                        <p>Dear ${fullName},</p>
-                        <p>Thank you for your reservation request at Solomon's Landing!</p>
-                        <div class="info-row">
-                            <span class="label">Reservation ID:</span> ${reservation.id}
+                        <div class="greeting">${isSpanish ? 'Estimado/a' : 'Dear'} ${fullName},</div>
+                        <div class="message">${lang.thankYou}</div>
+                        <div class="code-box">
+                            <div class="code-label">${lang.confirmationCode}</div>
+                            <div class="code-value">${confirmationCode}</div>
                         </div>
                         <div class="info-row">
-                            <span class="label">Date:</span> ${formattedDate}
+                            <span class="label">${lang.date}:</span>
+                            <span class="value">${formattedDate}</span>
                         </div>
                         <div class="info-row">
-                            <span class="label">Time:</span> ${data.time}
+                            <span class="label">${lang.time}:</span>
+                            <span class="value">${data.time}</span>
                         </div>
                         <div class="info-row">
-                            <span class="label">Party Size:</span> ${partySize} guests
+                            <span class="label">${lang.partySize}:</span>
+                            <span class="value">${partySize} ${isSpanish ? 'comensales' : 'guests'}</span>
                         </div>
-                        <p style="margin-top: 20px;">We have received your request and will confirm your reservation within 2 hours. You will receive a confirmation email once your table is confirmed.</p>
-                        <p>If you have any questions, please contact us at +52 624 219 3228 or reply to this email.</p>
+                        ${assignedTablesText !== 'Not assigned yet' ? `<div class="info-row"><span class="label">${lang.assignedTables}:</span><span class="value">${assignedTablesText}</span></div>` : ''}
+                        ${data.staying_place ? `<div class="info-row"><span class="label">${lang.staying}:</span><span class="value">${data.staying_place}</span></div>` : ''}
+                        ${data.notes ? `<div class="info-row"><span class="label">${lang.specialRequests}:</span><span class="value">${data.notes}</span></div>` : ''}
+                        <div class="message">${lang.confirmationNote}</div>
+                        <div class="contact-info">
+                            <strong>${isSpanish ? '¿Preguntas?' : 'Questions?'}</strong><br>
+                            ${lang.questions}
+                        </div>
                     </div>
                     <div class="footer">
-                        <p>Solomon's Landing Restaurant<br>Marina Cabo San Lucas</p>
+                        <p><strong>Solomon's Landing Restaurant</strong></p>
+                        <p>Marina Cabo San Lucas, Baja California Sur, México</p>
+                        <p>+52 624 219 3228</p>
                     </div>
                 </div>
             </body>
@@ -653,23 +705,27 @@ Status: Pending
         `;
 
         const customerEmailText = `
-Reservation Request Received
+${lang.reservationReceived}
 
-Dear ${fullName},
+${isSpanish ? 'Estimado/a' : 'Dear'} ${fullName},
 
-Thank you for your reservation request at Solomon's Landing!
+${lang.thankYou}
 
-Reservation ID: ${reservation.id}
-Date: ${formattedDate}
-Time: ${data.time}
-Party Size: ${partySize} guests
+${lang.confirmationCode}: ${confirmationCode}
+${lang.date}: ${formattedDate}
+${lang.time}: ${data.time}
+${lang.partySize}: ${partySize} ${isSpanish ? 'comensales' : 'guests'}
+${assignedTablesText !== 'Not assigned yet' ? `${lang.assignedTables}: ${assignedTablesText}` : ''}
+${data.staying_place ? `${lang.staying}: ${data.staying_place}` : ''}
+${data.notes ? `${lang.specialRequests}: ${data.notes}` : ''}
 
-We have received your request and will confirm your reservation within 2 hours. You will receive a confirmation email once your table is confirmed.
+${lang.confirmationNote}
 
-If you have any questions, please contact us at +52 624 219 3228 or reply to this email.
+${lang.questions}
 
 Solomon's Landing Restaurant
-Marina Cabo San Lucas
+Marina Cabo San Lucas, Baja California Sur, México
++52 624 219 3228
         `.trim();
 
         try {

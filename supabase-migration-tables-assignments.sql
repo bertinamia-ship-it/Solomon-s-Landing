@@ -5,32 +5,42 @@
 CREATE TABLE IF NOT EXISTS tables (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    name TEXT NOT NULL, -- e.g., 'Table 1', 'Sushi Bar 30'
     table_number INTEGER NOT NULL UNIQUE,
+    area TEXT NOT NULL, -- 'Main Floor' or 'Sushi Bar'
     capacity INTEGER NOT NULL CHECK (capacity > 0),
-    area TEXT, -- e.g., 'main', 'patio', 'window'
     is_active BOOLEAN DEFAULT true,
     notes TEXT
 );
 
 -- Insert initial table inventory
--- 17 tables of 4 pax
-INSERT INTO tables (table_number, capacity, area, is_active) VALUES
-(1, 4, 'main', true), (2, 4, 'main', true), (3, 4, 'main', true), (4, 4, 'main', true),
-(5, 4, 'main', true), (6, 4, 'main', true), (7, 4, 'main', true), (8, 4, 'main', true),
-(9, 4, 'main', true), (10, 4, 'main', true), (11, 4, 'main', true), (12, 4, 'main', true),
-(13, 4, 'main', true), (14, 4, 'main', true), (15, 4, 'main', true), (16, 4, 'main', true),
-(17, 4, 'main', true)
+-- Main Floor: Tables 1-15 (mix of 2, 4, 6 capacity)
+INSERT INTO tables (name, table_number, area, capacity, is_active) VALUES
+('Table 1', 1, 'Main Floor', 4, true),
+('Table 2', 2, 'Main Floor', 4, true),
+('Table 3', 3, 'Main Floor', 4, true),
+('Table 4', 4, 'Main Floor', 4, true),
+('Table 5', 5, 'Main Floor', 4, true),
+('Table 6', 6, 'Main Floor', 4, true),
+('Table 7', 7, 'Main Floor', 4, true),
+('Table 8', 8, 'Main Floor', 4, true),
+('Table 9', 9, 'Main Floor', 4, true),
+('Table 10', 10, 'Main Floor', 4, true),
+('Table 11', 11, 'Main Floor', 4, true),
+('Table 12', 12, 'Main Floor', 4, true),
+('Table 13', 13, 'Main Floor', 4, true),
+('Table 14', 14, 'Main Floor', 6, true),
+('Table 15', 15, 'Main Floor', 6, true)
 ON CONFLICT (table_number) DO NOTHING;
 
--- 6 tables of 6 pax
-INSERT INTO tables (table_number, capacity, area, is_active) VALUES
-(18, 6, 'main', true), (19, 6, 'main', true), (20, 6, 'main', true),
-(21, 6, 'main', true), (22, 6, 'main', true), (23, 6, 'main', true)
-ON CONFLICT (table_number) DO NOTHING;
-
--- 1 table of 2 pax
-INSERT INTO tables (table_number, capacity, area, is_active) VALUES
-(24, 2, 'main', true)
+-- Sushi Bar: Tables 30-32, 40-42
+INSERT INTO tables (name, table_number, area, capacity, is_active) VALUES
+('Sushi Bar 30', 30, 'Sushi Bar', 2, true),
+('Sushi Bar 31', 31, 'Sushi Bar', 2, true),
+('Sushi Bar 32', 32, 'Sushi Bar', 2, true),
+('Sushi Bar 40', 40, 'Sushi Bar', 4, true),
+('Sushi Bar 41', 41, 'Sushi Bar', 4, true),
+('Sushi Bar 42', 42, 'Sushi Bar', 4, true)
 ON CONFLICT (table_number) DO NOTHING;
 
 -- Create table_assignments table
@@ -38,13 +48,15 @@ CREATE TABLE IF NOT EXISTS table_assignments (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    reservation_id UUID REFERENCES reservations(id) ON DELETE CASCADE,
-    table_id UUID REFERENCES tables(id) ON DELETE RESTRICT,
+    date DATE NOT NULL,
+    time TEXT NOT NULL, -- HH:MM format
     datetime_iso TEXT NOT NULL, -- ISO 8601 datetime string
     duration_minutes INTEGER DEFAULT 90,
+    table_id UUID REFERENCES tables(id) ON DELETE RESTRICT,
+    reservation_id UUID REFERENCES reservations(id) ON DELETE SET NULL, -- Nullable for OpenTable blocks
     source TEXT NOT NULL CHECK (source IN ('website', 'chatbot', 'phone', 'opentable', 'manual')),
-    note TEXT,
-    status TEXT DEFAULT 'active' CHECK (status IN ('active', 'completed', 'cancelled'))
+    status TEXT DEFAULT 'active' CHECK (status IN ('active', 'completed', 'cancelled')),
+    notes TEXT
 );
 
 -- Create indexes for performance
