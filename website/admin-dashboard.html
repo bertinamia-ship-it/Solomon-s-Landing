@@ -168,36 +168,84 @@
             border: 2px solid #e2e8f0;
             border-radius: 8px;
             background: #f9fafb;
-            min-height: 500px;
+            min-height: 520px;
             overflow: auto;
         }
         .floor-plan-canvas {
             position: relative;
             width: 100%;
-            height: 500px;
-            background: white;
+            height: 520px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
         }
-        .table-element {
+        .layout-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        .layout-controls select {
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            min-width: 200px;
+        }
+        .hint {
+            color: #6b7280;
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+        .table-node {
             position: absolute;
-            border: 2px solid #004A9F;
-            background: #dbeafe;
-            border-radius: 4px;
-            cursor: move;
+            user-select: none;
+            cursor: grab;
+            z-index: 10;
+        }
+        .table-node:active {
+            cursor: grabbing;
+        }
+        .table-node.selected .table-shape {
+            outline: 3px solid rgba(245, 158, 11, 0.55);
+            outline-offset: 2px;
+        }
+        .table-shape {
+            position: relative;
+            width: 96px;
+            height: 64px;
+            border: 2px solid #1d4ed8;
+            background: #eaf2ff;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-weight: 700;
+            color: #1d4ed8;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .table-shape.round {
+            width: 72px;
+            height: 72px;
+            border-radius: 999px;
+        }
+        .seat {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 999px;
+            background: #1d4ed8;
+            opacity: 0.9;
+            border: 1px solid #fff;
+        }
+        .table-label {
+            font-size: 12px;
+            margin-top: 6px;
+            text-align: center;
+            color: #111827;
             font-weight: 600;
-            font-size: 0.85rem;
-            color: #1e40af;
-            user-select: none;
-        }
-        .table-element:hover {
-            background: #bfdbfe;
-            border-color: #003d82;
-        }
-        .table-element.dragging {
-            opacity: 0.7;
-            z-index: 1000;
         }
         .floor-plan-controls {
             display: flex;
@@ -277,6 +325,12 @@
                     </select>
                     <button class="btn-primary" onclick="saveFloorPlan()">Save Layout</button>
                     <button class="btn-secondary" onclick="resetFloorPlan()">Reset</button>
+                </div>
+                <div class="layout-controls">
+                    <select id="layoutTableSelect"></select>
+                    <button id="btnAddToLayout" class="btn-primary" onclick="startPlacingTable()">Add Table</button>
+                    <button id="btnRemoveFromLayout" class="btn-danger" onclick="removeSelectedTable()" disabled>Remove</button>
+                    <span id="placeHint" class="hint" style="display:none;">Click on the canvas to place the table…</span>
                 </div>
                 <div class="floor-plan-container">
                     <div id="floorPlanCanvas" class="floor-plan-canvas"></div>
