@@ -272,18 +272,23 @@ exports.handler = async (event, context) => {
 
         // Also check blocked_slots for backward compatibility
         let seatsBlocked = 0;
-        for (const slotTime of occupiedSlots) {
-            const { data: blocks } = await supabase
-                .from('blocked_slots')
-                .select('seats_blocked')
-                .eq('date', data.date)
-                .eq('time', slotTime);
+        try {
+            for (const slotTime of occupiedSlots) {
+                const { data: blocks } = await supabase
+                    .from('blocked_slots')
+                    .select('seats_blocked')
+                    .eq('date', data.date)
+                    .eq('time', slotTime);
 
-            if (blocks) {
-                blocks.forEach(block => {
-                    seatsBlocked += block.seats_blocked || 0;
-                });
+                if (blocks) {
+                    blocks.forEach(block => {
+                        seatsBlocked += block.seats_blocked || 0;
+                    });
+                }
             }
+        } catch (err) {
+            // If blocked_slots doesn't exist, just continue without it
+            console.warn('⚠️ blocked_slots table not found, skipping block checks');
         }
 
         const finalAvailableCapacity = totalAvailableCapacity - seatsBlocked;
@@ -297,10 +302,10 @@ exports.handler = async (event, context) => {
             },
             body: JSON.stringify({
                 success: true,
-                available: allAvailable,
+                available: allAvailableFinal,
                 seats_needed: seatsNeeded,
-                slots: availabilityResults,
-                message: allAvailable 
+                available_capacity: finalAvailableCapacity,
+                message: allAvailableFinal 
                     ? 'Seats available' 
                     : 'Not enough seats available for this time slot'
             })
