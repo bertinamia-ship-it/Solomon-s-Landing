@@ -584,13 +584,50 @@
 
         // Floor Plan Editor
         let currentLayout = [];
+        let placingTableId = null;
+        let selectedNodeId = null;
         let draggedElement = null;
         let dragOffset = { x: 0, y: 0 };
+        let areaTables = [];
+
+        function seatPositions(seats, w, h) {
+            const positions = [];
+            const padding = 8;
+            
+            if (seats === 2) {
+                positions.push({ left: -padding, top: h / 2 - 6 }); // Left
+                positions.push({ left: w + padding - 12, top: h / 2 - 6 }); // Right
+            } else if (seats === 4) {
+                positions.push({ left: w / 2 - 6, top: -padding }); // Top
+                positions.push({ left: w / 2 - 6, top: h + padding - 12 }); // Bottom
+                positions.push({ left: -padding, top: h / 2 - 6 }); // Left
+                positions.push({ left: w + padding - 12, top: h / 2 - 6 }); // Right
+            } else if (seats === 6) {
+                // Round table: evenly spaced around circle
+                const radius = w / 2;
+                const centerX = radius;
+                const centerY = radius;
+                for (let i = 0; i < 6; i++) {
+                    const angle = (i * 2 * Math.PI) / 6;
+                    const x = centerX + (radius + padding) * Math.cos(angle) - 6;
+                    const y = centerY + (radius + padding) * Math.sin(angle) - 6;
+                    positions.push({ left: x, top: y });
+                }
+            }
+            
+            return positions;
+        }
 
         async function loadFloorPlan() {
             const area = document.getElementById('floorPlanArea').value;
             const canvas = document.getElementById('floorPlanCanvas');
             canvas.innerHTML = '<div class="loading">Loading floor plan...</div>';
+            
+            placingTableId = null;
+            selectedNodeId = null;
+            document.getElementById('placeHint').style.display = 'none';
+            document.getElementById('btnRemoveFromLayout').disabled = true;
+            document.getElementById('btnAddToLayout').disabled = false;
             
             try {
                 // Load layout
@@ -605,50 +642,187 @@
                 if (!tablesRes) return;
                 
                 const tablesData = await tablesRes.json();
-                const areaTables = (tablesData.all || []).filter(t => t.area === area && t.is_active);
+                areaTables = (tablesData.all || []).filter(t => t.area === area && t.is_active);
                 
-                renderFloorPlan(areaTables);
+                // Populate dropdown
+                populateTableDropdown();
+                
+                // Render floor plan
+                renderFloorPlan();
             } catch (error) {
                 canvas.innerHTML = `<div class="message error">Error: ${error.message}</div>`;
             }
         }
 
-        function renderFloorPlan(tables) {
-            const canvas = document.getElementById('floorPlanCanvas');
-            canvas.innerHTML = '';
+        function populateTableDropdown() {
+            const select = document.getElementById('layoutTableSelect');
+            select.innerHTML = '<option value="">Select a table...</option>';
             
-            tables.forEach(table => {
-                const savedPos = currentLayout.find(l => l.table_id === table.id);
-                const x = savedPos?.x || 50;
-                const y = savedPos?.y || 50;
-                const w = savedPos?.w || (table.seats === 2 ? 60 : table.seats === 4 ? 80 : 100);
-                const h = savedPos?.h || (table.seats === 2 ? 40 : table.seats === 4 ? 60 : 80);
-                
-                const elem = document.createElement('div');
-                elem.className = 'table-element';
-                elem.dataset.tableId = table.id;
-                elem.style.left = `${x}px`;
-                elem.style.top = `${y}px`;
-                elem.style.width = `${w}px`;
-                elem.style.height = `${h}px`;
-                elem.textContent = table.name || `T${table.table_number}`;
-                elem.title = `${table.name || `Table ${table.table_number}`} (${table.seats} seats)`;
-                
-                // Drag handlers
-                elem.addEventListener('mousedown', (e) => startDrag(e, elem));
-                
-                canvas.appendChild(elem);
+            // Filter out tables already in layout
+            const layoutTableIds = new Set(currentLayout.map(l => l.table_id));
+            const availableTables = areaTables.filter(t => !layoutTableIds.has(t.id));
+            
+            availableTables.forEach(table => {
+                const option = document.createElement('option');
+                option.value = table.id;
+                option.textContent = `${table.name || `Table ${table.table_number}`} (${table.seats} seats)`;
+                select.appendChild(option);
             });
         }
 
-        function startDrag(e, elem) {
-            draggedElement = elem;
-            const rect = elem.getBoundingClientRect();
+        function startPlacingTable() {
+            const select = document.getElementById('layoutTableSelect');
+            const tableId = select.value;
+            
+            if (!tableId) {
+                alert('Please select a table first');
+                return;
+            }
+            
+            placingTableId = tableId;
+            document.getElementById('placeHint').style.display = 'inline';
+            document.getElementById('btnAddToLayout').disabled = true;
+        }
+
+        function renderFloorPlan() {
+            const canvas = document.getElementById('floorPlanCanvas');
+            canvas.innerHTML = '';
+            
+            currentLayout.forEach((layoutItem, index) => {
+                const table = areaTables.find(t => t.id === layoutItem.table_id);
+                if (!table) return;
+                
+                const x = layoutItem.x || 50;
+                const y = layoutItem.y || 50;
+                
+                const node = document.createElement('div');
+                node.className = 'table-node';
+                node.dataset.tableId = table.id;
+                node.dataset.layoutIndex = index;
+                node.style.left = `${x}px`;
+                node.style.top = `${y}px`;
+                
+                // Table shape
+                const shape = document.createElement('div');
+                shape.className = `table-shape ${table.seats === 2 ? 'round' : ''}`;
+                shape.textContent = table.seats;
+                
+                // Calculate seat positions (need actual dimensions)
+                const shapeWidth = table.seats === 2 ? 72 : 96;
+                const shapeHeight = table.seats === 2 ? 72 : 64;
+                const seats = seatPositions(table.seats, shapeWidth, shapeHeight);
+                
+                // Create seats after shape is rendered
+                setTimeout(() => {
+                    seats.forEach(pos => {
+                        const seat = document.createElement('div');
+                        seat.className = 'seat';
+                        seat.style.left = `${pos.left}px`;
+                        seat.style.top = `${pos.top}px`;
+                        shape.appendChild(seat);
+                    });
+                }, 0);
+                
+                node.appendChild(shape);
+                
+                // Label
+                const label = document.createElement('div');
+                label.className = 'table-label';
+                label.textContent = table.name || `Table ${table.table_number}`;
+                node.appendChild(label);
+                
+                // Click to select
+                node.addEventListener('click', (e) => {
+                    if (placingTableId) return; // Don't select while placing
+                    e.stopPropagation();
+                    selectTableNode(node);
+                });
+                
+                // Drag handlers
+                node.addEventListener('mousedown', (e) => {
+                    if (placingTableId) return;
+                    e.stopPropagation();
+                    startDrag(e, node);
+                });
+                
+                canvas.appendChild(node);
+            });
+            
+            // Canvas click handler for placing
+            canvas.addEventListener('click', (e) => {
+                if (placingTableId && (e.target === canvas || e.target.classList.contains('floor-plan-canvas'))) {
+                    const rect = canvas.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    // Snap to grid (20px grid)
+                    const gridSize = 20;
+                    const snappedX = Math.round(x / gridSize) * gridSize;
+                    const snappedY = Math.round(y / gridSize) * gridSize;
+                    
+                    placeTable(placingTableId, snappedX, snappedY);
+                }
+            });
+        }
+
+        function placeTable(tableId, x, y) {
+            const table = areaTables.find(t => t.id === tableId);
+            if (!table) return;
+            
+            // Check if already in layout
+            if (currentLayout.some(l => l.table_id === tableId)) {
+                alert('This table is already in the layout. Remove it first to place it again.');
+                return;
+            }
+            
+            currentLayout.push({
+                table_id: tableId,
+                x: x,
+                y: y,
+                w: table.seats === 2 ? 72 : 96,
+                h: table.seats === 2 ? 72 : 64
+            });
+            
+            placingTableId = null;
+            document.getElementById('placeHint').style.display = 'none';
+            document.getElementById('btnAddToLayout').disabled = false;
+            document.getElementById('layoutTableSelect').value = '';
+            
+            renderFloorPlan();
+            populateTableDropdown();
+        }
+
+        function selectTableNode(node) {
+            // Deselect all
+            document.querySelectorAll('.table-node').forEach(n => n.classList.remove('selected'));
+            
+            // Select this one
+            node.classList.add('selected');
+            selectedNodeId = node.dataset.tableId;
+            document.getElementById('btnRemoveFromLayout').disabled = false;
+        }
+
+        function removeSelectedTable() {
+            if (!selectedNodeId) return;
+            
+            if (!confirm('Remove this table from the layout?')) return;
+            
+            currentLayout = currentLayout.filter(l => l.table_id !== selectedNodeId);
+            selectedNodeId = null;
+            document.getElementById('btnRemoveFromLayout').disabled = true;
+            
+            renderFloorPlan();
+            populateTableDropdown();
+        }
+
+        function startDrag(e, node) {
+            draggedElement = node;
+            const rect = node.getBoundingClientRect();
             const canvasRect = document.getElementById('floorPlanCanvas').getBoundingClientRect();
             dragOffset.x = e.clientX - rect.left;
             dragOffset.y = e.clientY - rect.top;
             
-            elem.classList.add('dragging');
+            node.style.zIndex = '1000';
             document.addEventListener('mousemove', onDrag);
             document.addEventListener('mouseup', stopDrag);
             e.preventDefault();
@@ -662,13 +836,28 @@
             const x = e.clientX - canvasRect.left - dragOffset.x;
             const y = e.clientY - canvasRect.top - dragOffset.y;
             
-            draggedElement.style.left = `${Math.max(0, x)}px`;
-            draggedElement.style.top = `${Math.max(0, y)}px`;
+            // Snap to grid
+            const gridSize = 20;
+            const snappedX = Math.max(0, Math.round(x / gridSize) * gridSize);
+            const snappedY = Math.max(0, Math.round(y / gridSize) * gridSize);
+            
+            draggedElement.style.left = `${snappedX}px`;
+            draggedElement.style.top = `${snappedY}px`;
         }
 
         function stopDrag() {
             if (draggedElement) {
-                draggedElement.classList.remove('dragging');
+                const layoutIndex = parseInt(draggedElement.dataset.layoutIndex);
+                const canvasRect = document.getElementById('floorPlanCanvas').getBoundingClientRect();
+                const nodeRect = draggedElement.getBoundingClientRect();
+                
+                // Update layout with new position
+                if (currentLayout[layoutIndex]) {
+                    currentLayout[layoutIndex].x = nodeRect.left - canvasRect.left;
+                    currentLayout[layoutIndex].y = nodeRect.top - canvasRect.top;
+                }
+                
+                draggedElement.style.zIndex = '10';
                 draggedElement = null;
             }
             document.removeEventListener('mousemove', onDrag);
@@ -677,31 +866,13 @@
 
         async function saveFloorPlan() {
             const area = document.getElementById('floorPlanArea').value;
-            const canvas = document.getElementById('floorPlanCanvas');
-            const elements = canvas.querySelectorAll('.table-element');
-            
-            const layout = [];
-            elements.forEach(elem => {
-                const rect = elem.getBoundingClientRect();
-                const canvasRect = canvas.getBoundingClientRect();
-                const table = allTables.find(t => t.id === elem.dataset.tableId);
-                if (table) {
-                    layout.push({
-                        table_id: table.id,
-                        x: rect.left - canvasRect.left,
-                        y: rect.top - canvasRect.top,
-                        w: rect.width,
-                        h: rect.height
-                    });
-                }
-            });
             
             try {
                 const res = await api('/.netlify/functions/save-layout', {
                     method: 'POST',
                     body: JSON.stringify({
                         area: area,
-                        layout_json: layout
+                        layout_json: currentLayout
                     })
                 });
                 
@@ -710,7 +881,6 @@
                 const data = await res.json();
                 if (data.success) {
                     showMessage('Floor plan saved successfully', 'success');
-                    currentLayout = layout;
                 } else {
                     showMessage(`Error: ${data.error}`, 'error');
                 }
@@ -720,9 +890,10 @@
         }
 
         function resetFloorPlan() {
-            if (confirm('Reset floor plan to default positions?')) {
+            if (confirm('Reset floor plan? This will remove all table placements.')) {
                 currentLayout = [];
-                loadFloorPlan();
+                renderFloorPlan();
+                populateTableDropdown();
             }
         }
 
