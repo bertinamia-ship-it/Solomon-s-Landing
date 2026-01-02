@@ -603,7 +603,7 @@ exports.handler = async (event, context) => {
                         ${data.staying_place ? `<div class="info-row"><span class="label">Staying:</span> ${data.staying_place}</div>` : ''}
                         ${data.notes ? `<div class="info-row"><span class="label">Special Requests:</span> ${data.notes}</div>` : ''}
                         <div class="info-row">
-                            <span class="label">Language:</span> ${data.language === 'es' ? 'Español' : 'English'}
+                            <span class="label">Language:</span> ${langCode === 'es' ? 'Español' : 'English'}
                         </div>
                         <div class="info-row">
                             <span class="label">Status:</span> Pending
@@ -632,7 +632,7 @@ ${lang.assignedTables}: ${assignedTablesText}
 ${data.staying_place ? `${lang.staying}: ${data.staying_place}` : ''}
 ${data.notes ? `${lang.specialRequests}: ${data.notes}` : ''}
 ${data.payment_intent_id ? `${lang.paymentHold}: ${lang.yes}` : ''}
-${lang.language}: ${data.language === 'es' ? 'Español' : 'English'}
+${lang.language}: ${langCode === 'es' ? 'Español' : 'English'}
 ${lang.status}: Pending
 
 Reservation ID: ${reservation.id}
