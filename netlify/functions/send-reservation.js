@@ -305,6 +305,121 @@ exports.handler = async (event, context) => {
             day: 'numeric' 
         });
 
+        // Find available tables before creating reservation (inline logic)
+        const RESERVATION_DURATION_MINUTES = 90;
+        function getEndDatetime(dt) {
+            const start = new Date(dt);
+            const end = new Date(start.getTime() + RESERVATION_DURATION_MINUTES * 60 * 1000);
+            return end.toISOString().slice(0, 16).replace('T', 'T');
+        }
+
+        function findTableCombination(partySize, availableTables) {
+            // Prefer exact fit
+            const exactFit = availableTables.find(t => t.capacity === partySize);
+            if (exactFit) {
+                return [{ table_id: exactFit.id, table_number: exactFit.table_number, capacity: exactFit.capacity }];
+            }
+            if (partySize <= 4) {
+                const tables2 = availableTables.filter(t => t.capacity === 2).slice(0, 2);
+                if (tables2.length === 2 && tables2[0].capacity * 2 >= partySize) {
+                    return tables2.map(t => ({ table_id: t.id, table_number: t.table_number, capacity: t.capacity }));
+                }
+            }
+            if (partySize <= 6) {
+                const table6 = availableTables.find(t => t.capacity === 6);
+                if (table6) return [{ table_id: table6.id, table_number: table6.table_number, capacity: table6.capacity }];
+                const table4 = availableTables.find(t => t.capacity === 4);
+                const table2 = availableTables.find(t => t.capacity === 2);
+                if (table4 && table2 && table4.capacity + table2.capacity >= partySize) {
+                    return [
+                        { table_id: table4.id, table_number: table4.table_number, capacity: table4.capacity },
+                        { table_id: table2.id, table_number: table2.table_number, capacity: table2.capacity }
+                    ];
+                }
+            }
+            if (partySize <= 8) {
+                const tables4 = availableTables.filter(t => t.capacity === 4).slice(0, 2);
+                if (tables4.length === 2) {
+                    return tables4.map(t => ({ table_id: t.id, table_number: t.table_number, capacity: t.capacity }));
+                }
+            }
+            if (partySize <= 10) {
+                const table6 = availableTables.find(t => t.capacity === 6);
+                const table4 = availableTables.find(t => t.capacity === 4);
+                if (table6 && table4) {
+                    return [
+                        { table_id: table6.id, table_number: table6.table_number, capacity: table6.capacity },
+                        { table_id: table4.id, table_number: table4.table_number, capacity: table4.capacity }
+                    ];
+                }
+            }
+            if (partySize <= 12) {
+                const tables6 = availableTables.filter(t => t.capacity === 6).slice(0, 2);
+                if (tables6.length === 2) {
+                    return tables6.map(t => ({ table_id: t.id, table_number: t.table_number, capacity: t.capacity }));
+                }
+            }
+            const tables4 = availableTables.filter(t => t.capacity === 4);
+            const needed = Math.ceil(partySize / 4);
+            if (tables4.length >= needed) {
+                return tables4.slice(0, needed).map(t => ({ table_id: t.id, table_number: t.table_number, capacity: t.capacity }));
+            }
+            return null;
+        }
+
+        // Get all active tables
+        const { data: allTables, error: tablesError } = await supabase
+            .from('tables')
+            .select('id, table_number, capacity')
+            .eq('is_active', true)
+            .order('capacity', { ascending: true });
+
+        let tableAssignments = [];
+        if (!tablesError && allTables && allTables.length > 0) {
+            // Get tables that are already assigned during this time window
+            const endDatetime = getEndDatetime(datetimeIso);
+            const { data: assignments } = await supabase
+                .from('table_assignments')
+                .select('table_id, datetime_iso')
+                .eq('status', 'active')
+                .gte('datetime_iso', datetimeIso)
+                .lt('datetime_iso', endDatetime);
+
+            // Get list of occupied table IDs
+            const occupiedTableIds = new Set();
+            if (assignments) {
+                assignments.forEach(assignment => {
+                    const assignmentStart = new Date(assignment.datetime_iso);
+                    const assignmentEnd = new Date(assignmentStart.getTime() + RESERVATION_DURATION_MINUTES * 60 * 1000);
+                    const ourStart = new Date(datetimeIso);
+                    const ourEnd = new Date(endDatetime);
+                    if (assignmentStart < ourEnd && assignmentEnd > ourStart) {
+                        occupiedTableIds.add(assignment.table_id);
+                    }
+                });
+            }
+
+            // Filter out occupied tables
+            const availableTables = allTables.filter(t => !occupiedTableIds.has(t.id));
+
+            // Find best table combination
+            const tableCombination = findTableCombination(parseInt(partySize), availableTables);
+            if (!tableCombination) {
+                return {
+                    statusCode: 400,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    body: JSON.stringify({ 
+                        success: false, 
+                        error: 'No available tables for this party size and time' 
+                    })
+                };
+            }
+            tableAssignments = tableCombination;
+        }
+
         // Insert reservation into database (datetimeIso already validated above)
         const { data: reservation, error: dbError } = await supabase
             .from('reservations')
@@ -319,7 +434,7 @@ exports.handler = async (event, context) => {
                     staying_place: data.staying_place || null,
                     notes: data.notes || null,
                     language: data.language || 'en',
-                    source: 'web',
+                    source: data.source || 'web',
                     status: 'pending',
                     payment_intent_id: data.payment_intent_id || null,
                     datetime_iso: datetimeIso
@@ -327,6 +442,46 @@ exports.handler = async (event, context) => {
             ])
             .select()
             .single();
+
+        if (dbError) {
+            console.error('❌ Database error:', dbError);
+            return {
+                statusCode: 500,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                body: JSON.stringify({ 
+                    success: false, 
+                    error: 'Failed to save reservation. Please try again.' 
+                })
+            };
+        }
+
+        console.log('✅ Reservation saved to database:', reservation.id);
+
+        // Create table assignments
+        if (tableAssignments.length > 0) {
+            const assignmentInserts = tableAssignments.map(table => ({
+                reservation_id: reservation.id,
+                table_id: table.table_id,
+                datetime_iso: datetimeIso,
+                duration_minutes: 90,
+                source: data.source || 'web',
+                status: 'active'
+            }));
+
+            const { error: assignmentError } = await supabase
+                .from('table_assignments')
+                .insert(assignmentInserts);
+
+            if (assignmentError) {
+                console.error('❌ Error creating table assignments:', assignmentError);
+                // Don't fail the reservation, but log the error
+            } else {
+                console.log('✅ Table assignments created:', assignmentInserts.length);
+            }
+        }
 
         if (dbError) {
             console.error('❌ Database error:', dbError);

@@ -194,64 +194,81 @@ exports.handler = async (event, context) => {
         // Calculate seats needed
         const seatsNeeded = calculateSeatsNeeded(partySize);
 
-        // Check availability for each occupied slot
-        const availabilityResults = [];
+        // Use new table-based availability check
+        // Build datetime_iso from date and time
+        const datetimeIso = `${data.date}T${data.time}:00`;
+        
+        // Call find-available-tables function logic inline
+        const RESERVATION_DURATION_MINUTES = 90;
+        function getEndDatetime(datetimeIso) {
+            const start = new Date(datetimeIso);
+            const end = new Date(start.getTime() + RESERVATION_DURATION_MINUTES * 60 * 1000);
+            return end.toISOString().slice(0, 16).replace('T', 'T');
+        }
 
+        const endDatetime = getEndDatetime(datetimeIso);
+
+        // Get all active tables
+        const { data: allTables, error: tablesError } = await supabase
+            .from('tables')
+            .select('id, table_number, capacity')
+            .eq('is_active', true);
+
+        if (tablesError) {
+            throw tablesError;
+        }
+
+        // Get tables that are already assigned during this time window
+        const { data: assignments, error: assignmentsError } = await supabase
+            .from('table_assignments')
+            .select('table_id, datetime_iso')
+            .eq('status', 'active')
+            .gte('datetime_iso', datetimeIso)
+            .lt('datetime_iso', endDatetime);
+
+        if (assignmentsError) {
+            throw assignmentsError;
+        }
+
+        // Get list of occupied table IDs
+        const occupiedTableIds = new Set();
+        if (assignments) {
+            assignments.forEach(assignment => {
+                const assignmentStart = new Date(assignment.datetime_iso);
+                const assignmentEnd = new Date(assignmentStart.getTime() + RESERVATION_DURATION_MINUTES * 60 * 1000);
+                const ourStart = new Date(datetimeIso);
+                const ourEnd = new Date(endDatetime);
+                if (assignmentStart < ourEnd && assignmentEnd > ourStart) {
+                    occupiedTableIds.add(assignment.table_id);
+                }
+            });
+        }
+
+        // Filter out occupied tables
+        const availableTables = (allTables || []).filter(t => !occupiedTableIds.has(t.id));
+        const totalAvailableCapacity = availableTables.reduce((sum, t) => sum + t.capacity, 0);
+
+        // Check if we have enough capacity
+        const allAvailable = totalAvailableCapacity >= seatsNeeded;
+
+        // Also check blocked_slots for backward compatibility
+        let seatsBlocked = 0;
         for (const slotTime of occupiedSlots) {
-            // Get existing reservations for this date and time
-            const { data: reservations, error: resError } = await supabase
-                .from('reservations')
-                .select('party_size, status')
-                .eq('date', data.date)
-                .eq('time', slotTime)
-                .in('status', ['pending', 'confirmed']); // Only count active reservations
-
-            if (resError) {
-                console.error('❌ Error fetching reservations:', resError);
-                throw resError;
-            }
-
-            // Calculate seats used by existing reservations
-            let seatsUsed = 0;
-            if (reservations) {
-                reservations.forEach(res => {
-                    seatsUsed += calculateSeatsNeeded(res.party_size);
-                });
-            }
-
-            // Get blocked seats for this slot
-            const { data: blocks, error: blockError } = await supabase
+            const { data: blocks } = await supabase
                 .from('blocked_slots')
                 .select('seats_blocked')
                 .eq('date', data.date)
                 .eq('time', slotTime);
 
-            if (blockError) {
-                console.error('❌ Error fetching blocked slots:', blockError);
-                throw blockError;
-            }
-
-            let seatsBlocked = 0;
             if (blocks) {
                 blocks.forEach(block => {
                     seatsBlocked += block.seats_blocked || 0;
                 });
             }
-
-            const seatsAvailable = TOTAL_SEATS - seatsUsed - seatsBlocked;
-
-            availabilityResults.push({
-                time: slotTime,
-                seats_used: seatsUsed,
-                seats_blocked: seatsBlocked,
-                seats_available: seatsAvailable,
-                seats_needed: seatsNeeded,
-                available: seatsAvailable >= seatsNeeded
-            });
         }
 
-        // Check if all slots have enough availability
-        const allAvailable = availabilityResults.every(result => result.available);
+        const finalAvailableCapacity = totalAvailableCapacity - seatsBlocked;
+        const allAvailableFinal = finalAvailableCapacity >= seatsNeeded;
 
         return {
             statusCode: 200,

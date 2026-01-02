@@ -1468,7 +1468,7 @@ function initReservationForm() {
 
     reservationForm.addEventListener('submit', async function(e) {
         e.preventDefault();
-
+        
         // Anti-double-submit: prevent if already submitting
         if (isSubmitting) {
             return;
@@ -1636,6 +1636,9 @@ function initReservationForm() {
                     ? 'No hay disponibilidad para esta fecha y hora. Por favor selecciona otra opción.'
                     : 'No availability for this date and time. Please select another option.');
                 showMessage(errorMsg, 'error');
+                isSubmitting = false;
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
                 return;
             }
 
@@ -2105,30 +2108,30 @@ async function sendReservationToBackend(reservationData) {
             });
             
             const response = await fetch(netlifyUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    name: reservationData.name,
-                    email: reservationData.email,
-                    phone: reservationData.phone,
-                    date: reservationData.date,
-                    time: reservationData.time,
-                    guests: reservationData.guests,
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            name: reservationData.name,
+            email: reservationData.email,
+            phone: reservationData.phone,
+            date: reservationData.date,
+            time: reservationData.time,
+            guests: reservationData.guests,
                     notes: reservationData.notes || '',
                     language: reservationData.language || (currentLanguage || 'en')
-                })
-            });
-
+        })
+    });
+    
             console.log('📡 Fetch response status:', response.status, response.statusText);
             const result = await response.json();
             console.log('📨 Parsed result:', result);
             
             if (result.success) {
                 console.log('✅ Reservation created via Netlify Function:', result.reservationId);
-                return {
-                    success: true,
+    return {
+        success: true,
                     reservationId: result.reservationId,
                     message: 'Reservation request sent successfully',
                     method: 'netlify'
@@ -2166,8 +2169,8 @@ async function sendReservationToBackend(reservationData) {
                 };
             }
             
-            return {
-                success: true,
+    return {
+        success: true,
                 reservationId: confirmationCode,
                 message: 'Reservation request sent successfully',
                 method: 'emailjs'

@@ -280,7 +280,7 @@ class RestaurantChatbot {
                     }
                 } else {
                     // Try to parse as 24-hour format or direct time
-                    this.reservationData.time = userMessage;
+                this.reservationData.time = userMessage;
                 }
                 
                 this.conversationState = 'awaiting_guests';
@@ -345,7 +345,7 @@ class RestaurantChatbot {
                     response = this.currentLanguage === 'en'
                         ? "**Any special requests or notes?** (optional)\n\nType your requests or 'none' to continue."
                         : "**¿Alguna solicitud especial o nota?** (opcional)\n\nEscribe tus solicitudes o 'ninguna' para continuar.";
-                    break;
+                break;
                 }
                 
                 // Ask for name of accommodation
@@ -448,9 +448,10 @@ class RestaurantChatbot {
                         console.log('🤖 Chatbot availability check:', availabilityResult);
 
                         if (!availabilityResult.success || !availabilityResult.available) {
-                            throw new Error(this.currentLanguage === 'es'
+                            const errorMsg = availabilityResult.message || (this.currentLanguage === 'es'
                                 ? 'No hay disponibilidad para esta fecha y hora. Por favor selecciona otra opción.'
                                 : 'No availability for this date and time. Please select another option.');
+                            throw new Error(errorMsg);
                         }
 
                         // Step 2: Create Stripe hold (if enabled)
@@ -510,8 +511,8 @@ class RestaurantChatbot {
                                     day: 'numeric'
                                 }
                             );
-
-                            response = this.currentLanguage === 'en'
+                        
+                        response = this.currentLanguage === 'en'
                                 ? `✅ **Reservation Confirmed!**\n\n📧 You will receive a confirmation email within 2 hours.\n\n**Reservation ID:** ${result.reservationId}\n\n**Reservation Details:**\n• Name: ${this.reservationData.full_name}\n• Date: ${formattedDate}\n• Time: ${this.reservationData.time}\n• Guests: ${this.reservationData.party_size}\n\n🍽️ We're looking forward to serving you!\n\n📱 **Questions? Call us: +52 624 219 3228**`
                                 : `✅ **¡Reservación Confirmada!**\n\n📧 Recibirás un correo de confirmación en las próximas 2 horas.\n\n**ID de Reservación:** ${result.reservationId}\n\n**Detalles de Reservación:**\n• Nombre: ${this.reservationData.full_name}\n• Fecha: ${formattedDate}\n• Hora: ${this.reservationData.time}\n• Comensales: ${this.reservationData.party_size}\n\n🍽️ ¡Esperamos servirte pronto!\n\n📱 **¿Preguntas? Llámanos: +52 624 219 3228**`;
                         } else {
