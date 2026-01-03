@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Login - Solomon's Landing</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .login-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 3rem;
+            max-width: 420px;
+            width: 100%;
+            text-align: center;
+        }
+        .logo {
+            margin-bottom: 2rem;
+        }
+        .logo img {
+            max-width: 200px;
+            height: auto;
+        }
+        .login-container h1 {
+            color: #1e293b;
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        .login-container p {
+            color: #6b7280;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #374151;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.875rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #004A9F;
+        }
+        .btn-login {
+            width: 100%;
+            padding: 0.875rem;
+            background: #004A9F;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 0.5rem;
+        }
+        .btn-login:hover {
+            background: #003d82;
+        }
+        .error-message {
+            color: #dc2626;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+        .error-message.show {
+            display: block;
+        }
+        .role-hint {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: #f3f4f6;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+        .role-hint strong {
+            color: #374151;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <img src="solomons-logo.png" alt="Solomon's Landing" onerror="this.innerHTML='<h1 style=\'color:#004A9F;margin:0;\'>Solomon\'s Landing</h1>'">
+        </div>
+        <h1>Dashboard Login</h1>
+        <p>Access the reservation management system</p>
+        
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="hostess or admin" required autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter password" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="btn-login">Login</button>
+            <div id="errorMessage" class="error-message"></div>
+        </form>
+        
+        <div class="role-hint">
+            <strong>Roles:</strong><br>
+            <strong>hostess</strong> → Hostess Dashboard<br>
+            <strong>admin</strong> → Admin Dashboard
+        </div>
+    </div>
+
+    <script>
+        // Check if already logged in
+        const role = sessionStorage.getItem('dashboardRole');
+        const token = sessionStorage.getItem('dashboardAuthToken');
+        
+        if (role && token) {
+            // Redirect to appropriate dashboard
+            if (role === 'admin') {
+                window.location.href = 'admin-dashboard.html';
+            } else if (role === 'hostess' || role === 'admin') {
+                window.location.href = 'hostess-dashboard.html';
+            }
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value.trim().toLowerCase();
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('errorMessage');
+            const PASSWORD = 'solomons2025';
+            
+            // Clear previous errors
+            errorDiv.classList.remove('show');
+            errorDiv.textContent = '';
+            
+            // Validate password
+            if (password !== PASSWORD) {
+                errorDiv.textContent = 'Incorrect password';
+                errorDiv.classList.add('show');
+                document.getElementById('password').value = '';
+                document.getElementById('password').focus();
+                return;
+            }
+            
+            // Route based on username
+            let dashboardUrl = null;
+            let role = null;
+            
+            if (username === 'hostess') {
+                dashboardUrl = 'hostess-dashboard.html';
+                role = 'hostess';
+            } else if (username === 'admin') {
+                dashboardUrl = 'admin-dashboard.html';
+                role = 'admin';
+            } else {
+                errorDiv.textContent = 'Invalid username. Use "hostess" or "admin"';
+                errorDiv.classList.add('show');
+                document.getElementById('username').value = '';
+                document.getElementById('username').focus();
+                return;
+            }
+            
+            // Store session
+            const authToken = btoa(`${username}:${password}:${Date.now()}`);
+            sessionStorage.setItem('dashboardRole', role);
+            sessionStorage.setItem('dashboardAuthToken', authToken);
+            sessionStorage.setItem('dashboardUsername', username);
+            
+            // Redirect
+            window.location.href = dashboardUrl;
+        }
+
+        // Allow Enter key to submit
+        document.getElementById('password').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+            }
+        });
+    </script>
+</body>
+</html>
+

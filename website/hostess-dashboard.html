@@ -26,9 +26,20 @@
             justify-content: space-between;
             align-items: center;
         }
+        .dashboard-header .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .dashboard-header .logo-section img {
+            height: 40px;
+            width: auto;
+        }
         .dashboard-header h1 {
             color: #004A9F;
-            font-size: 1.75rem;
+            font-size: 1.5rem;
+            margin: 0;
+            font-weight: 600;
         }
         .btn-logout {
             padding: 0.75rem 1.5rem;
@@ -117,45 +128,78 @@
             position: relative;
             width: 100%;
             height: 600px;
-            background: white;
+            background: #fafafa;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: auto;
+            background-image: 
+                linear-gradient(rgba(0,0,0,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px);
+            background-size: 20px 20px;
         }
-        .table-element {
+        .table-node {
             position: absolute;
-            border: 3px solid;
-            border-radius: 6px;
+            user-select: none;
             cursor: pointer;
+            z-index: 10;
+            transition: transform 120ms ease, filter 120ms ease;
+        }
+        .table-node:hover {
+            transform: translateY(-2px);
+            filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.10));
+            z-index: 100;
+        }
+        .table-shape {
+            position: relative;
+            border: 1.5px solid;
+            background: linear-gradient(180deg, #f3f8ff 0%, #e8f1ff 100%);
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 600;
-            font-size: 0.9rem;
-            user-select: none;
-            transition: all 0.2s;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
         }
-        .table-element:hover {
-            transform: scale(1.05);
-            z-index: 100;
-        }
-        .table-element.available {
-            background: #d1fae5;
+        .table-shape.available {
             border-color: #10b981;
-            color: #065f46;
+            background: linear-gradient(180deg, #d1fae5 0%, #ecfdf5 100%);
         }
-        .table-element.reserved {
-            background: #dbeafe;
+        .table-shape.reserved {
             border-color: #3b82f6;
-            color: #1e40af;
+            background: linear-gradient(180deg, #dbeafe 0%, #eff6ff 100%);
         }
-        .table-element.blocked {
-            background: #fef3c7;
+        .table-shape.blocked {
             border-color: #f59e0b;
-            color: #92400e;
+            background: linear-gradient(180deg, #fef3c7 0%, #fffbeb 100%);
         }
-        .table-element.unavailable {
-            background: #fee2e2;
+        .table-shape.unavailable {
             border-color: #ef4444;
-            color: #991b1b;
+            background: linear-gradient(180deg, #fee2e2 0%, #fef2f2 100%);
         }
+        .table-number {
+            font-weight: 700;
+            color: #1d4ed8;
+            font-size: 11px;
+            line-height: 1;
+            pointer-events: none;
+        }
+        .table-shape.available .table-number { color: #065f46; }
+        .table-shape.reserved .table-number { color: #1e40af; }
+        .table-shape.blocked .table-number { color: #92400e; }
+        .table-shape.unavailable .table-number { color: #991b1b; }
+        .seat {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: #1d4ed8;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            transform: translate(-50%, -50%);
+            opacity: 0.85;
+        }
+        .table-shape.available .seat { background: #10b981; }
+        .table-shape.reserved .seat { background: #3b82f6; }
+        .table-shape.blocked .seat { background: #f59e0b; }
+        .table-shape.unavailable .seat { background: #ef4444; }
         .status-legend {
             display: flex;
             gap: 1rem;
@@ -317,7 +361,10 @@
 <body>
     <div class="dashboard-container">
         <div class="dashboard-header">
-            <h1>🍽️ Hostess Dashboard</h1>
+            <div class="logo-section">
+                <img src="solomons-logo.png" alt="Solomon's Landing" onerror="this.style.display='none'">
+                <h1>Hostess Dashboard</h1>
+            </div>
             <button class="btn-logout" onclick="logout()">Logout</button>
         </div>
 
@@ -400,8 +447,7 @@
         const token = sessionStorage.getItem('dashboardAuthToken');
         
         if (!role || !token || (role !== 'hostess' && role !== 'admin')) {
-            alert('Unauthorized. Redirecting to login...');
-            window.location.href = '/index.html';
+            window.location.href = 'dashboard-login.html';
         }
 
         // API helper
@@ -430,7 +476,7 @@
             sessionStorage.removeItem('dashboardRole');
             sessionStorage.removeItem('dashboardAuthToken');
             sessionStorage.removeItem('dashboardUsername');
-            window.location.href = '/index.html';
+            window.location.href = 'dashboard-login.html';
         }
 
         // State
@@ -498,6 +544,46 @@
             }
         }
 
+        function getTableDimensions(seats) {
+            // OpenTable-scale: much smaller tables
+            if (seats === 2) return { w: 36, h: 28 };
+            if (seats === 4) return { w: 48, h: 32 };
+            if (seats === 6) return { w: 56, h: 36 };
+            return { w: 48, h: 32 }; // Default
+        }
+
+        function getSeatPositions(seats, w, h) {
+            const o = 6; // Smaller offset for smaller tables
+            const cx = w / 2;
+            const cy = h / 2;
+            
+            if (seats === 2) {
+                return [
+                    { x: -o, y: cy },
+                    { x: w + o, y: cy }
+                ];
+            }
+            
+            if (seats === 4) {
+                return [
+                    { x: cx, y: -o },
+                    { x: w + o, y: cy },
+                    { x: cx, y: h + o },
+                    { x: -o, y: cy }
+                ];
+            }
+            
+            // 6: 2 top, 2 bottom, 1 left, 1 right
+            return [
+                { x: cx - 8, y: -o },
+                { x: cx + 8, y: -o },
+                { x: w + o, y: cy },
+                { x: cx + 8, y: h + o },
+                { x: cx - 8, y: h + o },
+                { x: -o, y: cy }
+            ];
+        }
+
         function renderFloorPlan() {
             const canvas = document.getElementById('floorPlanCanvas');
             canvas.innerHTML = '';
@@ -509,22 +595,55 @@
                 const savedPos = currentLayout.find(l => l.table_id === table.id);
                 const x = savedPos?.x || 50;
                 const y = savedPos?.y || 50;
-                const w = savedPos?.w || (table.seats === 2 ? 60 : table.seats === 4 ? 80 : 100);
-                const h = savedPos?.h || (table.seats === 2 ? 40 : table.seats === 4 ? 60 : 80);
+                const rotation = savedPos?.rotation || 0;
                 
-                const elem = document.createElement('div');
-                elem.className = `table-element ${status}`;
-                elem.dataset.tableId = table.id;
-                elem.style.left = `${x}px`;
-                elem.style.top = `${y}px`;
-                elem.style.width = `${w}px`;
-                elem.style.height = `${h}px`;
-                elem.textContent = table.name || `T${table.table_number}`;
-                elem.title = `${table.name || `Table ${table.table_number}`} (${table.seats} seats) - ${status}`;
+                // Get base dimensions
+                const baseDims = getTableDimensions(table.seats);
+                let renderW = baseDims.w;
+                let renderH = baseDims.h;
                 
-                elem.addEventListener('click', () => openTableModal(table, assignment));
+                // Swap dimensions if rotated 90 degrees
+                if (rotation === 90) {
+                    renderW = baseDims.h;
+                    renderH = baseDims.w;
+                }
                 
-                canvas.appendChild(elem);
+                const node = document.createElement('div');
+                node.className = 'table-node';
+                node.dataset.tableId = table.id;
+                node.style.left = `${x}px`;
+                node.style.top = `${y}px`;
+                
+                // Table shape
+                const shape = document.createElement('div');
+                shape.className = `table-shape ${status}`;
+                shape.style.width = `${renderW}px`;
+                shape.style.height = `${renderH}px`;
+                
+                // Table number (centered)
+                const tableNumber = document.createElement('div');
+                tableNumber.className = 'table-number';
+                tableNumber.textContent = table.table_number || table.name || '?';
+                shape.appendChild(tableNumber);
+                
+                // Calculate seat positions using render dimensions
+                const seats = getSeatPositions(table.seats, renderW, renderH);
+                
+                // Create seats
+                seats.forEach(pos => {
+                    const seat = document.createElement('div');
+                    seat.className = 'seat';
+                    seat.style.left = `${pos.x}px`;
+                    seat.style.top = `${pos.y}px`;
+                    shape.appendChild(seat);
+                });
+                
+                node.appendChild(shape);
+                
+                node.title = `${table.name || `Table ${table.table_number}`} (${table.seats} seats) - ${status}`;
+                node.addEventListener('click', () => openTableModal(table, assignment));
+                
+                canvas.appendChild(node);
             });
         }
 

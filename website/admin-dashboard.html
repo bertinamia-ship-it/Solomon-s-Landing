@@ -26,9 +26,20 @@
             justify-content: space-between;
             align-items: center;
         }
+        .dashboard-header .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .dashboard-header .logo-section img {
+            height: 40px;
+            width: auto;
+        }
         .dashboard-header h1 {
             color: #004A9F;
-            font-size: 1.75rem;
+            font-size: 1.5rem;
+            margin: 0;
+            font-weight: 600;
         }
         .btn-logout {
             padding: 0.75rem 1.5rem;
@@ -174,11 +185,15 @@
         .floor-plan-canvas {
             position: relative;
             width: 100%;
-            height: 520px;
-            background: #fff;
+            height: 600px;
+            background: #fafafa;
             border: 1px solid #e5e7eb;
             border-radius: 12px;
-            overflow: hidden;
+            overflow: auto;
+            background-image: 
+                linear-gradient(rgba(0,0,0,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px);
+            background-size: 20px 20px;
         }
         .layout-controls {
             display: flex;
@@ -220,29 +235,30 @@
         }
         .table-shape {
             position: relative;
-            border: 2px solid #1d4ed8;
+            border: 1.5px solid #1d4ed8;
             background: linear-gradient(180deg, #f3f8ff 0%, #e8f1ff 100%);
-            border-radius: 12px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
         }
         .table-number {
-            font-weight: 900;
+            font-weight: 700;
             color: #1d4ed8;
-            font-size: 14px;
+            font-size: 11px;
             line-height: 1;
             pointer-events: none;
         }
         .seat {
             position: absolute;
-            width: 10px;
-            height: 10px;
+            width: 6px;
+            height: 6px;
             border-radius: 999px;
             background: #1d4ed8;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
             transform: translate(-50%, -50%);
+            opacity: 0.85;
         }
         .table-label {
             font-size: 11px;
@@ -285,7 +301,10 @@
 <body>
     <div class="dashboard-container">
         <div class="dashboard-header">
-            <h1>🍽️ Admin Dashboard - Table Management</h1>
+            <div class="logo-section">
+                <img src="solomons-logo.png" alt="Solomon's Landing" onerror="this.style.display='none'">
+                <h1>Admin Dashboard</h1>
+            </div>
             <button class="btn-logout" onclick="logout()">Logout</button>
         </div>
 
@@ -350,8 +369,7 @@
         const token = sessionStorage.getItem('dashboardAuthToken');
         
         if (!role || !token || role !== 'admin') {
-            alert('Unauthorized. Redirecting to login...');
-            window.location.href = '/index.html';
+            window.location.href = 'dashboard-login.html';
         }
 
         // API helper
@@ -380,7 +398,7 @@
             sessionStorage.removeItem('dashboardRole');
             sessionStorage.removeItem('dashboardAuthToken');
             sessionStorage.removeItem('dashboardUsername');
-            window.location.href = '/index.html';
+            window.location.href = 'dashboard-login.html';
         }
 
         // Tables management
@@ -596,7 +614,7 @@
         let areaTables = [];
 
         function getSeatPositions(seats, w, h) {
-            const o = 10;
+            const o = 6; // Smaller offset for smaller tables
             const cx = w / 2;
             const cy = h / 2;
             const positions = [];
@@ -619,21 +637,21 @@
             
             // 6: 2 top, 2 bottom, 1 left, 1 right
             return [
-                { x: cx - 14, y: -o },
-                { x: cx + 14, y: -o },
+                { x: cx - 8, y: -o },
+                { x: cx + 8, y: -o },
                 { x: w + o, y: cy },
-                { x: cx + 14, y: h + o },
-                { x: cx - 14, y: h + o },
+                { x: cx + 8, y: h + o },
+                { x: cx - 8, y: h + o },
                 { x: -o, y: cy }
             ];
         }
 
         function getTableDimensions(seats) {
-            // Base dimensions by capacity
-            if (seats === 2) return { w: 54, h: 40 };
-            if (seats === 4) return { w: 72, h: 48 };
-            if (seats === 6) return { w: 86, h: 52 };
-            return { w: 72, h: 48 }; // Default
+            // OpenTable-scale: much smaller tables
+            if (seats === 2) return { w: 36, h: 28 };
+            if (seats === 4) return { w: 48, h: 32 };
+            if (seats === 6) return { w: 56, h: 36 };
+            return { w: 48, h: 32 }; // Default
         }
 
         async function loadFloorPlan() {

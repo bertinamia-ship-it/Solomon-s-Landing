@@ -2394,29 +2394,13 @@ initScrollIndicator();
 // RESERVATIONS DASHBOARD LOGIN MODAL
 // ============================================
 
-// Open reservations login modal
+// Open reservations login modal - redirect to dedicated login page
 function openReservationsLogin(event) {
     if (event) {
         event.preventDefault();
     }
-    const modal = document.getElementById('reservationsLoginModal');
-    if (modal) {
-        modal.style.display = 'flex';
-        const usernameInput = document.getElementById('reservationsUsername');
-        const passwordInput = document.getElementById('reservationsPassword');
-        if (usernameInput) {
-            usernameInput.value = '';
-            usernameInput.focus();
-        }
-        if (passwordInput) {
-            passwordInput.value = '';
-        }
-        const errorDiv = document.getElementById('reservationsPasswordError');
-        if (errorDiv) {
-            errorDiv.style.display = 'none';
-            errorDiv.textContent = '';
-        }
-    }
+    // Redirect to dedicated login page for better UX
+    window.location.href = 'dashboard-login.html';
 }
 
 // Close reservations login modal
