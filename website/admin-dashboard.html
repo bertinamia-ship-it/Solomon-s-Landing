@@ -204,9 +204,15 @@
             user-select: none;
             cursor: grab;
             z-index: 10;
+            transition: transform 120ms ease, filter 120ms ease;
+        }
+        .table-node:hover {
+            transform: translateY(-2px);
+            filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.10));
         }
         .table-node:active {
             cursor: grabbing;
+            transform: translateY(0);
         }
         .table-node.selected .table-shape {
             outline: 3px solid rgba(245, 158, 11, 0.55);
@@ -214,38 +220,36 @@
         }
         .table-shape {
             position: relative;
-            width: 96px;
-            height: 64px;
             border: 2px solid #1d4ed8;
-            background: #eaf2ff;
+            background: linear-gradient(180deg, #f3f8ff 0%, #e8f1ff 100%);
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
-            color: #1d4ed8;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
-        .table-shape.round {
-            width: 72px;
-            height: 72px;
-            border-radius: 999px;
+        .table-number {
+            font-weight: 900;
+            color: #1d4ed8;
+            font-size: 14px;
+            line-height: 1;
+            pointer-events: none;
         }
         .seat {
             position: absolute;
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             border-radius: 999px;
             background: #1d4ed8;
-            opacity: 0.9;
-            border: 1px solid #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+            transform: translate(-50%, -50%);
         }
         .table-label {
-            font-size: 12px;
-            margin-top: 6px;
+            font-size: 11px;
+            margin-top: 4px;
             text-align: center;
             color: #111827;
-            font-weight: 600;
+            font-weight: 700;
         }
         .floor-plan-controls {
             display: flex;
@@ -329,6 +333,7 @@
                 <div class="layout-controls">
                     <select id="layoutTableSelect"></select>
                     <button id="btnAddToLayout" class="btn-primary" onclick="startPlacingTable()">Add Table</button>
+                    <button id="btnRotateTable" class="btn-secondary" onclick="rotateSelectedTable()" disabled>Rotate</button>
                     <button id="btnRemoveFromLayout" class="btn-danger" onclick="removeSelectedTable()" disabled>Remove</button>
                     <span id="placeHint" class="hint" style="display:none;">Click on the canvas to place the table…</span>
                 </div>
@@ -590,32 +595,45 @@
         let dragOffset = { x: 0, y: 0 };
         let areaTables = [];
 
-        function seatPositions(seats, w, h) {
+        function getSeatPositions(seats, w, h) {
+            const o = 10;
+            const cx = w / 2;
+            const cy = h / 2;
             const positions = [];
-            const padding = 8;
             
             if (seats === 2) {
-                positions.push({ left: -padding, top: h / 2 - 6 }); // Left
-                positions.push({ left: w + padding - 12, top: h / 2 - 6 }); // Right
-            } else if (seats === 4) {
-                positions.push({ left: w / 2 - 6, top: -padding }); // Top
-                positions.push({ left: w / 2 - 6, top: h + padding - 12 }); // Bottom
-                positions.push({ left: -padding, top: h / 2 - 6 }); // Left
-                positions.push({ left: w + padding - 12, top: h / 2 - 6 }); // Right
-            } else if (seats === 6) {
-                // Round table: evenly spaced around circle
-                const radius = w / 2;
-                const centerX = radius;
-                const centerY = radius;
-                for (let i = 0; i < 6; i++) {
-                    const angle = (i * 2 * Math.PI) / 6;
-                    const x = centerX + (radius + padding) * Math.cos(angle) - 6;
-                    const y = centerY + (radius + padding) * Math.sin(angle) - 6;
-                    positions.push({ left: x, top: y });
-                }
+                return [
+                    { x: -o, y: cy },
+                    { x: w + o, y: cy }
+                ];
             }
             
-            return positions;
+            if (seats === 4) {
+                return [
+                    { x: cx, y: -o },
+                    { x: w + o, y: cy },
+                    { x: cx, y: h + o },
+                    { x: -o, y: cy }
+                ];
+            }
+            
+            // 6: 2 top, 2 bottom, 1 left, 1 right
+            return [
+                { x: cx - 14, y: -o },
+                { x: cx + 14, y: -o },
+                { x: w + o, y: cy },
+                { x: cx + 14, y: h + o },
+                { x: cx - 14, y: h + o },
+                { x: -o, y: cy }
+            ];
+        }
+
+        function getTableDimensions(seats) {
+            // Base dimensions by capacity
+            if (seats === 2) return { w: 54, h: 40 };
+            if (seats === 4) return { w: 72, h: 48 };
+            if (seats === 6) return { w: 86, h: 52 };
+            return { w: 72, h: 48 }; // Default
         }
 
         async function loadFloorPlan() {
@@ -627,6 +645,7 @@
             selectedNodeId = null;
             document.getElementById('placeHint').style.display = 'none';
             document.getElementById('btnRemoveFromLayout').disabled = true;
+            document.getElementById('btnRotateTable').disabled = true;
             document.getElementById('btnAddToLayout').disabled = false;
             
             try {
@@ -694,6 +713,18 @@
                 
                 const x = layoutItem.x || 50;
                 const y = layoutItem.y || 50;
+                const rotation = layoutItem.rotation || 0;
+                
+                // Get base dimensions
+                const baseDims = getTableDimensions(table.seats);
+                let renderW = baseDims.w;
+                let renderH = baseDims.h;
+                
+                // Swap dimensions if rotated 90 degrees
+                if (rotation === 90) {
+                    renderW = baseDims.h;
+                    renderH = baseDims.w;
+                }
                 
                 const node = document.createElement('div');
                 node.className = 'table-node';
@@ -704,30 +735,37 @@
                 
                 // Table shape
                 const shape = document.createElement('div');
-                shape.className = `table-shape ${table.seats === 2 ? 'round' : ''}`;
-                shape.textContent = table.seats;
+                shape.className = 'table-shape';
+                shape.style.width = `${renderW}px`;
+                shape.style.height = `${renderH}px`;
                 
-                // Calculate seat positions
-                const shapeWidth = table.seats === 2 ? 72 : 96;
-                const shapeHeight = table.seats === 2 ? 72 : 64;
-                const seats = seatPositions(table.seats, shapeWidth, shapeHeight);
+                // Table number (centered)
+                const tableNumber = document.createElement('div');
+                tableNumber.className = 'table-number';
+                tableNumber.textContent = table.table_number || table.name || '?';
+                shape.appendChild(tableNumber);
                 
-                // Create seats immediately
+                // Calculate seat positions using render dimensions
+                const seats = getSeatPositions(table.seats, renderW, renderH);
+                
+                // Create seats
                 seats.forEach(pos => {
                     const seat = document.createElement('div');
                     seat.className = 'seat';
-                    seat.style.left = `${pos.left}px`;
-                    seat.style.top = `${pos.top}px`;
+                    seat.style.left = `${pos.x}px`;
+                    seat.style.top = `${pos.y}px`;
                     shape.appendChild(seat);
                 });
                 
                 node.appendChild(shape);
                 
-                // Label
-                const label = document.createElement('div');
-                label.className = 'table-label';
-                label.textContent = table.name || `Table ${table.table_number}`;
-                node.appendChild(label);
+                // Label (optional, shows name if different from number)
+                if (table.name && table.name !== `Table ${table.table_number}`) {
+                    const label = document.createElement('div');
+                    label.className = 'table-label';
+                    label.textContent = table.name;
+                    node.appendChild(label);
+                }
                 
                 // Click to select
                 node.addEventListener('click', (e) => {
@@ -773,12 +811,16 @@
                 return;
             }
             
+            // Get base dimensions
+            const dims = getTableDimensions(table.seats);
+            
             currentLayout.push({
                 table_id: tableId,
                 x: x,
                 y: y,
-                w: table.seats === 2 ? 72 : 96,
-                h: table.seats === 2 ? 72 : 64
+                w: dims.w,
+                h: dims.h,
+                rotation: 0
             });
             
             placingTableId = null;
@@ -798,6 +840,26 @@
             node.classList.add('selected');
             selectedNodeId = node.dataset.tableId;
             document.getElementById('btnRemoveFromLayout').disabled = false;
+            document.getElementById('btnRotateTable').disabled = false;
+        }
+
+        function rotateSelectedTable() {
+            if (!selectedNodeId) return;
+            
+            const layoutItem = currentLayout.find(l => l.table_id === selectedNodeId);
+            if (!layoutItem) return;
+            
+            // Toggle rotation between 0 and 90
+            layoutItem.rotation = layoutItem.rotation === 90 ? 0 : 90;
+            
+            // Re-render to show new rotation
+            renderFloorPlan();
+            
+            // Re-select the node
+            const node = document.querySelector(`[data-table-id="${selectedNodeId}"]`);
+            if (node) {
+                selectTableNode(node);
+            }
         }
 
         function removeSelectedTable() {
@@ -808,6 +870,7 @@
             currentLayout = currentLayout.filter(l => l.table_id !== selectedNodeId);
             selectedNodeId = null;
             document.getElementById('btnRemoveFromLayout').disabled = true;
+            document.getElementById('btnRotateTable').disabled = true;
             
             renderFloorPlan();
             populateTableDropdown();
