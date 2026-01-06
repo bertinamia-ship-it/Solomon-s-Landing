@@ -228,7 +228,7 @@ exports.handler = async (event, context) => {
         const { data: assignments, error: assignmentsError } = await supabase
             .from('table_assignments')
             .select('table_id, datetime_iso')
-            .eq('status', 'active')
+            .in('status', ['reserved', 'blocked', 'unavailable'])
             .gte('datetime_iso', data.datetime_iso)
             .lt('datetime_iso', endDatetime);
 

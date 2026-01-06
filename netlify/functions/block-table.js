@@ -1,11 +1,11 @@
 /**
- * Netlify Function: Set Table Assignment
- * Hostess function to assign a table to a reservation or block a table
+ * Netlify Function: Block Table
+ * Blocks a table for a time range (applies to all 3 slots automatically)
  */
 
 const { createClient } = require('@supabase/supabase-js');
 
-const RESERVATION_DURATION_MINUTES = 90;
+const VALID_TIMES = ['17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30'];
 
 exports.handler = async (event, context) => {
     // CORS handling
@@ -47,7 +47,7 @@ exports.handler = async (event, context) => {
 
     try {
         const data = JSON.parse(event.body);
-        const { table_id, reservation_id, date, time, status, notes } = data;
+        const { table_id, date, time, status, notes } = data;
 
         // Validate required fields
         if (!table_id || !date || !time || !status) {
@@ -62,14 +62,14 @@ exports.handler = async (event, context) => {
         }
 
         // Validate status
-        if (!['reserved', 'blocked', 'unavailable'].includes(status)) {
+        if (!['blocked', 'unavailable'].includes(status)) {
             return {
                 statusCode: 400,
                 headers: {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*'
                 },
-                body: JSON.stringify({ success: false, error: 'Invalid status. Must be: reserved, blocked, or unavailable' })
+                body: JSON.stringify({ success: false, error: 'Invalid status. Must be: blocked or unavailable' })
             };
         }
 
@@ -89,22 +89,7 @@ exports.handler = async (event, context) => {
 
         const supabase = createClient(supabaseUrl, supabaseKey);
 
-        // Build datetime_iso
-        const datetimeIso = `${date}T${time}:00`;
-        const startDatetime = new Date(datetimeIso);
-        if (Number.isNaN(startDatetime.getTime())) {
-            return {
-                statusCode: 400,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
-                },
-                body: JSON.stringify({ success: false, error: 'Invalid date or time format' })
-            };
-        }
-
-        // Get the 3 slots for this reservation (T, T+30, T+60)
-        const VALID_TIMES = ['17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30'];
+        // Get the 3 slots for this time
         const timeIndex = VALID_TIMES.indexOf(time);
         
         if (timeIndex === -1) {
@@ -118,45 +103,40 @@ exports.handler = async (event, context) => {
             };
         }
 
-        // Check for conflicts (if status is 'reserved', check for overlapping reservations)
-        if (status === 'reserved') {
-            // Check all 3 slots for conflicts
-            for (let i = 0; i < 3 && (timeIndex + i) < VALID_TIMES.length; i++) {
-                const slotTime = VALID_TIMES[timeIndex + i];
-                const slotDatetimeIso = `${date}T${slotTime}:00`;
-                
-                const { data: conflicts, error: conflictError } = await supabase
-                    .from('table_assignments')
-                    .select('id, reservation_id, status')
-                    .eq('table_id', table_id)
-                    .eq('datetime_iso', slotDatetimeIso)
-                    .in('status', ['reserved', 'blocked', 'unavailable']);
+        // Check for conflicts (can't block if already reserved)
+        for (let i = 0; i < 3 && (timeIndex + i) < VALID_TIMES.length; i++) {
+            const slotTime = VALID_TIMES[timeIndex + i];
+            const slotDatetimeIso = `${date}T${slotTime}:00`;
+            
+            const { data: conflicts, error: conflictError } = await supabase
+                .from('table_assignments')
+                .select('id, reservation_id, status')
+                .eq('table_id', table_id)
+                .eq('datetime_iso', slotDatetimeIso)
+                .eq('status', 'reserved');
 
-                if (conflictError) throw conflictError;
+            if (conflictError) throw conflictError;
 
-                if (conflicts && conflicts.length > 0 && !conflicts.some(c => c.reservation_id === reservation_id)) {
-                    return {
-                        statusCode: 409,
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Access-Control-Allow-Origin': '*'
-                        },
-                        body: JSON.stringify({ success: false, error: `Table is already ${conflicts[0].status} for slot ${slotTime}` })
-                    };
-                }
+            if (conflicts && conflicts.length > 0) {
+                return {
+                    statusCode: 409,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    body: JSON.stringify({ success: false, error: `Table is already reserved for slot ${slotTime}. Cancel the reservation first.` })
+                };
             }
         }
 
-        // If reservation_id provided and status is 'reserved', delete existing assignments first
-        if (reservation_id && status === 'reserved') {
-            // Delete all existing assignments for this reservation and table
-            await supabase
-                .from('table_assignments')
-                .delete()
-                .eq('reservation_id', reservation_id)
-                .eq('table_id', table_id)
-                .eq('date', date);
-        }
+        // Delete existing blocks for this table/time (replace them)
+        await supabase
+            .from('table_assignments')
+            .delete()
+            .eq('table_id', table_id)
+            .eq('date', date)
+            .in('time', VALID_TIMES.slice(timeIndex, timeIndex + 3))
+            .in('status', ['blocked', 'unavailable']);
 
         // Create assignments for all 3 slots
         const assignmentInserts = [];
@@ -166,14 +146,14 @@ exports.handler = async (event, context) => {
             
             assignmentInserts.push({
                 table_id: table_id,
-                reservation_id: reservation_id || null,
+                reservation_id: null, // Blocks don't have reservation_id
                 date: date,
                 time: slotTime,
                 datetime_iso: slotDatetimeIso,
-                duration_minutes: 30, // Each slot is 30 minutes
+                duration_minutes: 30,
                 status: status,
                 source: 'manual',
-                notes: notes || null
+                notes: notes || `Table ${status}`
             });
         }
 
@@ -195,7 +175,7 @@ exports.handler = async (event, context) => {
         };
 
     } catch (error) {
-        console.error('❌ Error setting assignment:', error);
+        console.error('❌ Error blocking table:', error);
         return {
             statusCode: 500,
             headers: {

@@ -349,11 +349,20 @@
                     <button class="btn-primary" onclick="saveFloorPlan()">Save Layout</button>
                     <button class="btn-secondary" onclick="resetFloorPlan()">Reset</button>
                 </div>
-                <div class="layout-controls">
-                    <select id="layoutTableSelect"></select>
-                    <button id="btnAddToLayout" class="btn-primary" onclick="startPlacingTable()">Add Table</button>
-                    <button id="btnRotateTable" class="btn-secondary" onclick="rotateSelectedTable()" disabled>Rotate</button>
-                    <button id="btnRemoveFromLayout" class="btn-danger" onclick="removeSelectedTable()" disabled>Remove</button>
+                <div class="layout-controls" style="margin-bottom: 1rem;">
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
+                        <span style="font-weight: 600; color: #374151;">Add Table:</span>
+                        <button class="btn-primary btn-small" onclick="startPlacingTableFromPalette(2)" style="padding: 0.5rem 1rem;">+ 2-top</button>
+                        <button class="btn-primary btn-small" onclick="startPlacingTableFromPalette(4)" style="padding: 0.5rem 1rem;">+ 4-top</button>
+                        <button class="btn-primary btn-small" onclick="startPlacingTableFromPalette(6)" style="padding: 0.5rem 1rem;">+ 6-top</button>
+                        <span style="margin-left: 1rem; font-weight: 600; color: #374151;">Existing:</span>
+                        <select id="layoutTableSelect" style="min-width: 180px;"></select>
+                        <button id="btnAddToLayout" class="btn-primary btn-small" onclick="startPlacingTable()">Add Selected</button>
+                    </div>
+                </div>
+                <div class="layout-controls" style="margin-bottom: 1rem;">
+                    <button id="btnRotateTable" class="btn-secondary" onclick="rotateSelectedTable()" disabled>Rotate 90°</button>
+                    <button id="btnRemoveFromLayout" class="btn-danger" onclick="removeSelectedTable()" disabled>Remove from Layout</button>
                     <span id="placeHint" class="hint" style="display:none;">Click on the canvas to place the table…</span>
                 </div>
                 <div class="floor-plan-container">
@@ -705,6 +714,48 @@
                 option.textContent = `${table.name || `Table ${table.table_number}`} (${table.seats} seats)`;
                 select.appendChild(option);
             });
+        }
+
+        async function startPlacingTableFromPalette(seats) {
+            const area = document.getElementById('floorPlanArea').value;
+            
+            // Find next available table number
+            const existingNumbers = allTables.filter(t => t.area === area).map(t => t.table_number);
+            const nextNumber = existingNumbers.length > 0 ? Math.max(...existingNumbers) + 1 : 1;
+            
+            try {
+                // Create new table
+                const res = await api('/.netlify/functions/upsert-table', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        table_number: nextNumber,
+                        seats: seats,
+                        area: area,
+                        name: null,
+                        is_active: true
+                    })
+                });
+                
+                if (!res) return;
+                
+                const data = await res.json();
+                if (data.success) {
+                    // Reload tables and floor plan
+                    await loadTables();
+                    await loadFloorPlan();
+                    
+                    // Select the new table and start placing
+                    const newTable = allTables.find(t => t.area === area && t.table_number === nextNumber);
+                    if (newTable) {
+                        document.getElementById('layoutTableSelect').value = newTable.id;
+                        startPlacingTable();
+                    }
+                } else {
+                    alert(`Error: ${data.error}`);
+                }
+            } catch (error) {
+                alert(`Error: ${error.message}`);
+            }
         }
 
         function startPlacingTable() {

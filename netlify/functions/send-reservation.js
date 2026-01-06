@@ -414,7 +414,7 @@ exports.handler = async (event, context) => {
             const { data: assignments } = await supabase
                 .from('table_assignments')
                 .select('table_id, datetime_iso')
-                .eq('status', 'active')
+                .in('status', ['reserved', 'blocked', 'unavailable'])
                 .gte('datetime_iso', datetimeIso)
                 .lt('datetime_iso', endDatetime);
 
@@ -505,29 +505,48 @@ exports.handler = async (event, context) => {
 
         console.log('✅ Reservation saved to database:', reservation.id);
 
-        // Create table assignments
+        // Create table assignments for 3 slots (T, T+30, T+60) - 90-minute window
         if (tableAssignments.length > 0) {
-            const assignmentInserts = tableAssignments.map(table => ({
-                date: data.date,
-                time: data.time,
-                datetime_iso: datetimeIso,
-                duration_minutes: 90,
-                table_id: table.table_id,
-                reservation_id: reservation.id,
-                source: data.source || 'web',
-                status: 'active',
-                notes: null
-            }));
+            const VALID_TIMES = ['17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30'];
+            const timeIndex = VALID_TIMES.indexOf(data.time);
+            
+            if (timeIndex !== -1) {
+                const assignmentInserts = [];
+                
+                // Create assignments for each table and each of the 3 slots
+                tableAssignments.forEach(table => {
+                    for (let i = 0; i < 3 && (timeIndex + i) < VALID_TIMES.length; i++) {
+                        const slotTime = VALID_TIMES[timeIndex + i];
+                        const slotDatetimeIso = `${data.date}T${slotTime}:00`;
+                        
+                        assignmentInserts.push({
+                            date: data.date,
+                            time: slotTime,
+                            datetime_iso: slotDatetimeIso,
+                            duration_minutes: 30, // Each slot is 30 minutes
+                            table_id: table.table_id,
+                            reservation_id: reservation.id,
+                            source: data.source || 'web',
+                            status: 'reserved', // Use 'reserved' status for reservations
+                            notes: null
+                        });
+                    }
+                });
 
-            const { error: assignmentError } = await supabase
-                .from('table_assignments')
-                .insert(assignmentInserts);
+                if (assignmentInserts.length > 0) {
+                    const { error: assignmentError } = await supabase
+                        .from('table_assignments')
+                        .insert(assignmentInserts);
 
-            if (assignmentError) {
-                console.error('❌ Error creating table assignments:', assignmentError);
-                // Don't fail the reservation, but log the error
+                    if (assignmentError) {
+                        console.error('❌ Error creating table assignments:', assignmentError);
+                        // Don't fail the reservation, but log the error
+                    } else {
+                        console.log('✅ Table assignments created:', assignmentInserts.length, `(${tableAssignments.length} tables × 3 slots)`);
+                    }
+                }
             } else {
-                console.log('✅ Table assignments created:', assignmentInserts.length);
+                console.warn('⚠️ Invalid time slot, skipping table assignments');
             }
         }
 
