@@ -24,70 +24,70 @@ function getEndDatetime(datetimeIso) {
 // Helper: Find best table combination for party size
 function findTableCombination(partySize, availableTables) {
     // Prefer exact fit
-    const exactFit = availableTables.find(t => t.capacity === partySize);
+    const exactFit = availableTables.find(t => t.seats === partySize);
     if (exactFit) {
-        return [{ table_id: exactFit.id, table_number: exactFit.table_number, capacity: exactFit.capacity }];
+        return [{ table_id: exactFit.id, table_number: exactFit.table_number, seats: exactFit.seats }];
     }
 
     // Try combinations for larger parties
     if (partySize <= 4) {
         // Try 2 tables of 2
-        const tables2 = availableTables.filter(t => t.capacity === 2).slice(0, 2);
-        if (tables2.length === 2 && tables2[0].capacity * 2 >= partySize) {
-            return tables2.map(t => ({ table_id: t.id, table_number: t.table_number, capacity: t.capacity }));
+        const tables2 = availableTables.filter(t => t.seats === 2).slice(0, 2);
+        if (tables2.length === 2 && tables2[0].seats * 2 >= partySize) {
+            return tables2.map(t => ({ table_id: t.id, table_number: t.table_number, seats: t.seats }));
         }
     }
 
     if (partySize <= 6) {
         // Try 1 table of 6
-        const table6 = availableTables.find(t => t.capacity === 6);
+        const table6 = availableTables.find(t => t.seats === 6);
         if (table6) {
-            return [{ table_id: table6.id, table_number: table6.table_number, capacity: table6.capacity }];
+            return [{ table_id: table6.id, table_number: table6.table_number, seats: table6.seats }];
         }
         // Try 1 table of 4 + 1 table of 2
-        const table4 = availableTables.find(t => t.capacity === 4);
-        const table2 = availableTables.find(t => t.capacity === 2);
-        if (table4 && table2 && table4.capacity + table2.capacity >= partySize) {
+        const table4 = availableTables.find(t => t.seats === 4);
+        const table2 = availableTables.find(t => t.seats === 2);
+        if (table4 && table2 && table4.seats + table2.seats >= partySize) {
             return [
-                { table_id: table4.id, table_number: table4.table_number, capacity: table4.capacity },
-                { table_id: table2.id, table_number: table2.table_number, capacity: table2.capacity }
+                { table_id: table4.id, table_number: table4.table_number, seats: table4.seats },
+                { table_id: table2.id, table_number: table2.table_number, seats: table2.seats }
             ];
         }
     }
 
     if (partySize <= 8) {
         // Try 2 tables of 4
-        const tables4 = availableTables.filter(t => t.capacity === 4).slice(0, 2);
+        const tables4 = availableTables.filter(t => t.seats === 4).slice(0, 2);
         if (tables4.length === 2) {
-            return tables4.map(t => ({ table_id: t.id, table_number: t.table_number, capacity: t.capacity }));
+            return tables4.map(t => ({ table_id: t.id, table_number: t.table_number, seats: t.seats }));
         }
     }
 
     if (partySize <= 10) {
         // Try 1 table of 6 + 1 table of 4
-        const table6 = availableTables.find(t => t.capacity === 6);
-        const table4 = availableTables.find(t => t.capacity === 4);
+        const table6 = availableTables.find(t => t.seats === 6);
+        const table4 = availableTables.find(t => t.seats === 4);
         if (table6 && table4) {
             return [
-                { table_id: table6.id, table_number: table6.table_number, capacity: table6.capacity },
-                { table_id: table4.id, table_number: table4.table_number, capacity: table4.capacity }
+                { table_id: table6.id, table_number: table6.table_number, seats: table6.seats },
+                { table_id: table4.id, table_number: table4.table_number, seats: table4.seats }
             ];
         }
     }
 
     if (partySize <= 12) {
         // Try 2 tables of 6
-        const tables6 = availableTables.filter(t => t.capacity === 6).slice(0, 2);
+        const tables6 = availableTables.filter(t => t.seats === 6).slice(0, 2);
         if (tables6.length === 2) {
-            return tables6.map(t => ({ table_id: t.id, table_number: t.table_number, capacity: t.capacity }));
+            return tables6.map(t => ({ table_id: t.id, table_number: t.table_number, seats: t.seats }));
         }
     }
 
     // For larger parties, use multiple tables of 4
-    const tables4 = availableTables.filter(t => t.capacity === 4);
+    const tables4 = availableTables.filter(t => t.seats === 4);
     const needed = Math.ceil(partySize / 4);
     if (tables4.length >= needed) {
-        return tables4.slice(0, needed).map(t => ({ table_id: t.id, table_number: t.table_number, capacity: t.capacity }));
+        return tables4.slice(0, needed).map(t => ({ table_id: t.id, table_number: t.table_number, seats: t.seats }));
     }
 
     return null;
@@ -202,9 +202,9 @@ exports.handler = async (event, context) => {
         // Get all active tables
         const { data: allTables, error: tablesError } = await supabase
             .from('tables')
-            .select('id, table_number, capacity')
+            .select('id, table_number, seats')
             .eq('is_active', true)
-            .order('capacity', { ascending: true });
+            .order('seats', { ascending: true });
 
         if (tablesError) {
             throw tablesError;
@@ -271,12 +271,12 @@ exports.handler = async (event, context) => {
                     available: false,
                     message: 'No available tables for this party size and time',
                     party_size: partySize,
-                    total_capacity_available: availableTables.reduce((sum, t) => sum + t.capacity, 0)
+                    total_seats_available: availableTables.reduce((sum, t) => sum + t.seats, 0)
                 })
             };
         }
 
-        const totalCapacity = tableCombination.reduce((sum, t) => sum + t.capacity, 0);
+        const totalSeats = tableCombination.reduce((sum, t) => sum + t.seats, 0);
 
         return {
             statusCode: 200,
@@ -288,7 +288,7 @@ exports.handler = async (event, context) => {
                 success: true,
                 available: true,
                 tables: tableCombination,
-                total_capacity: totalCapacity,
+                total_seats: totalSeats,
                 party_size: partySize,
                 message: `Found ${tableCombination.length} table(s) for ${partySize} guests`
             })

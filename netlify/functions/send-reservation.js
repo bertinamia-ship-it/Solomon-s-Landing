@@ -348,51 +348,51 @@ exports.handler = async (event, context) => {
             const mapTable = (t) => ({
                 table_id: t.id,
                 table_number: t.table_number,
-                capacity: t.capacity,
+                seats: t.seats,
                 name: t.name,
                 area: t.area
             });
 
             // Prefer exact fit
-            const exactFit = availableTables.find(t => t.capacity === partySize);
+            const exactFit = availableTables.find(t => t.seats === partySize);
             if (exactFit) {
                 return [mapTable(exactFit)];
             }
             if (partySize <= 4) {
-                const tables2 = availableTables.filter(t => t.capacity === 2).slice(0, 2);
-                if (tables2.length === 2 && tables2[0].capacity * 2 >= partySize) {
+                const tables2 = availableTables.filter(t => t.seats === 2).slice(0, 2);
+                if (tables2.length === 2 && tables2[0].seats * 2 >= partySize) {
                     return tables2.map(mapTable);
                 }
             }
             if (partySize <= 6) {
-                const table6 = availableTables.find(t => t.capacity === 6);
+                const table6 = availableTables.find(t => t.seats === 6);
                 if (table6) return [mapTable(table6)];
-                const table4 = availableTables.find(t => t.capacity === 4);
-                const table2 = availableTables.find(t => t.capacity === 2);
-                if (table4 && table2 && table4.capacity + table2.capacity >= partySize) {
+                const table4 = availableTables.find(t => t.seats === 4);
+                const table2 = availableTables.find(t => t.seats === 2);
+                if (table4 && table2 && table4.seats + table2.seats >= partySize) {
                     return [mapTable(table4), mapTable(table2)];
                 }
             }
             if (partySize <= 8) {
-                const tables4 = availableTables.filter(t => t.capacity === 4).slice(0, 2);
+                const tables4 = availableTables.filter(t => t.seats === 4).slice(0, 2);
                 if (tables4.length === 2) {
                     return tables4.map(mapTable);
                 }
             }
             if (partySize <= 10) {
-                const table6 = availableTables.find(t => t.capacity === 6);
-                const table4 = availableTables.find(t => t.capacity === 4);
+                const table6 = availableTables.find(t => t.seats === 6);
+                const table4 = availableTables.find(t => t.seats === 4);
                 if (table6 && table4) {
                     return [mapTable(table6), mapTable(table4)];
                 }
             }
             if (partySize <= 12) {
-                const tables6 = availableTables.filter(t => t.capacity === 6).slice(0, 2);
+                const tables6 = availableTables.filter(t => t.seats === 6).slice(0, 2);
                 if (tables6.length === 2) {
                     return tables6.map(mapTable);
                 }
             }
-            const tables4 = availableTables.filter(t => t.capacity === 4);
+            const tables4 = availableTables.filter(t => t.seats === 4);
             const needed = Math.ceil(partySize / 4);
             if (tables4.length >= needed) {
                 return tables4.slice(0, needed).map(mapTable);
@@ -403,9 +403,9 @@ exports.handler = async (event, context) => {
         // Get all active tables
         const { data: allTables, error: tablesError } = await supabase
             .from('tables')
-            .select('id, name, table_number, area, capacity')
+            .select('id, name, table_number, area, seats')
             .eq('is_active', true)
-            .order('capacity', { ascending: true });
+            .order('seats', { ascending: true });
 
         let tableAssignments = [];
         if (!tablesError && allTables && allTables.length > 0) {

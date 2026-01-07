@@ -48,7 +48,7 @@ exports.handler = async (event, context) => {
 
     try {
         const data = JSON.parse(event.body);
-        const { id, time, party_size, notes, status, table_ids } = data;
+        const { id, name, phone, time, party_size, notes, status, table_ids } = data;
 
         if (!id) {
             return {
@@ -97,6 +97,12 @@ exports.handler = async (event, context) => {
 
         // Build update object
         const updateData = {};
+        if (name !== undefined && name.trim()) {
+            updateData.name = name.trim();
+        }
+        if (phone !== undefined && phone.trim()) {
+            updateData.phone = phone.trim();
+        }
         if (time !== undefined) {
             if (!VALID_TIMES.includes(time)) {
                 return {

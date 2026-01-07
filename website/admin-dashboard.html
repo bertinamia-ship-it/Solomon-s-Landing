@@ -253,13 +253,48 @@
         }
         .seat {
             position: absolute;
-            width: 6px;
-            height: 6px;
+            width: 8px;
+            height: 8px;
             border-radius: 999px;
-            background: #1d4ed8;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            background: #fbbf24;
+            border: 1.5px solid #f59e0b;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
             transform: translate(-50%, -50%);
-            opacity: 0.85;
+            opacity: 0.9;
+        }
+        
+        .floor-object {
+            position: absolute;
+            background: #6b7280;
+            border: 2px solid #4b5563;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: move;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+        
+        .floor-object[data-object-type="entrance"] {
+            background: #10b981;
+            border-color: #059669;
+        }
+        
+        .floor-object[data-object-type="bar"] {
+            background: #8b5cf6;
+            border-color: #7c3aed;
+        }
+        
+        .floor-object.selected {
+            border-color: #fbbf24;
+            box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.3);
+        }
+        
+        .object-label {
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
         .table-label {
             font-size: 11px;
@@ -359,6 +394,9 @@
                         <span style="margin-left: 1rem; font-weight: 600; color: #374151;">Existing:</span>
                         <select id="layoutTableSelect" style="min-width: 180px;"></select>
                         <button id="btnAddToLayout" class="btn-primary btn-small" onclick="startPlacingTable()">Add Selected</button>
+                        <span style="margin-left: 1rem; font-weight: 600; color: #374151;">Objects:</span>
+                        <button class="btn-secondary btn-small" onclick="startPlacingObject('entrance')" style="padding: 0.5rem 1rem;">+ Entrance</button>
+                        <button class="btn-secondary btn-small" onclick="startPlacingObject('bar')" style="padding: 0.5rem 1rem;">+ Bar</button>
                     </div>
                 </div>
                 <div class="layout-controls" style="margin-bottom: 1rem;">
@@ -618,6 +656,7 @@
         // Floor Plan Editor
         let currentLayout = [];
         let placingTableId = null;
+        let placingObjectType = null; // 'entrance' or 'bar'
         let selectedNodeId = null;
         let draggedElement = null;
         let dragOffset = { x: 0, y: 0 };
@@ -670,6 +709,7 @@
             canvas.innerHTML = '<div class="loading">Loading floor plan...</div>';
             
             placingTableId = null;
+            placingObjectType = null;
             selectedNodeId = null;
             document.getElementById('placeHint').style.display = 'none';
             document.getElementById('btnRemoveFromLayout').disabled = true;
@@ -769,7 +809,17 @@
             }
             
             placingTableId = tableId;
+            placingObjectType = null;
             document.getElementById('placeHint').style.display = 'inline';
+            document.getElementById('placeHint').textContent = 'Click on the canvas to place the table…';
+            document.getElementById('btnAddToLayout').disabled = true;
+        }
+
+        function startPlacingObject(type) {
+            placingObjectType = type;
+            placingTableId = null;
+            document.getElementById('placeHint').style.display = 'inline';
+            document.getElementById('placeHint').textContent = `Click on the canvas to place the ${type}…`;
             document.getElementById('btnAddToLayout').disabled = true;
         }
 
@@ -778,6 +828,44 @@
             canvas.innerHTML = '';
             
             currentLayout.forEach((layoutItem, index) => {
+                // Handle non-table objects (Entrance, Bar)
+                if (layoutItem.type && (layoutItem.type === 'entrance' || layoutItem.type === 'bar')) {
+                    const x = layoutItem.x || 50;
+                    const y = layoutItem.y || 50;
+                    const w = layoutItem.w || (layoutItem.type === 'entrance' ? 120 : 200);
+                    const h = layoutItem.h || (layoutItem.type === 'entrance' ? 40 : 60);
+                    
+                    const node = document.createElement('div');
+                    node.className = 'floor-object';
+                    node.dataset.objectType = layoutItem.type;
+                    node.dataset.layoutIndex = index;
+                    node.style.left = `${x}px`;
+                    node.style.top = `${y}px`;
+                    node.style.width = `${w}px`;
+                    node.style.height = `${h}px`;
+                    
+                    const label = document.createElement('div');
+                    label.className = 'object-label';
+                    label.textContent = layoutItem.type.charAt(0).toUpperCase() + layoutItem.type.slice(1);
+                    node.appendChild(label);
+                    
+                    node.addEventListener('click', (e) => {
+                        if (placingTableId || placingObjectType) return;
+                        e.stopPropagation();
+                        selectTableNode(node);
+                    });
+                    
+                    node.addEventListener('mousedown', (e) => {
+                        if (placingTableId || placingObjectType) return;
+                        e.stopPropagation();
+                        startDrag(e, node);
+                    });
+                    
+                    canvas.appendChild(node);
+                    return;
+                }
+                
+                // Handle tables
                 const table = areaTables.find(t => t.id === layoutItem.table_id);
                 if (!table) return;
                 
@@ -839,14 +927,14 @@
                 
                 // Click to select
                 node.addEventListener('click', (e) => {
-                    if (placingTableId) return; // Don't select while placing
+                    if (placingTableId || placingObjectType) return; // Don't select while placing
                     e.stopPropagation();
                     selectTableNode(node);
                 });
                 
                 // Drag handlers
                 node.addEventListener('mousedown', (e) => {
-                    if (placingTableId) return;
+                    if (placingTableId || placingObjectType) return;
                     e.stopPropagation();
                     startDrag(e, node);
                 });
@@ -856,7 +944,7 @@
             
             // Canvas click handler for placing
             canvas.addEventListener('click', (e) => {
-                if (placingTableId && (e.target === canvas || e.target.classList.contains('floor-plan-canvas'))) {
+                if ((placingTableId || placingObjectType) && (e.target === canvas || e.target.classList.contains('floor-plan-canvas'))) {
                     const rect = canvas.getBoundingClientRect();
                     const x = e.clientX - rect.left;
                     const y = e.clientY - rect.top;
@@ -866,7 +954,11 @@
                     const snappedX = Math.round(x / gridSize) * gridSize;
                     const snappedY = Math.round(y / gridSize) * gridSize;
                     
-                    placeTable(placingTableId, snappedX, snappedY);
+                    if (placingTableId) {
+                        placeTable(placingTableId, snappedX, snappedY);
+                    } else if (placingObjectType) {
+                        placeObject(placingObjectType, snappedX, snappedY);
+                    }
                 }
             });
         }
@@ -902,22 +994,49 @@
             populateTableDropdown();
         }
 
+        function placeObject(objectType, x, y) {
+            // Default dimensions for objects
+            const defaultDims = {
+                entrance: { w: 120, h: 40 },
+                bar: { w: 200, h: 60 }
+            };
+            
+            const dims = defaultDims[objectType] || { w: 100, h: 40 };
+            
+            currentLayout.push({
+                type: objectType,
+                x: x,
+                y: y,
+                w: dims.w,
+                h: dims.h
+            });
+            
+            placingObjectType = null;
+            document.getElementById('placeHint').style.display = 'none';
+            document.getElementById('btnAddToLayout').disabled = false;
+            
+            renderFloorPlan();
+        }
+
         function selectTableNode(node) {
             // Deselect all
-            document.querySelectorAll('.table-node').forEach(n => n.classList.remove('selected'));
+            document.querySelectorAll('.table-node, .floor-object').forEach(n => n.classList.remove('selected'));
             
             // Select this one
             node.classList.add('selected');
-            selectedNodeId = node.dataset.tableId;
+            selectedNodeId = node.dataset.tableId || node.dataset.layoutIndex;
+            
+            // Enable/disable buttons based on selection type
+            const isObject = node.classList.contains('floor-object');
             document.getElementById('btnRemoveFromLayout').disabled = false;
-            document.getElementById('btnRotateTable').disabled = false;
+            document.getElementById('btnRotateTable').disabled = isObject; // Objects can't rotate
         }
 
         function rotateSelectedTable() {
             if (!selectedNodeId) return;
             
             const layoutItem = currentLayout.find(l => l.table_id === selectedNodeId);
-            if (!layoutItem) return;
+            if (!layoutItem || layoutItem.type) return; // Objects can't rotate
             
             // Toggle rotation between 0 and 90
             layoutItem.rotation = layoutItem.rotation === 90 ? 0 : 90;
@@ -935,15 +1054,27 @@
         function removeSelectedTable() {
             if (!selectedNodeId) return;
             
-            if (!confirm('Remove this table from the layout?')) return;
+            const selectedNode = document.querySelector('.table-node.selected, .floor-object.selected');
+            const isObject = selectedNode && selectedNode.classList.contains('floor-object');
             
-            currentLayout = currentLayout.filter(l => l.table_id !== selectedNodeId);
+            if (!confirm(`Remove this ${isObject ? 'object' : 'table'} from the layout?`)) return;
+            
+            // Remove by table_id or by index (for objects)
+            if (isObject) {
+                const index = parseInt(selectedNodeId);
+                currentLayout = currentLayout.filter((l, i) => i !== index);
+            } else {
+                currentLayout = currentLayout.filter(l => l.table_id !== selectedNodeId);
+            }
+            
             selectedNodeId = null;
             document.getElementById('btnRemoveFromLayout').disabled = true;
             document.getElementById('btnRotateTable').disabled = true;
             
             renderFloorPlan();
-            populateTableDropdown();
+            if (!isObject) {
+                populateTableDropdown();
+            }
         }
 
         function startDrag(e, node) {
@@ -979,13 +1110,23 @@
         function stopDrag() {
             if (draggedElement) {
                 const layoutIndex = parseInt(draggedElement.dataset.layoutIndex);
-                const canvasRect = document.getElementById('floorPlanCanvas').getBoundingClientRect();
+                const canvas = document.getElementById('floorPlanCanvas');
+                const canvasRect = canvas.getBoundingClientRect();
                 const nodeRect = draggedElement.getBoundingClientRect();
+                
+                // Calculate position relative to canvas
+                const x = nodeRect.left - canvasRect.left;
+                const y = nodeRect.top - canvasRect.top;
+                
+                // Snap to grid
+                const gridSize = 20;
+                const snappedX = Math.max(0, Math.round(x / gridSize) * gridSize);
+                const snappedY = Math.max(0, Math.round(y / gridSize) * gridSize);
                 
                 // Update layout with new position
                 if (currentLayout[layoutIndex]) {
-                    currentLayout[layoutIndex].x = nodeRect.left - canvasRect.left;
-                    currentLayout[layoutIndex].y = nodeRect.top - canvasRect.top;
+                    currentLayout[layoutIndex].x = snappedX;
+                    currentLayout[layoutIndex].y = snappedY;
                 }
                 
                 draggedElement.style.zIndex = '10';

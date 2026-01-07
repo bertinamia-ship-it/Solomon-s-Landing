@@ -238,6 +238,31 @@
             background: linear-gradient(180deg, #fee2e2 0%, #fef2f2 100%);
             border-color: #ef4444;
         }
+        .floor-object {
+            position: absolute;
+            background: #6b7280;
+            border: 2px solid #4b5563;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+        .floor-object[data-object-type="entrance"] {
+            background: #10b981;
+            border-color: #059669;
+        }
+        .floor-object[data-object-type="bar"] {
+            background: #8b5cf6;
+            border-color: #7c3aed;
+        }
+        .object-label {
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
         .reservations-list {
             max-height: 500px;
             overflow-y: auto;
@@ -673,6 +698,32 @@
             const canvas = document.getElementById('floorPlanCanvas');
             canvas.innerHTML = '';
             
+            // Render non-table objects (Entrance, Bar) first
+            currentLayout.forEach((layoutItem, index) => {
+                if (layoutItem.type && (layoutItem.type === 'entrance' || layoutItem.type === 'bar')) {
+                    const x = layoutItem.x || 50;
+                    const y = layoutItem.y || 50;
+                    const w = layoutItem.w || (layoutItem.type === 'entrance' ? 120 : 200);
+                    const h = layoutItem.h || (layoutItem.type === 'entrance' ? 40 : 60);
+                    
+                    const node = document.createElement('div');
+                    node.className = 'floor-object';
+                    node.dataset.objectType = layoutItem.type;
+                    node.style.left = `${x}px`;
+                    node.style.top = `${y}px`;
+                    node.style.width = `${w}px`;
+                    node.style.height = `${h}px`;
+                    
+                    const label = document.createElement('div');
+                    label.className = 'object-label';
+                    label.textContent = layoutItem.type.charAt(0).toUpperCase() + layoutItem.type.slice(1);
+                    node.appendChild(label);
+                    
+                    canvas.appendChild(node);
+                }
+            });
+            
+            // Render tables
             allTables.forEach(table => {
                 const assignment = assignments.find(a => a.table_id === table.id);
                 const status = assignment ? assignment.status : 'available';
@@ -981,11 +1032,11 @@
             let html = `
                 <div class="form-group">
                     <label>Name</label>
-                    <input type="text" id="editName" value="${reservation.name || reservation.full_name || ''}" style="background: #f9fafb;" readonly>
+                    <input type="text" id="editName" value="${reservation.name || reservation.full_name || ''}">
                 </div>
                 <div class="form-group">
                     <label>Phone</label>
-                    <input type="tel" id="editPhone" value="${reservation.phone || ''}" style="background: #f9fafb;" readonly>
+                    <input type="tel" id="editPhone" value="${reservation.phone || ''}">
                 </div>
                 <div class="form-group">
                     <label>Email</label>
@@ -1053,6 +1104,8 @@
             
             if (!reservationId) return;
 
+            const name = document.getElementById('editName').value.trim();
+            const phone = document.getElementById('editPhone').value.trim();
             const time = document.getElementById('editTime').value;
             const partySize = parseInt(document.getElementById('editPartySize').value);
             const notes = document.getElementById('editNotes').value;
@@ -1064,6 +1117,8 @@
                     method: 'POST',
                     body: JSON.stringify({
                         id: reservationId,
+                        name: name,
+                        phone: phone,
                         time: time,
                         party_size: partySize,
                         notes: notes,
