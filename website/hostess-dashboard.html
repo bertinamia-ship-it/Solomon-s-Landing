@@ -560,18 +560,36 @@
                 ...(opts.headers || {})
             };
             
-            const response = await fetch(path, {
-                ...opts,
-                headers
-            });
-            
-            if (response.status === 401) {
-                alert('Session expired. Please login again.');
-                logout();
+            try {
+                const response = await fetch(path, {
+                    ...opts,
+                    headers
+                });
+                
+                if (response.status === 401) {
+                    alert('Session expired. Please login again.');
+                    logout();
+                    return null;
+                }
+                
+                if (!response.ok) {
+                    const text = await response.text();
+                    console.error(`API error ${response.status} for ${path}:`, text.substring(0, 200));
+                    return null;
+                }
+                
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    const text = await response.text();
+                    console.error(`Non-JSON response from ${path}:`, text.substring(0, 200));
+                    return null;
+                }
+                
+                return response;
+            } catch (error) {
+                console.error(`Fetch error for ${path}:`, error);
                 return null;
             }
-            
-            return response;
         }
 
         function logout() {
