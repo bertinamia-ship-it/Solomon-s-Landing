@@ -183,6 +183,32 @@
       .login-container{ padding: 24px 20px 18px; border-radius: 16px; }
       .logo img{ max-width: 220px; }
     }
+
+    /* Build Badge - Smoke Test */
+    .build-badge {
+      position: fixed;
+      bottom: 16px;
+      right: 16px;
+      background: rgba(15, 23, 42, 0.95);
+      color: white;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      z-index: 9999;
+      pointer-events: none;
+      line-height: 1.4;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .build-badge .file-path {
+      display: block;
+      font-size: 10px;
+      opacity: 0.7;
+      margin-top: 2px;
+    }
   </style>
 </head>
 
@@ -224,7 +250,7 @@
         />
       </div>
 
-      <button type="submit" class="btn-login">Login</button>
+      <button type="submit" class="btn-login">Login (Test Build ✅)</button>
       <div id="errorMessage" class="error-message"></div>
     </form>
 
@@ -301,6 +327,17 @@
         document.getElementById("loginForm").dispatchEvent(new Event("submit"));
       }
     });
+
+    // Build Badge - Smoke Test
+    (function() {
+      const now = new Date();
+      const dateStr = now.toISOString().split('T')[0];
+      const timeStr = now.toTimeString().split(' ')[0].substring(0, 5);
+      const badge = document.createElement('div');
+      badge.className = 'build-badge';
+      badge.innerHTML = `RES APP BUILD ✅ ${dateStr} ${timeStr}<span class="file-path">website/dashboard-login.html</span>`;
+      document.body.appendChild(badge);
+    })();
   </script>
 </body>
 </html>
