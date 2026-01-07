@@ -5,6 +5,15 @@
 
 const { createClient } = require('@supabase/supabase-js');
 
+const json = (statusCode, data) => ({
+    statusCode,
+    headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+    },
+    body: JSON.stringify(data)
+});
+
 exports.handler = async (event, context) => {
     // CORS handling
     if (event.httpMethod === 'OPTIONS') {
@@ -20,32 +29,20 @@ exports.handler = async (event, context) => {
     }
 
     if (event.httpMethod !== 'GET') {
-        return {
-            statusCode: 405,
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            },
-            body: JSON.stringify({ success: false, error: 'Method not allowed' })
-        };
+        return json(405, { ok: false, error: 'Method not allowed' });
     }
 
     try {
-        const area = event.queryStringParameters?.area;
-
-        const supabaseUrl = process.env.SUPABASE_URL;
-        const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-        if (!supabaseUrl || !supabaseKey) {
-            return {
-                statusCode: 500,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
-                },
-                body: JSON.stringify({ success: false, error: 'Server configuration error' })
-            };
+        if (!process.env.SUPABASE_URL) {
+            return json(500, { ok: false, error: 'Missing SUPABASE_URL' });
         }
+        if (!process.env.SUPABASE_SERVICE_ROLE_KEY && !process.env.SUPABASE_ANON_KEY) {
+            return json(500, { ok: false, error: 'Missing SUPABASE_SERVICE_ROLE_KEY or SUPABASE_ANON_KEY' });
+        }
+
+        const area = event.queryStringParameters?.area;
+        const supabaseUrl = process.env.SUPABASE_URL;
+        const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
 
         const supabase = createClient(supabaseUrl, supabaseKey);
 
@@ -61,14 +58,11 @@ exports.handler = async (event, context) => {
                 throw error;
             }
 
-            return {
-                statusCode: 200,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
-                },
-                body: JSON.stringify({ success: true, layout: layout || { area, layout_json: [] } })
-            };
+            return json(200, {
+                ok: true,
+                success: true,
+                layout: layout || { area, layout_json: [] }
+            });
         } else {
             // Get all layouts
             const { data: layouts, error } = await supabase
@@ -78,26 +72,20 @@ exports.handler = async (event, context) => {
 
             if (error) throw error;
 
-            return {
-                statusCode: 200,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
-                },
-                body: JSON.stringify({ success: true, layouts: layouts || [] })
-            };
+            return json(200, {
+                ok: true,
+                success: true,
+                layouts: layouts || []
+            });
         }
 
-    } catch (error) {
-        console.error('❌ Error getting layout:', error);
-        return {
-            statusCode: 500,
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            },
-            body: JSON.stringify({ success: false, error: error.message || 'Internal server error' })
-        };
+    } catch (err) {
+        console.error('FUNCTION ERROR:', err);
+        return json(500, {
+            ok: false,
+            error: String(err?.message || err),
+            stack: err?.stack || null
+        });
     }
 };
 
