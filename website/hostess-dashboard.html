@@ -1005,15 +1005,15 @@
             };
             
             try {
-                const response = await fetch(path, {
-                    ...opts,
-                    headers
-                });
-                
-                if (response.status === 401) {
+            const response = await fetch(path, {
+                ...opts,
+                headers
+            });
+            
+            if (response.status === 401) {
                     showToast('error', 'Session expired. Please login again.');
                     setTimeout(() => {
-                        logout();
+                logout();
                     }, 1500);
                     return null;
                 }
@@ -1028,10 +1028,10 @@
                 if (!contentType || !contentType.includes('application/json')) {
                     const text = await response.text();
                     console.error(`Non-JSON response from ${path}:`, text.substring(0, 200));
-                    return null;
-                }
-                
-                return response;
+                return null;
+            }
+            
+            return response;
             } catch (error) {
                 console.error(`Fetch error for ${path}:`, error);
                 return null;
@@ -1234,11 +1234,30 @@
 
         // Table Action Handlers (called from side panel buttons)
         async function handleFreeTable() {
-            if (!selectedTableId) return;
+            // Validate state - use in-memory state, not fragile DOM reads
+            if (!selectedTableId) {
+                showToast('error', 'Please select a table first');
+                return;
+            }
             
-            const date = document.getElementById('selectedDate').value;
-            const time = document.getElementById('selectedTime').value;
-            const area = document.getElementById('selectedArea').value;
+            const dateEl = document.getElementById('selectedDate');
+            const timeEl = document.getElementById('selectedTime');
+            
+            if (!dateEl || !timeEl) {
+                showToast('error', 'Date or time selector not found. Please refresh the page.');
+                return;
+            }
+            
+            const date = dateEl.value;
+            const time = timeEl.value;
+            
+            if (!date || !time) {
+                showToast('error', 'Please select a date and time first');
+                return;
+            }
+            
+            // Use currentArea variable (in-memory state), not DOM
+            const area = currentArea || 'Main Floor';
             
             openConfirm({
                 title: 'Free Table',
@@ -1256,27 +1275,47 @@
                             })
                         });
                         
-                        if (!res) return;
+                        if (!res) {
+                            showToast('error', 'Failed to connect to server');
+                            return;
+                        }
                         
                         const data = await res.json();
                         if (data.ok || data.success) {
-                            showToast('success', `Table freed: ${data.deletedCount || 0} assignment(s) released`);
+                            showToast('success', `Table freed ✅ ${data.deletedCount || 0} assignment(s) released`);
                             await refreshAfterAction();
                         } else {
                             showToast('error', data.error || 'Failed to free table');
                         }
                     } catch (error) {
-                        showToast('error', `Error: ${error.message}`);
+                        console.error('Free table error:', error);
+                        showToast('error', `Error: ${error.message || 'Unknown error'}`);
                     }
                 }
             });
         }
 
         async function handleAssignReservation() {
-            if (!selectedTableId) return;
+            if (!selectedTableId) {
+                showToast('error', 'Please select a table first');
+                return;
+            }
             
-            const date = document.getElementById('selectedDate').value;
-            const time = document.getElementById('selectedTime').value;
+            const dateEl = document.getElementById('selectedDate');
+            const timeEl = document.getElementById('selectedTime');
+            
+            if (!dateEl || !timeEl) {
+                showToast('error', 'Date or time selector not found. Please refresh the page.');
+                return;
+            }
+            
+            const date = dateEl.value;
+            const time = timeEl.value;
+            
+            if (!date || !time) {
+                showToast('error', 'Please select a date and time first');
+                return;
+            }
             
             // Find unassigned reservations for this time
             const unassigned = reservations.filter(r => {
@@ -1323,7 +1362,10 @@
                         })
                     });
                     
-                    if (!res) return;
+                    if (!res) {
+                        showToast('error', 'Failed to connect to server');
+                        return;
+                    }
                     
                     const data = await res.json();
                     if (data.success) {
@@ -1334,16 +1376,33 @@
                         showToast('error', data.error || 'Failed to assign reservation');
                     }
                 } catch (error) {
-                    showToast('error', `Error: ${error.message}`);
+                    console.error('Assign reservation error:', error);
+                    showToast('error', `Error: ${error.message || 'Unknown error'}`);
                 }
             };
         }
 
         async function handleBlockTable() {
-            if (!selectedTableId) return;
+            if (!selectedTableId) {
+                showToast('error', 'Please select a table first');
+                return;
+            }
             
-            const date = document.getElementById('selectedDate').value;
-            const time = document.getElementById('selectedTime').value;
+            const dateEl = document.getElementById('selectedDate');
+            const timeEl = document.getElementById('selectedTime');
+            
+            if (!dateEl || !timeEl) {
+                showToast('error', 'Date or time selector not found. Please refresh the page.');
+                return;
+            }
+            
+            const date = dateEl.value;
+            const time = timeEl.value;
+            
+            if (!date || !time) {
+                showToast('error', 'Please select a date and time first');
+                return;
+            }
             
             // Open modal for block reason
             const modal = document.getElementById('tableModal');
@@ -1393,10 +1452,26 @@
         }
 
         async function handleMarkUnavailable() {
-            if (!selectedTableId) return;
+            if (!selectedTableId) {
+                showToast('error', 'Please select a table first');
+                return;
+            }
             
-            const date = document.getElementById('selectedDate').value;
-            const time = document.getElementById('selectedTime').value;
+            const dateEl = document.getElementById('selectedDate');
+            const timeEl = document.getElementById('selectedTime');
+            
+            if (!dateEl || !timeEl) {
+                showToast('error', 'Date or time selector not found. Please refresh the page.');
+                return;
+            }
+            
+            const date = dateEl.value;
+            const time = timeEl.value;
+            
+            if (!date || !time) {
+                showToast('error', 'Please select a date and time first');
+                return;
+            }
             
             openConfirm({
                 title: 'Mark Unavailable',
@@ -1414,7 +1489,10 @@
                             })
                         });
                         
-                        if (!res) return;
+                        if (!res) {
+                            showToast('error', 'Failed to connect to server');
+                            return;
+                        }
                         
                         const data = await res.json();
                         if (data.success) {
@@ -1424,18 +1502,37 @@
                             showToast('error', data.error || 'Failed to mark table unavailable');
                         }
                     } catch (error) {
-                        showToast('error', `Error: ${error.message}`);
+                        console.error('Mark unavailable error:', error);
+                        showToast('error', `Error: ${error.message || 'Unknown error'}`);
                     }
                 }
             });
         }
 
         async function handleSetAvailable() {
-            if (!selectedTableId) return;
+            if (!selectedTableId) {
+                showToast('error', 'Please select a table first');
+                return;
+            }
             
-            const date = document.getElementById('selectedDate').value;
-            const time = document.getElementById('selectedTime').value;
-            const area = document.getElementById('selectedArea').value;
+            const dateEl = document.getElementById('selectedDate');
+            const timeEl = document.getElementById('selectedTime');
+            
+            if (!dateEl || !timeEl) {
+                showToast('error', 'Date or time selector not found. Please refresh the page.');
+                return;
+            }
+            
+            const date = dateEl.value;
+            const time = timeEl.value;
+            
+            if (!date || !time) {
+                showToast('error', 'Please select a date and time first');
+                return;
+            }
+            
+            // Use currentArea variable (in-memory state), not DOM
+            const area = currentArea || 'Main Floor';
             
             openConfirm({
                 title: 'Set Available',
@@ -1454,17 +1551,21 @@
                             })
                         });
                         
-                        if (!res) return;
+                        if (!res) {
+                            showToast('error', 'Failed to connect to server');
+                            return;
+                        }
                         
                         const data = await res.json();
                         if (data.ok || data.success) {
-                            showToast('success', `Table set to available: ${data.deletedCount || 0} assignment(s) released`);
+                            showToast('success', `Table set to available ✅ ${data.deletedCount || 0} assignment(s) released`);
                             await refreshAfterAction();
                         } else {
                             showToast('error', data.error || 'Failed to set table available');
                         }
                     } catch (error) {
-                        showToast('error', `Error: ${error.message}`);
+                        console.error('Set available error:', error);
+                        showToast('error', `Error: ${error.message || 'Unknown error'}`);
                     }
                 }
             });
@@ -1754,7 +1855,7 @@
                         <div class="reservation-item" style="cursor: pointer;" onclick="openReservationModal('${res.id}')">
                             <div style="display: flex; justify-content: space-between; align-items: start;">
                                 <div style="flex: 1;">
-                                    <div class="reservation-name">${res.name || res.full_name || 'Guest'}</div>
+                            <div class="reservation-name">${res.name || res.full_name || 'Guest'}</div>
                                     <div class="reservation-details">
                                         <span>${res.party_size} guests</span>
                                         <span>•</span>
@@ -1771,20 +1872,20 @@
             }
             
             if (time) {
-                html += '<h3 style="margin-top: 2rem; margin-bottom: 1rem; font-size: 1.1rem;">Blocks</h3>';
-                
-                if (blocks.length === 0) {
-                    html += '<div class="loading">No blocks for this time slot</div>';
-                } else {
-                    blocks.forEach(block => {
-                        const table = allTables.find(t => t.id === block.table_id);
-                        html += `
-                            <div class="block-item">
-                                <div class="reservation-name">${table?.name || `Table ${block.table_number}`}</div>
-                                <div class="reservation-details">${block.status} • ${block.notes || 'No notes'}</div>
-                            </div>
-                        `;
-                    });
+            html += '<h3 style="margin-top: 2rem; margin-bottom: 1rem; font-size: 1.1rem;">Blocks</h3>';
+            
+            if (blocks.length === 0) {
+                html += '<div class="loading">No blocks for this time slot</div>';
+            } else {
+                blocks.forEach(block => {
+                    const table = allTables.find(t => t.id === block.table_id);
+                    html += `
+                        <div class="block-item">
+                            <div class="reservation-name">${table?.name || `Table ${block.table_number}`}</div>
+                            <div class="reservation-details">${block.status} • ${block.notes || 'No notes'}</div>
+                        </div>
+                    `;
+                });
                 }
             }
             
@@ -1907,10 +2008,31 @@
         }
 
         async function executeTableAction() {
-            const action = document.getElementById('tableAction').value;
-            const date = document.getElementById('selectedDate').value;
-            const time = document.getElementById('selectedTime').value;
-            const area = document.getElementById('selectedArea').value;
+            const actionEl = document.getElementById('tableAction');
+            if (!actionEl) {
+                showToast('error', 'Action selector not found');
+                return;
+            }
+            
+            const action = actionEl.value;
+            const dateEl = document.getElementById('selectedDate');
+            const timeEl = document.getElementById('selectedTime');
+            
+            if (!dateEl || !timeEl) {
+                showToast('error', 'Date or time selector not found');
+                return;
+            }
+            
+            const date = dateEl.value;
+            const time = timeEl.value;
+            
+            if (!date || !time) {
+                showToast('error', 'Please select a date and time first');
+                return;
+            }
+            
+            // Use currentArea variable (in-memory state), not DOM
+            const area = currentArea || 'Main Floor';
             
             try {
                 if (action === 'free') {
@@ -1925,11 +2047,14 @@
                         })
                     });
                     
-                    if (!res) return;
+                    if (!res) {
+                        showToast('error', 'Failed to connect to server');
+                        return;
+                    }
                     
                     const data = await res.json();
                     if (data.ok || data.success) {
-                        showToast('success', `Table freed: ${data.deletedCount || 0} assignment(s) released`);
+                        showToast('success', `Table freed ✅ ${data.deletedCount || 0} assignment(s) released`);
                         closeModal();
                         await refreshAfterAction();
                     } else {
@@ -1948,7 +2073,10 @@
                         body: JSON.stringify({ id: assignment.id })
                     });
                     
-                    if (!res) return;
+                    if (!res) {
+                        showToast('error', 'Failed to connect to server');
+                        return;
+                    }
                     
                     const data = await res.json();
                     if (data.success) {
@@ -1956,7 +2084,7 @@
                         closeModal();
                         await refreshAfterAction();
                     } else {
-                        showToast('error', `Error: ${data.error}`);
+                        showToast('error', data.error || 'Failed to release table');
                     }
                 } else {
                     let payload = {
@@ -1967,12 +2095,17 @@
                     };
                     
                     if (action === 'assign') {
-                        const reservationId = document.getElementById('reservationSelect').value;
-                        payload.reservation_id = reservationId;
+                        const reservationSelect = document.getElementById('reservationSelect');
+                        if (!reservationSelect) {
+                            showToast('error', 'Reservation selector not found');
+                            return;
+                        }
+                        payload.reservation_id = reservationSelect.value;
                     }
                     
                     if (action === 'block') {
-                        payload.notes = document.getElementById('blockReason').value || 'OpenTable';
+                        const blockReason = document.getElementById('blockReason');
+                        payload.notes = blockReason ? blockReason.value || 'OpenTable' : 'OpenTable';
                     }
                     
                     const res = await api('/.netlify/functions/set-assignment', {
@@ -1980,7 +2113,10 @@
                         body: JSON.stringify(payload)
                     });
                     
-                    if (!res) return;
+                    if (!res) {
+                        showToast('error', 'Failed to connect to server');
+                        return;
+                    }
                     
                     const data = await res.json();
                     if (data.success) {
@@ -1988,11 +2124,12 @@
                         closeModal();
                         await refreshAfterAction();
                     } else {
-                        showToast('error', `Error: ${data.error}`);
+                        showToast('error', data.error || 'Failed to complete action');
                     }
                 }
             } catch (error) {
-                showToast('error', `Error: ${error.message}`);
+                console.error('Execute table action error:', error);
+                showToast('error', `Error: ${error.message || 'Unknown error'}`);
             }
         }
 
