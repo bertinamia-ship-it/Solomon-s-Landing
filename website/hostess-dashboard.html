@@ -868,6 +868,12 @@
                             <div class="table-info-value" id="tableInfoCode" style="font-family: monospace; font-size: 0.9rem;">—</div>
                         </div>
                     </div>
+                    <div id="tableInfoActions" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px solid #e2e8f0;">
+                        <div style="font-weight: 600; color: #374151; margin-bottom: 1rem; font-size: 0.95rem;">Actions</div>
+                        <div id="tableActionButtons" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                            <!-- Action buttons will be inserted here -->
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -881,13 +887,14 @@
         </div>
     </div>
 
-    <!-- Table Action Modal -->
+    <!-- Table Action Modal (for assign/block actions) -->
     <div id="tableModal" class="modal">
         <div class="modal-content">
             <h3 id="modalTitle">Table Actions</h3>
             <div id="modalBody"></div>
             <div class="modal-actions">
                 <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn-primary" id="tableModalActionBtn" onclick="executeTableModalAction()" style="display: none;">Confirm</button>
             </div>
         </div>
     </div>
@@ -1146,12 +1153,15 @@
             const statusEl = document.getElementById('tableInfoStatus');
             const reservationEl = document.getElementById('tableInfoReservation');
             const codeEl = document.getElementById('tableInfoCode');
+            const actionButtonsEl = document.getElementById('tableActionButtons');
+            
+            selectedTableId = table.id;
             
             title.textContent = table.name || `Table ${table.table_number}`;
             nameEl.textContent = table.name || `Table ${table.table_number}`;
             seatsEl.textContent = `${table.seats} seats`;
             
-            statusEl.textContent = status;
+            statusEl.textContent = status.charAt(0).toUpperCase() + status.slice(1);
             statusEl.className = `table-info-status ${status}`;
             
             if (assignment && assignment.reservation_id) {
@@ -1168,6 +1178,44 @@
                 codeEl.textContent = '—';
             }
             
+            // Show action buttons based on status
+            const date = document.getElementById('selectedDate').value;
+            const time = document.getElementById('selectedTime').value;
+            let actionButtonsHtml = '';
+            
+            if (status === 'reserved') {
+                // Reserved: Show "Free Table" button
+                actionButtonsHtml = `
+                    <button class="btn-primary" onclick="handleFreeTable()" style="width: 100%; padding: 0.75rem; font-weight: 600;">
+                        🔓 Free Table
+                    </button>
+                    <button class="btn-secondary" onclick="handleAssignReservation()" style="width: 100%; padding: 0.75rem; font-weight: 600;">
+                        🔄 Reassign
+                    </button>
+                `;
+            } else if (status === 'available') {
+                // Available: Show "Block" and "Mark Unavailable" buttons
+                actionButtonsHtml = `
+                    <button class="btn-primary" onclick="handleAssignReservation()" style="width: 100%; padding: 0.75rem; font-weight: 600;">
+                        ✅ Assign Reservation
+                    </button>
+                    <button class="btn-secondary" onclick="handleBlockTable()" style="width: 100%; padding: 0.75rem; font-weight: 600;">
+                        🚫 Block 90 min
+                    </button>
+                    <button class="btn-secondary" onclick="handleMarkUnavailable()" style="width: 100%; padding: 0.75rem; font-weight: 600;">
+                        ⚠️ Mark Unavailable
+                    </button>
+                `;
+            } else if (status === 'blocked' || status === 'unavailable') {
+                // Blocked/Unavailable: Show "Set Available" button
+                actionButtonsHtml = `
+                    <button class="btn-primary" onclick="handleSetAvailable()" style="width: 100%; padding: 0.75rem; font-weight: 600;">
+                        ✅ Set Available
+                    </button>
+                `;
+            }
+            
+            actionButtonsEl.innerHTML = actionButtonsHtml;
             panel.classList.add('active');
             
             // Close panel when clicking outside
@@ -1176,11 +1224,262 @@
                     if (!panel.contains(e.target) && !tableNode?.contains(e.target)) {
                         panel.classList.remove('active');
                         tableNode?.classList.remove('selected');
+                        selectedTableId = null;
                         document.removeEventListener('click', closeOnOutsideClick);
                     }
                 };
                 document.addEventListener('click', closeOnOutsideClick);
             }, 100);
+        }
+
+        // Table Action Handlers (called from side panel buttons)
+        async function handleFreeTable() {
+            if (!selectedTableId) return;
+            
+            const date = document.getElementById('selectedDate').value;
+            const time = document.getElementById('selectedTime').value;
+            const area = document.getElementById('selectedArea').value;
+            
+            openConfirm({
+                title: 'Free Table',
+                body: `Free this table? This will release all 3 time slots (${time}, ${add30Minutes(time)}, ${add60Minutes(time)}).`,
+                confirmText: 'Free Table',
+                onConfirm: async () => {
+                    try {
+                        const res = await api('/.netlify/functions/release-table', {
+                            method: 'POST',
+                            body: JSON.stringify({
+                                date: date,
+                                time: time,
+                                table_id: selectedTableId,
+                                area: area
+                            })
+                        });
+                        
+                        if (!res) return;
+                        
+                        const data = await res.json();
+                        if (data.ok || data.success) {
+                            showToast('success', `Table freed: ${data.deletedCount || 0} assignment(s) released`);
+                            await refreshAfterAction();
+                        } else {
+                            showToast('error', data.error || 'Failed to free table');
+                        }
+                    } catch (error) {
+                        showToast('error', `Error: ${error.message}`);
+                    }
+                }
+            });
+        }
+
+        async function handleAssignReservation() {
+            if (!selectedTableId) return;
+            
+            const date = document.getElementById('selectedDate').value;
+            const time = document.getElementById('selectedTime').value;
+            
+            // Find unassigned reservations for this time
+            const unassigned = reservations.filter(r => {
+                if (r.time !== time || r.date !== date) return false;
+                return !assignments.some(a => a.reservation_id === r.id && a.table_id === selectedTableId);
+            });
+            
+            if (unassigned.length === 0) {
+                showToast('info', 'No unassigned reservations for this time slot');
+                return;
+            }
+            
+            // Open modal to select reservation
+            const modal = document.getElementById('tableModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+            
+            modalTitle.textContent = 'Assign Reservation';
+            modalBody.innerHTML = `
+                <div class="form-group">
+                    <label>Select Reservation:</label>
+                    <select id="reservationSelect" style="width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem;">
+                        ${unassigned.map(r => `<option value="${r.id}">${r.name || r.full_name || 'Guest'} - ${r.party_size} guests</option>`).join('')}
+                    </select>
+                </div>
+            `;
+            document.getElementById('tableModalActionBtn').style.display = 'block';
+            document.getElementById('tableModalActionBtn').textContent = 'Assign';
+            modal.classList.add('active');
+            
+            // Store action handler
+            window.executeAssignAction = async () => {
+                const reservationId = document.getElementById('reservationSelect').value;
+                
+                try {
+                    const res = await api('/.netlify/functions/set-assignment', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            table_id: selectedTableId,
+                            reservation_id: reservationId,
+                            date: date,
+                            time: time,
+                            status: 'reserved'
+                        })
+                    });
+                    
+                    if (!res) return;
+                    
+                    const data = await res.json();
+                    if (data.success) {
+                        showToast('success', 'Reservation assigned successfully');
+                        closeModal();
+                        await refreshAfterAction();
+                    } else {
+                        showToast('error', data.error || 'Failed to assign reservation');
+                    }
+                } catch (error) {
+                    showToast('error', `Error: ${error.message}`);
+                }
+            };
+        }
+
+        async function handleBlockTable() {
+            if (!selectedTableId) return;
+            
+            const date = document.getElementById('selectedDate').value;
+            const time = document.getElementById('selectedTime').value;
+            
+            // Open modal for block reason
+            const modal = document.getElementById('tableModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+            
+            modalTitle.textContent = 'Block Table';
+            modalBody.innerHTML = `
+                <div class="form-group">
+                    <label>Reason (default: OpenTable):</label>
+                    <input type="text" id="blockReason" value="OpenTable" placeholder="OpenTable" style="width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem;">
+                </div>
+            `;
+            document.getElementById('tableModalActionBtn').style.display = 'block';
+            document.getElementById('tableModalActionBtn').textContent = 'Block Table';
+            modal.classList.add('active');
+            
+            window.executeBlockAction = async () => {
+                const reason = document.getElementById('blockReason').value || 'OpenTable';
+                
+                try {
+                    const res = await api('/.netlify/functions/set-assignment', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            table_id: selectedTableId,
+                            date: date,
+                            time: time,
+                            status: 'blocked',
+                            notes: reason
+                        })
+                    });
+                    
+                    if (!res) return;
+                    
+                    const data = await res.json();
+                    if (data.success) {
+                        showToast('success', 'Table blocked successfully');
+                        closeModal();
+                        await refreshAfterAction();
+                    } else {
+                        showToast('error', data.error || 'Failed to block table');
+                    }
+                } catch (error) {
+                    showToast('error', `Error: ${error.message}`);
+                }
+            };
+        }
+
+        async function handleMarkUnavailable() {
+            if (!selectedTableId) return;
+            
+            const date = document.getElementById('selectedDate').value;
+            const time = document.getElementById('selectedTime').value;
+            
+            openConfirm({
+                title: 'Mark Unavailable',
+                body: 'Mark this table as unavailable for this time slot?',
+                confirmText: 'Mark Unavailable',
+                onConfirm: async () => {
+                    try {
+                        const res = await api('/.netlify/functions/set-assignment', {
+                            method: 'POST',
+                            body: JSON.stringify({
+                                table_id: selectedTableId,
+                                date: date,
+                                time: time,
+                                status: 'unavailable'
+                            })
+                        });
+                        
+                        if (!res) return;
+                        
+                        const data = await res.json();
+                        if (data.success) {
+                            showToast('success', 'Table marked as unavailable');
+                            await refreshAfterAction();
+                        } else {
+                            showToast('error', data.error || 'Failed to mark table unavailable');
+                        }
+                    } catch (error) {
+                        showToast('error', `Error: ${error.message}`);
+                    }
+                }
+            });
+        }
+
+        async function handleSetAvailable() {
+            if (!selectedTableId) return;
+            
+            const date = document.getElementById('selectedDate').value;
+            const time = document.getElementById('selectedTime').value;
+            const area = document.getElementById('selectedArea').value;
+            
+            openConfirm({
+                title: 'Set Available',
+                body: 'Release this table and set it as available?',
+                confirmText: 'Set Available',
+                onConfirm: async () => {
+                    try {
+                        // Release all assignments for this table at this time (3 slots)
+                        const res = await api('/.netlify/functions/release-table', {
+                            method: 'POST',
+                            body: JSON.stringify({
+                                date: date,
+                                time: time,
+                                table_id: selectedTableId,
+                                area: area
+                            })
+                        });
+                        
+                        if (!res) return;
+                        
+                        const data = await res.json();
+                        if (data.ok || data.success) {
+                            showToast('success', `Table set to available: ${data.deletedCount || 0} assignment(s) released`);
+                            await refreshAfterAction();
+                        } else {
+                            showToast('error', data.error || 'Failed to set table available');
+                        }
+                    } catch (error) {
+                        showToast('error', `Error: ${error.message}`);
+                    }
+                }
+            });
+        }
+
+        async function refreshAfterAction() {
+            // Refresh everything after an action
+            await loadFloorPlan();
+            
+            // Close table info panel
+            document.getElementById('tableInfoPanel').classList.remove('active');
+            document.querySelectorAll('.table-node').forEach(node => {
+                node.classList.remove('selected');
+            });
+            selectedTableId = null;
         }
 
         async function loadFloorPlan() {
@@ -1632,8 +1931,7 @@
                     if (data.ok || data.success) {
                         showToast('success', `Table freed: ${data.deletedCount || 0} assignment(s) released`);
                         closeModal();
-                        await loadAssignments();
-                        renderFloorPlan();
+                        await refreshAfterAction();
                     } else {
                         showToast('error', data.error || 'Failed to free table');
                     }
@@ -1656,7 +1954,7 @@
                     if (data.success) {
                         showToast('success', 'Table released successfully');
                         closeModal();
-                        loadFloorPlan();
+                        await refreshAfterAction();
                     } else {
                         showToast('error', `Error: ${data.error}`);
                     }
@@ -1688,7 +1986,7 @@
                     if (data.success) {
                         showToast('success', 'Action completed successfully');
                         closeModal();
-                        loadFloorPlan();
+                        await refreshAfterAction();
                     } else {
                         showToast('error', `Error: ${data.error}`);
                     }
@@ -1700,13 +1998,25 @@
 
         function closeModal() {
             document.getElementById('tableModal').classList.remove('active');
+            document.getElementById('tableModalActionBtn').style.display = 'none';
             selectedTableId = null;
+            // Clear action handlers
+            window.executeAssignAction = null;
+            window.executeBlockAction = null;
         }
 
         // Close modal on outside click
         document.getElementById('tableModal').addEventListener('click', (e) => {
             if (e.target.id === 'tableModal') closeModal();
         });
+        
+        function executeTableModalAction() {
+            if (window.executeAssignAction) {
+                window.executeAssignAction();
+            } else if (window.executeBlockAction) {
+                window.executeBlockAction();
+            }
+        }
         document.getElementById('reservationModal').addEventListener('click', (e) => {
             if (e.target.id === 'reservationModal') closeReservationModal();
         });
@@ -1840,7 +2150,7 @@
                 if (data.success) {
                     showToast('success', 'Reservation updated successfully');
                     closeReservationModal();
-                    loadFloorPlan();
+                    await refreshAfterAction();
                 } else {
                     showToast('error', `Error: ${data.error}`);
                 }
@@ -1874,9 +2184,7 @@
                             showToast('success', `Reservation cancelled. ${releasedCount} table assignment(s) released.`);
                             closeReservationModal();
                             // Refresh everything
-                            await loadAssignments();
-                            renderFloorPlan();
-                            renderReservationsList();
+                            await refreshAfterAction();
                         } else {
                             showToast('error', data.error || 'Failed to cancel reservation');
                         }
@@ -1945,7 +2253,7 @@
                 if (data.success) {
                     showToast('success', 'Reservation created successfully');
                     closeQuickAddModal();
-                    loadFloorPlan();
+                    await refreshAfterAction();
                 } else {
                     showToast('error', `Error: ${data.error}`);
                 }
