@@ -9,8 +9,9 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f5f5;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
             color: #1e293b;
+            min-height: 100vh;
         }
         .dashboard-container {
             max-width: 1800px;
@@ -20,12 +21,13 @@
         .dashboard-header {
             background: white;
             padding: 1.5rem 2rem;
-            border-radius: 12px;
+            border-radius: 16px;
             margin-bottom: 2rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border: 1px solid rgba(0,74,159,0.1);
         }
         .dashboard-header .logo-section {
             display: flex;
@@ -33,14 +35,16 @@
             gap: 1rem;
         }
         .dashboard-header .logo-section img {
-            height: 40px;
+            height: 36px;
             width: auto;
+            opacity: 0.9;
         }
         .dashboard-header h1 {
             color: #004A9F;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             margin: 0;
-            font-weight: 600;
+            font-weight: 700;
+            letter-spacing: -0.02em;
         }
         .btn-logout {
             padding: 0.75rem 1.5rem;
@@ -106,9 +110,10 @@
         }
         .section {
             background: white;
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 2rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
         }
         .section h2 {
             margin-top: 0;
@@ -277,19 +282,54 @@
         }
         .reservation-item,
         .block-item {
-            padding: 1rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
+            padding: 1.25rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
             margin-bottom: 1rem;
+            background: white;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .reservation-item:hover {
+            border-color: #004A9F;
+            box-shadow: 0 4px 12px rgba(0,74,159,0.1);
+            transform: translateY(-1px);
         }
         .reservation-name {
-            font-weight: 600;
+            font-weight: 700;
             color: #1e293b;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.5rem;
+            font-size: 1.05rem;
         }
         .reservation-details {
             font-size: 0.9rem;
             color: #6b7280;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+        .status-pill.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .status-pill.confirmed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .status-pill.cancelled {
+            background: #fee2e2;
+            color: #991b1b;
         }
         .reservation-table {
             margin-top: 0.5rem;
@@ -304,10 +344,16 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
             z-index: 1000;
             align-items: center;
             justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         .modal.active {
             display: flex;
@@ -315,11 +361,23 @@
         .modal-content {
             background: white;
             padding: 2rem;
-            border-radius: 12px;
+            border-radius: 16px;
             max-width: 500px;
             width: 90%;
             max-height: 80vh;
             overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         .modal-content h3 {
             margin-top: 0;
@@ -392,6 +450,137 @@
         .message.error {
             background: #fee2e2;
             color: #991b1b;
+        }
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            max-width: 400px;
+        }
+        .toast {
+            background: white;
+            padding: 1rem 1.25rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            animation: slideInRight 0.3s ease;
+            border-left: 4px solid;
+            min-width: 300px;
+        }
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        .toast.success {
+            border-left-color: #10b981;
+        }
+        .toast.error {
+            border-left-color: #ef4444;
+        }
+        .toast.info {
+            border-left-color: #3b82f6;
+        }
+        .toast-icon {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        .toast.success .toast-icon { color: #10b981; }
+        .toast.error .toast-icon { color: #ef4444; }
+        .toast.info .toast-icon { color: #3b82f6; }
+        .toast-message {
+            flex: 1;
+            font-weight: 500;
+            color: #1e293b;
+        }
+        .toast-close {
+            background: none;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            font-size: 1.25rem;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+        .toast-close:hover {
+            background: #f3f4f6;
+            color: #1e293b;
+        }
+        /* Confirmation Modal */
+        .confirm-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+        .confirm-modal.active {
+            display: flex;
+        }
+        .confirm-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s ease;
+        }
+        .confirm-content h3 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: #1e293b;
+            font-size: 1.25rem;
+        }
+        .confirm-content p {
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        .confirm-actions {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+        .btn-danger {
+            padding: 0.75rem 1.5rem;
+            background: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        .btn-danger:hover { background: #b91c1c; }
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
         }
     </style>
 </head>
@@ -491,10 +680,25 @@
         </div>
     </div>
 
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="confirm-modal">
+        <div class="confirm-content">
+            <h3 id="confirmTitle">Confirm Action</h3>
+            <p id="confirmBody">Are you sure you want to proceed?</p>
+            <div class="confirm-actions">
+                <button class="btn-secondary" id="confirmCancel">Cancel</button>
+                <button class="btn-danger" id="confirmOk">Confirm</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Quick Add Reservation Modal -->
     <div id="quickAddModal" class="modal">
-        <div class="modal-content" style="max-width: 500px;">
-            <h3>Quick Add Reservation</h3>
+        <div class="modal-content" style="max-width: 550px;">
+            <h3 style="margin-bottom: 1.5rem; color: #004A9F;">Quick Add Reservation</h3>
             <div id="quickAddModalBody">
                 <div class="form-group">
                     <label>Name *</label>
@@ -544,9 +748,9 @@
                     <textarea id="quickAddNotes" rows="3"></textarea>
                 </div>
             </div>
-            <div class="modal-actions">
+            <div class="modal-actions" style="margin-top: 1.5rem;">
                 <button class="btn-secondary" onclick="closeQuickAddModal()">Cancel</button>
-                <button class="btn-primary" onclick="saveQuickAddReservation()">Create Reservation</button>
+                <button class="btn-primary" onclick="saveQuickAddReservation()">Save Reservation</button>
             </div>
         </div>
     </div>
@@ -575,8 +779,10 @@
                 });
                 
                 if (response.status === 401) {
-                    alert('Session expired. Please login again.');
-                    logout();
+                    showToast('error', 'Session expired. Please login again.');
+                    setTimeout(() => {
+                        logout();
+                    }, 1500);
                     return null;
                 }
                 
@@ -614,6 +820,66 @@
         let assignments = [];
         let reservations = [];
         let selectedTableId = null;
+
+        // Toast Notification System
+        function showToast(type, message) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icons = {
+                success: '✓',
+                error: '✕',
+                info: 'ℹ'
+            };
+            
+            toast.innerHTML = `
+                <span class="toast-icon">${icons[type] || 'ℹ'}</span>
+                <span class="toast-message">${message}</span>
+                <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+            `;
+            
+            container.appendChild(toast);
+            
+            // Auto-remove after 4 seconds
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.style.animation = 'slideInRight 0.3s ease reverse';
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }, 4000);
+        }
+
+        // Confirmation Modal System
+        function openConfirm({title, body, confirmText = 'Confirm', onConfirm}) {
+            const modal = document.getElementById('confirmModal');
+            const titleEl = document.getElementById('confirmTitle');
+            const bodyEl = document.getElementById('confirmBody');
+            const okBtn = document.getElementById('confirmOk');
+            const cancelBtn = document.getElementById('confirmCancel');
+            
+            titleEl.textContent = title;
+            bodyEl.textContent = body;
+            okBtn.textContent = confirmText;
+            
+            modal.classList.add('active');
+            
+            const handleConfirm = () => {
+                modal.classList.remove('active');
+                okBtn.removeEventListener('click', handleConfirm);
+                cancelBtn.removeEventListener('click', handleCancel);
+                if (onConfirm) onConfirm();
+            };
+            
+            const handleCancel = () => {
+                modal.classList.remove('active');
+                okBtn.removeEventListener('click', handleConfirm);
+                cancelBtn.removeEventListener('click', handleCancel);
+            };
+            
+            okBtn.onclick = handleConfirm;
+            cancelBtn.onclick = handleCancel;
+        }
 
         // Initialize
         const today = new Date().toISOString().split('T')[0];
@@ -884,14 +1150,14 @@
             const timeAssignments = assignments.filter(a => a.time === time);
             const blocks = timeAssignments.filter(a => a.status === 'blocked' || a.status === 'unavailable');
             
-            let html = '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;"><h3 style="margin: 0; font-size: 1.1rem;">Reservations</h3><button class="btn-primary btn-small" onclick="openQuickAddModal()" style="padding: 0.5rem 1rem; font-size: 0.9rem;">+ Quick Add</button></div>';
+            let html = '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;"><h3 style="margin: 0; font-size: 1.2rem; color: #1e293b;">Reservations</h3><button class="btn-primary btn-small" onclick="openQuickAddModal()" style="padding: 0.6rem 1.25rem; font-size: 0.9rem; border-radius: 8px;">+ Quick Add</button></div>';
             
             if (timeReservations.length === 0) {
                 html += '<div class="loading">No reservations for this ' + (time ? 'time slot' : 'date') + '</div>';
             } else {
                 timeReservations.forEach(res => {
                     const resAssignments = assignments.filter(a => a.reservation_id === res.id);
-                    const statusColor = res.status === 'confirmed' ? '#10b981' : res.status === 'pending' ? '#f59e0b' : '#6b7280';
+                    const statusClass = res.status === 'confirmed' ? 'confirmed' : res.status === 'pending' ? 'pending' : 'cancelled';
                     const statusText = res.status.charAt(0).toUpperCase() + res.status.slice(1);
                     
                     html += `
@@ -899,9 +1165,14 @@
                             <div style="display: flex; justify-content: space-between; align-items: start;">
                                 <div style="flex: 1;">
                                     <div class="reservation-name">${res.name || res.full_name || 'Guest'}</div>
-                                    <div class="reservation-details">${res.party_size} guests • ${res.time} • <span style="color: ${statusColor}; font-weight: 600;">${statusText}</span></div>
+                                    <div class="reservation-details">
+                                        <span>${res.party_size} guests</span>
+                                        <span>•</span>
+                                        <span>${res.time}</span>
+                                        <span class="status-pill ${statusClass}">${statusText}</span>
+                                    </div>
                                     ${resAssignments.length > 0 ? `<div class="reservation-table">Tables: ${resAssignments.map(a => a.table_name || a.table_number || 'N/A').join(', ')}</div>` : '<div class="reservation-table" style="color: #dc2626;">No table assigned</div>'}
-                                    ${res.confirmation_code ? `<div style="font-size: 0.85rem; color: #6b7280; margin-top: 0.25rem;">Code: ${res.confirmation_code}</div>` : ''}
+                                    ${res.confirmation_code ? `<div style="font-size: 0.85rem; color: #6b7280; margin-top: 0.5rem; font-weight: 500;">Code: <span style="font-family: monospace; background: #f3f4f6; padding: 0.15rem 0.5rem; border-radius: 4px;">${res.confirmation_code}</span></div>` : ''}
                                 </div>
                             </div>
                         </div>
@@ -1024,7 +1295,7 @@
                 if (action === 'release') {
                     const assignment = assignments.find(a => a.table_id === selectedTableId && a.time === time);
                     if (!assignment) {
-                        alert('No assignment found to release');
+                        showToast('error', 'No assignment found to release');
                         return;
                     }
                     
@@ -1037,11 +1308,11 @@
                     
                     const data = await res.json();
                     if (data.success) {
-                        alert('Table released successfully');
+                        showToast('success', 'Table released successfully');
                         closeModal();
                         loadFloorPlan();
                     } else {
-                        alert(`Error: ${data.error}`);
+                        showToast('error', `Error: ${data.error}`);
                     }
                 } else {
                     let payload = {
@@ -1069,15 +1340,15 @@
                     
                     const data = await res.json();
                     if (data.success) {
-                        alert('Action completed successfully');
+                        showToast('success', 'Action completed successfully');
                         closeModal();
                         loadFloorPlan();
                     } else {
-                        alert(`Error: ${data.error}`);
+                        showToast('error', `Error: ${data.error}`);
                     }
                 }
             } catch (error) {
-                alert(`Error: ${error.message}`);
+                showToast('error', `Error: ${error.message}`);
             }
         }
 
@@ -1101,7 +1372,7 @@
         async function openReservationModal(reservationId) {
             const reservation = reservations.find(r => r.id === reservationId);
             if (!reservation) {
-                alert('Reservation not found');
+                showToast('error', 'Reservation not found');
                 return;
             }
 
@@ -1221,14 +1492,14 @@
 
                 const data = await res.json();
                 if (data.success) {
-                    alert('Reservation updated successfully');
+                    showToast('success', 'Reservation updated successfully');
                     closeReservationModal();
                     loadFloorPlan();
                 } else {
-                    alert(`Error: ${data.error}`);
+                    showToast('error', `Error: ${data.error}`);
                 }
             } catch (error) {
-                alert(`Error: ${error.message}`);
+                showToast('error', `Error: ${error.message}`);
             }
         }
 
@@ -1238,27 +1509,32 @@
             
             if (!reservationId) return;
             
-            if (!confirm('Are you sure you want to cancel this reservation? This will release all table assignments.')) return;
+            openConfirm({
+                title: 'Cancel Reservation',
+                body: 'Are you sure you want to cancel this reservation? This will release all table assignments.',
+                confirmText: 'Cancel Reservation',
+                onConfirm: async () => {
+                    try {
+                        const res = await api('/.netlify/functions/cancel-reservation', {
+                            method: 'POST',
+                            body: JSON.stringify({ id: reservationId })
+                        });
 
-            try {
-                const res = await api('/.netlify/functions/cancel-reservation', {
-                    method: 'POST',
-                    body: JSON.stringify({ id: reservationId })
-                });
+                        if (!res) return;
 
-                if (!res) return;
-
-                const data = await res.json();
-                if (data.success) {
-                    alert('Reservation cancelled successfully');
-                    closeReservationModal();
-                    loadFloorPlan();
-                } else {
-                    alert(`Error: ${data.error}`);
+                        const data = await res.json();
+                        if (data.success) {
+                            showToast('success', 'Reservation cancelled successfully');
+                            closeReservationModal();
+                            loadFloorPlan();
+                        } else {
+                            showToast('error', `Error: ${data.error}`);
+                        }
+                    } catch (error) {
+                        showToast('error', `Error: ${error.message}`);
+                    }
                 }
-            } catch (error) {
-                alert(`Error: ${error.message}`);
-            }
+            });
         }
 
         function closeReservationModal() {
@@ -1293,7 +1569,7 @@
             const notes = document.getElementById('quickAddNotes').value.trim();
 
             if (!name || !phone || !date || !time || !partySize) {
-                alert('Please fill in all required fields');
+                showToast('error', 'Please fill in all required fields');
                 return;
             }
 
@@ -1317,14 +1593,14 @@
 
                 const data = await res.json();
                 if (data.success) {
-                    alert('Reservation created successfully');
+                    showToast('success', 'Reservation created successfully');
                     closeQuickAddModal();
                     loadFloorPlan();
                 } else {
-                    alert(`Error: ${data.error}`);
+                    showToast('error', `Error: ${data.error}`);
                 }
             } catch (error) {
-                alert(`Error: ${error.message}`);
+                showToast('error', `Error: ${error.message}`);
             }
         }
 
