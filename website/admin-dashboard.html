@@ -2072,7 +2072,7 @@
         }
         
         async function confirmForceRelease() {
-            const tableId = currentTimelineTableId;
+            const tableId = document.getElementById('forceReleaseTableId')?.value || currentTimelineTableId;
             const date = document.getElementById('forceReleaseDate')?.value;
             const time = document.getElementById('forceReleaseTime')?.value;
             const area = document.getElementById('forceReleaseArea')?.value;
