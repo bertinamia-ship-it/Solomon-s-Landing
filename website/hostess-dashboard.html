@@ -1931,9 +1931,14 @@
 
         function renderFloorPlan() {
             const canvas = document.getElementById('floorPlanCanvas');
+            if (!canvas) {
+                console.error('Floor plan canvas not found');
+                return;
+            }
             canvas.innerHTML = '';
             
-            const selectedTime = document.getElementById('selectedTime').value;
+            // Use state for selected time, fallback to DOM
+            const selectedTime = state.selectedTime || (document.getElementById('selectedTime')?.value || '');
             
             // Helper to determine table status based on 3-slot system
             function getTableStatus(tableId) {
