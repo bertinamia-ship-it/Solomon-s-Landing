@@ -510,9 +510,9 @@
 
         <!-- Reservations Management Section -->
         <div class="section" style="margin-top: 2rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
                 <h2 style="margin: 0;">Reservations Management</h2>
-                <div style="display: flex; gap: 1rem; align-items: center;">
+                <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
                     <input type="date" id="adminReservationDate" onchange="loadAdminReservations()" style="padding: 0.5rem; border: 2px solid #e2e8f0; border-radius: 8px;">
                     <select id="adminReservationTime" onchange="loadAdminReservations()" style="padding: 0.5rem; border: 2px solid #e2e8f0; border-radius: 8px;">
                         <option value="">All Times</option>
@@ -537,6 +537,20 @@
             </div>
             <div id="adminReservationsList" style="max-height: 600px; overflow-y: auto;">
                 <div class="loading">Loading reservations...</div>
+            </div>
+            
+            <!-- Danger Zone -->
+            <div style="margin-top: 2rem; padding-top: 2rem; border-top: 3px solid #dc2626;">
+                <h3 style="color: #dc2626; margin-bottom: 1rem;">⚠️ Danger Zone</h3>
+                <p style="color: #6b7280; margin-bottom: 1rem; font-size: 0.9rem;">Admin-only tools for emergency fixes. Use with caution.</p>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="btn-danger" onclick="adminForceFreeTable()" style="padding: 0.75rem 1.5rem; font-weight: 600;">
+                        🔓 Force Free Table
+                    </button>
+                    <button class="btn-secondary" onclick="adminCreateBlock()" style="padding: 0.75rem 1.5rem; font-weight: 600;">
+                        🚫 Create Block
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -1384,9 +1398,474 @@
             }
         }
 
+        // ============================================
+        // RESERVATIONS MANAGEMENT (ADMIN)
+        // ============================================
+        
+        let adminReservations = [];
+        let adminAssignments = [];
+        let adminAllTables = [];
+        let currentAdminReservationId = null;
+        
+        async function loadAdminReservations() {
+            const container = document.getElementById('adminReservationsList');
+            const date = document.getElementById('adminReservationDate')?.value || new Date().toISOString().split('T')[0];
+            const time = document.getElementById('adminReservationTime')?.value || '';
+            const status = document.getElementById('adminReservationStatus')?.value || '';
+            
+            container.innerHTML = '<div class="loading">Loading reservations...</div>';
+            
+            try {
+                // Load reservations
+                const resReservations = await api(`/.netlify/functions/get-reservations?date=${date}`);
+                if (!resReservations) return;
+                
+                const dataReservations = await resReservations.json();
+                adminReservations = dataReservations.reservations || [];
+                
+                // Load assignments
+                const resAssignments = await api(`/.netlify/functions/get-table-assignments?date=${date}${time ? `&time=${time}` : ''}`);
+                if (resAssignments) {
+                    const dataAssignments = await resAssignments.json();
+                    adminAssignments = Array.isArray(dataAssignments) ? dataAssignments : [];
+                }
+                
+                // Load tables
+                const resTables = await api('/.netlify/functions/get-tables');
+                if (resTables) {
+                    const dataTables = await resTables.json();
+                    adminAllTables = dataTables.all || [];
+                }
+                
+                renderAdminReservationsList(date, time, status);
+            } catch (error) {
+                container.innerHTML = `<div class="message error">Error: ${error.message}</div>`;
+            }
+        }
+        
+        function renderAdminReservationsList(date, time, status) {
+            const container = document.getElementById('adminReservationsList');
+            
+            // Filter reservations
+            let filtered = adminReservations.filter(r => r.date === date);
+            
+            if (time) {
+                filtered = filtered.filter(r => r.time === time);
+            }
+            
+            if (status) {
+                filtered = filtered.filter(r => r.status === status);
+            }
+            
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="loading">No reservations found</div>';
+                return;
+            }
+            
+            let html = '';
+            filtered.forEach(res => {
+                const resAssignments = adminAssignments.filter(a => a.reservation_id === res.id);
+                const statusClass = res.status === 'confirmed' ? 'confirmed' : res.status === 'pending' ? 'pending' : 'cancelled';
+                const statusText = res.status.charAt(0).toUpperCase() + res.status.slice(1);
+                
+                html += `
+                    <div class="reservation-item ${statusClass}" style="cursor: pointer;" onclick="openAdminReservationModal('${res.id}')">
+                        <div class="reservation-header">
+                            <div class="reservation-name">${res.name || res.full_name || 'Guest'}</div>
+                            <span class="status-pill ${statusClass}">${statusText}</span>
+                        </div>
+                        <div class="reservation-details" style="margin-top: 0.5rem; color: #6b7280; font-size: 0.9rem;">
+                            <span>${res.party_size} guests</span>
+                            <span>•</span>
+                            <span>${res.time}</span>
+                            ${res.confirmation_code ? `<span>•</span><span style="font-family: monospace;">${res.confirmation_code}</span>` : ''}
+                        </div>
+                        ${resAssignments.length > 0 
+                            ? `<div style="margin-top: 0.5rem; color: #10b981; font-size: 0.85rem;">Tables: ${resAssignments.map(a => a.table_name || a.table_number || 'N/A').join(', ')}</div>`
+                            : '<div style="margin-top: 0.5rem; color: #dc2626; font-size: 0.85rem;">No table assigned</div>'
+                        }
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        async function openAdminReservationModal(reservationId) {
+            const reservation = adminReservations.find(r => r.id === reservationId);
+            if (!reservation) {
+                showMessage('Reservation not found', 'error');
+                return;
+            }
+            
+            currentAdminReservationId = reservationId;
+            
+            const modal = document.getElementById('adminReservationModal');
+            const modalTitle = document.getElementById('adminReservationModalTitle');
+            const modalBody = document.getElementById('adminReservationModalBody');
+            
+            // Get assigned tables
+            const assignedTables = adminAssignments
+                .filter(a => a.reservation_id === reservationId)
+                .map(a => adminAllTables.find(t => t.id === a.table_id))
+                .filter(Boolean);
+            
+            modalTitle.textContent = `Edit Reservation: ${reservation.name || reservation.full_name || 'Guest'}`;
+            
+            const html = `
+                <div class="form-group">
+                    <label>Name *</label>
+                    <input type="text" id="adminEditName" value="${(reservation.name || reservation.full_name || '').replace(/"/g, '&quot;')}" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone *</label>
+                    <input type="tel" id="adminEditPhone" value="${(reservation.phone || '').replace(/"/g, '&quot;')}" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="adminEditEmail" value="${(reservation.email || '').replace(/"/g, '&quot;')}">
+                </div>
+                <div class="form-group">
+                    <label>Date *</label>
+                    <input type="date" id="adminEditDate" value="${reservation.date}" required>
+                </div>
+                <div class="form-group">
+                    <label>Time *</label>
+                    <select id="adminEditTime" required>
+                        <option value="17:30" ${reservation.time === '17:30' ? 'selected' : ''}>5:30 PM</option>
+                        <option value="18:00" ${reservation.time === '18:00' ? 'selected' : ''}>6:00 PM</option>
+                        <option value="18:30" ${reservation.time === '18:30' ? 'selected' : ''}>6:30 PM</option>
+                        <option value="19:00" ${reservation.time === '19:00' ? 'selected' : ''}>7:00 PM</option>
+                        <option value="19:30" ${reservation.time === '19:30' ? 'selected' : ''}>7:30 PM</option>
+                        <option value="20:00" ${reservation.time === '20:00' ? 'selected' : ''}>8:00 PM</option>
+                        <option value="20:30" ${reservation.time === '20:30' ? 'selected' : ''}>8:30 PM</option>
+                        <option value="21:00" ${reservation.time === '21:00' ? 'selected' : ''}>9:00 PM</option>
+                        <option value="21:30" ${reservation.time === '21:30' ? 'selected' : ''}>9:30 PM</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Party Size *</label>
+                    <input type="number" id="adminEditPartySize" value="${reservation.party_size}" min="1" max="20" required>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="adminEditStatus">
+                        <option value="pending" ${reservation.status === 'pending' ? 'selected' : ''}>Pending</option>
+                        <option value="confirmed" ${reservation.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
+                        <option value="cancelled" ${reservation.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Assigned Tables</label>
+                    <select id="adminEditTables" multiple style="min-height: 100px;">
+                        ${adminAllTables.filter(t => t.is_active).map(table => {
+                            const isAssigned = assignedTables.some(at => at.id === table.id);
+                            return `<option value="${table.id}" ${isAssigned ? 'selected' : ''}>${table.name || `Table ${table.table_number}`} (${table.area}, ${table.seats} seats)</option>`;
+                        }).join('')}
+                    </select>
+                    <small style="color: #6b7280;">Hold Ctrl/Cmd to select multiple tables</small>
+                </div>
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea id="adminEditNotes" rows="3">${(reservation.notes || '').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</textarea>
+                </div>
+                <div class="form-group">
+                    <label>Confirmation Code</label>
+                    <input type="text" value="${reservation.confirmation_code || 'N/A'}" style="background: #f9fafb;" readonly>
+                </div>
+            `;
+            
+            modalBody.innerHTML = html;
+            modal.style.display = 'flex';
+        }
+        
+        async function adminSaveReservation() {
+            if (!currentAdminReservationId) return;
+            
+            const name = document.getElementById('adminEditName').value.trim();
+            const phone = document.getElementById('adminEditPhone').value.trim();
+            const email = document.getElementById('adminEditEmail').value.trim();
+            const date = document.getElementById('adminEditDate').value;
+            const time = document.getElementById('adminEditTime').value;
+            const partySize = parseInt(document.getElementById('adminEditPartySize').value);
+            const status = document.getElementById('adminEditStatus').value;
+            const notes = document.getElementById('adminEditNotes').value.trim();
+            const selectedTables = Array.from(document.getElementById('adminEditTables').selectedOptions).map(opt => opt.value);
+            
+            if (!name || !phone || !date || !time || !partySize) {
+                showMessage('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            try {
+                const res = await api('/.netlify/functions/update-reservation', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        id: currentAdminReservationId,
+                        name: name,
+                        full_name: name,
+                        phone: phone,
+                        email: email || undefined,
+                        date: date,
+                        time: time,
+                        party_size: partySize,
+                        notes: notes || undefined,
+                        status: status,
+                        table_ids: selectedTables.length > 0 ? selectedTables : undefined,
+                        force_override: true // Admin can override conflicts
+                    })
+                });
+                
+                if (!res) return;
+                
+                const data = await res.json();
+                if (data.success || data.ok) {
+                    showMessage('Reservation updated successfully', 'success');
+                    closeAdminReservationModal();
+                    await loadAdminReservations();
+                } else {
+                    showMessage(`Error: ${data.error || 'Failed to update reservation'}`, 'error');
+                }
+            } catch (error) {
+                showMessage(`Error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function adminCancelReservation() {
+            if (!currentAdminReservationId) return;
+            
+            openAdminConfirmModal({
+                title: 'Cancel Reservation',
+                body: 'Are you sure you want to cancel this reservation? This will release all table assignments (3 slots).',
+                onConfirm: async () => {
+                    try {
+                        const res = await api('/.netlify/functions/cancel-reservation', {
+                            method: 'POST',
+                            body: JSON.stringify({ id: currentAdminReservationId })
+                        });
+                        
+                        if (!res) return;
+                        
+                        const data = await res.json();
+                        if (data.success || data.ok) {
+                            const releasedCount = data.releasedAssignments || 0;
+                            showMessage(`Reservation cancelled. ${releasedCount} table assignment(s) released.`, 'success');
+                            closeAdminReservationModal();
+                            await loadAdminReservations();
+                        } else {
+                            showMessage(`Error: ${data.error || 'Failed to cancel reservation'}`, 'error');
+                        }
+                    } catch (error) {
+                        showMessage(`Error: ${error.message}`, 'error');
+                    }
+                }
+            });
+        }
+        
+        function closeAdminReservationModal() {
+            document.getElementById('adminReservationModal').style.display = 'none';
+            currentAdminReservationId = null;
+        }
+        
+        // Quick Add Functions
+        function openAdminQuickAddModal() {
+            const modal = document.getElementById('adminQuickAddModal');
+            const dateEl = document.getElementById('adminReservationDate');
+            const quickAddDateEl = document.getElementById('adminQuickAddDate');
+            
+            if (dateEl && quickAddDateEl) {
+                quickAddDateEl.value = dateEl.value || new Date().toISOString().split('T')[0];
+            }
+            
+            // Clear form
+            document.getElementById('adminQuickAddName').value = '';
+            document.getElementById('adminQuickAddPhone').value = '';
+            document.getElementById('adminQuickAddEmail').value = '';
+            document.getElementById('adminQuickAddPartySize').value = '';
+            document.getElementById('adminQuickAddNotes').value = '';
+            document.getElementById('adminQuickAddSource').value = 'manual';
+            
+            modal.style.display = 'flex';
+        }
+        
+        function closeAdminQuickAddModal() {
+            document.getElementById('adminQuickAddModal').style.display = 'none';
+        }
+        
+        async function adminSaveQuickAddReservation() {
+            const name = document.getElementById('adminQuickAddName').value.trim();
+            const phone = document.getElementById('adminQuickAddPhone').value.trim();
+            const email = document.getElementById('adminQuickAddEmail').value.trim();
+            const date = document.getElementById('adminQuickAddDate').value;
+            const time = document.getElementById('adminQuickAddTime').value;
+            const partySize = parseInt(document.getElementById('adminQuickAddPartySize').value);
+            const source = document.getElementById('adminQuickAddSource').value;
+            const notes = document.getElementById('adminQuickAddNotes').value.trim();
+            
+            if (!name || !phone || !date || !time || !partySize) {
+                showMessage('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            try {
+                const res = await api('/.netlify/functions/send-reservation', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        name: name,
+                        full_name: name,
+                        phone: phone,
+                        email: email || 'admin@solomonslanding.com.mx',
+                        date: date,
+                        time: time,
+                        party_size: partySize,
+                        source: source,
+                        notes: notes
+                    })
+                });
+                
+                if (!res) return;
+                
+                const data = await res.json();
+                if (data.success) {
+                    showMessage('Reservation created successfully', 'success');
+                    closeAdminQuickAddModal();
+                    await loadAdminReservations();
+                } else {
+                    showMessage(`Error: ${data.error || 'Failed to create reservation'}`, 'error');
+                }
+            } catch (error) {
+                showMessage(`Error: ${error.message}`, 'error');
+            }
+        }
+        
+        // Confirmation Modal Helper
+        function openAdminConfirmModal({ title, body, onConfirm }) {
+            const modal = document.getElementById('adminConfirmModal');
+            const titleEl = document.getElementById('adminConfirmTitle');
+            const bodyEl = document.getElementById('adminConfirmBody');
+            const okBtn = document.getElementById('adminConfirmOk');
+            
+            titleEl.textContent = title;
+            bodyEl.textContent = body;
+            
+            modal.style.display = 'flex';
+            
+            const handleConfirm = () => {
+                modal.style.display = 'none';
+                okBtn.removeEventListener('click', handleConfirm);
+                if (onConfirm) onConfirm();
+            };
+            
+            okBtn.onclick = handleConfirm;
+        }
+        
+        function closeAdminConfirmModal() {
+            document.getElementById('adminConfirmModal').style.display = 'none';
+        }
+        
+        // ============================================
+        // DANGER ZONE - FORCE TOOLS
+        // ============================================
+        
+        async function adminForceFreeTable() {
+            const tableId = prompt('Enter Table ID to force-free:');
+            if (!tableId) return;
+            
+            const date = prompt('Enter date (YYYY-MM-DD):', new Date().toISOString().split('T')[0]);
+            if (!date) return;
+            
+            const time = prompt('Enter time (HH:MM):', '19:00');
+            if (!time) return;
+            
+            const area = prompt('Enter area (Main Floor / Sushi Bar):', 'Main Floor');
+            if (!area) return;
+            
+            openAdminConfirmModal({
+                title: 'Force Free Table',
+                body: `This will DELETE all table assignments for Table ${tableId} at ${time} on ${date} (all 3 slots). This action cannot be undone. Continue?`,
+                onConfirm: async () => {
+                    try {
+                        const res = await api('/.netlify/functions/release-table', {
+                            method: 'POST',
+                            body: JSON.stringify({
+                                table_id: tableId,
+                                date: date,
+                                time: time,
+                                area: area
+                            })
+                        });
+                        
+                        if (!res) return;
+                        
+                        const data = await res.json();
+                        if (data.ok || data.success) {
+                            const deletedCount = data.deletedCount || 0;
+                            showMessage(`Table freed. ${deletedCount} assignment(s) deleted.`, 'success');
+                            await loadAdminReservations();
+                        } else {
+                            showMessage(`Error: ${data.error || 'Failed to free table'}`, 'error');
+                        }
+                    } catch (error) {
+                        showMessage(`Error: ${error.message}`, 'error');
+                    }
+                }
+            });
+        }
+        
+        async function adminCreateBlock() {
+            const tableId = prompt('Enter Table ID to block:');
+            if (!tableId) return;
+            
+            const date = prompt('Enter date (YYYY-MM-DD):', new Date().toISOString().split('T')[0]);
+            if (!date) return;
+            
+            const time = prompt('Enter time (HH:MM):', '19:00');
+            if (!time) return;
+            
+            const status = prompt('Block type (blocked/unavailable):', 'blocked');
+            if (!['blocked', 'unavailable'].includes(status)) {
+                showMessage('Invalid status. Must be "blocked" or "unavailable"', 'error');
+                return;
+            }
+            
+            const notes = prompt('Reason/Notes (optional):', 'Maintenance');
+            
+            try {
+                const res = await api('/.netlify/functions/block-table', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        table_id: tableId,
+                        date: date,
+                        time: time,
+                        status: status,
+                        notes: notes || undefined
+                    })
+                });
+                
+                if (!res) return;
+                
+                const data = await res.json();
+                if (data.success || data.ok) {
+                    showMessage(`Table blocked successfully (3 slots)`, 'success');
+                    await loadAdminReservations();
+                } else {
+                    showMessage(`Error: ${data.error || 'Failed to block table'}`, 'error');
+                }
+            } catch (error) {
+                showMessage(`Error: ${error.message}`, 'error');
+            }
+        }
+        
         // Initialize
+        const today = new Date().toISOString().split('T')[0];
+        const dateInput = document.getElementById('adminReservationDate');
+        if (dateInput) {
+            dateInput.value = today;
+        }
+        
         loadTables();
         loadFloorPlan();
+        loadAdminReservations();
     </script>
 </body>
 </html>
