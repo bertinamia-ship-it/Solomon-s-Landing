@@ -2029,7 +2029,7 @@
                 const status = getTableStatus(table.id);
                 
                 // Find assignment for modal (use first relevant one)
-                const assignment = assignments.find(a => 
+                const assignment = (state.assignments || []).find(a => 
                     a.table_id === table.id && 
                     ['reserved', 'blocked', 'unavailable'].includes(a.status)
                 );
