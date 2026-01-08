@@ -146,10 +146,9 @@
             background: #004A9F;
             color: white;
         }
+        /* Main content grid - handled by CSS file */
         .main-content {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 2rem;
+            /* Styles in reservations-app.css */
         }
         @media (max-width: 1200px) {
             .main-content { grid-template-columns: 1fr; }
@@ -790,7 +789,7 @@
                 <button class="btn btn-danger btn-small" onclick="logout()">Logout</button>
             </div>
         </div>
-    </div>
+        </div>
 
     <div class="app-container">
         <div class="controls-bar">
@@ -1592,20 +1591,56 @@
         }
 
         async function refreshAfterAction() {
-            // Refresh everything after an action
-            await loadFloorPlan();
-            
-            // Close table info panel
-            document.getElementById('tableInfoPanel').classList.remove('active');
-            document.querySelectorAll('.table-node').forEach(node => {
-                node.classList.remove('selected');
-            });
-            selectedTableId = null;
+            try {
+                // Refresh everything after an action
+                await loadFloorPlan();
+                
+                // Close table info panel
+                const panel = document.getElementById('tableInfoPanel');
+                if (panel) {
+                    panel.classList.remove('active');
+                }
+                
+                // Clear table selection
+                document.querySelectorAll('.table-node').forEach(node => {
+                    node.classList.remove('selected');
+                });
+                selectedTableId = null;
+            } catch (error) {
+                console.error('Error refreshing after action:', error);
+                showToast('error', 'Failed to refresh. Please reload the page.');
+            }
+        }
+        
+        async function handleRefresh() {
+            try {
+                showToast('info', 'Refreshing...');
+                await loadFloorPlan();
+                showToast('success', 'Refreshed ✅');
+            } catch (error) {
+                console.error('Refresh error:', error);
+                showToast('error', 'Failed to refresh');
+            }
         }
 
         async function loadFloorPlan() {
-            const date = document.getElementById('selectedDate').value;
-            const time = document.getElementById('selectedTime').value;
+            try {
+                const dateEl = document.getElementById('selectedDate');
+                const timeEl = document.getElementById('selectedTime');
+                
+                if (!dateEl || !timeEl) {
+                    console.error('Date or time selector not found');
+                    showToast('error', 'Date/time selectors not found. Please refresh the page.');
+                    return;
+                }
+                
+                const date = dateEl.value;
+                const time = timeEl.value;
+                
+                if (!date || !time) {
+                    console.warn('Date or time not selected');
+                    return;
+                }
             
             if (!date || !time) return;
             
@@ -1650,7 +1685,12 @@
                 renderFloorPlan();
                 renderReservationsList();
             } catch (error) {
-                canvas.innerHTML = `<div class="message error">Error: ${error.message}</div>`;
+                console.error('Error loading floor plan:', error);
+                const canvas = document.getElementById('floorPlanCanvas');
+                if (canvas) {
+                    canvas.innerHTML = `<div class="message error">Error loading floor plan: ${error.message || 'Unknown error'}</div>`;
+                }
+                showToast('error', `Failed to load floor plan: ${error.message || 'Unknown error'}`);
             }
         }
 
@@ -2362,19 +2402,83 @@
 
         // Quick Add Functions
         function openQuickAddModal() {
-            const date = document.getElementById('selectedDate').value;
-            document.getElementById('quickAddDate').value = date;
-            document.getElementById('quickAddModal').classList.add('active');
+            try {
+                const dateEl = document.getElementById('selectedDate');
+                const quickAddDateEl = document.getElementById('quickAddDate');
+                const modal = document.getElementById('quickAddModal');
+                
+                if (!dateEl || !quickAddDateEl || !modal) {
+                    console.error('Quick Add modal elements not found');
+                    showToast('error', 'Quick Add form not available. Please refresh the page.');
+                    return;
+                }
+                
+                const date = dateEl.value || new Date().toISOString().split('T')[0];
+                quickAddDateEl.value = date;
+                
+                // Set default time to selected time if available
+                const timeEl = document.getElementById('selectedTime');
+                if (timeEl && timeEl.value) {
+                    const quickAddTimeEl = document.getElementById('quickAddTime');
+                    if (quickAddTimeEl) {
+                        quickAddTimeEl.value = timeEl.value;
+                    }
+                }
+                
+                openModal('quickAddModal');
+                
+                // Focus first input and add keyboard listeners
+                setTimeout(() => {
+                    const nameInput = document.getElementById('quickAddName');
+                    if (nameInput) {
+                        nameInput.focus();
+                        
+                        // Add Enter key support for form submission
+                        const formInputs = modal.querySelectorAll('input, select, textarea');
+                        formInputs.forEach(input => {
+                            input.removeEventListener('keydown', handleQuickAddKeydown);
+                            input.addEventListener('keydown', handleQuickAddKeydown);
+                        });
+                    }
+                }, 100);
+            } catch (error) {
+                console.error('Error opening Quick Add modal:', error);
+                showToast('error', 'Failed to open Quick Add form');
+            }
+        }
+        
+        function handleQuickAddKeydown(e) {
+            if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+                saveQuickAddReservation();
+            } else if (e.key === 'Escape') {
+                e.preventDefault();
+                closeQuickAddModal();
+            }
         }
 
         function closeQuickAddModal() {
-            document.getElementById('quickAddModal').classList.remove('active');
+            const modal = document.getElementById('quickAddModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+            
             // Reset form
-            document.getElementById('quickAddName').value = '';
-            document.getElementById('quickAddPhone').value = '';
-            document.getElementById('quickAddEmail').value = '';
-            document.getElementById('quickAddNotes').value = '';
-            document.getElementById('quickAddPartySize').value = '';
+            try {
+                const nameEl = document.getElementById('quickAddName');
+                const phoneEl = document.getElementById('quickAddPhone');
+                const emailEl = document.getElementById('quickAddEmail');
+                const notesEl = document.getElementById('quickAddNotes');
+                const partySizeEl = document.getElementById('quickAddPartySize');
+                
+                if (nameEl) nameEl.value = '';
+                if (phoneEl) phoneEl.value = '';
+                if (emailEl) emailEl.value = '';
+                if (notesEl) notesEl.value = '';
+                if (partySizeEl) partySizeEl.value = '';
+            } catch (error) {
+                console.error('Error resetting Quick Add form:', error);
+            }
         }
 
         async function saveQuickAddReservation() {
@@ -2408,18 +2512,22 @@
                     })
                 });
 
-                if (!res) return;
+                if (!res) {
+                    showToast('error', 'Failed to connect to server');
+                    return;
+                }
 
                 const data = await res.json();
                 if (data.success) {
-                    showToast('success', 'Reservation created successfully');
+                    showToast('success', 'Reservation created successfully ✅');
                     closeQuickAddModal();
                     await refreshAfterAction();
                 } else {
-                    showToast('error', `Error: ${data.error}`);
+                    showToast('error', data.error || 'Failed to create reservation');
                 }
             } catch (error) {
-                showToast('error', `Error: ${error.message}`);
+                console.error('Save Quick Add error:', error);
+                showToast('error', `Error: ${error.message || 'Unknown error'}`);
             }
         }
 
