@@ -673,6 +673,18 @@
         </div>
     </div>
 
+    <!-- Block Table Modal -->
+    <div id="blockTableModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 500px;">
+            <h3>Block Table</h3>
+            <div id="blockTableBody"></div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeBlockTableModal()">Cancel</button>
+                <button class="btn-danger" onclick="confirmCreateBlock()">Block Table</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Confirmation Modal -->
     <div id="adminConfirmModal" class="modal" style="display: none;">
         <div class="modal-content" style="max-width: 450px;">
@@ -1199,23 +1211,21 @@
                     node.appendChild(label);
                 }
                 
-                // Click to select or show timeline (double-click for timeline)
-                let clickTimeout;
+                // Click to show timeline (admin power user feature)
                 node.addEventListener('click', (e) => {
                     if (placingTableId || placingObjectType) return; // Don't select while placing
                     e.stopPropagation();
                     
-                    // Single click: select for editing
-                    clickTimeout = setTimeout(() => {
-                        selectTableNode(node);
-                    }, 250);
+                    // Single click: show timeline (admin can fix anything fast)
+                    showTableTimeline(table.id, table);
                 });
                 
-                node.addEventListener('dblclick', (e) => {
+                // Right-click or Ctrl+Click: select for editing (fallback)
+                node.addEventListener('contextmenu', (e) => {
                     if (placingTableId || placingObjectType) return;
+                    e.preventDefault();
                     e.stopPropagation();
-                    clearTimeout(clickTimeout);
-                    showTableTimeline(table.id, table);
+                    selectTableNode(node);
                 });
                 
                 // Drag handlers
