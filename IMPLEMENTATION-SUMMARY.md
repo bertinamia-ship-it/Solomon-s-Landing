@@ -178,6 +178,34 @@ const SLOTS_PER_RESERVATION = 3; // 90 / 30
 - `website/hostess-dashboard.html` - Enhanced CRUD UI, object rendering
 - `website/admin-dashboard.html` - Object placement, improved rendering
 
+## Required Environment Variables
+
+**Set these in Netlify Dashboard → Site Settings → Environment Variables:**
+
+### Required (All Functions)
+- `SUPABASE_URL` - Your Supabase project URL (e.g., `https://xxxxx.supabase.co`)
+- `SUPABASE_SERVICE_ROLE_KEY` - Supabase service role key (secret, starts with `eyJhbGc...`)
+
+### Required (Reservation/Catering Email Functions)
+- `RESEND_API_KEY` - Resend API key (secret, starts with `re_...`)
+- `RESEND_FROM_EMAIL` - Verified Resend sender email (e.g., `onboarding@resend.dev`)
+- `RESERVATIONS_TO_EMAIL` - Restaurant email for reservations (e.g., `contact@solomonslanding.com.mx`)
+- `CATERING_TO_EMAIL` - Restaurant email for catering requests (e.g., `samantha@solomonslanding.com.mx`)
+
+### Optional (Fallbacks)
+- `EMAIL_FROM` - Alternative name for `RESEND_FROM_EMAIL`
+- `EMAIL_RESTAURANT` - Alternative name for `RESERVATIONS_TO_EMAIL`
+- `CATERING_EMAIL` - Alternative name for `CATERING_TO_EMAIL`
+- `SUPABASE_ANON_KEY` - Fallback if `SUPABASE_SERVICE_ROLE_KEY` not set (not recommended)
+
+### Mark as Secret (✅)
+- `SUPABASE_SERVICE_ROLE_KEY` → ✅ Secret
+- `RESEND_API_KEY` → ✅ Secret
+- Others can be public
+
+### Error Messages
+If functions return `{"ok":false,"error":"Missing SUPABASE_URL"}` or `{"success":false,"error":"Server configuration error"}`, check that all required env vars are set in Netlify Dashboard and redeploy.
+
 ## Next Steps (Optional)
 - Add table rotation in hostess view (currently admin-only)
 - Add bulk operations (assign multiple reservations)
