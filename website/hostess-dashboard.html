@@ -797,7 +797,7 @@
                 <button class="btn btn-danger btn-small" onclick="logout()"><span class="btn-text">Logout</span></button>
             </div>
         </div>
-    </div>
+        </div>
 
     <div class="app-container">
         <div class="controls-bar">
@@ -1115,6 +1115,12 @@
         if (!role || !token || (role !== 'hostess' && role !== 'admin')) {
             window.location.href = 'dashboard-login.html';
         }
+        
+        // Set role badge
+        const roleBadge = document.getElementById('roleBadge');
+        if (roleBadge) {
+            roleBadge.textContent = role === 'admin' ? 'Admin' : 'Hostess';
+        }
 
         // API helper
         async function api(path, opts = {}) {
@@ -1125,15 +1131,15 @@
             };
             
             try {
-                const response = await fetch(path, {
-                    ...opts,
-                    headers
-                });
-                
-                if (response.status === 401) {
+            const response = await fetch(path, {
+                ...opts,
+                headers
+            });
+            
+            if (response.status === 401) {
                     showToast('error', 'Session expired. Please login again.');
                     setTimeout(() => {
-                        logout();
+                logout();
                     }, 1500);
                     return null;
                 }
@@ -1148,10 +1154,10 @@
                 if (!contentType || !contentType.includes('application/json')) {
                     const text = await response.text();
                     console.error(`Non-JSON response from ${path}:`, text.substring(0, 200));
-                    return null;
-                }
-                
-                return response;
+                return null;
+            }
+            
+            return response;
             } catch (error) {
                 console.error(`Fetch error for ${path}:`, error);
                 return null;
@@ -2105,7 +2111,7 @@
 
         function renderReservationsList() {
             try {
-                const container = document.getElementById('reservationsList');
+            const container = document.getElementById('reservationsList');
                 if (!container) {
                     console.error('Reservations list container not found');
                     return;
@@ -2156,12 +2162,12 @@
                 });
                 
                 let html = '';
-                
-                if (timeReservations.length === 0) {
+            
+            if (timeReservations.length === 0) {
                     const searchHint = searchQuery ? ' matching your search' : '';
                     html += `<div class="loading">No reservations found${searchHint}</div>`;
-                } else {
-                    timeReservations.forEach(res => {
+            } else {
+                timeReservations.forEach(res => {
                         if (!res) return;
                         const resAssignments = allAssignments.filter(a => (a.reservation_id || "") === (res.id || ""));
                         const statusClass = (res.status || "pending") === 'confirmed' ? 'confirmed' : (res.status || "pending") === 'pending' ? 'pending' : 'cancelled';
@@ -2171,7 +2177,7 @@
                         const resTime = res.time || "";
                         const resCode = res.confirmation_code || "";
                         
-                        html += `
+                    html += `
                             <div class="reservation-item ${statusClass}" style="cursor: pointer;" onclick="openReservationModal('${res.id || ""}')">
                                 <div style="display: flex; justify-content: space-between; align-items: start;">
                                     <div style="flex: 1;">
@@ -2186,34 +2192,34 @@
                                         ${resCode ? `<div style="font-size: 0.85rem; color: #6b7280; margin-top: 0.5rem; font-weight: 500;">Code: <span style="font-family: monospace; background: #f3f4f6; padding: 0.15rem 0.5rem; border-radius: 4px;">${resCode}</span></div>` : ''}
                                     </div>
                                 </div>
-                            </div>
-                        `;
-                    });
-                }
-                
+                        </div>
+                    `;
+                });
+            }
+            
                 if (time) {
-                    html += '<h3 style="margin-top: 2rem; margin-bottom: 1rem; font-size: 1.1rem;">Blocks</h3>';
-                    
-                    if (blocks.length === 0) {
-                        html += '<div class="loading">No blocks for this time slot</div>';
-                    } else {
-                        blocks.forEach(block => {
+            html += '<h3 style="margin-top: 2rem; margin-bottom: 1rem; font-size: 1.1rem;">Blocks</h3>';
+            
+            if (blocks.length === 0) {
+                html += '<div class="loading">No blocks for this time slot</div>';
+            } else {
+                blocks.forEach(block => {
                             if (!block) return;
                             const table = allTablesList.find(t => (t.id || "") === (block.table_id || ""));
                             const blockTableName = table?.name || `Table ${block.table_number || "N/A"}`;
                             const blockStatus = block.status || "";
                             const blockNotes = block.notes || 'No notes';
-                            html += `
-                                <div class="block-item">
+                    html += `
+                        <div class="block-item">
                                     <div class="reservation-name">${blockTableName}</div>
                                     <div class="reservation-details">${blockStatus} • ${blockNotes}</div>
-                                </div>
-                            `;
-                        });
+                        </div>
+                    `;
+                });
                     }
-                }
-                
-                container.innerHTML = html;
+            }
+            
+            container.innerHTML = html;
             } catch (error) {
                 console.error('Error rendering reservations list:', error);
                 const container = document.getElementById('reservationsList');
