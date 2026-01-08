@@ -1441,7 +1441,7 @@
                             body: JSON.stringify({
                                 date: date,
                                 time: time,
-                                table_id: selectedTableId,
+                                table_id: state.selectedTableId,
                                 area: area
                             })
                         });
@@ -1525,7 +1525,7 @@
                     const res = await api('/.netlify/functions/set-assignment', {
                         method: 'POST',
                         body: JSON.stringify({
-                            table_id: selectedTableId,
+                            table_id: state.selectedTableId,
                             reservation_id: reservationId,
                             date: date,
                             time: time,
@@ -1598,7 +1598,7 @@
                     const res = await api('/.netlify/functions/set-assignment', {
                         method: 'POST',
                         body: JSON.stringify({
-                            table_id: selectedTableId,
+                            table_id: state.selectedTableId,
                             date: date,
                             time: time,
                             status: 'blocked',
@@ -1653,7 +1653,7 @@
                         const res = await api('/.netlify/functions/set-assignment', {
                             method: 'POST',
                             body: JSON.stringify({
-                                table_id: selectedTableId,
+                                table_id: state.selectedTableId,
                                 date: date,
                                 time: time,
                                 status: 'unavailable'
@@ -1717,7 +1717,7 @@
                             body: JSON.stringify({
                                 date: date,
                                 time: time,
-                                table_id: selectedTableId,
+                                table_id: state.selectedTableId,
                                 area: area
                             })
                         });
@@ -2398,7 +2398,7 @@
                         body: JSON.stringify({
                             date: date,
                             time: time,
-                            table_id: selectedTableId,
+                            table_id: state.selectedTableId,
                             area: area
                         })
                     });
@@ -2444,7 +2444,7 @@
                     }
                 } else {
                     let payload = {
-                        table_id: selectedTableId,
+                        table_id: state.selectedTableId,
                         date: date,
                         time: time,
                         status: action === 'assign' ? 'reserved' : action === 'block' ? 'blocked' : 'unavailable'
@@ -2499,7 +2499,10 @@
         }
         
         function openModal(modalId) {
-            document.getElementById(modalId).style.display = 'flex';
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'flex';
+            }
         }
 
         // Close modal on outside click
@@ -2940,22 +2943,49 @@
             currentStepperStep = 1;
             updateStepperUI();
             
-            // Reset form
+            // Reset form and clear validation errors
             try {
                 const nameEl = document.getElementById('quickAddName');
                 const phoneEl = document.getElementById('quickAddPhone');
                 const emailEl = document.getElementById('quickAddEmail');
                 const notesEl = document.getElementById('quickAddNotes');
-                const partySizeEl = document.getElementById('quickAddPartySize');
+                const dateEl = document.getElementById('quickAddDate');
                 const timeEl = document.getElementById('quickAddTime');
-                const suggestionsEl = document.getElementById('availableTimesSuggestions');
+                const partySizeEl = document.getElementById('quickAddPartySize');
+                const sourceEl = document.getElementById('quickAddSource');
                 
-                if (nameEl) nameEl.value = '';
-                if (phoneEl) phoneEl.value = '';
-                if (emailEl) emailEl.value = '';
-                if (notesEl) notesEl.value = '';
-                if (partySizeEl) partySizeEl.value = '';
-                if (timeEl) timeEl.innerHTML = '<option value="">Select a time...</option>';
+                if (nameEl) {
+                    nameEl.value = '';
+                    nameEl.classList.remove('error');
+                }
+                if (phoneEl) {
+                    phoneEl.value = '';
+                    phoneEl.classList.remove('error');
+                }
+                if (emailEl) {
+                    emailEl.value = '';
+                    emailEl.classList.remove('error');
+                }
+                if (notesEl) {
+                    notesEl.value = '';
+                    notesEl.classList.remove('error');
+                }
+                if (dateEl) {
+                    dateEl.value = '';
+                    dateEl.classList.remove('error');
+                }
+                if (timeEl) {
+                    timeEl.innerHTML = '<option value="">Select a time...</option>';
+                    timeEl.classList.remove('error');
+                }
+                if (partySizeEl) {
+                    partySizeEl.value = '';
+                    partySizeEl.classList.remove('error');
+                }
+                if (sourceEl) {
+                    sourceEl.value = 'phone';
+                }
+                const suggestionsEl = document.getElementById('availableTimesSuggestions');
                 if (suggestionsEl) {
                     suggestionsEl.innerHTML = '';
                     suggestionsEl.style.display = 'none';
