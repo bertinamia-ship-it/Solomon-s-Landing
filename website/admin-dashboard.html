@@ -649,6 +649,30 @@
         </div>
     </div>
 
+    <!-- Table Timeline Panel -->
+    <div id="tableTimelinePanel" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 500px;">
+            <h3 id="tableTimelineTitle">Table Timeline</h3>
+            <div id="tableTimelineBody"></div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeTableTimeline()">Close</button>
+                <button class="btn-danger" onclick="forceReleaseFromTimeline()" id="forceReleaseTimelineBtn" style="display: none;">Force Release</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Force Release Modal -->
+    <div id="forceReleaseModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 500px;">
+            <h3>Force Release Table</h3>
+            <div id="forceReleaseBody"></div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeForceReleaseModal()">Cancel</button>
+                <button class="btn-danger" onclick="confirmForceRelease()">Force Release</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Confirmation Modal -->
     <div id="adminConfirmModal" class="modal" style="display: none;">
         <div class="modal-content" style="max-width: 450px;">
@@ -2027,8 +2051,8 @@
                 <div class="form-group">
                     <label>Area *</label>
                     <select id="forceReleaseArea" required>
-                        <option value="Main Floor" selected>Main Floor</option>
-                        <option value="Sushi Bar">Sushi Bar</option>
+                        <option value="Main Floor" ${tableArea === 'Main Floor' ? 'selected' : ''}>Main Floor</option>
+                        <option value="Sushi Bar" ${tableArea === 'Sushi Bar' ? 'selected' : ''}>Sushi Bar</option>
                     </select>
                 </div>
                 <p style="color: #dc2626; font-size: 0.9rem; margin-top: 1rem;">
