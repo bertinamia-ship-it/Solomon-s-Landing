@@ -2101,7 +2101,10 @@
                     const updatedReservations = data.updatedReservations || 0;
                     showMessage(`Table freed. ${deletedCount} assignment(s) deleted${updatedReservations > 0 ? `, ${updatedReservations} reservation(s) marked completed` : ''}.`, 'success');
                     closeForceReleaseModal();
-                    await showTableTimeline(tableId, currentTimelineTable); // Refresh timeline
+                    // Refresh timeline if it was open
+                    if (currentTimelineTableId && currentTimelineTable) {
+                        await showTableTimeline(currentTimelineTableId, currentTimelineTable);
+                    }
                     await loadAdminReservations();
                 } else {
                     showMessage(`Error: ${data.error || 'Failed to free table'}`, 'error');
