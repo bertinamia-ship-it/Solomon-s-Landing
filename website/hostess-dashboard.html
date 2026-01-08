@@ -1078,6 +1078,28 @@
     </div>
 
     <script>
+        // Global error handlers - prevent app crashes
+        window.addEventListener('error', (event) => {
+            console.error('Global error:', event.error);
+            if (typeof showToast === 'function') {
+                showToast('error', 'Something went wrong. Please refresh the page.');
+            } else {
+                alert('An error occurred. Please refresh the page.');
+            }
+            // Don't prevent default - let browser handle it, but show user-friendly message
+        });
+        
+        window.addEventListener('unhandledrejection', (event) => {
+            console.error('Unhandled promise rejection:', event.reason);
+            if (typeof showToast === 'function') {
+                showToast('error', 'Something went wrong. Please refresh the page.');
+            } else {
+                alert('An error occurred. Please refresh the page.');
+            }
+            // Prevent default browser error handling
+            event.preventDefault();
+        });
+        
         // Auth check
         const role = sessionStorage.getItem('dashboardRole');
         const token = sessionStorage.getItem('dashboardAuthToken');
@@ -1095,15 +1117,15 @@
             };
             
             try {
-            const response = await fetch(path, {
-                ...opts,
-                headers
-            });
-            
-            if (response.status === 401) {
+                const response = await fetch(path, {
+                    ...opts,
+                    headers
+                });
+                
+                if (response.status === 401) {
                     showToast('error', 'Session expired. Please login again.');
                     setTimeout(() => {
-                logout();
+                        logout();
                     }, 1500);
                     return null;
                 }
@@ -1118,10 +1140,10 @@
                 if (!contentType || !contentType.includes('application/json')) {
                     const text = await response.text();
                     console.error(`Non-JSON response from ${path}:`, text.substring(0, 200));
-                return null;
-            }
-            
-            return response;
+                    return null;
+                }
+                
+                return response;
             } catch (error) {
                 console.error(`Fetch error for ${path}:`, error);
                 return null;
@@ -1746,53 +1768,63 @@
         }
 
         async function loadFloorPlan() {
-            try {
-                const dateEl = document.getElementById('selectedDate');
-                const timeEl = document.getElementById('selectedTime');
-                
-                if (!dateEl || !timeEl) {
-                    console.error('Date or time selector not found');
-                    showToast('error', 'Date/time selectors not found. Please refresh the page.');
-                    return;
-                }
-                
-                const date = dateEl.value;
-                const time = timeEl.value;
-                
-                if (!date || !time) {
-                    console.warn('Date or time not selected');
-                    return;
-                }
+            const dateEl = document.getElementById('selectedDate');
+            const timeEl = document.getElementById('selectedTime');
             
-            if (!date || !time) return;
+            if (!dateEl || !timeEl) {
+                console.error('Date or time selector not found');
+                showToast('error', 'Date/time selectors not found. Please refresh the page.');
+                return;
+            }
+            
+            const date = dateEl.value;
+            const time = timeEl.value;
+            
+            if (!date || !time) {
+                console.warn('Date or time not selected');
+                return;
+            }
             
             const canvas = document.getElementById('floorPlanCanvas');
+            if (!canvas) {
+                console.error('Floor plan canvas not found');
+                return;
+            }
+            
             canvas.innerHTML = '<div class="loading">Loading floor plan...</div>';
             
             try {
                 // Load layout
                 const layoutRes = await api(`/.netlify/functions/get-layout?area=${encodeURIComponent(currentArea)}`);
-                if (!layoutRes) return;
+                if (!layoutRes) {
+                    throw new Error('Failed to load layout');
+                }
                 
                 const layoutData = await layoutRes.json();
                 currentLayout = layoutData.success && layoutData.layout?.layout_json ? layoutData.layout.layout_json : [];
                 
                 // Load tables
                 const tablesRes = await api('/.netlify/functions/get-tables');
-                if (!tablesRes) return;
+                if (!tablesRes) {
+                    throw new Error('Failed to load tables');
+                }
                 
                 const tablesData = await tablesRes.json();
                 allTables = (tablesData.all || []).filter(t => t.area === currentArea && t.is_active);
                 
                 // Load assignments for this date/time
                 const assignmentsRes = await api(`/.netlify/functions/get-table-assignments?date=${date}&time=${time}`);
-                if (!assignmentsRes) return;
+                if (!assignmentsRes) {
+                    throw new Error('Failed to load assignments');
+                }
                 
                 assignments = await assignmentsRes.json().catch(() => []);
                 
                 // Load reservations for this date (all times)
                 const reservationsRes = await api(`/.netlify/functions/get-reservations?date=${date}`);
-                if (!reservationsRes) return;
+                if (!reservationsRes) {
+                    throw new Error('Failed to load reservations');
+                }
                 
                 reservations = await reservationsRes.json().catch(() => []);
                 
@@ -1810,9 +1842,18 @@
                 console.error('Error loading floor plan:', error);
                 const canvas = document.getElementById('floorPlanCanvas');
                 if (canvas) {
-                    canvas.innerHTML = `<div class="message error">Error loading floor plan: ${error.message || 'Unknown error'}</div>`;
+                    const errorMsg = error?.message || 'Unknown error';
+                    canvas.innerHTML = `
+                        <div class="message error" style="padding: 2rem; text-align: center;">
+                            <h3 style="margin-bottom: 1rem; color: #dc2626;">Failed to load floor plan</h3>
+                            <p style="margin-bottom: 1.5rem; color: #6b7280;">${errorMsg}</p>
+                            <button class="btn btn-primary" onclick="loadFloorPlan()" style="padding: 0.75rem 1.5rem; font-weight: 600;">
+                                🔄 Retry
+                            </button>
+                        </div>
+                    `;
                 }
-                showToast('error', `Failed to load floor plan: ${error.message || 'Unknown error'}`);
+                showToast('error', `Failed to load floor plan: ${error?.message || 'Unknown error'}`);
             }
         }
 
