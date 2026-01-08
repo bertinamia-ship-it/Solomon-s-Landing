@@ -1940,6 +1940,11 @@
             // Use state for selected time, fallback to DOM
             const selectedTime = state.selectedTime || (document.getElementById('selectedTime')?.value || '');
             
+            // Safe local variables from state
+            const assignments = Array.isArray(state.assignments) ? state.assignments : [];
+            const tables = Array.isArray(state.allTables) ? state.allTables : [];
+            const layout = Array.isArray(state.layout) ? state.layout : [];
+            
             // Helper to determine table status based on 3-slot system
             function getTableStatus(tableId) {
                 // Check assignments for this table at selected time and its 3 slots (T, T+30, T+60)
@@ -1968,7 +1973,7 @@
                 timeSlots.push(`${String(nextHours).padStart(2, '0')}:${String(nextMinutes).padStart(2, '0')}`);
                 
                 // Find any assignment for this table at any of the 3 slots
-                const relevantAssignments = (state.assignments || []).filter(a => 
+                const relevantAssignments = assignments.filter(a => 
                     a.table_id === tableId && 
                     timeSlots.includes(a.time) &&
                     ['reserved', 'blocked', 'unavailable'].includes(a.status)
@@ -1985,7 +1990,7 @@
             }
             
             // Iterate through layout (same as admin)
-            (state.layout || []).forEach((layoutItem, index) => {
+            layout.forEach((layoutItem, index) => {
                 // Handle non-table objects (Entrance, Bar)
                 if (layoutItem.type && (layoutItem.type === 'entrance' || layoutItem.type === 'bar')) {
                     const x = layoutItem.x || 50;
@@ -2012,7 +2017,7 @@
                 }
                 
                 // Handle tables
-                const table = (state.allTables || []).find(t => t.id === layoutItem.table_id);
+                const table = tables.find(t => t.id === layoutItem.table_id);
                 if (!table) return;
                 
                 const x = layoutItem.x || 50;
@@ -2034,7 +2039,7 @@
                 const status = getTableStatus(table.id);
                 
                 // Find assignment for modal (use first relevant one)
-                const assignment = (state.assignments || []).find(a => 
+                const assignment = assignments.find(a => 
                     a.table_id === table.id && 
                     ['reserved', 'blocked', 'unavailable'].includes(a.status)
                 );
@@ -2290,7 +2295,7 @@
             if (action === 'assign') {
                 const unassigned = (state.reservations || []).filter(r => {
                     if (r.time !== time) return false;
-                    return !assignments.some(a => a.reservation_id === r.id);
+                    return !(state.assignments || []).some(a => a.reservation_id === r.id);
                 });
                 
                 if (unassigned.length === 0) {
@@ -2518,15 +2523,15 @@
 
         // Reservation Modal Functions
         async function openReservationModal(reservationId) {
-            const reservation = reservations.find(r => r.id === reservationId);
+            const reservation = (state.reservations || []).find(r => r.id === reservationId);
             if (!reservation) {
                 showToast('error', 'Reservation not found');
                 return;
             }
 
-            const resAssignments = assignments.filter(a => a.reservation_id === reservationId);
+            const resAssignments = (state.assignments || []).filter(a => a.reservation_id === reservationId);
             const assignedTables = resAssignments.map(a => {
-                const table = allTables.find(t => t.id === a.table_id);
+                const table = (state.allTables || []).find(t => t.id === a.table_id);
                 return table ? { id: table.id, name: table.name || `Table ${table.table_number}`, seats: table.seats } : null;
             }).filter(t => t !== null);
 
@@ -2750,13 +2755,17 @@
         }
         
         function updateStepperUI() {
+            // Look up button elements once (safe, null-checked)
+            const backBtn = document.getElementById('stepperBackBtn');
+            const nextBtn = document.getElementById('stepperNextBtn');
+            const saveBtn = document.getElementById('stepperSaveBtn');
+            
             // Update step indicators
             for (let i = 1; i <= totalStepperSteps; i++) {
                 const stepEl = document.getElementById(`step${i}`);
                 const contentEl = document.getElementById(`stepperStep${i}`);
-                const backBtn = document.getElementById('stepperBackBtn');
-                const nextBtn = document.getElementById('stepperNextBtn');
-                const saveBtn = document.getElementById('stepperSaveBtn');
+                
+                if (!stepEl) continue; // Skip if step element missing
                 
                 if (i < currentStepperStep) {
                     stepEl.classList.add('completed');
@@ -2772,10 +2781,16 @@
                 }
             }
             
-            // Update buttons
-            if (backBtn) backBtn.style.display = currentStepperStep > 1 ? 'block' : 'none';
-            if (nextBtn) nextBtn.style.display = currentStepperStep < totalStepperSteps ? 'block' : 'none';
-            if (saveBtn) saveBtn.style.display = currentStepperStep === totalStepperSteps ? 'block' : 'none';
+            // Update buttons (null-safe)
+            if (backBtn) {
+                backBtn.style.display = currentStepperStep > 1 ? 'block' : 'none';
+            }
+            if (nextBtn) {
+                nextBtn.style.display = currentStepperStep < totalStepperSteps ? 'block' : 'none';
+            }
+            if (saveBtn) {
+                saveBtn.style.display = currentStepperStep === totalStepperSteps ? 'block' : 'none';
+            }
             
             // Update review on step 4
             if (currentStepperStep === 4) {
