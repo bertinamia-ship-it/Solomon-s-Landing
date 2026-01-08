@@ -4,12 +4,13 @@
    ============================================ */
 
 :root {
-    /* Brand Colors */
+    /* Brand Colors - Solomon's Landing */
     --brand: #004A9F;
     --brand-dark: #003d82;
     --brand-light: #0066cc;
-    --accent: #f59e0b; /* Warm amber for highlights */
-    --accent-light: #fbbf24;
+    --accent: #f97316; /* Warm sunset orange */
+    --accent-light: #fb923c;
+    --accent-gold: #f59e0b; /* Sunset gold */
     
     /* Status Colors */
     --status-available: #10b981;

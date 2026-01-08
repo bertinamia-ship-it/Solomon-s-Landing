@@ -843,37 +843,51 @@
                         <div class="loading">Loading floor plan...</div>
                     </div>
                 </div>
-                <!-- Table Info Panel -->
-                <div id="tableInfoPanel" class="table-info-panel">
-                    <h3 id="tableInfoTitle">Table Details</h3>
-                    <div id="tableInfoContent">
+                <!-- Table Drawer (Slide-in Panel) -->
+                <div class="drawer-overlay" id="tableDrawerOverlay" onclick="closeTableDrawer()"></div>
+                <div id="tableDrawer" class="table-drawer">
+                    <div class="table-drawer-header">
+                        <h3 id="tableDrawerTitle">Table Details</h3>
+                        <button onclick="closeTableDrawer()" style="position: absolute; top: 1rem; right: 1rem; background: rgba(255,255,255,0.2); border: none; color: white; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 1.25rem; display: flex; align-items: center; justify-content: center;">×</button>
+                    </div>
+                    <div class="table-drawer-body">
                         <div class="table-info-item">
-                            <div class="table-info-label">Name</div>
-                            <div class="table-info-value" id="tableInfoName">—</div>
+                            <div class="table-info-label">Table</div>
+                            <div class="table-info-value" id="tableDrawerName">—</div>
                         </div>
                         <div class="table-info-item">
                             <div class="table-info-label">Seats</div>
-                            <div class="table-info-value" id="tableInfoSeats">—</div>
+                            <div class="table-info-value" id="tableDrawerSeats">—</div>
                         </div>
                         <div class="table-info-item">
                             <div class="table-info-label">Status</div>
                             <div class="table-info-value">
-                                <span class="table-info-status" id="tableInfoStatus">—</span>
+                                <span class="status-pill" id="tableDrawerStatus">—</span>
                             </div>
                         </div>
+                        
+                        <!-- Occupancy Timeline -->
+                        <div class="occupancy-timeline" id="tableDrawerTimeline" style="display: none;">
+                            <div class="timeline-label">Next 90 Minutes</div>
+                            <div class="timeline-slots" id="timelineSlots">
+                                <!-- T, T+30, T+60 badges will be inserted here -->
+                            </div>
+                        </div>
+                        
                         <div class="table-info-item">
                             <div class="table-info-label">Reservation</div>
-                            <div class="table-info-value" id="tableInfoReservation">—</div>
+                            <div class="table-info-value" id="tableDrawerReservation">—</div>
                         </div>
                         <div class="table-info-item">
                             <div class="table-info-label">Code</div>
-                            <div class="table-info-value" id="tableInfoCode" style="font-family: monospace; font-size: 0.9rem;">—</div>
+                            <div class="table-info-value" id="tableDrawerCode" style="font-family: monospace; font-size: 0.9rem;">—</div>
                         </div>
-                    </div>
-                    <div id="tableInfoActions" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px solid #e2e8f0;">
-                        <div style="font-weight: 600; color: #374151; margin-bottom: 1rem; font-size: 0.95rem;">Actions</div>
-                        <div id="tableActionButtons" style="display: flex; flex-direction: column; gap: 0.75rem;">
-                            <!-- Action buttons will be inserted here -->
+                        
+                        <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 2px solid var(--border-light);">
+                            <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 1rem; font-size: 0.95rem;">Actions</div>
+                            <div id="tableDrawerActions" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                                <!-- Action buttons will be inserted here -->
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -881,7 +895,29 @@
 
             <!-- RIGHT: Reservations & Blocks -->
             <div class="section">
-                <h2>Reservations & Blocks</h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                    <h2 style="margin: 0;">Reservations</h2>
+                    <button class="btn btn-primary" onclick="openQuickAddModal()" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span>+</span> Create Reservation
+                    </button>
+                </div>
+                
+                <!-- Search & Filters -->
+                <div style="margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem;">
+                    <div style="position: relative;">
+                        <input type="text" id="reservationSearch" placeholder="Search by name, phone, or code..." 
+                               style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 2px solid var(--border); border-radius: 10px; font-size: 0.95rem;"
+                               oninput="filterReservations()">
+                        <span style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);">🔍</span>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <button class="status-filter-btn active" data-filter="all" onclick="setStatusFilter('all')">All</button>
+                        <button class="status-filter-btn" data-filter="pending" onclick="setStatusFilter('pending')">Pending</button>
+                        <button class="status-filter-btn" data-filter="confirmed" onclick="setStatusFilter('confirmed')">Confirmed</button>
+                        <button class="status-filter-btn" data-filter="cancelled" onclick="setStatusFilter('cancelled')">Cancelled</button>
+                    </div>
+                </div>
+                
                 <div id="reservationsList" class="reservations-list">
                     <div class="loading">Loading...</div>
                 </div>
@@ -935,66 +971,108 @@
         </div>
     </div>
 
-    <!-- Quick Add Reservation Modal -->
+    <!-- Quick Add Reservation Modal (Stepper) -->
     <div id="quickAddModal" class="modal-backdrop" style="display: none;">
-        <div class="modal" style="max-width: 550px;">
+        <div class="modal" style="max-width: 600px;">
             <div class="modal-header">
-                <h3 class="modal-title">Quick Add Reservation</h3>
+                <h3 class="modal-title">Create Reservation</h3>
                 <button class="modal-close" onclick="closeQuickAddModal()">×</button>
             </div>
             <div class="modal-body">
-            <div id="quickAddModalBody">
-                <div class="form-group">
-                    <label>Name *</label>
-                    <input type="text" id="quickAddName" required>
+                <div class="stepper-container">
+                    <div class="stepper-steps">
+                        <div class="stepper-step active" id="step1">
+                            <div class="step-circle">1</div>
+                            <div class="step-label">Guest Info</div>
+                        </div>
+                        <div class="stepper-step" id="step2">
+                            <div class="step-circle">2</div>
+                            <div class="step-label">Time & Party</div>
+                        </div>
+                        <div class="stepper-step" id="step3">
+                            <div class="step-circle">3</div>
+                            <div class="step-label">Notes</div>
+                        </div>
+                        <div class="stepper-step" id="step4">
+                            <div class="step-circle">4</div>
+                            <div class="step-label">Confirm</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stepper-content">
+                        <!-- Step 1: Guest Details -->
+                        <div id="stepperStep1" class="stepper-step-content">
+                            <div class="form-group">
+                                <label>Name *</label>
+                                <input type="text" id="quickAddName" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Phone *</label>
+                                <input type="tel" id="quickAddPhone" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="quickAddEmail">
+                            </div>
+                            <div class="form-group">
+                                <label>Source</label>
+                                <select id="quickAddSource">
+                                    <option value="phone">Phone</option>
+                                    <option value="opentable">OpenTable</option>
+                                    <option value="manual">Manual</option>
+                                    <option value="website">Website</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Step 2: Time & Party -->
+                        <div id="stepperStep2" class="stepper-step-content" style="display: none;">
+                            <div class="form-group">
+                                <label>Date *</label>
+                                <input type="date" id="quickAddDate" required onchange="loadAvailableTimes()">
+                            </div>
+                            <div class="form-group">
+                                <label>Party Size *</label>
+                                <input type="number" id="quickAddPartySize" min="1" max="20" required onchange="loadAvailableTimes()">
+                            </div>
+                            <div class="form-group">
+                                <label>Time *</label>
+                                <select id="quickAddTime" required>
+                                    <option value="">Select a time...</option>
+                                </select>
+                                <div id="availableTimesSuggestions" class="available-times-suggestions" style="display: none; margin-top: 0.75rem;">
+                                    <!-- Auto-suggested times will appear here -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Step 3: Notes -->
+                        <div id="stepperStep3" class="stepper-step-content" style="display: none;">
+                            <div class="form-group">
+                                <label>Notes</label>
+                                <textarea id="quickAddNotes" rows="5" placeholder="Special requests, dietary restrictions, etc."></textarea>
+                            </div>
+                        </div>
+                        
+                        <!-- Step 4: Confirm -->
+                        <div id="stepperStep4" class="stepper-step-content" style="display: none;">
+                            <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: 12px;">
+                                <h4 style="margin: 0 0 1rem 0; color: var(--text-primary);">Review Reservation</h4>
+                                <div id="quickAddReview" style="line-height: 1.8;">
+                                    <!-- Review content will be inserted here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stepper-actions">
+                        <button class="btn btn-secondary" id="stepperBackBtn" onclick="stepperPrevious()" style="display: none;">← Back</button>
+                        <div style="flex: 1;"></div>
+                        <button class="btn btn-secondary" onclick="closeQuickAddModal()">Cancel</button>
+                        <button class="btn btn-primary" id="stepperNextBtn" onclick="stepperNext()">Next →</button>
+                        <button class="btn btn-primary" id="stepperSaveBtn" onclick="saveQuickAddReservation()" style="display: none;">Save Reservation</button>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Phone *</label>
-                    <input type="tel" id="quickAddPhone" required>
-                </div>
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="quickAddEmail">
-                </div>
-                <div class="form-group">
-                    <label>Date *</label>
-                    <input type="date" id="quickAddDate" required>
-                </div>
-                <div class="form-group">
-                    <label>Time *</label>
-                    <select id="quickAddTime" required>
-                        <option value="17:30">5:30 PM</option>
-                        <option value="18:00">6:00 PM</option>
-                        <option value="18:30">6:30 PM</option>
-                        <option value="19:00">7:00 PM</option>
-                        <option value="19:30">7:30 PM</option>
-                        <option value="20:00">8:00 PM</option>
-                        <option value="20:30">8:30 PM</option>
-                        <option value="21:00">9:00 PM</option>
-                        <option value="21:30">9:30 PM</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Party Size *</label>
-                    <input type="number" id="quickAddPartySize" min="1" max="20" required>
-                </div>
-                <div class="form-group">
-                    <label>Source</label>
-                    <select id="quickAddSource">
-                        <option value="phone">Phone</option>
-                        <option value="opentable">OpenTable</option>
-                        <option value="manual">Manual</option>
-                        <option value="website">Website</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Notes</label>
-                    <textarea id="quickAddNotes" rows="3"></textarea>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeQuickAddModal()">Cancel</button>
-                <button class="btn btn-primary" onclick="saveQuickAddReservation()">Save Reservation</button>
             </div>
         </div>
     </div>
@@ -1164,91 +1242,135 @@
                 tableNode.classList.add('selected');
             }
             
-            // Show info panel
-            const panel = document.getElementById('tableInfoPanel');
-            const title = document.getElementById('tableInfoTitle');
-            const nameEl = document.getElementById('tableInfoName');
-            const seatsEl = document.getElementById('tableInfoSeats');
-            const statusEl = document.getElementById('tableInfoStatus');
-            const reservationEl = document.getElementById('tableInfoReservation');
-            const codeEl = document.getElementById('tableInfoCode');
-            const actionButtonsEl = document.getElementById('tableActionButtons');
-            
             selectedTableId = table.id;
             
-            title.textContent = table.name || `Table ${table.table_number}`;
-            nameEl.textContent = table.name || `Table ${table.table_number}`;
-            seatsEl.textContent = `${table.seats} seats`;
+            // Update drawer
+            const drawer = document.getElementById('tableDrawer');
+            const drawerTitle = document.getElementById('tableDrawerTitle');
+            const drawerName = document.getElementById('tableDrawerName');
+            const drawerSeats = document.getElementById('tableDrawerSeats');
+            const drawerStatus = document.getElementById('tableDrawerStatus');
+            const drawerReservation = document.getElementById('tableDrawerReservation');
+            const drawerCode = document.getElementById('tableDrawerCode');
+            const drawerActions = document.getElementById('tableDrawerActions');
+            const drawerTimeline = document.getElementById('tableDrawerTimeline');
+            const timelineSlots = document.getElementById('timelineSlots');
             
-            statusEl.textContent = status.charAt(0).toUpperCase() + status.slice(1);
-            statusEl.className = `table-info-status ${status}`;
+            const date = document.getElementById('selectedDate').value;
+            const time = document.getElementById('selectedTime').value;
+            
+            if (drawerTitle) drawerTitle.textContent = table.name || `Table ${table.table_number}`;
+            if (drawerName) drawerName.textContent = table.name || `Table ${table.table_number}`;
+            if (drawerSeats) drawerSeats.textContent = `${table.seats} seats`;
+            
+            if (drawerStatus) {
+                drawerStatus.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+                drawerStatus.className = `status-pill ${status}`;
+            }
             
             if (assignment && assignment.reservation_id) {
                 const reservation = reservations.find(r => r.id === assignment.reservation_id);
                 if (reservation) {
-                    reservationEl.textContent = reservation.name || reservation.full_name || 'Guest';
-                    codeEl.textContent = reservation.confirmation_code || '—';
+                    if (drawerReservation) drawerReservation.textContent = reservation.name || reservation.full_name || 'Guest';
+                    if (drawerCode) drawerCode.textContent = reservation.confirmation_code || '—';
                 } else {
-                    reservationEl.textContent = '—';
-                    codeEl.textContent = '—';
+                    if (drawerReservation) drawerReservation.textContent = '—';
+                    if (drawerCode) drawerCode.textContent = '—';
                 }
             } else {
-                reservationEl.textContent = 'No reservation';
-                codeEl.textContent = '—';
+                if (drawerReservation) drawerReservation.textContent = 'No reservation';
+                if (drawerCode) drawerCode.textContent = '—';
+            }
+            
+            // Build occupancy timeline (T, T+30, T+60)
+            if (time && drawerTimeline && timelineSlots) {
+                const VALID_TIMES = ['17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30'];
+                const timeIndex = VALID_TIMES.indexOf(time);
+                if (timeIndex !== -1) {
+                    const threeSlots = [];
+                    for (let i = 0; i < 3 && (timeIndex + i) < VALID_TIMES.length; i++) {
+                        threeSlots.push(VALID_TIMES[timeIndex + i]);
+                    }
+                    
+                    const formatTime = (t) => {
+                        const [h, m] = t.split(':');
+                        const hour = parseInt(h);
+                        const period = hour >= 12 ? 'PM' : 'AM';
+                        const hour12 = hour > 12 ? hour - 12 : (hour === 0 ? 12 : hour);
+                        return `${hour12}:${m} ${period}`;
+                    };
+                    
+                    timelineSlots.innerHTML = threeSlots.map(slotTime => {
+                        const slotAssignments = assignments.filter(a => 
+                            a.table_id === table.id && 
+                            a.date === date && 
+                            a.time === slotTime &&
+                            ['reserved', 'blocked', 'unavailable'].includes(a.status)
+                        );
+                        const isOccupied = slotAssignments.length > 0;
+                        return `<div class="timeline-slot ${isOccupied ? 'occupied' : 'available'}">${formatTime(slotTime)}</div>`;
+                    }).join('');
+                    drawerTimeline.style.display = 'block';
+                }
+            } else if (drawerTimeline) {
+                drawerTimeline.style.display = 'none';
             }
             
             // Show action buttons based on status
-            const date = document.getElementById('selectedDate').value;
-            const time = document.getElementById('selectedTime').value;
             let actionButtonsHtml = '';
             
             if (status === 'reserved') {
-                // Reserved: Show "Free Table" button
                 actionButtonsHtml = `
-                    <button class="btn-primary" onclick="handleFreeTable()" style="width: 100%; padding: 0.75rem; font-weight: 600;">
+                    <button class="btn btn-primary" onclick="handleFreeTable()" style="width: 100%; padding: 0.75rem; font-weight: 600;">
                         🔓 Free Table
                     </button>
-                    <button class="btn-secondary" onclick="handleAssignReservation()" style="width: 100%; padding: 0.75rem; font-weight: 600;">
+                    <button class="btn btn-secondary" onclick="handleAssignReservation()" style="width: 100%; padding: 0.75rem; font-weight: 600;">
                         🔄 Reassign
                     </button>
                 `;
             } else if (status === 'available') {
-                // Available: Show "Block" and "Mark Unavailable" buttons
                 actionButtonsHtml = `
-                    <button class="btn-primary" onclick="handleAssignReservation()" style="width: 100%; padding: 0.75rem; font-weight: 600;">
+                    <button class="btn btn-primary" onclick="handleAssignReservation()" style="width: 100%; padding: 0.75rem; font-weight: 600;">
                         ✅ Assign Reservation
                     </button>
-                    <button class="btn-secondary" onclick="handleBlockTable()" style="width: 100%; padding: 0.75rem; font-weight: 600;">
+                    <button class="btn btn-secondary" onclick="handleBlockTable()" style="width: 100%; padding: 0.75rem; font-weight: 600;">
                         🚫 Block 90 min
                     </button>
-                    <button class="btn-secondary" onclick="handleMarkUnavailable()" style="width: 100%; padding: 0.75rem; font-weight: 600;">
-                        ⚠️ Mark Unavailable
+                    <button class="btn btn-secondary" onclick="handleMarkUnavailable()" style="width: 100%; padding: 0.75rem; font-weight: 600;">
+                        ⛔ Mark Unavailable
                     </button>
                 `;
             } else if (status === 'blocked' || status === 'unavailable') {
-                // Blocked/Unavailable: Show "Set Available" button
                 actionButtonsHtml = `
-                    <button class="btn-primary" onclick="handleSetAvailable()" style="width: 100%; padding: 0.75rem; font-weight: 600;">
+                    <button class="btn btn-primary" onclick="handleSetAvailable()" style="width: 100%; padding: 0.75rem; font-weight: 600;">
                         ✅ Set Available
                     </button>
                 `;
             }
             
-            actionButtonsEl.innerHTML = actionButtonsHtml;
-            panel.classList.add('active');
+            if (drawerActions) drawerActions.innerHTML = actionButtonsHtml;
             
-            // Close panel when clicking outside
-            setTimeout(() => {
-                const closeOnOutsideClick = (e) => {
-                    if (!panel.contains(e.target) && !tableNode?.contains(e.target)) {
-                        panel.classList.remove('active');
-                        tableNode?.classList.remove('selected');
-                        selectedTableId = null;
-                        document.removeEventListener('click', closeOnOutsideClick);
-                    }
-                };
-                document.addEventListener('click', closeOnOutsideClick);
-            }, 100);
+            // Open drawer
+            openTableDrawer();
+        }
+        
+        function openTableDrawer() {
+            const drawer = document.getElementById('tableDrawer');
+            const overlay = document.getElementById('tableDrawerOverlay');
+            if (drawer) drawer.classList.add('open');
+            if (overlay) overlay.classList.add('active');
+        }
+        
+        function closeTableDrawer() {
+            const drawer = document.getElementById('tableDrawer');
+            const overlay = document.getElementById('tableDrawerOverlay');
+            if (drawer) drawer.classList.remove('open');
+            if (overlay) overlay.classList.remove('active');
+            // Clear selection
+            document.querySelectorAll('.table-node').forEach(node => {
+                node.classList.remove('selected');
+            });
+            selectedTableId = null;
         }
 
         // Table Action Handlers (called from side panel buttons)
@@ -1901,10 +2023,10 @@
             const timeAssignments = assignments.filter(a => a.time === time);
             const blocks = timeAssignments.filter(a => a.status === 'blocked' || a.status === 'unavailable');
             
-            let html = '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;"><h3 style="margin: 0; font-size: 1.2rem; color: #1e293b;">Reservations</h3><button class="btn-primary btn-small" onclick="openQuickAddModal()" style="padding: 0.6rem 1.25rem; font-size: 0.9rem; border-radius: 8px;">+ Quick Add</button></div>';
+            let html = '';
             
             if (timeReservations.length === 0) {
-                html += '<div class="loading">No reservations for this ' + (time ? 'time slot' : 'date') + '</div>';
+                html += '<div class="loading">No reservations found' + (currentSearchQuery ? ' matching your search' : '') + '</div>';
             } else {
                 timeReservations.forEach(res => {
                     const resAssignments = assignments.filter(a => a.reservation_id === res.id);
@@ -1912,10 +2034,10 @@
                     const statusText = res.status.charAt(0).toUpperCase() + res.status.slice(1);
                     
                     html += `
-                        <div class="reservation-item" style="cursor: pointer;" onclick="openReservationModal('${res.id}')">
+                        <div class="reservation-item ${statusClass}" style="cursor: pointer;" onclick="openReservationModal('${res.id}')">
                             <div style="display: flex; justify-content: space-between; align-items: start;">
                                 <div style="flex: 1;">
-                            <div class="reservation-name">${res.name || res.full_name || 'Guest'}</div>
+                                    <div class="reservation-name">${res.name || res.full_name || 'Guest'}</div>
                                     <div class="reservation-details">
                                         <span>${res.party_size} guests</span>
                                         <span>•</span>
@@ -2401,6 +2523,10 @@
         }
 
         // Quick Add Functions
+        // Stepper state
+        let currentStepperStep = 1;
+        const totalStepperSteps = 4;
+        
         function openQuickAddModal() {
             try {
                 const dateEl = document.getElementById('selectedDate');
@@ -2413,19 +2539,187 @@
                     return;
                 }
                 
+                // Reset stepper
+                currentStepperStep = 1;
+                updateStepperUI();
+                
                 const date = dateEl.value || new Date().toISOString().split('T')[0];
                 quickAddDateEl.value = date;
                 
-                // Set default time to selected time if available
-                const timeEl = document.getElementById('selectedTime');
-                if (timeEl && timeEl.value) {
-                    const quickAddTimeEl = document.getElementById('quickAddTime');
-                    if (quickAddTimeEl) {
-                        quickAddTimeEl.value = timeEl.value;
-                    }
-                }
+                // Clear form
+                document.getElementById('quickAddName').value = '';
+                document.getElementById('quickAddPhone').value = '';
+                document.getElementById('quickAddEmail').value = '';
+                document.getElementById('quickAddPartySize').value = '';
+                document.getElementById('quickAddTime').innerHTML = '<option value="">Select a time...</option>';
+                document.getElementById('quickAddNotes').value = '';
+                document.getElementById('quickAddSource').value = 'phone';
                 
                 openModal('quickAddModal');
+                
+                // Load available times if date and party size are set
+                setTimeout(() => loadAvailableTimes(), 100);
+            } catch (error) {
+                console.error('Error opening Quick Add modal:', error);
+                showToast('error', 'Failed to open form');
+            }
+        }
+        
+        function updateStepperUI() {
+            // Update step indicators
+            for (let i = 1; i <= totalStepperSteps; i++) {
+                const stepEl = document.getElementById(`step${i}`);
+                const contentEl = document.getElementById(`stepperStep${i}`);
+                const backBtn = document.getElementById('stepperBackBtn');
+                const nextBtn = document.getElementById('stepperNextBtn');
+                const saveBtn = document.getElementById('stepperSaveBtn');
+                
+                if (i < currentStepperStep) {
+                    stepEl.classList.add('completed');
+                    stepEl.classList.remove('active');
+                    if (contentEl) contentEl.style.display = 'none';
+                } else if (i === currentStepperStep) {
+                    stepEl.classList.add('active');
+                    stepEl.classList.remove('completed');
+                    if (contentEl) contentEl.style.display = 'block';
+                } else {
+                    stepEl.classList.remove('active', 'completed');
+                    if (contentEl) contentEl.style.display = 'none';
+                }
+            }
+            
+            // Update buttons
+            if (backBtn) backBtn.style.display = currentStepperStep > 1 ? 'block' : 'none';
+            if (nextBtn) nextBtn.style.display = currentStepperStep < totalStepperSteps ? 'block' : 'none';
+            if (saveBtn) saveBtn.style.display = currentStepperStep === totalStepperSteps ? 'block' : 'none';
+            
+            // Update review on step 4
+            if (currentStepperStep === 4) {
+                updateQuickAddReview();
+            }
+        }
+        
+        function stepperNext() {
+            // Validate current step
+            if (currentStepperStep === 1) {
+                const name = document.getElementById('quickAddName').value.trim();
+                const phone = document.getElementById('quickAddPhone').value.trim();
+                if (!name || !phone) {
+                    showToast('error', 'Please fill in name and phone');
+                    return;
+                }
+            } else if (currentStepperStep === 2) {
+                const date = document.getElementById('quickAddDate').value;
+                const time = document.getElementById('quickAddTime').value;
+                const partySize = document.getElementById('quickAddPartySize').value;
+                if (!date || !time || !partySize) {
+                    showToast('error', 'Please select date, time, and party size');
+                    return;
+                }
+            }
+            
+            if (currentStepperStep < totalStepperSteps) {
+                currentStepperStep++;
+                updateStepperUI();
+                if (currentStepperStep === 2) {
+                    loadAvailableTimes();
+                }
+            }
+        }
+        
+        function stepperPrevious() {
+            if (currentStepperStep > 1) {
+                currentStepperStep--;
+                updateStepperUI();
+            }
+        }
+        
+        async function loadAvailableTimes() {
+            const date = document.getElementById('quickAddDate')?.value;
+            const partySize = document.getElementById('quickAddPartySize')?.value;
+            const suggestionsEl = document.getElementById('availableTimesSuggestions');
+            const timeSelect = document.getElementById('quickAddTime');
+            
+            if (!date || !partySize || !suggestionsEl || !timeSelect) return;
+            
+            try {
+                const res = await fetch(`/.netlify/functions/get-available-times?date=${date}&party_size=${partySize}&area=Main%20Floor`);
+                const data = await res.json();
+                
+                if (data.ok && data.times && data.times.length > 0) {
+                    // Update select dropdown
+                    timeSelect.innerHTML = '<option value="">Select a time...</option>';
+                    data.times.forEach(time => {
+                        const [h, m] = time.split(':');
+                        const hour = parseInt(h);
+                        const period = hour >= 12 ? 'PM' : 'AM';
+                        const hour12 = hour > 12 ? hour - 12 : (hour === 0 ? 12 : hour);
+                        const displayTime = `${hour12}:${m} ${period}`;
+                        timeSelect.innerHTML += `<option value="${time}">${displayTime}</option>`;
+                    });
+                    
+                    // Show suggestions
+                    suggestionsEl.innerHTML = data.times.map(time => {
+                        const [h, m] = time.split(':');
+                        const hour = parseInt(h);
+                        const period = hour >= 12 ? 'PM' : 'AM';
+                        const hour12 = hour > 12 ? hour - 12 : (hour === 0 ? 12 : hour);
+                        const displayTime = `${hour12}:${m} ${period}`;
+                        return `<button type="button" class="time-suggestion-btn" onclick="selectQuickAddTime('${time}')">${displayTime}</button>`;
+                    }).join('');
+                    suggestionsEl.style.display = 'grid';
+                } else {
+                    suggestionsEl.style.display = 'none';
+                    timeSelect.innerHTML = '<option value="">No available times</option>';
+                }
+            } catch (error) {
+                console.error('Error loading available times:', error);
+            }
+        }
+        
+        function selectQuickAddTime(time) {
+            document.getElementById('quickAddTime').value = time;
+            document.querySelectorAll('.time-suggestion-btn').forEach(btn => {
+                btn.classList.remove('selected');
+                if (btn.textContent.includes(time.split(':')[0])) {
+                    btn.classList.add('selected');
+                }
+            });
+        }
+        
+        function updateQuickAddReview() {
+            const reviewEl = document.getElementById('quickAddReview');
+            if (!reviewEl) return;
+            
+            const name = document.getElementById('quickAddName').value;
+            const phone = document.getElementById('quickAddPhone').value;
+            const email = document.getElementById('quickAddEmail').value;
+            const date = document.getElementById('quickAddDate').value;
+            const time = document.getElementById('quickAddTime').value;
+            const partySize = document.getElementById('quickAddPartySize').value;
+            const source = document.getElementById('quickAddSource').value;
+            const notes = document.getElementById('quickAddNotes').value;
+            
+            const formatTime = (t) => {
+                if (!t) return '—';
+                const [h, m] = t.split(':');
+                const hour = parseInt(h);
+                const period = hour >= 12 ? 'PM' : 'AM';
+                const hour12 = hour > 12 ? hour - 12 : (hour === 0 ? 12 : hour);
+                return `${hour12}:${m} ${period}`;
+            };
+            
+            reviewEl.innerHTML = `
+                <div><strong>Name:</strong> ${name || '—'}</div>
+                <div><strong>Phone:</strong> ${phone || '—'}</div>
+                ${email ? `<div><strong>Email:</strong> ${email}</div>` : ''}
+                <div><strong>Date:</strong> ${date || '—'}</div>
+                <div><strong>Time:</strong> ${formatTime(time)}</div>
+                <div><strong>Party Size:</strong> ${partySize || '—'}</div>
+                <div><strong>Source:</strong> ${source || '—'}</div>
+                ${notes ? `<div><strong>Notes:</strong> ${notes}</div>` : ''}
+            `;
+        }
                 
                 // Focus first input and add keyboard listeners
                 setTimeout(() => {
@@ -2463,6 +2757,10 @@
                 modal.style.display = 'none';
             }
             
+            // Reset stepper
+            currentStepperStep = 1;
+            updateStepperUI();
+            
             // Reset form
             try {
                 const nameEl = document.getElementById('quickAddName');
@@ -2470,12 +2768,19 @@
                 const emailEl = document.getElementById('quickAddEmail');
                 const notesEl = document.getElementById('quickAddNotes');
                 const partySizeEl = document.getElementById('quickAddPartySize');
+                const timeEl = document.getElementById('quickAddTime');
+                const suggestionsEl = document.getElementById('availableTimesSuggestions');
                 
                 if (nameEl) nameEl.value = '';
                 if (phoneEl) phoneEl.value = '';
                 if (emailEl) emailEl.value = '';
                 if (notesEl) notesEl.value = '';
                 if (partySizeEl) partySizeEl.value = '';
+                if (timeEl) timeEl.innerHTML = '<option value="">Select a time...</option>';
+                if (suggestionsEl) {
+                    suggestionsEl.innerHTML = '';
+                    suggestionsEl.style.display = 'none';
+                }
             } catch (error) {
                 console.error('Error resetting Quick Add form:', error);
             }
