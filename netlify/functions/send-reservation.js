@@ -409,26 +409,43 @@ exports.handler = async (event, context) => {
 
         let tableAssignments = [];
         if (!tablesError && allTables && allTables.length > 0) {
-            // Get tables that are already assigned during this time window
-            const endDatetime = getEndDatetime(datetimeIso);
+            // Use 3-slot system: Get tables that are already assigned during any of the 3 slots (T, T+30, T+60)
+            const VALID_TIMES = ['17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30'];
+            const timeIndex = VALID_TIMES.indexOf(data.time);
+            
+            if (timeIndex === -1) {
+                return {
+                    statusCode: 400,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    body: JSON.stringify({ 
+                        success: false, 
+                        error: `Invalid time: ${data.time}. Must be one of: ${VALID_TIMES.join(', ')}` 
+                    })
+                };
+            }
+
+            // Get the 3 slots for this reservation
+            const threeSlots = [];
+            for (let i = 0; i < 3 && (timeIndex + i) < VALID_TIMES.length; i++) {
+                threeSlots.push(VALID_TIMES[timeIndex + i]);
+            }
+
+            // Get tables that are already assigned during any of the 3 slots
             const { data: assignments } = await supabase
                 .from('table_assignments')
-                .select('table_id, datetime_iso')
-                .in('status', ['reserved', 'blocked', 'unavailable'])
-                .gte('datetime_iso', datetimeIso)
-                .lt('datetime_iso', endDatetime);
+                .select('table_id, time')
+                .eq('date', data.date)
+                .in('time', threeSlots)
+                .in('status', ['reserved', 'blocked', 'unavailable']);
 
-            // Get list of occupied table IDs
+            // Get list of occupied table IDs (occupied in ANY of the 3 slots)
             const occupiedTableIds = new Set();
             if (assignments) {
                 assignments.forEach(assignment => {
-                    const assignmentStart = new Date(assignment.datetime_iso);
-                    const assignmentEnd = new Date(assignmentStart.getTime() + RESERVATION_DURATION_MINUTES * 60 * 1000);
-                    const ourStart = new Date(datetimeIso);
-                    const ourEnd = new Date(endDatetime);
-                    if (assignmentStart < ourEnd && assignmentEnd > ourStart) {
-                        occupiedTableIds.add(assignment.table_id);
-                    }
+                    occupiedTableIds.add(assignment.table_id);
                 });
             }
 

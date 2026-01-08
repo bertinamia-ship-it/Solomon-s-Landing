@@ -243,12 +243,12 @@ class RestaurantChatbot {
                 this.conversationState = 'awaiting_time';
                 response = this.responses[this.currentLanguage].askTime;
                 
-                // Show time options
+                // Show time options (will be filtered by availability after party_size is known)
                 setTimeout(() => {
                     if (typeof window.showChatbotOptions === 'function') {
                         const timeOptions = [
-                            '5:00 PM', '5:30 PM', '6:00 PM', '6:30 PM', '7:00 PM', 
-                            '7:30 PM', '8:00 PM', '8:30 PM', '9:00 PM', '9:30 PM', '10:00 PM'
+                            '5:30 PM', '6:00 PM', '6:30 PM', '7:00 PM', 
+                            '7:30 PM', '8:00 PM', '8:30 PM', '9:00 PM', '9:30 PM'
                         ];
                         window.showChatbotOptions(timeOptions);
                     }
@@ -303,6 +303,69 @@ class RestaurantChatbot {
                 
                 if (guests && guests > 0) {
                     this.reservationData.party_size = guests.toString();
+                    
+                    // If time was already selected, check availability now
+                    if (this.reservationData.time && this.reservationData.date) {
+                        try {
+                            const availabilityRes = await fetch('/.netlify/functions/check-availability', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    date: this.reservationData.date,
+                                    time: this.reservationData.time,
+                                    party_size: this.reservationData.party_size
+                                })
+                            });
+
+                            const availabilityResult = await availabilityRes.json().catch(() => ({}));
+
+                            if (!availabilityRes.ok || !availabilityResult.success || !availabilityResult.available) {
+                                // Time not available, get alternative times
+                                const availableTimesRes = await fetch(`/.netlify/functions/get-available-times?date=${this.reservationData.date}&party_size=${this.reservationData.party_size}&area=Main%20Floor`);
+                                const availableTimesData = await availableTimesRes.json().catch(() => ({}));
+
+                                if (availableTimesData.ok && availableTimesData.times && availableTimesData.times.length > 0) {
+                                    // Convert 24h to 12h format for display
+                                    const formatTime = (time24) => {
+                                        const [h, m] = time24.split(':');
+                                        const hour = parseInt(h);
+                                        const period = hour >= 12 ? 'PM' : 'AM';
+                                        const hour12 = hour > 12 ? hour - 12 : (hour === 0 ? 12 : hour);
+                                        return `${hour12}:${m} ${period}`;
+                                    };
+
+                                    const availableTimesFormatted = availableTimesData.times.map(formatTime);
+                                    const selectedTimeFormatted = formatTime(this.reservationData.time);
+                                    
+                                    response = this.currentLanguage === 'en'
+                                        ? `❌ **Sorry, ${selectedTimeFormatted} is not available for ${this.reservationData.party_size} guests.**\n\n✅ **Available times:**\n${availableTimesFormatted.map(t => `• ${t}`).join('\n')}\n\nPlease select one of these times:`
+                                        : `❌ **Lo sentimos, ${selectedTimeFormatted} no está disponible para ${this.reservationData.party_size} comensales.**\n\n✅ **Horarios disponibles:**\n${availableTimesFormatted.map(t => `• ${t}`).join('\n')}\n\nPor favor selecciona uno de estos horarios:`;
+
+                                    this.conversationState = 'awaiting_time';
+                                    
+                                    setTimeout(() => {
+                                        if (typeof window.showChatbotOptions === 'function') {
+                                            window.showChatbotOptions(availableTimesFormatted);
+                                        }
+                                    }, 100);
+                                    break;
+                                } else {
+                                    // No times available
+                                    response = this.currentLanguage === 'es'
+                                        ? `❌ **No hay disponibilidad para ${this.reservationData.party_size} comensales en esta fecha.**\n\n💡 **Sugerencias:**\n• Prueba otra fecha\n• Llama al restaurante: **+52 624-217-5935**\n• Considera un grupo más pequeño`
+                                        : `❌ **No availability for ${this.reservationData.party_size} guests on this date.**\n\n💡 **Suggestions:**\n• Try another date\n• Call the restaurant: **+52 624-217-5935**\n• Consider a smaller party size`;
+                                    
+                                    this.conversationState = 'awaiting_date';
+                                    break;
+                                }
+                            }
+                        } catch (error) {
+                            console.error('Error checking availability:', error);
+                            // Continue with flow if check fails
+                        }
+                    }
+                    
+                    // If we get here, time is available or wasn't checked yet, continue with flow
                     this.conversationState = 'awaiting_staying_place';
                     response = this.responses[this.currentLanguage].askStayingPlace;
                     

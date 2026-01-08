@@ -224,32 +224,43 @@ exports.handler = async (event, context) => {
             };
         }
 
-        // Get tables that are already assigned during this time window
+        // Extract date and time from datetime_iso
+        const dateMatch = data.datetime_iso.match(/^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2})/);
+        if (!dateMatch) {
+            throw new Error('Invalid datetime_iso format');
+        }
+        const date = dateMatch[1];
+        const time = dateMatch[2];
+
+        // Get the 3 slots for this reservation (T, T+30, T+60)
+        const VALID_TIMES = ['17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30'];
+        const timeIndex = VALID_TIMES.indexOf(time);
+        if (timeIndex === -1) {
+            throw new Error(`Invalid time: ${time}. Must be one of: ${VALID_TIMES.join(', ')}`);
+        }
+
+        const threeSlots = [];
+        for (let i = 0; i < 3 && (timeIndex + i) < VALID_TIMES.length; i++) {
+            threeSlots.push(VALID_TIMES[timeIndex + i]);
+        }
+
+        // Get tables that are already assigned during any of the 3 slots (using 3-slot system)
         const { data: assignments, error: assignmentsError } = await supabase
             .from('table_assignments')
-            .select('table_id, datetime_iso')
-            .in('status', ['reserved', 'blocked', 'unavailable'])
-            .gte('datetime_iso', data.datetime_iso)
-            .lt('datetime_iso', endDatetime);
+            .select('table_id, time')
+            .eq('date', date)
+            .in('time', threeSlots)
+            .in('status', ['reserved', 'blocked', 'unavailable']);
 
         if (assignmentsError) {
             throw assignmentsError;
         }
 
-        // Get list of occupied table IDs
+        // Get list of occupied table IDs (occupied in ANY of the 3 slots)
         const occupiedTableIds = new Set();
         if (assignments) {
             assignments.forEach(assignment => {
-                // Check if assignment overlaps with our reservation window
-                const assignmentStart = new Date(assignment.datetime_iso);
-                const assignmentEnd = new Date(assignmentStart.getTime() + RESERVATION_DURATION_MINUTES * 60 * 1000);
-                const ourStart = new Date(data.datetime_iso);
-                const ourEnd = new Date(endDatetime);
-
-                // Check for overlap
-                if (assignmentStart < ourEnd && assignmentEnd > ourStart) {
-                    occupiedTableIds.add(assignment.table_id);
-                }
+                occupiedTableIds.add(assignment.table_id);
             });
         }
 
