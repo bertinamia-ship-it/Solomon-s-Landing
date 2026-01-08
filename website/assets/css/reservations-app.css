@@ -438,6 +438,21 @@ body {
     color: var(--status-cancelled);
 }
 
+.status-seated {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--status-reserved);
+}
+
+.status-completed {
+    background: rgba(107, 114, 128, 0.1);
+    color: var(--status-cancelled);
+}
+
+.status-no_show {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--status-unavailable);
+}
+
 /* ============================================
    TOAST NOTIFICATIONS
    ============================================ */

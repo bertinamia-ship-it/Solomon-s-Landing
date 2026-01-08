@@ -518,16 +518,28 @@
             text-transform: capitalize;
         }
         .status-pill.pending {
-            background: #fef3c7;
+            background: rgba(245, 158, 11, 0.1);
             color: #92400e;
         }
         .status-pill.confirmed {
-            background: #d1fae5;
+            background: rgba(16, 185, 129, 0.1);
             color: #065f46;
         }
-        .status-pill.cancelled {
-            background: #fee2e2;
+        .status-pill.seated {
+            background: rgba(59, 130, 246, 0.1);
+            color: #1e40af;
+        }
+        .status-pill.completed {
+            background: rgba(107, 114, 128, 0.1);
+            color: #374151;
+        }
+        .status-pill.no_show {
+            background: rgba(239, 68, 68, 0.1);
             color: #991b1b;
+        }
+        .status-pill.cancelled {
+            background: rgba(107, 114, 128, 0.1);
+            color: #6b7280;
         }
         .reservation-table {
             margin-top: 0.5rem;
@@ -2131,12 +2143,11 @@
                 const allAssignments = Array.isArray(state.assignments) ? state.assignments : [];
                 const allTablesList = Array.isArray(state.allTables) ? state.allTables : [];
                 
-                // Filter reservations by date and status
+                // Filter reservations by date (include all statuses, filter by statusFilter below)
                 let dateReservations = allReservations.filter(r => {
                     if (!r) return false;
                     const rDate = r.date || "";
-                    const rStatus = (r.status || "").toLowerCase();
-                    return rDate === date && rStatus !== 'cancelled';
+                    return rDate === date;
                 });
                 
                 // Apply status filter
