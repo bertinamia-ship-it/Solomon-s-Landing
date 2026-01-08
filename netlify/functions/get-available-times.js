@@ -243,9 +243,10 @@ exports.handler = async (event, context) => {
         }
 
         // Get all table assignments for this date (all times)
+        // Only count assignments for reservations that are NOT in release statuses
         const { data: allAssignments, error: assignmentsError } = await supabase
             .from('table_assignments')
-            .select('table_id, time, status')
+            .select('table_id, time, status, reservation_id')
             .eq('date', data.date)
             .in('status', ['reserved', 'blocked', 'unavailable']);
 
@@ -253,14 +254,43 @@ exports.handler = async (event, context) => {
             throw assignmentsError;
         }
 
+        // Get reservations to filter out completed/cancelled/no_show
+        const reservationIds = [...new Set((allAssignments || [])
+            .map(a => a.reservation_id)
+            .filter(Boolean))];
+
+        let validReservationIds = new Set();
+        if (reservationIds.length > 0) {
+            const { data: reservations, error: reservationsError } = await supabase
+                .from('reservations')
+                .select('id, status')
+                .in('id', reservationIds);
+
+            if (reservationsError) {
+                console.warn('Warning: Could not fetch reservations for filtering:', reservationsError);
+            } else {
+                // Only keep reservations that are NOT in release statuses
+                (reservations || []).forEach(r => {
+                    if (!['completed', 'cancelled', 'no_show'].includes(r.status)) {
+                        validReservationIds.add(r.id);
+                    }
+                });
+            }
+        }
+
         // Build map of occupied tables by time slot
+        // Only count assignments for valid reservations OR assignments without reservation_id (blocks)
         const occupiedByTime = {};
         if (allAssignments) {
             allAssignments.forEach(assignment => {
-                if (!occupiedByTime[assignment.time]) {
-                    occupiedByTime[assignment.time] = new Set();
+                // Include if: no reservation_id (block/unavailable) OR reservation is valid
+                const isValid = !assignment.reservation_id || validReservationIds.has(assignment.reservation_id);
+                if (isValid) {
+                    if (!occupiedByTime[assignment.time]) {
+                        occupiedByTime[assignment.time] = new Set();
+                    }
+                    occupiedByTime[assignment.time].add(assignment.table_id);
                 }
-                occupiedByTime[assignment.time].add(assignment.table_id);
             });
         }
 

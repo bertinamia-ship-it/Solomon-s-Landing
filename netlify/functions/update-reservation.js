@@ -124,17 +124,34 @@ exports.handler = async (event, context) => {
             updateData.notes = notes;
         }
         if (status !== undefined) {
-            if (!['pending', 'confirmed', 'cancelled'].includes(status)) {
+            const validStatuses = ['pending', 'confirmed', 'seated', 'completed', 'no_show', 'cancelled'];
+            if (!validStatuses.includes(status)) {
                 return {
                     statusCode: 400,
                     headers: {
                         'Content-Type': 'application/json',
                         'Access-Control-Allow-Origin': '*'
                     },
-                    body: JSON.stringify({ success: false, error: 'Invalid status. Must be: pending, confirmed, or cancelled' })
+                    body: JSON.stringify({ success: false, error: `Invalid status. Must be one of: ${validStatuses.join(', ')}` })
                 };
             }
             updateData.status = status;
+            
+            // If status changes to completed/cancelled/no_show, release table assignments
+            const releaseStatuses = ['completed', 'cancelled', 'no_show'];
+            if (releaseStatuses.includes(status) && existingReservation.status !== status) {
+                const { error: deleteAssignmentsError } = await supabase
+                    .from('table_assignments')
+                    .delete()
+                    .eq('reservation_id', id);
+                
+                if (deleteAssignmentsError) {
+                    console.error('Error releasing assignments on status change:', deleteAssignmentsError);
+                    // Don't fail the update, but log it
+                } else {
+                    console.log(`✅ Released table assignments for reservation ${id} (status: ${status})`);
+                }
+            }
         }
 
         // Update reservation

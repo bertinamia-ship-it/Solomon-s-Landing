@@ -84,6 +84,23 @@ exports.handler = async (event, context) => {
 
         console.log(`🔓 Releasing table ${table_id} at ${date} for slots: ${timeSlots.join(', ')}`);
 
+        // First, find any reservations linked to these assignments
+        const { data: linkedAssignments, error: fetchError } = await supabase
+            .from('table_assignments')
+            .select('reservation_id')
+            .eq('table_id', table_id)
+            .eq('date', date)
+            .in('time', timeSlots)
+            .in('status', ['reserved', 'blocked', 'unavailable'])
+            .not('reservation_id', 'is', null);
+
+        const reservationIds = new Set();
+        if (linkedAssignments) {
+            linkedAssignments.forEach(a => {
+                if (a.reservation_id) reservationIds.add(a.reservation_id);
+            });
+        }
+
         // Delete all assignments for this table at these 3 time slots on this date
         const { data: deletedAssignments, error: deleteError } = await supabase
             .from('table_assignments')
@@ -102,11 +119,30 @@ exports.handler = async (event, context) => {
         const deletedCount = deletedAssignments?.length || 0;
         console.log(`✅ Released ${deletedCount} assignment(s) for table ${table_id}`);
 
+        // Update linked reservations to "completed" status (free table = guests finished)
+        let updatedReservations = 0;
+        if (reservationIds.size > 0) {
+            const { data: updated, error: updateError } = await supabase
+                .from('reservations')
+                .update({ status: 'completed' })
+                .in('id', Array.from(reservationIds))
+                .in('status', ['pending', 'confirmed', 'seated'])
+                .select();
+
+            if (updateError) {
+                console.error('⚠️ Warning: Could not update reservation statuses:', updateError);
+            } else {
+                updatedReservations = updated?.length || 0;
+                console.log(`✅ Updated ${updatedReservations} reservation(s) to "completed" status`);
+            }
+        }
+
         return json(200, {
             ok: true,
             success: true,
             deletedCount: deletedCount,
-            message: `Table freed: ${deletedCount} assignment(s) released`,
+            updatedReservations: updatedReservations,
+            message: `Table freed: ${deletedCount} assignment(s) released${updatedReservations > 0 ? `, ${updatedReservations} reservation(s) marked completed` : ''}`,
             timeSlots: timeSlots
         });
 

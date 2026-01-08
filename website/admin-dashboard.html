@@ -543,11 +543,17 @@
             <div style="margin-top: 2rem; padding-top: 2rem; border-top: 3px solid #dc2626;">
                 <h3 style="color: #dc2626; margin-bottom: 1rem;">⚠️ Danger Zone</h3>
                 <p style="color: #6b7280; margin-bottom: 1rem; font-size: 0.9rem;">Admin-only tools for emergency fixes. Use with caution.</p>
-                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                    <button class="btn-danger" onclick="adminForceFreeTable()" style="padding: 0.75rem 1.5rem; font-weight: 600;">
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap; flex-direction: column;">
+                    <button class="btn-secondary" onclick="runCleanup()" style="padding: 0.75rem 1.5rem; font-weight: 600; width: 100%;">
+                        🧹 Run Cleanup (Reconcile Assignments)
+                    </button>
+                    <p style="color: #6b7280; font-size: 0.85rem; margin: 0;">
+                        Removes orphaned table assignments from deleted/cancelled/completed reservations
+                    </p>
+                    <button class="btn-danger" onclick="adminForceFreeTable()" style="padding: 0.75rem 1.5rem; font-weight: 600; width: 100%;">
                         🔓 Force Free Table
                     </button>
-                    <button class="btn-secondary" onclick="adminCreateBlock()" style="padding: 0.75rem 1.5rem; font-weight: 600;">
+                    <button class="btn-secondary" onclick="adminCreateBlock()" style="padding: 0.75rem 1.5rem; font-weight: 600; width: 100%;">
                         🚫 Create Block
                     </button>
                 </div>
@@ -1764,6 +1770,40 @@
         }
         
         // ============================================
+        // DANGER ZONE - FORCE TOOLS
+        
+        async function runCleanup() {
+            if (!confirm('Run cleanup? This will remove orphaned table assignments from deleted/cancelled reservations.')) {
+                return;
+            }
+            
+            try {
+                const token = sessionStorage.getItem('dashboardAuthToken');
+                const res = await fetch('/.netlify/functions/reconcile-assignments', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (!res.ok) {
+                    const text = await res.text();
+                    throw new Error(text || 'Cleanup failed');
+                }
+                
+                const data = await res.json();
+                if (data.ok) {
+                    showMessage(`Cleanup complete: ${data.deletedCount || 0} assignment(s) removed`, 'success');
+                } else {
+                    showMessage(data.error || 'Cleanup failed', 'error');
+                }
+            } catch (error) {
+                console.error('Cleanup error:', error);
+                showMessage(`Error: ${error.message || 'Unknown error'}`, 'error');
+            }
+        }
+        
         // DANGER ZONE - FORCE TOOLS
         // ============================================
         

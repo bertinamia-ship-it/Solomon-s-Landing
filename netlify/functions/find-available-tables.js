@@ -247,7 +247,7 @@ exports.handler = async (event, context) => {
         // Get tables that are already assigned during any of the 3 slots (using 3-slot system)
         const { data: assignments, error: assignmentsError } = await supabase
             .from('table_assignments')
-            .select('table_id, time')
+            .select('table_id, time, reservation_id')
             .eq('date', date)
             .in('time', threeSlots)
             .in('status', ['reserved', 'blocked', 'unavailable']);
@@ -256,11 +256,38 @@ exports.handler = async (event, context) => {
             throw assignmentsError;
         }
 
+        // Filter out assignments for reservations that are completed/cancelled/no_show
+        const reservationIds = [...new Set((assignments || [])
+            .map(a => a.reservation_id)
+            .filter(Boolean))];
+
+        let validReservationIds = new Set();
+        if (reservationIds.length > 0) {
+            const { data: reservations, error: reservationsError } = await supabase
+                .from('reservations')
+                .select('id, status')
+                .in('id', reservationIds);
+
+            if (!reservationsError && reservations) {
+                // Only keep reservations that are NOT in release statuses
+                reservations.forEach(r => {
+                    if (!['completed', 'cancelled', 'no_show'].includes(r.status)) {
+                        validReservationIds.add(r.id);
+                    }
+                });
+            }
+        }
+
         // Get list of occupied table IDs (occupied in ANY of the 3 slots)
+        // Only count assignments for valid reservations OR assignments without reservation_id (blocks)
         const occupiedTableIds = new Set();
         if (assignments) {
             assignments.forEach(assignment => {
-                occupiedTableIds.add(assignment.table_id);
+                // Include if: no reservation_id (block/unavailable) OR reservation is valid
+                const isValid = !assignment.reservation_id || validReservationIds.has(assignment.reservation_id);
+                if (isValid) {
+                    occupiedTableIds.add(assignment.table_id);
+                }
             });
         }
 

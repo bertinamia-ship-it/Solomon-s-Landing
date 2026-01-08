@@ -206,6 +206,65 @@ const SLOTS_PER_RESERVATION = 3; // 90 / 30
 ### Error Messages
 If functions return `{"ok":false,"error":"Missing SUPABASE_URL"}` or `{"success":false,"error":"Server configuration error"}`, check that all required env vars are set in Netlify Dashboard and redeploy.
 
+## Reservation System Logic Hardening
+
+### Reservation Lifecycle States
+**Status Values**: `pending`, `confirmed`, `seated`, `completed`, `no_show`, `cancelled`
+
+**Table Occupancy Rules**:
+- `pending`/`confirmed`/`seated` → Table reserved (blocks assignments)
+- `completed`/`cancelled`/`no_show` → Releases assignments automatically
+
+**Implementation**:
+- Schema migration: `supabase-migration-reservation-lifecycle.sql` adds `seated` and `no_show` statuses
+- `update-reservation.js`: Automatically releases assignments when status changes to release statuses
+- `release-table.js`: Marks linked reservations as "completed" when freeing table
+- `get-available-times.js`: Filters out assignments for completed/cancelled/no_show reservations
+- `find-available-tables.js`: Only counts valid reservations (not in release statuses)
+
+### Free Table Logic
+- If reservation exists for table/time: Marks reservation as "completed" and deletes all 3-slot assignments
+- If no reservation but assignments exist: Deletes assignments (admin cleanup)
+- Always releases all 3 slots (T, T+30, T+60)
+
+### Bot Availability Hardening
+- `get-available-times.js`: Checks all 3 slots for each candidate time
+- Filters out assignments for completed/cancelled/no_show reservations
+- Only shows times where tables are truly available for the party size
+- Returns clear "no availability" message if no times found
+
+### Capacity Logic
+- Consistent use of `tables.seats` field (not `capacity`)
+- Rule: `party_size <= total_seats` allowed
+- Prefers smallest adequate table (optimizes seating)
+
+### Safety & Cleanup
+- **New Function**: `reconcile-assignments.js`
+  - Scans for orphaned assignments (reservation_id that no longer exists)
+  - Removes assignments for reservations with release statuses
+  - Protected: Requires admin authorization
+- **Admin Dashboard**: "Run Cleanup" button in Danger Zone
+  - Calls `reconcile-assignments` endpoint
+  - Shows count of deleted assignments
+
+**Files Modified**:
+- `netlify/functions/update-reservation.js` - Status lifecycle support, auto-release on status change
+- `netlify/functions/release-table.js` - Updates reservation status to "completed"
+- `netlify/functions/get-available-times.js` - Filters by reservation status
+- `netlify/functions/find-available-tables.js` - Filters by reservation status
+- `netlify/functions/reconcile-assignments.js` - NEW cleanup function
+- `website/admin-dashboard.html` - Added "Run Cleanup" button
+- `website/hostess-dashboard.html` - Added full status lifecycle options
+- `supabase-migration-reservation-lifecycle.sql` - NEW migration file
+
+**Acceptance Tests**:
+1. ✅ Bot does not offer fully booked hour (checks all 3 slots + filters by status)
+2. ✅ Cancel releases table (all 3 slots deleted)
+3. ✅ Free table releases immediately (marks reservation completed + deletes assignments)
+4. ✅ Status change to completed/cancelled/no_show releases assignments automatically
+5. ✅ Cleanup removes orphan assignments (from deleted/cancelled/completed reservations)
+6. ✅ No double-booking (availability checks exclude completed/cancelled/no_show)
+
 ## Hostess Dashboard Hotfixes
 
 ### Issues Fixed (Commit: `49c3af5`)

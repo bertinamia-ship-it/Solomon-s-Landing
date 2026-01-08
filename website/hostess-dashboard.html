@@ -922,6 +922,9 @@
                         <button class="status-filter-btn active" data-filter="all" onclick="setStatusFilter('all')">All</button>
                         <button class="status-filter-btn" data-filter="pending" onclick="setStatusFilter('pending')">Pending</button>
                         <button class="status-filter-btn" data-filter="confirmed" onclick="setStatusFilter('confirmed')">Confirmed</button>
+                        <button class="status-filter-btn" data-filter="seated" onclick="setStatusFilter('seated')">Seated</button>
+                        <button class="status-filter-btn" data-filter="completed" onclick="setStatusFilter('completed')">Completed</button>
+                        <button class="status-filter-btn" data-filter="no_show" onclick="setStatusFilter('no_show')">No Show</button>
                         <button class="status-filter-btn" data-filter="cancelled" onclick="setStatusFilter('cancelled')">Cancelled</button>
                     </div>
                 </div>
@@ -2170,8 +2173,15 @@
                 timeReservations.forEach(res => {
                         if (!res) return;
                         const resAssignments = allAssignments.filter(a => (a.reservation_id || "") === (res.id || ""));
-                        const statusClass = (res.status || "pending") === 'confirmed' ? 'confirmed' : (res.status || "pending") === 'pending' ? 'pending' : 'cancelled';
-                        const statusText = ((res.status || "pending").charAt(0).toUpperCase() + (res.status || "pending").slice(1));
+                        const resStatus = (res.status || "pending").toLowerCase();
+                        const statusClass = resStatus === 'confirmed' ? 'confirmed' : 
+                                          resStatus === 'seated' ? 'seated' :
+                                          resStatus === 'completed' ? 'completed' :
+                                          resStatus === 'no_show' ? 'no_show' :
+                                          resStatus === 'cancelled' ? 'cancelled' : 'pending';
+                        const statusText = resStatus === 'no_show' ? 'No Show' : 
+                                          resStatus === 'seated' ? 'Seated' :
+                                          ((res.status || "pending").charAt(0).toUpperCase() + (res.status || "pending").slice(1));
                         const resName = res.name || res.full_name || 'Guest';
                         const resPartySize = res.party_size || 0;
                         const resTime = res.time || "";
@@ -2594,8 +2604,14 @@
                     <select id="editStatus">
                         <option value="pending" ${reservation.status === 'pending' ? 'selected' : ''}>Pending</option>
                         <option value="confirmed" ${reservation.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
+                        <option value="seated" ${reservation.status === 'seated' ? 'selected' : ''}>Seated</option>
+                        <option value="completed" ${reservation.status === 'completed' ? 'selected' : ''}>Completed</option>
+                        <option value="no_show" ${reservation.status === 'no_show' ? 'selected' : ''}>No Show</option>
                         <option value="cancelled" ${reservation.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
                     </select>
+                    <small style="color: #6b7280; display: block; margin-top: 0.25rem;">
+                        ${['completed', 'cancelled', 'no_show'].includes(reservation.status) ? '⚠️ This status releases table assignments' : ''}
+                    </small>
                 </div>
                 <div class="form-group">
                     <label>Assigned Tables</label>
