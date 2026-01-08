@@ -1157,13 +1157,21 @@
             window.location.href = 'dashboard-login.html';
         }
 
-        // State
-        let currentArea = 'Main Floor';
-        let allTables = [];
-        let currentLayout = [];
-        let assignments = [];
-        let reservations = [];
-        let selectedTableId = null;
+        // Centralized State - Single Source of Truth
+        const state = {
+            searchQuery: "",
+            statusFilter: "all",
+            selectedDate: null,
+            selectedTime: null,
+            selectedArea: "Main Floor",
+            reservations: [],
+            assignments: [],
+            blocks: [],
+            tables: [],
+            allTables: [],
+            layout: [],
+            selectedTableId: null
+        };
 
         // Toast Notification System
         function showToast(type, message) {
@@ -1244,7 +1252,7 @@
         }
 
         function switchArea(area) {
-            currentArea = area;
+            state.selectedArea = area || 'Main Floor';
             document.querySelectorAll('.area-tab').forEach(tab => {
                 tab.classList.remove('active');
                 if (tab.textContent === area) tab.classList.add('active');
@@ -1264,7 +1272,7 @@
                 tableNode.classList.add('selected');
             }
             
-            selectedTableId = table.id;
+            state.selectedTableId = table.id;
             
             // Update drawer
             const drawer = document.getElementById('tableDrawer');
@@ -1291,7 +1299,7 @@
             }
             
             if (assignment && assignment.reservation_id) {
-                const reservation = reservations.find(r => r.id === assignment.reservation_id);
+                const reservation = (state.reservations || []).find(r => r.id === assignment.reservation_id);
                 if (reservation) {
                     if (drawerReservation) drawerReservation.textContent = reservation.name || reservation.full_name || 'Guest';
                     if (drawerCode) drawerCode.textContent = reservation.confirmation_code || '—';
@@ -1323,7 +1331,7 @@
                     };
                     
                     timelineSlots.innerHTML = threeSlots.map(slotTime => {
-                        const slotAssignments = assignments.filter(a => 
+                        const slotAssignments = (state.assignments || []).filter(a => 
                             a.table_id === table.id && 
                             a.date === date && 
                             a.time === slotTime &&
@@ -1392,13 +1400,13 @@
             document.querySelectorAll('.table-node').forEach(node => {
                 node.classList.remove('selected');
             });
-            selectedTableId = null;
+            state.selectedTableId = null;
         }
 
         // Table Action Handlers (called from side panel buttons)
         async function handleFreeTable() {
             // Validate state - use in-memory state, not fragile DOM reads
-            if (!selectedTableId) {
+            if (!state.selectedTableId) {
                 showToast('error', 'Please select a table first');
                 return;
             }
@@ -1419,8 +1427,8 @@
                 return;
             }
             
-            // Use currentArea variable (in-memory state), not DOM
-            const area = currentArea || 'Main Floor';
+            // Use state.selectedArea (in-memory state), not DOM
+            const area = state.selectedArea || 'Main Floor';
             
             openConfirm({
                 title: 'Free Table',
@@ -1459,7 +1467,7 @@
         }
 
         async function handleAssignReservation() {
-            if (!selectedTableId) {
+            if (!state.selectedTableId) {
                 showToast('error', 'Please select a table first');
                 return;
             }
@@ -1481,9 +1489,9 @@
             }
             
             // Find unassigned reservations for this time
-            const unassigned = reservations.filter(r => {
+            const unassigned = (state.reservations || []).filter(r => {
                 if (r.time !== time || r.date !== date) return false;
-                return !assignments.some(a => a.reservation_id === r.id && a.table_id === selectedTableId);
+                return !(state.assignments || []).some(a => a.reservation_id === r.id && a.table_id === state.selectedTableId);
             });
             
             if (unassigned.length === 0) {
@@ -1546,7 +1554,7 @@
         }
 
         async function handleBlockTable() {
-            if (!selectedTableId) {
+            if (!state.selectedTableId) {
                 showToast('error', 'Please select a table first');
                 return;
             }
@@ -1615,7 +1623,7 @@
         }
 
         async function handleMarkUnavailable() {
-            if (!selectedTableId) {
+            if (!state.selectedTableId) {
                 showToast('error', 'Please select a table first');
                 return;
             }
@@ -1673,7 +1681,7 @@
         }
 
         async function handleSetAvailable() {
-            if (!selectedTableId) {
+            if (!state.selectedTableId) {
                 showToast('error', 'Please select a table first');
                 return;
             }
@@ -1694,8 +1702,8 @@
                 return;
             }
             
-            // Use currentArea variable (in-memory state), not DOM
-            const area = currentArea || 'Main Floor';
+            // Use state.selectedArea (in-memory state), not DOM
+            const area = state.selectedArea || 'Main Floor';
             
             openConfirm({
                 title: 'Set Available',
@@ -1749,7 +1757,7 @@
                 document.querySelectorAll('.table-node').forEach(node => {
                     node.classList.remove('selected');
                 });
-                selectedTableId = null;
+                state.selectedTableId = null;
             } catch (error) {
                 console.error('Error refreshing after action:', error);
                 showToast('error', 'Failed to refresh. Please reload the page.');
@@ -1785,6 +1793,11 @@
                 return;
             }
             
+            // Update state BEFORE loading
+            state.selectedDate = date;
+            state.selectedTime = time;
+            state.selectedArea = state.selectedArea || 'Main Floor';
+            
             const canvas = document.getElementById('floorPlanCanvas');
             if (!canvas) {
                 console.error('Floor plan canvas not found');
@@ -1795,13 +1808,13 @@
             
             try {
                 // Load layout
-                const layoutRes = await api(`/.netlify/functions/get-layout?area=${encodeURIComponent(currentArea)}`);
+                const layoutRes = await api(`/.netlify/functions/get-layout?area=${encodeURIComponent(state.selectedArea)}`);
                 if (!layoutRes) {
                     throw new Error('Failed to load layout');
                 }
                 
                 const layoutData = await layoutRes.json();
-                currentLayout = layoutData.success && layoutData.layout?.layout_json ? layoutData.layout.layout_json : [];
+                state.layout = layoutData.success && layoutData.layout?.layout_json ? layoutData.layout.layout_json : [];
                 
                 // Load tables
                 const tablesRes = await api('/.netlify/functions/get-tables');
@@ -1810,7 +1823,8 @@
                 }
                 
                 const tablesData = await tablesRes.json();
-                allTables = (tablesData.all || []).filter(t => t.area === currentArea && t.is_active);
+                state.allTables = Array.isArray(tablesData.all) ? tablesData.all : [];
+                state.tables = state.allTables.filter(t => (t.area || "") === state.selectedArea && t.is_active !== false);
                 
                 // Load assignments for this date/time
                 const assignmentsRes = await api(`/.netlify/functions/get-table-assignments?date=${date}&time=${time}`);
@@ -1818,7 +1832,10 @@
                     throw new Error('Failed to load assignments');
                 }
                 
-                assignments = await assignmentsRes.json().catch(() => []);
+                state.assignments = await assignmentsRes.json().catch(() => []);
+                if (!Array.isArray(state.assignments)) {
+                    state.assignments = [];
+                }
                 
                 // Load reservations for this date (all times)
                 const reservationsRes = await api(`/.netlify/functions/get-reservations?date=${date}`);
@@ -1826,16 +1843,31 @@
                     throw new Error('Failed to load reservations');
                 }
                 
-                reservations = await reservationsRes.json().catch(() => []);
+                state.reservations = await reservationsRes.json().catch(() => []);
+                if (!Array.isArray(state.reservations)) {
+                    state.reservations = [];
+                }
                 
                 // Also load assignments for all times on this date to show table assignments
                 const allAssignmentsRes = await api(`/.netlify/functions/get-table-assignments?date=${date}`);
                 if (allAssignmentsRes) {
                     const allAssignments = await allAssignmentsRes.json().catch(() => []);
-                    // Merge with time-specific assignments
-                    assignments = [...assignments, ...allAssignments.filter(a => !assignments.some(ex => ex.id === a.id))];
+                    if (Array.isArray(allAssignments)) {
+                        // Merge with time-specific assignments
+                        const existingIds = new Set((state.assignments || []).map(a => a.id).filter(Boolean));
+                        const newAssignments = allAssignments.filter(a => a.id && !existingIds.has(a.id));
+                        state.assignments = [...(state.assignments || []), ...newAssignments];
+                    }
                 }
                 
+                // Update blocks in state
+                const timeAssignments = time ? (state.assignments || []).filter(a => (a.time || "") === time) : [];
+                state.blocks = timeAssignments.filter(a => {
+                    const status = (a.status || "").toLowerCase();
+                    return status === 'blocked' || status === 'unavailable';
+                });
+                
+                // Now render with updated state
                 renderFloorPlan();
                 renderReservationsList();
             } catch (error) {
@@ -1931,7 +1963,7 @@
                 timeSlots.push(`${String(nextHours).padStart(2, '0')}:${String(nextMinutes).padStart(2, '0')}`);
                 
                 // Find any assignment for this table at any of the 3 slots
-                const relevantAssignments = assignments.filter(a => 
+                const relevantAssignments = (state.assignments || []).filter(a => 
                     a.table_id === tableId && 
                     timeSlots.includes(a.time) &&
                     ['reserved', 'blocked', 'unavailable'].includes(a.status)
@@ -1948,7 +1980,7 @@
             }
             
             // Iterate through layout (same as admin)
-            currentLayout.forEach((layoutItem, index) => {
+            (state.layout || []).forEach((layoutItem, index) => {
                 // Handle non-table objects (Entrance, Bar)
                 if (layoutItem.type && (layoutItem.type === 'entrance' || layoutItem.type === 'bar')) {
                     const x = layoutItem.x || 50;
@@ -1975,7 +2007,7 @@
                 }
                 
                 // Handle tables
-                const table = allTables.find(t => t.id === layoutItem.table_id);
+                const table = (state.allTables || []).find(t => t.id === layoutItem.table_id);
                 if (!table) return;
                 
                 const x = layoutItem.x || 50;
@@ -2054,69 +2086,160 @@
         }
 
         function renderReservationsList() {
-            const container = document.getElementById('reservationsList');
-            const time = document.getElementById('selectedTime').value;
-            const date = document.getElementById('selectedDate').value;
-            
-            // Show all reservations for the date, filter by time if needed
-            const dateReservations = reservations.filter(r => r.date === date && r.status !== 'cancelled');
-            const timeReservations = time ? dateReservations.filter(r => r.time === time) : dateReservations;
-            const timeAssignments = assignments.filter(a => a.time === time);
-            const blocks = timeAssignments.filter(a => a.status === 'blocked' || a.status === 'unavailable');
-            
-            let html = '';
-            
-            if (timeReservations.length === 0) {
-                html += '<div class="loading">No reservations found' + (currentSearchQuery ? ' matching your search' : '') + '</div>';
-            } else {
-                timeReservations.forEach(res => {
-                    const resAssignments = assignments.filter(a => a.reservation_id === res.id);
-                    const statusClass = res.status === 'confirmed' ? 'confirmed' : res.status === 'pending' ? 'pending' : 'cancelled';
-                    const statusText = res.status.charAt(0).toUpperCase() + res.status.slice(1);
-                    
-                    html += `
-                        <div class="reservation-item ${statusClass}" style="cursor: pointer;" onclick="openReservationModal('${res.id}')">
-                            <div style="display: flex; justify-content: space-between; align-items: start;">
-                                <div style="flex: 1;">
-                                    <div class="reservation-name">${res.name || res.full_name || 'Guest'}</div>
-                                    <div class="reservation-details">
-                                        <span>${res.party_size} guests</span>
-                                        <span>•</span>
-                                        <span>${res.time}</span>
-                                        <span class="status-pill ${statusClass}">${statusText}</span>
+            try {
+                const container = document.getElementById('reservationsList');
+                if (!container) {
+                    console.error('Reservations list container not found');
+                    return;
+                }
+                
+                // Safe state access
+                const date = state.selectedDate || (document.getElementById('selectedDate')?.value || '');
+                const time = state.selectedTime || (document.getElementById('selectedTime')?.value || '');
+                const searchQuery = (state.searchQuery || "").toLowerCase().trim();
+                const statusFilter = state.statusFilter || "all";
+                
+                // Safe array access with defaults
+                const allReservations = Array.isArray(state.reservations) ? state.reservations : [];
+                const allAssignments = Array.isArray(state.assignments) ? state.assignments : [];
+                const allTablesList = Array.isArray(state.allTables) ? state.allTables : [];
+                
+                // Filter reservations by date and status
+                let dateReservations = allReservations.filter(r => {
+                    if (!r) return false;
+                    const rDate = r.date || "";
+                    const rStatus = (r.status || "").toLowerCase();
+                    return rDate === date && rStatus !== 'cancelled';
+                });
+                
+                // Apply status filter
+                if (statusFilter !== "all") {
+                    dateReservations = dateReservations.filter(r => (r.status || "").toLowerCase() === statusFilter.toLowerCase());
+                }
+                
+                // Filter by time if selected
+                let timeReservations = time ? dateReservations.filter(r => (r.time || "") === time) : dateReservations;
+                
+                // Apply search query filter
+                if (searchQuery) {
+                    timeReservations = timeReservations.filter(r => {
+                        const name = ((r.name || r.full_name || "") + "").toLowerCase();
+                        const phone = ((r.phone || "") + "").toLowerCase();
+                        const code = ((r.confirmation_code || "") + "").toLowerCase();
+                        return name.includes(searchQuery) || phone.includes(searchQuery) || code.includes(searchQuery);
+                    });
+                }
+                
+                // Get assignments and blocks for this time
+                const timeAssignments = time ? allAssignments.filter(a => (a.time || "") === time) : [];
+                const blocks = timeAssignments.filter(a => {
+                    const status = (a.status || "").toLowerCase();
+                    return status === 'blocked' || status === 'unavailable';
+                });
+                
+                let html = '';
+                
+                if (timeReservations.length === 0) {
+                    const searchHint = searchQuery ? ' matching your search' : '';
+                    html += `<div class="loading">No reservations found${searchHint}</div>`;
+                } else {
+                    timeReservations.forEach(res => {
+                        if (!res) return;
+                        const resAssignments = allAssignments.filter(a => (a.reservation_id || "") === (res.id || ""));
+                        const statusClass = (res.status || "pending") === 'confirmed' ? 'confirmed' : (res.status || "pending") === 'pending' ? 'pending' : 'cancelled';
+                        const statusText = ((res.status || "pending").charAt(0).toUpperCase() + (res.status || "pending").slice(1));
+                        const resName = res.name || res.full_name || 'Guest';
+                        const resPartySize = res.party_size || 0;
+                        const resTime = res.time || "";
+                        const resCode = res.confirmation_code || "";
+                        
+                        html += `
+                            <div class="reservation-item ${statusClass}" style="cursor: pointer;" onclick="openReservationModal('${res.id || ""}')">
+                                <div style="display: flex; justify-content: space-between; align-items: start;">
+                                    <div style="flex: 1;">
+                                        <div class="reservation-name">${resName}</div>
+                                        <div class="reservation-details">
+                                            <span>${resPartySize} guests</span>
+                                            <span>•</span>
+                                            <span>${resTime}</span>
+                                            <span class="status-pill ${statusClass}">${statusText}</span>
+                                        </div>
+                                        ${resAssignments.length > 0 ? `<div class="reservation-table">Tables: ${resAssignments.map(a => a.table_name || a.table_number || 'N/A').join(', ')}</div>` : '<div class="reservation-table" style="color: #dc2626;">No table assigned</div>'}
+                                        ${resCode ? `<div style="font-size: 0.85rem; color: #6b7280; margin-top: 0.5rem; font-weight: 500;">Code: <span style="font-family: monospace; background: #f3f4f6; padding: 0.15rem 0.5rem; border-radius: 4px;">${resCode}</span></div>` : ''}
                                     </div>
-                                    ${resAssignments.length > 0 ? `<div class="reservation-table">Tables: ${resAssignments.map(a => a.table_name || a.table_number || 'N/A').join(', ')}</div>` : '<div class="reservation-table" style="color: #dc2626;">No table assigned</div>'}
-                                    ${res.confirmation_code ? `<div style="font-size: 0.85rem; color: #6b7280; margin-top: 0.5rem; font-weight: 500;">Code: <span style="font-family: monospace; background: #f3f4f6; padding: 0.15rem 0.5rem; border-radius: 4px;">${res.confirmation_code}</span></div>` : ''}
                                 </div>
                             </div>
-                        </div>
-                    `;
-                });
-            }
-            
-            if (time) {
-            html += '<h3 style="margin-top: 2rem; margin-bottom: 1rem; font-size: 1.1rem;">Blocks</h3>';
-            
-            if (blocks.length === 0) {
-                html += '<div class="loading">No blocks for this time slot</div>';
-            } else {
-                blocks.forEach(block => {
-                    const table = allTables.find(t => t.id === block.table_id);
-                    html += `
-                        <div class="block-item">
-                            <div class="reservation-name">${table?.name || `Table ${block.table_number}`}</div>
-                            <div class="reservation-details">${block.status} • ${block.notes || 'No notes'}</div>
-                        </div>
-                    `;
-                });
+                        `;
+                    });
+                }
+                
+                if (time) {
+                    html += '<h3 style="margin-top: 2rem; margin-bottom: 1rem; font-size: 1.1rem;">Blocks</h3>';
+                    
+                    if (blocks.length === 0) {
+                        html += '<div class="loading">No blocks for this time slot</div>';
+                    } else {
+                        blocks.forEach(block => {
+                            if (!block) return;
+                            const table = allTablesList.find(t => (t.id || "") === (block.table_id || ""));
+                            const blockTableName = table?.name || `Table ${block.table_number || "N/A"}`;
+                            const blockStatus = block.status || "";
+                            const blockNotes = block.notes || 'No notes';
+                            html += `
+                                <div class="block-item">
+                                    <div class="reservation-name">${blockTableName}</div>
+                                    <div class="reservation-details">${blockStatus} • ${blockNotes}</div>
+                                </div>
+                            `;
+                        });
+                    }
+                }
+                
+                container.innerHTML = html;
+            } catch (error) {
+                console.error('Error rendering reservations list:', error);
+                const container = document.getElementById('reservationsList');
+                if (container) {
+                    container.innerHTML = '<div class="message error">Error loading reservations. Please refresh.</div>';
                 }
             }
-            
-            container.innerHTML = html;
+        }
+        
+        // Filter functions
+        function filterReservations() {
+            try {
+                const searchInput = document.getElementById('reservationSearch');
+                if (searchInput) {
+                    state.searchQuery = (searchInput.value || "").trim();
+                } else {
+                    state.searchQuery = "";
+                }
+                renderReservationsList();
+            } catch (error) {
+                console.error('Error filtering reservations:', error);
+            }
+        }
+        
+        function setStatusFilter(filter) {
+            try {
+                state.statusFilter = filter || "all";
+                
+                // Update UI buttons
+                document.querySelectorAll('.status-filter-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.dataset.filter === filter) {
+                        btn.classList.add('active');
+                    }
+                });
+                
+                renderReservationsList();
+            } catch (error) {
+                console.error('Error setting status filter:', error);
+            }
         }
 
         function openTableModal(table, assignment) {
-            selectedTableId = table.id;
+            state.selectedTableId = table.id;
             const date = document.getElementById('selectedDate').value;
             const time = document.getElementById('selectedTime').value;
             
@@ -2160,7 +2283,7 @@
             let html = '';
             
             if (action === 'assign') {
-                const unassigned = reservations.filter(r => {
+                const unassigned = (state.reservations || []).filter(r => {
                     if (r.time !== time) return false;
                     return !assignments.some(a => a.reservation_id === r.id);
                 });
@@ -2254,8 +2377,8 @@
                 return;
             }
             
-            // Use currentArea variable (in-memory state), not DOM
-            const area = currentArea || 'Main Floor';
+            // Use state.selectedArea (in-memory state), not DOM
+            const area = state.selectedArea || 'Main Floor';
             
             try {
                 if (action === 'free') {
@@ -2285,7 +2408,7 @@
                     }
                     return;
                 } else if (action === 'release') {
-                    const assignment = assignments.find(a => a.table_id === selectedTableId && a.time === time);
+                    const assignment = (state.assignments || []).find(a => a.table_id === state.selectedTableId && a.time === time);
                     if (!assignment) {
                         showToast('error', 'No assignment found to release');
                         return;
@@ -2359,7 +2482,7 @@
         function closeModal() {
             document.getElementById('tableModal').style.display = 'none';
             document.getElementById('tableModalActionBtn').style.display = 'none';
-            selectedTableId = null;
+            state.selectedTableId = null;
             // Clear action handlers
             window.executeAssignAction = null;
             window.executeBlockAction = null;
@@ -2450,7 +2573,7 @@
                 <div class="form-group">
                     <label>Assigned Tables</label>
                     <select id="editTables" multiple style="min-height: 100px;">
-                        ${allTables.filter(t => t.area === currentArea && t.is_active).map(table => {
+                        ${(state.allTables || []).filter(t => (t.area || "") === (state.selectedArea || "Main Floor") && t.is_active !== false).map(table => {
                             const isAssigned = assignedTables.some(at => at.id === table.id);
                             return `<option value="${table.id}" ${isAssigned ? 'selected' : ''}>${table.name || `Table ${table.table_number}`} (${table.seats} seats)</option>`;
                         }).join('')}
