@@ -151,23 +151,47 @@ exports.handler = async (event, context) => {
         if (time !== undefined || table_ids !== undefined) {
             const finalTime = time || existingReservation.time;
             const finalDate = existingReservation.date;
-            const timeIndex = VALID_TIMES.indexOf(finalTime);
 
-            // Delete existing assignments
-            await supabase
+            // Delete existing assignments FIRST (all 3 slots)
+            const { error: deleteError } = await supabase
                 .from('table_assignments')
                 .delete()
                 .eq('reservation_id', id);
 
-            // Create new assignments if table_ids provided
-            if (table_ids && Array.isArray(table_ids) && table_ids.length > 0 && timeIndex !== -1) {
+            if (deleteError) {
+                console.error('❌ Error deleting old assignments:', deleteError);
+                throw deleteError;
+            }
+
+            // Create new assignments if table_ids provided (all 3 slots: T, T+30, T+60)
+            if (table_ids && Array.isArray(table_ids) && table_ids.length > 0) {
                 const assignmentInserts = [];
                 
+                // Calculate the 3 time slots (T, T+30, T+60)
+                const [hours, minutes] = finalTime.split(':').map(Number);
+                const timeSlots = [finalTime];
+                
+                // T+30
+                let nextMinutes = minutes + 30;
+                let nextHours = hours;
+                if (nextMinutes >= 60) {
+                    nextMinutes -= 60;
+                    nextHours = (nextHours + 1) % 24;
+                }
+                timeSlots.push(`${String(nextHours).padStart(2, '0')}:${String(nextMinutes).padStart(2, '0')}`);
+                
+                // T+60
+                nextMinutes = minutes + 60;
+                nextHours = hours;
+                if (nextMinutes >= 60) {
+                    nextMinutes -= 60;
+                    nextHours = (nextHours + 1) % 24;
+                }
+                timeSlots.push(`${String(nextHours).padStart(2, '0')}:${String(nextMinutes).padStart(2, '0')}`);
+                
                 table_ids.forEach(tableId => {
-                    for (let i = 0; i < 3 && (timeIndex + i) < VALID_TIMES.length; i++) {
-                        const slotTime = VALID_TIMES[timeIndex + i];
+                    timeSlots.forEach(slotTime => {
                         const slotDatetimeIso = `${finalDate}T${slotTime}:00`;
-                        
                         assignmentInserts.push({
                             date: finalDate,
                             time: slotTime,
@@ -179,7 +203,7 @@ exports.handler = async (event, context) => {
                             status: 'reserved',
                             notes: null
                         });
-                    }
+                    });
                 });
 
                 if (assignmentInserts.length > 0) {
@@ -189,7 +213,9 @@ exports.handler = async (event, context) => {
 
                     if (assignmentError) {
                         console.error('❌ Error creating table assignments:', assignmentError);
+                        throw assignmentError; // Fail if we can't create new assignments
                     }
+                    console.log(`✅ Created ${assignmentInserts.length} new assignment(s) for reservation ${id}`);
                 }
             }
         }

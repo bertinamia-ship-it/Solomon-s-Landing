@@ -1514,9 +1514,10 @@
                     <label>Action:</label>
                     <select id="tableAction" onchange="updateActionForm()">
                         <option value="assign">Assign Reservation</option>
+                        ${assignment && assignment.status === 'reserved' ? '<option value="free">Free Table (Release All Slots)</option>' : ''}
                         <option value="block">Quick Block</option>
                         <option value="unavailable">Mark Unavailable</option>
-                        ${assignment ? '<option value="release">Release</option>' : ''}
+                        ${assignment ? '<option value="release">Release Single Assignment</option>' : ''}
                     </select>
                 </div>
                 <div id="actionForm"></div>
@@ -1567,9 +1568,14 @@
                     <div class="message">Mark this table as unavailable for this time slot?</div>
                     <button class="btn-primary" onclick="executeTableAction()" style="width: 100%;">Mark Unavailable</button>
                 `;
+            } else if (action === 'free') {
+                html = `
+                    <div class="message">Free this table? This will release all 3 time slots (${time}, ${add30Minutes(time)}, ${add60Minutes(time)}).</div>
+                    <button class="btn-primary" onclick="executeTableAction()" style="width: 100%;">Free Table</button>
+                `;
             } else if (action === 'release') {
                 html = `
-                    <div class="message">Release this table assignment?</div>
+                    <div class="message">Release this single assignment?</div>
                     <button class="btn-primary" onclick="executeTableAction()" style="width: 100%;">Release</button>
                 `;
             }
@@ -1577,13 +1583,62 @@
             form.innerHTML = html;
         }
 
+        // Helper to add 30 minutes to time string
+        function add30Minutes(timeStr) {
+            const [h, m] = timeStr.split(':').map(Number);
+            let newM = m + 30;
+            let newH = h;
+            if (newM >= 60) {
+                newM -= 60;
+                newH = (newH + 1) % 24;
+            }
+            return `${String(newH).padStart(2, '0')}:${String(newM).padStart(2, '0')}`;
+        }
+
+        // Helper to add 60 minutes to time string
+        function add60Minutes(timeStr) {
+            const [h, m] = timeStr.split(':').map(Number);
+            let newM = m + 60;
+            let newH = h;
+            if (newM >= 60) {
+                newM -= 60;
+                newH = (newH + 1) % 24;
+            }
+            return `${String(newH).padStart(2, '0')}:${String(newM).padStart(2, '0')}`;
+        }
+
         async function executeTableAction() {
             const action = document.getElementById('tableAction').value;
             const date = document.getElementById('selectedDate').value;
             const time = document.getElementById('selectedTime').value;
+            const area = document.getElementById('selectedArea').value;
             
             try {
-                if (action === 'release') {
+                if (action === 'free') {
+                    // Free table - release all 3 slots
+                    const res = await api('/.netlify/functions/release-table', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            date: date,
+                            time: time,
+                            table_id: selectedTableId,
+                            area: area
+                        })
+                    });
+                    
+                    if (!res) return;
+                    
+                    const data = await res.json();
+                    if (data.ok || data.success) {
+                        showToast('success', `Table freed: ${data.deletedCount || 0} assignment(s) released`);
+                        closeModal();
+                        await loadAssignments();
+                        renderFloorPlan();
+                    } else {
+                        showToast('error', data.error || 'Failed to free table');
+                    }
+                    return;
+                } else if (action === 'release') {
                     const assignment = assignments.find(a => a.table_id === selectedTableId && a.time === time);
                     if (!assignment) {
                         showToast('error', 'No assignment found to release');
@@ -1814,12 +1869,16 @@
                         if (!res) return;
 
                         const data = await res.json();
-                        if (data.success) {
-                            showToast('success', 'Reservation cancelled successfully');
+                        if (data.success || data.ok) {
+                            const releasedCount = data.releasedAssignments || 0;
+                            showToast('success', `Reservation cancelled. ${releasedCount} table assignment(s) released.`);
                             closeReservationModal();
-                            loadFloorPlan();
+                            // Refresh everything
+                            await loadAssignments();
+                            renderFloorPlan();
+                            renderReservationsList();
                         } else {
-                            showToast('error', `Error: ${data.error}`);
+                            showToast('error', data.error || 'Failed to cancel reservation');
                         }
                     } catch (error) {
                         showToast('error', `Error: ${error.message}`);

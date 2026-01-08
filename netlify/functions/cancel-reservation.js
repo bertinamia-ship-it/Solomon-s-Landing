@@ -93,14 +93,19 @@ exports.handler = async (event, context) => {
         }
 
         // Delete all table assignments for this reservation (releases all 3 slots)
-        const { error: deleteAssignmentsError } = await supabase
+        const { data: deletedAssignments, error: deleteAssignmentsError } = await supabase
             .from('table_assignments')
             .delete()
-            .eq('reservation_id', id);
+            .eq('reservation_id', id)
+            .select();
 
         if (deleteAssignmentsError) {
             console.error('❌ Error deleting table assignments:', deleteAssignmentsError);
+            throw deleteAssignmentsError;
         }
+
+        const deletedCount = deletedAssignments?.length || 0;
+        console.log(`✅ Released ${deletedCount} table assignment(s) for reservation ${id}`);
 
         // Update reservation status to cancelled
         const { data: updatedReservation, error: updateError } = await supabase
@@ -120,8 +125,10 @@ exports.handler = async (event, context) => {
             },
             body: JSON.stringify({ 
                 success: true, 
+                ok: true,
                 reservation: updatedReservation,
-                message: 'Reservation cancelled and table assignments released'
+                releasedAssignments: deletedCount,
+                message: `Reservation cancelled and ${deletedCount} table assignment(s) released`
             })
         };
 

@@ -158,12 +158,33 @@ exports.handler = async (event, context) => {
                 .eq('date', date);
         }
 
-        // Create assignments for all 3 slots
+        // Create assignments for all 3 slots (T, T+30, T+60)
         const assignmentInserts = [];
-        for (let i = 0; i < 3 && (timeIndex + i) < VALID_TIMES.length; i++) {
-            const slotTime = VALID_TIMES[timeIndex + i];
+        
+        // Calculate the 3 time slots
+        const [hours, minutes] = time.split(':').map(Number);
+        const timeSlots = [time];
+        
+        // T+30
+        let nextMinutes = minutes + 30;
+        let nextHours = hours;
+        if (nextMinutes >= 60) {
+            nextMinutes -= 60;
+            nextHours = (nextHours + 1) % 24;
+        }
+        timeSlots.push(`${String(nextHours).padStart(2, '0')}:${String(nextMinutes).padStart(2, '0')}`);
+        
+        // T+60
+        nextMinutes = minutes + 60;
+        nextHours = hours;
+        if (nextMinutes >= 60) {
+            nextMinutes -= 60;
+            nextHours = (nextHours + 1) % 24;
+        }
+        timeSlots.push(`${String(nextHours).padStart(2, '0')}:${String(nextMinutes).padStart(2, '0')}`);
+        
+        timeSlots.forEach(slotTime => {
             const slotDatetimeIso = `${date}T${slotTime}:00`;
-            
             assignmentInserts.push({
                 table_id: table_id,
                 reservation_id: reservation_id || null,
@@ -175,7 +196,7 @@ exports.handler = async (event, context) => {
                 source: 'manual',
                 notes: notes || null
             });
-        }
+        });
 
         // Insert all assignments
         const { data: inserted, error } = await supabase
