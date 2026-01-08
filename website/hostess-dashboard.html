@@ -2761,26 +2761,6 @@
                 ${notes ? `<div><strong>Notes:</strong> ${notes}</div>` : ''}
             `;
         }
-                
-                // Focus first input and add keyboard listeners
-                setTimeout(() => {
-                    const nameInput = document.getElementById('quickAddName');
-                    if (nameInput) {
-                        nameInput.focus();
-                        
-                        // Add Enter key support for form submission
-                        const formInputs = modal.querySelectorAll('input, select, textarea');
-                        formInputs.forEach(input => {
-                            input.removeEventListener('keydown', handleQuickAddKeydown);
-                            input.addEventListener('keydown', handleQuickAddKeydown);
-                        });
-                    }
-                }, 100);
-            } catch (error) {
-                console.error('Error opening Quick Add modal:', error);
-                showToast('error', 'Failed to open Quick Add form');
-            }
-        }
         
         function handleQuickAddKeydown(e) {
             if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
