@@ -51,6 +51,11 @@
     --transition-fast: 0.15s ease;
     --transition-base: 0.2s ease;
     --transition-slow: 0.3s ease;
+    
+    /* Responsive Scaling */
+    --table-scale: 1;
+    --header-height: 64px;
+    --controls-height: 120px;
 }
 
 /* ============================================
@@ -97,6 +102,8 @@ body {
 }
 
 .app-bar-content {
+    max-width: 1800px;
+    margin: 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -121,6 +128,21 @@ body {
     font-weight: 700;
     letter-spacing: -0.02em;
     margin: 0;
+}
+
+.role-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-left: 0.5rem;
 }
 
 .app-bar-actions {
@@ -532,6 +554,34 @@ body {
    MODALS
    ============================================ */
 
+/* Modal Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+}
+
 .modal-backdrop {
     position: fixed;
     top: 0;
@@ -548,11 +598,6 @@ body {
     animation: fadeIn var(--transition-base);
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
 .modal {
     background: var(--bg-primary);
     border-radius: 20px;
@@ -563,17 +608,6 @@ body {
     overflow-y: auto;
     animation: slideUp 0.3s ease;
     position: relative;
-}
-
-@keyframes slideUp {
-    from {
-        transform: translateY(40px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
 }
 
 .modal-header {
@@ -935,16 +969,57 @@ body {
     grid-template-columns: 2fr 1fr;
     gap: clamp(1rem, 2vw, 2rem);
     margin-top: 1rem;
+    padding: 0 clamp(1rem, 2vw, 2rem);
 }
 
-@media (max-width: 1200px) {
+/* iPad Landscape (1024px - 1200px) */
+@media (max-width: 1200px) and (min-width: 1024px) {
     .app-container {
         padding: clamp(0.75rem, 2vw, 1.5rem);
     }
     
     .main-content {
+        grid-template-columns: 1.5fr 1fr;
+        gap: clamp(1rem, 1.5vw, 1.5rem);
+    }
+    
+    .floor-plan-canvas {
+        height: calc(100vh - var(--header-height) - var(--controls-height) - 4rem);
+        max-height: 700px;
+    }
+    
+    .section {
+        padding: clamp(1.25rem, 2vw, 1.75rem);
+    }
+}
+
+/* Tablet Portrait / iPad Portrait (768px - 1023px) */
+@media (max-width: 1023px) and (min-width: 768px) {
+    .app-container {
+        padding: clamp(0.75rem, 2vw, 1.25rem);
+    }
+    
+    .main-content {
         grid-template-columns: 1fr;
         gap: 1.5rem;
+        order: 2;
+    }
+    
+    .controls-bar {
+        order: 1;
+        position: sticky;
+        top: var(--header-height);
+        z-index: 999;
+    }
+    
+    .floor-plan-canvas {
+        height: calc(100vh - var(--header-height) - var(--controls-height) - 3rem);
+        max-height: 600px;
+        min-height: 400px;
+    }
+    
+    :root {
+        --table-scale: 0.9;
     }
     
     .table-info-panel {
@@ -954,16 +1029,46 @@ body {
         width: 100%;
         margin-top: 1rem;
     }
+}
+
+/* Mobile & Small Tablets (< 768px) */
+@media (max-width: 767px) {
+    .app-container {
+        padding: 0;
+    }
+    
+    .main-content {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 0 1rem;
+        margin-top: 0;
+    }
+    
+    .controls-bar {
+        position: sticky;
+        top: var(--header-height);
+        z-index: 999;
+        margin-bottom: 1rem;
+        padding: 1rem;
+    }
     
     .floor-plan-canvas {
-        height: clamp(400px, 50vh, 600px);
+        height: calc(100vh - var(--header-height) - var(--controls-height) - 2rem);
+        max-height: 500px;
+        min-height: 300px;
+    }
+    
+    :root {
+        --table-scale: 0.85;
+        --header-height: 56px;
+        --controls-height: 180px;
     }
 }
 
-/* iPad Portrait & Mobile */
-@media (max-width: 768px) {
+/* Mobile & Small Tablets - Additional refinements */
+@media (max-width: 767px) {
     .app-bar {
-        padding: clamp(0.75rem, 2vw, 1rem);
+        padding: 0.75rem 1rem;
     }
     
     .app-bar-content {
@@ -971,19 +1076,52 @@ body {
         gap: 0.75rem;
     }
     
+    .app-bar-left {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
     .app-bar-logo {
-        height: clamp(28px, 4vw, 36px);
+        height: 28px;
     }
     
     .app-bar-title {
-        font-size: clamp(1rem, 3vw, 1.25rem);
+        font-size: 1rem;
+    }
+    
+    .role-badge {
+        font-size: 0.65rem;
+        padding: 0.2rem 0.6rem;
+        margin-left: 0.25rem;
+    }
+    
+    .app-bar-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .app-bar-actions .btn {
+        flex: 1;
+    }
+    
+    .btn-text {
+        display: inline;
+    }
+    
+    /* Hide button text on very small screens, show icon only */
+    @media (max-width: 480px) {
+        .app-bar-actions .btn-text {
+            display: none;
+        }
+        
+        .app-bar-actions .btn {
+            min-width: 44px;
+            padding: 0.5rem;
+        }
     }
     
     .controls-bar {
-        padding: clamp(0.75rem, 2vw, 1rem);
-        top: auto;
-        position: relative;
-        margin-bottom: 1rem;
+        padding: 1rem;
     }
     
     .controls-row {
@@ -994,6 +1132,7 @@ body {
     
     .controls-row label {
         font-size: 0.85rem;
+        font-weight: 600;
     }
     
     .controls-row input,
@@ -1003,37 +1142,37 @@ body {
         width: 100%;
         padding: 0.75rem;
         font-size: 1rem;
+        border-radius: 8px;
     }
     
     .area-tabs {
         width: 100%;
         flex-direction: row;
         gap: 0.5rem;
+        margin-top: 0.75rem;
     }
     
     .area-tab {
         flex: 1;
         padding: 0.75rem;
+        font-size: 0.9rem;
     }
     
     .section {
-        padding: clamp(1rem, 3vw, 1.5rem);
+        padding: 1rem;
         border-radius: 12px;
-    }
-    
-    .section h2 {
-        font-size: clamp(1.1rem, 4vw, 1.25rem);
         margin-bottom: 1rem;
     }
     
-    .floor-plan-container {
-        min-height: clamp(300px, 40vh, 500px);
-        border-radius: 12px;
+    .section h2 {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
     }
     
-    .floor-plan-canvas {
-        height: clamp(300px, 40vh, 500px);
-        border-radius: 8px;
+    .floor-plan-container {
+        border-radius: 12px;
+        overflow: hidden;
     }
     
     .table-info-panel {
