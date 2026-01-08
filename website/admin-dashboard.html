@@ -332,6 +332,103 @@
             padding: 2rem;
             color: #6b7280;
         }
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        /* Reservation List Styles */
+        .reservation-item {
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .reservation-item:hover {
+            border-color: #004A9F;
+            box-shadow: 0 2px 8px rgba(0,74,159,0.1);
+        }
+        .reservation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .reservation-name {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 1.1rem;
+        }
+        .status-pill {
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .status-pill.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .status-pill.confirmed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .status-pill.cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .reservation-details {
+            font-size: 0.9rem;
+            color: #6b7280;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .reservation-details span {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
     </style>
 </head>
 <body>
@@ -407,6 +504,123 @@
                 <div class="floor-plan-container">
                     <div id="floorPlanCanvas" class="floor-plan-canvas"></div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Reservations Management Section -->
+        <div class="section" style="margin-top: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 style="margin: 0;">Reservations Management</h2>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <input type="date" id="adminReservationDate" onchange="loadAdminReservations()" style="padding: 0.5rem; border: 2px solid #e2e8f0; border-radius: 8px;">
+                    <select id="adminReservationTime" onchange="loadAdminReservations()" style="padding: 0.5rem; border: 2px solid #e2e8f0; border-radius: 8px;">
+                        <option value="">All Times</option>
+                        <option value="17:30">5:30 PM</option>
+                        <option value="18:00">6:00 PM</option>
+                        <option value="18:30">6:30 PM</option>
+                        <option value="19:00">7:00 PM</option>
+                        <option value="19:30">7:30 PM</option>
+                        <option value="20:00">8:00 PM</option>
+                        <option value="20:30">8:30 PM</option>
+                        <option value="21:00">9:00 PM</option>
+                        <option value="21:30">9:30 PM</option>
+                    </select>
+                    <select id="adminReservationStatus" onchange="loadAdminReservations()" style="padding: 0.5rem; border: 2px solid #e2e8f0; border-radius: 8px;">
+                        <option value="">All Statuses</option>
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                    <button class="btn-primary" onclick="openAdminQuickAddModal()">+ Quick Add</button>
+                </div>
+            </div>
+            <div id="adminReservationsList" style="max-height: 600px; overflow-y: auto;">
+                <div class="loading">Loading reservations...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reservation Details Modal (Admin) -->
+    <div id="adminReservationModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 650px;">
+            <h3 id="adminReservationModalTitle">Reservation Details</h3>
+            <div id="adminReservationModalBody"></div>
+            <div class="modal-actions">
+                <button class="btn-danger" onclick="adminCancelReservation()" style="margin-right: auto;">Cancel Reservation</button>
+                <button class="btn-secondary" onclick="closeAdminReservationModal()">Close</button>
+                <button class="btn-primary" onclick="adminSaveReservation()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Add Modal (Admin) -->
+    <div id="adminQuickAddModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 550px;">
+            <h3 style="margin-bottom: 1.5rem; color: #004A9F;">Quick Add Reservation</h3>
+            <div id="adminQuickAddModalBody">
+                <div class="form-group">
+                    <label>Name *</label>
+                    <input type="text" id="adminQuickAddName" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone *</label>
+                    <input type="tel" id="adminQuickAddPhone" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="adminQuickAddEmail">
+                </div>
+                <div class="form-group">
+                    <label>Date *</label>
+                    <input type="date" id="adminQuickAddDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Time *</label>
+                    <select id="adminQuickAddTime" required>
+                        <option value="17:30">5:30 PM</option>
+                        <option value="18:00">6:00 PM</option>
+                        <option value="18:30">6:30 PM</option>
+                        <option value="19:00">7:00 PM</option>
+                        <option value="19:30">7:30 PM</option>
+                        <option value="20:00">8:00 PM</option>
+                        <option value="20:30">8:30 PM</option>
+                        <option value="21:00">9:00 PM</option>
+                        <option value="21:30">9:30 PM</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Party Size *</label>
+                    <input type="number" id="adminQuickAddPartySize" min="1" max="20" required>
+                </div>
+                <div class="form-group">
+                    <label>Source</label>
+                    <select id="adminQuickAddSource">
+                        <option value="phone">Phone</option>
+                        <option value="opentable">OpenTable</option>
+                        <option value="manual">Manual</option>
+                        <option value="website">Website</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea id="adminQuickAddNotes" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="modal-actions" style="margin-top: 1.5rem;">
+                <button class="btn-secondary" onclick="closeAdminQuickAddModal()">Cancel</button>
+                <button class="btn-primary" onclick="adminSaveQuickAddReservation()">Save Reservation</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="adminConfirmModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 450px;">
+            <h3 id="adminConfirmTitle">Confirm Action</h3>
+            <p id="adminConfirmBody"></p>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeAdminConfirmModal()">Cancel</button>
+                <button class="btn-danger" id="adminConfirmOk">Confirm</button>
             </div>
         </div>
     </div>

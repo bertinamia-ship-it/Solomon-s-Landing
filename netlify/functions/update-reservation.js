@@ -48,7 +48,7 @@ exports.handler = async (event, context) => {
 
     try {
         const data = JSON.parse(event.body);
-        const { id, name, phone, time, party_size, notes, status, table_ids } = data;
+        const { id, name, phone, time, party_size, notes, status, table_ids, force_override } = data;
 
         if (!id) {
             return {
@@ -189,6 +189,25 @@ exports.handler = async (event, context) => {
                 }
                 timeSlots.push(`${String(nextHours).padStart(2, '0')}:${String(nextMinutes).padStart(2, '0')}`);
                 
+                // If force_override (admin), delete conflicting assignments for these tables first
+                if (force_override) {
+                    for (const tableId of table_ids) {
+                        const { error: deleteConflictError } = await supabase
+                            .from('table_assignments')
+                            .delete()
+                            .eq('table_id', tableId)
+                            .eq('date', finalDate)
+                            .in('time', timeSlots)
+                            .in('status', ['reserved', 'blocked', 'unavailable']);
+
+                        if (deleteConflictError) {
+                            console.error(`Error deleting conflicting assignments for table ${tableId}:`, deleteConflictError);
+                        } else {
+                            console.log(`Admin override: Deleted conflicting assignments for table ${tableId} at ${finalDate} ${finalTime}`);
+                        }
+                    }
+                }
+
                 table_ids.forEach(tableId => {
                     timeSlots.forEach(slotTime => {
                         const slotDatetimeIso = `${finalDate}T${slotTime}:00`;

@@ -47,7 +47,7 @@ exports.handler = async (event, context) => {
 
     try {
         const data = JSON.parse(event.body);
-        const { table_id, reservation_id, date, time, status, notes } = data;
+        const { table_id, reservation_id, date, time, status, notes, force_override } = data;
 
         // Validate required fields
         if (!table_id || !date || !time || !status) {
@@ -119,7 +119,8 @@ exports.handler = async (event, context) => {
         }
 
         // Check for conflicts (if status is 'reserved', check for overlapping reservations)
-        if (status === 'reserved') {
+        // Admin can force-override conflicts
+        if (status === 'reserved' && !force_override) {
             // Check all 3 slots for conflicts
             for (let i = 0; i < 3 && (timeIndex + i) < VALID_TIMES.length; i++) {
                 const slotTime = VALID_TIMES[timeIndex + i];
@@ -144,6 +145,45 @@ exports.handler = async (event, context) => {
                         body: JSON.stringify({ success: false, error: `Table is already ${conflicts[0].status} for slot ${slotTime}` })
                     };
                 }
+            }
+        }
+
+        // If force_override is true (admin), delete existing conflicting assignments first
+        if (force_override && status === 'reserved') {
+            // Calculate the 3 time slots
+            const [hours, minutes] = time.split(':').map(Number);
+            const timeSlots = [time];
+            
+            let nextMinutes = minutes + 30;
+            let nextHours = hours;
+            if (nextMinutes >= 60) {
+                nextMinutes -= 60;
+                nextHours = (nextHours + 1) % 24;
+            }
+            timeSlots.push(`${String(nextHours).padStart(2, '0')}:${String(nextMinutes).padStart(2, '0')}`);
+            
+            nextMinutes = minutes + 60;
+            nextHours = hours;
+            if (nextMinutes >= 60) {
+                nextMinutes -= 60;
+                nextHours = (nextHours + 1) % 24;
+            }
+            timeSlots.push(`${String(nextHours).padStart(2, '0')}:${String(nextMinutes).padStart(2, '0')}`);
+
+            // Delete conflicting assignments
+            const { error: deleteError } = await supabase
+                .from('table_assignments')
+                .delete()
+                .eq('table_id', table_id)
+                .eq('date', date)
+                .in('time', timeSlots)
+                .in('status', ['reserved', 'blocked', 'unavailable']);
+
+            if (deleteError) {
+                console.error('Error deleting conflicting assignments:', deleteError);
+                // Continue anyway - we'll create new assignments
+            } else {
+                console.log(`Admin override: Deleted conflicting assignments for table ${table_id} at ${date} ${time}`);
             }
         }
 
