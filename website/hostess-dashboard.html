@@ -263,6 +263,14 @@
             font-size: 14px;
             text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
+        .table-label {
+            font-size: 11px;
+            margin-top: 4px;
+            text-align: center;
+            color: #111827;
+            font-weight: 700;
+            pointer-events: none;
+        }
         .reservations-list {
             max-height: 500px;
             overflow-y: auto;
@@ -716,8 +724,55 @@
             const canvas = document.getElementById('floorPlanCanvas');
             canvas.innerHTML = '';
             
-            // Render non-table objects (Entrance, Bar) first
+            const selectedTime = document.getElementById('selectedTime').value;
+            
+            // Helper to determine table status based on 3-slot system
+            function getTableStatus(tableId) {
+                // Check assignments for this table at selected time and its 3 slots (T, T+30, T+60)
+                if (!selectedTime) return 'available';
+                
+                // Calculate the 3 time slots for a 90-minute reservation
+                const [hours, minutes] = selectedTime.split(':').map(Number);
+                const timeSlots = [selectedTime];
+                
+                // T+30: add 30 minutes
+                let nextMinutes = minutes + 30;
+                let nextHours = hours;
+                if (nextMinutes >= 60) {
+                    nextMinutes -= 60;
+                    nextHours = (nextHours + 1) % 24;
+                }
+                timeSlots.push(`${String(nextHours).padStart(2, '0')}:${String(nextMinutes).padStart(2, '0')}`);
+                
+                // T+60: add 60 minutes total
+                nextMinutes = minutes + 60;
+                nextHours = hours;
+                if (nextMinutes >= 60) {
+                    nextMinutes -= 60;
+                    nextHours = (nextHours + 1) % 24;
+                }
+                timeSlots.push(`${String(nextHours).padStart(2, '0')}:${String(nextMinutes).padStart(2, '0')}`);
+                
+                // Find any assignment for this table at any of the 3 slots
+                const relevantAssignments = assignments.filter(a => 
+                    a.table_id === tableId && 
+                    timeSlots.includes(a.time) &&
+                    ['reserved', 'blocked', 'unavailable'].includes(a.status)
+                );
+                
+                if (relevantAssignments.length === 0) return 'available';
+                
+                // Priority: unavailable > blocked > reserved
+                if (relevantAssignments.some(a => a.status === 'unavailable')) return 'unavailable';
+                if (relevantAssignments.some(a => a.status === 'blocked')) return 'blocked';
+                if (relevantAssignments.some(a => a.status === 'reserved')) return 'reserved';
+                
+                return 'available';
+            }
+            
+            // Iterate through layout (same as admin)
             currentLayout.forEach((layoutItem, index) => {
+                // Handle non-table objects (Entrance, Bar)
                 if (layoutItem.type && (layoutItem.type === 'entrance' || layoutItem.type === 'bar')) {
                     const x = layoutItem.x || 50;
                     const y = layoutItem.y || 50;
@@ -727,6 +782,7 @@
                     const node = document.createElement('div');
                     node.className = 'floor-object';
                     node.dataset.objectType = layoutItem.type;
+                    node.dataset.layoutIndex = index;
                     node.style.left = `${x}px`;
                     node.style.top = `${y}px`;
                     node.style.width = `${w}px`;
@@ -738,18 +794,16 @@
                     node.appendChild(label);
                     
                     canvas.appendChild(node);
+                    return;
                 }
-            });
-            
-            // Render tables
-            allTables.forEach(table => {
-                const assignment = assignments.find(a => a.table_id === table.id);
-                const status = assignment ? assignment.status : 'available';
                 
-                const savedPos = currentLayout.find(l => l.table_id === table.id);
-                const x = savedPos?.x || 50;
-                const y = savedPos?.y || 50;
-                const rotation = savedPos?.rotation || 0;
+                // Handle tables
+                const table = allTables.find(t => t.id === layoutItem.table_id);
+                if (!table) return;
+                
+                const x = layoutItem.x || 50;
+                const y = layoutItem.y || 50;
+                const rotation = layoutItem.rotation || 0;
                 
                 // Get base dimensions
                 const baseDims = getTableDimensions(table.seats);
@@ -762,9 +816,19 @@
                     renderH = baseDims.w;
                 }
                 
+                // Determine status using 3-slot system
+                const status = getTableStatus(table.id);
+                
+                // Find assignment for modal (use first relevant one)
+                const assignment = assignments.find(a => 
+                    a.table_id === table.id && 
+                    ['reserved', 'blocked', 'unavailable'].includes(a.status)
+                );
+                
                 const node = document.createElement('div');
                 node.className = 'table-node';
                 node.dataset.tableId = table.id;
+                node.dataset.layoutIndex = index;
                 node.style.left = `${x}px`;
                 node.style.top = `${y}px`;
                 
@@ -793,6 +857,14 @@
                 });
                 
                 node.appendChild(shape);
+                
+                // Label (optional, shows name if different from number)
+                if (table.name && table.name !== `Table ${table.table_number}`) {
+                    const label = document.createElement('div');
+                    label.className = 'table-label';
+                    label.textContent = table.name;
+                    node.appendChild(label);
+                }
                 
                 node.title = `${table.name || `Table ${table.table_number}`} (${table.seats} seats) - ${status}`;
                 node.addEventListener('click', () => openTableModal(table, assignment));
