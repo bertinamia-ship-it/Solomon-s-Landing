@@ -60,6 +60,7 @@ exports.handler = async (event, context) => {
         const supabase = createClient(supabaseUrl, supabaseKey);
 
         const time = event.queryStringParameters?.time; // Optional: filter by time slot
+        const tableId = event.queryStringParameters?.table_id; // Optional: filter by table ID
 
         // Build query
         let query = supabase
@@ -67,7 +68,7 @@ exports.handler = async (event, context) => {
             .select(`
                 *,
                 tables!inner(name, table_number, area, seats),
-                reservations(name, full_name, party_size)
+                reservations(name, full_name, party_size, status, confirmation_code)
             `)
             .eq('date', date)
             .in('status', ['reserved', 'blocked', 'unavailable'])
@@ -75,6 +76,10 @@ exports.handler = async (event, context) => {
 
         if (time) {
             query = query.eq('time', time);
+        }
+
+        if (tableId) {
+            query = query.eq('table_id', tableId);
         }
 
         const { data: assignments, error } = await query;
@@ -91,7 +96,9 @@ exports.handler = async (event, context) => {
             table_area: a.tables?.area,
             seats: a.tables?.seats || a.tables?.capacity, // Support both 'seats' and 'capacity'
             reservation_name: a.reservations?.name || a.reservations?.full_name,
-            reservation_party_size: a.reservations?.party_size
+            reservation_party_size: a.reservations?.party_size,
+            reservation_status: a.reservations?.status,
+            reservation_code: a.reservations?.confirmation_code
         }));
 
         return {
@@ -100,7 +107,7 @@ exports.handler = async (event, context) => {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'
             },
-            body: JSON.stringify(formatted)
+            body: JSON.stringify({ ok: true, success: true, assignments: formatted })
         };
 
     } catch (error) {

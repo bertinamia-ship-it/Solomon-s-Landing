@@ -407,16 +407,28 @@
             font-weight: 600;
         }
         .status-pill.pending {
-            background: #fef3c7;
+            background: rgba(245, 158, 11, 0.1);
             color: #92400e;
         }
         .status-pill.confirmed {
-            background: #d1fae5;
+            background: rgba(16, 185, 129, 0.1);
             color: #065f46;
         }
-        .status-pill.cancelled {
-            background: #fee2e2;
+        .status-pill.seated {
+            background: rgba(59, 130, 246, 0.1);
+            color: #1e40af;
+        }
+        .status-pill.completed {
+            background: rgba(107, 114, 128, 0.1);
+            color: #374151;
+        }
+        .status-pill.no_show {
+            background: rgba(239, 68, 68, 0.1);
             color: #991b1b;
+        }
+        .status-pill.cancelled {
+            background: rgba(107, 114, 128, 0.1);
+            color: #6b7280;
         }
         .reservation-details {
             font-size: 0.9rem;
@@ -530,6 +542,9 @@
                         <option value="">All Statuses</option>
                         <option value="pending">Pending</option>
                         <option value="confirmed">Confirmed</option>
+                        <option value="seated">Seated</option>
+                        <option value="completed">Completed</option>
+                        <option value="no_show">No Show</option>
                         <option value="cancelled">Cancelled</option>
                     </select>
                     <button class="btn-primary" onclick="openAdminQuickAddModal()">+ Quick Add</button>
@@ -1160,11 +1175,23 @@
                     node.appendChild(label);
                 }
                 
-                // Click to select
+                // Click to select or show timeline (double-click for timeline)
+                let clickTimeout;
                 node.addEventListener('click', (e) => {
                     if (placingTableId || placingObjectType) return; // Don't select while placing
                     e.stopPropagation();
-                    selectTableNode(node);
+                    
+                    // Single click: select for editing
+                    clickTimeout = setTimeout(() => {
+                        selectTableNode(node);
+                    }, 250);
+                });
+                
+                node.addEventListener('dblclick', (e) => {
+                    if (placingTableId || placingObjectType) return;
+                    e.stopPropagation();
+                    clearTimeout(clickTimeout);
+                    showTableTimeline(table.id, table);
                 });
                 
                 // Drag handlers
@@ -1433,7 +1460,7 @@
                 const resAssignments = await api(`/.netlify/functions/get-table-assignments?date=${date}${time ? `&time=${time}` : ''}`);
                 if (resAssignments) {
                     const dataAssignments = await resAssignments.json();
-                    adminAssignments = Array.isArray(dataAssignments) ? dataAssignments : [];
+                    adminAssignments = dataAssignments.assignments || (Array.isArray(dataAssignments) ? dataAssignments : []);
                 }
                 
                 // Load tables
@@ -1471,8 +1498,15 @@
             let html = '';
             filtered.forEach(res => {
                 const resAssignments = adminAssignments.filter(a => a.reservation_id === res.id);
-                const statusClass = res.status === 'confirmed' ? 'confirmed' : res.status === 'pending' ? 'pending' : 'cancelled';
-                const statusText = res.status.charAt(0).toUpperCase() + res.status.slice(1);
+                const resStatus = (res.status || 'pending').toLowerCase();
+                const statusClass = resStatus === 'confirmed' ? 'confirmed' : 
+                                  resStatus === 'seated' ? 'seated' :
+                                  resStatus === 'completed' ? 'completed' :
+                                  resStatus === 'no_show' ? 'no_show' :
+                                  resStatus === 'cancelled' ? 'cancelled' : 'pending';
+                const statusText = resStatus === 'no_show' ? 'No Show' : 
+                                  resStatus === 'seated' ? 'Seated' :
+                                  (res.status || 'pending').charAt(0).toUpperCase() + (res.status || 'pending').slice(1);
                 
                 html += `
                     <div class="reservation-item ${statusClass}" style="cursor: pointer;" onclick="openAdminReservationModal('${res.id}')">
@@ -1558,8 +1592,14 @@
                     <select id="adminEditStatus">
                         <option value="pending" ${reservation.status === 'pending' ? 'selected' : ''}>Pending</option>
                         <option value="confirmed" ${reservation.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
+                        <option value="seated" ${reservation.status === 'seated' ? 'selected' : ''}>Seated</option>
+                        <option value="completed" ${reservation.status === 'completed' ? 'selected' : ''}>Completed</option>
+                        <option value="no_show" ${reservation.status === 'no_show' ? 'selected' : ''}>No Show</option>
                         <option value="cancelled" ${reservation.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
                     </select>
+                    <small style="color: #6b7280; display: block; margin-top: 0.25rem;">
+                        ${['completed', 'cancelled', 'no_show'].includes(reservation.status) ? '⚠️ This status releases table assignments' : ''}
+                    </small>
                 </div>
                 <div class="form-group">
                     <label>Assigned Tables</label>
@@ -1807,49 +1847,262 @@
         // DANGER ZONE - FORCE TOOLS
         // ============================================
         
+        // Table Timeline View
+        let currentTimelineTableId = null;
+        let currentTimelineTable = null;
+        let currentTimelineDate = null;
+        
+        async function showTableTimeline(tableId, table) {
+            currentTimelineTableId = tableId;
+            currentTimelineTable = table;
+            currentTimelineDate = document.getElementById('adminReservationDate')?.value || new Date().toISOString().split('T')[0];
+            
+            const panel = document.getElementById('tableTimelinePanel');
+            const title = document.getElementById('tableTimelineTitle');
+            const body = document.getElementById('tableTimelineBody');
+            const forceReleaseBtn = document.getElementById('forceReleaseTimelineBtn');
+            
+            title.textContent = `${table.name || `Table ${table.table_number}`} Timeline`;
+            
+            // Get today's date if not set
+            if (!currentTimelineDate) {
+                currentTimelineDate = new Date().toISOString().split('T')[0];
+            }
+            
+            body.innerHTML = '<div class="loading">Loading timeline...</div>';
+            panel.style.display = 'flex';
+            
+            try {
+                // Get assignments for this table on this date
+                const res = await api(`/.netlify/functions/get-table-assignments?date=${currentTimelineDate}&table_id=${tableId}`);
+                if (!res) {
+                    body.innerHTML = '<div class="message error">Failed to load timeline</div>';
+                    return;
+                }
+                
+                const data = await res.json();
+                const assignments = (data.assignments || []).filter(a => a.table_id === tableId);
+                
+                // Get reservations for context
+                const resReservations = await api(`/.netlify/functions/get-reservations?date=${currentTimelineDate}`);
+                const reservationsData = resReservations ? await resReservations.json() : { reservations: [] };
+                const reservations = reservationsData.reservations || [];
+                
+                // Group assignments by time
+                const assignmentsByTime = {};
+                assignments.forEach(a => {
+                    if (!assignmentsByTime[a.time]) {
+                        assignmentsByTime[a.time] = [];
+                    }
+                    assignmentsByTime[a.time].push(a);
+                });
+                
+                // Show next 2 hours (4 slots: T, T+30, T+60, T+90)
+                const VALID_TIMES = ['17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30'];
+                const now = new Date();
+                const currentHour = now.getHours();
+                const currentMinute = now.getMinutes();
+                const currentTimeStr = `${String(currentHour).padStart(2, '0')}:${String(Math.floor(currentMinute / 30) * 30).padStart(2, '0')}`;
+                
+                // Find start index
+                let startIndex = VALID_TIMES.findIndex(t => t >= currentTimeStr);
+                if (startIndex === -1) startIndex = 0;
+                
+                // Show next 4 slots
+                const timelineSlots = VALID_TIMES.slice(startIndex, startIndex + 4);
+                
+                let html = `
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Date:</label>
+                        <input type="date" id="timelineDate" value="${currentTimelineDate}" onchange="updateTableTimeline()" style="width: 100%; padding: 0.5rem; border: 2px solid #e2e8f0; border-radius: 8px;">
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Table Info:</label>
+                        <div style="padding: 0.75rem; background: #f9fafb; border-radius: 8px; font-size: 0.9rem;">
+                            <div><strong>Table:</strong> ${table.name || `Table ${table.table_number}`}</div>
+                            <div><strong>Seats:</strong> ${table.seats}</div>
+                            <div><strong>Area:</strong> ${table.area}</div>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Next 2 Hours Timeline:</label>
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                `;
+                
+                timelineSlots.forEach(time => {
+                    const slotAssignments = assignmentsByTime[time] || [];
+                    const status = slotAssignments.length > 0 ? slotAssignments[0].status : 'available';
+                    const reservationId = slotAssignments.length > 0 ? slotAssignments[0].reservation_id : null;
+                    const reservation = reservationId ? reservations.find(r => r.id === reservationId) : null;
+                    
+                    const statusClass = status === 'reserved' ? 'reserved' : 
+                                      status === 'blocked' ? 'blocked' : 
+                                      status === 'unavailable' ? 'unavailable' : 'available';
+                    
+                    html += `
+                        <div style="padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 8px; background: white;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <strong>${time}</strong>
+                                <span class="status-pill ${statusClass}" style="font-size: 0.75rem; padding: 0.2rem 0.5rem;">${status.charAt(0).toUpperCase() + status.slice(1)}</span>
+                            </div>
+                            ${reservation ? `
+                                <div style="font-size: 0.85rem; color: #6b7280;">
+                                    <div><strong>Guest:</strong> ${reservation.name || reservation.full_name || 'N/A'}</div>
+                                    <div><strong>Party:</strong> ${reservation.party_size} guests</div>
+                                    <div><strong>Code:</strong> <span style="font-family: monospace; background: #f3f4f6; padding: 0.15rem 0.4rem; border-radius: 4px;">${reservation.confirmation_code || 'N/A'}</span></div>
+                                    <div><strong>Status:</strong> ${reservation.status}</div>
+                                </div>
+                            ` : status !== 'available' ? `
+                                <div style="font-size: 0.85rem; color: #6b7280;">
+                                    ${status === 'blocked' ? 'Table blocked' : 'Table unavailable'}
+                                </div>
+                            ` : '<div style="font-size: 0.85rem; color: #10b981;">Available</div>'}
+                        </div>
+                    `;
+                });
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+                
+                body.innerHTML = html;
+                
+                // Show force release button if there are any assignments
+                if (assignments.length > 0) {
+                    forceReleaseBtn.style.display = 'inline-block';
+                } else {
+                    forceReleaseBtn.style.display = 'none';
+                }
+                
+            } catch (error) {
+                body.innerHTML = `<div class="message error">Error: ${error.message}</div>`;
+            }
+        }
+        
+        function closeTableTimeline() {
+            document.getElementById('tableTimelinePanel').style.display = 'none';
+            currentTimelineTableId = null;
+            currentTimelineTable = null;
+        }
+        
+        async function updateTableTimeline() {
+            const date = document.getElementById('timelineDate')?.value;
+            if (date && currentTimelineTableId && currentTimelineTable) {
+                currentTimelineDate = date;
+                await showTableTimeline(currentTimelineTableId, currentTimelineTable);
+            }
+        }
+        
+        function forceReleaseFromTimeline() {
+            if (!currentTimelineTableId || !currentTimelineDate) return;
+            
+            const modal = document.getElementById('forceReleaseModal');
+            const body = document.getElementById('forceReleaseBody');
+            
+            body.innerHTML = `
+                <div class="form-group">
+                    <label>Table ID *</label>
+                    <input type="text" id="forceReleaseTableId" value="${currentTimelineTableId || currentTimelineTable.id || ''}" required>
+                    <small style="color: #6b7280;">${currentTimelineTable.name ? `Table: ${currentTimelineTable.name || `Table ${currentTimelineTable.table_number}`}` : 'Enter table ID'}</small>
+                </div>
+                <div class="form-group">
+                    <label>Date *</label>
+                    <input type="date" id="forceReleaseDate" value="${currentTimelineDate || new Date().toISOString().split('T')[0]}" required>
+                </div>
+                <div class="form-group">
+                    <label>Time *</label>
+                    <select id="forceReleaseTime" required>
+                        <option value="17:30">5:30 PM</option>
+                        <option value="18:00">6:00 PM</option>
+                        <option value="18:30">6:30 PM</option>
+                        <option value="19:00" selected>7:00 PM</option>
+                        <option value="19:30">7:30 PM</option>
+                        <option value="20:00">8:00 PM</option>
+                        <option value="20:30">8:30 PM</option>
+                        <option value="21:00">9:00 PM</option>
+                        <option value="21:30">9:30 PM</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Area *</label>
+                    <select id="forceReleaseArea" required>
+                        <option value="Main Floor" selected>Main Floor</option>
+                        <option value="Sushi Bar">Sushi Bar</option>
+                    </select>
+                </div>
+                <p style="color: #dc2626; font-size: 0.9rem; margin-top: 1rem;">
+                    ⚠️ This will DELETE all table assignments for this table at the selected time (all 3 slots: T, T+30, T+60). 
+                    If a reservation exists, it will be marked as "completed". This action cannot be undone.
+                </p>
+            `;
+            
+            modal.style.display = 'flex';
+        }
+        
+        function closeForceReleaseModal() {
+            document.getElementById('forceReleaseModal').style.display = 'none';
+        }
+        
+        async function confirmForceRelease() {
+            const tableId = currentTimelineTableId;
+            const date = document.getElementById('forceReleaseDate')?.value;
+            const time = document.getElementById('forceReleaseTime')?.value;
+            const area = document.getElementById('forceReleaseArea')?.value;
+            
+            if (!tableId || !date || !time || !area) {
+                showMessage('Please fill in all fields', 'error');
+                return;
+            }
+            
+            try {
+                const res = await api('/.netlify/functions/release-table', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        table_id: tableId,
+                        date: date,
+                        time: time,
+                        area: area
+                    })
+                });
+                
+                if (!res) return;
+                
+                const data = await res.json();
+                if (data.ok || data.success) {
+                    const deletedCount = data.deletedCount || 0;
+                    const updatedReservations = data.updatedReservations || 0;
+                    showMessage(`Table freed. ${deletedCount} assignment(s) deleted${updatedReservations > 0 ? `, ${updatedReservations} reservation(s) marked completed` : ''}.`, 'success');
+                    closeForceReleaseModal();
+                    await showTableTimeline(tableId, currentTimelineTable); // Refresh timeline
+                    await loadAdminReservations();
+                } else {
+                    showMessage(`Error: ${data.error || 'Failed to free table'}`, 'error');
+                }
+            } catch (error) {
+                showMessage(`Error: ${error.message}`, 'error');
+            }
+        }
+        
         async function adminForceFreeTable() {
+            // Prompt for table ID first, then open modal
             const tableId = prompt('Enter Table ID to force-free:');
             if (!tableId) return;
             
-            const date = prompt('Enter date (YYYY-MM-DD):', new Date().toISOString().split('T')[0]);
-            if (!date) return;
-            
-            const time = prompt('Enter time (HH:MM):', '19:00');
-            if (!time) return;
-            
-            const area = prompt('Enter area (Main Floor / Sushi Bar):', 'Main Floor');
-            if (!area) return;
-            
-            openAdminConfirmModal({
-                title: 'Force Free Table',
-                body: `This will DELETE all table assignments for Table ${tableId} at ${time} on ${date} (all 3 slots). This action cannot be undone. Continue?`,
-                onConfirm: async () => {
-                    try {
-                        const res = await api('/.netlify/functions/release-table', {
-                            method: 'POST',
-                            body: JSON.stringify({
-                                table_id: tableId,
-                                date: date,
-                                time: time,
-                                area: area
-                            })
-                        });
-                        
-                        if (!res) return;
-                        
-                        const data = await res.json();
-                        if (data.ok || data.success) {
-                            const deletedCount = data.deletedCount || 0;
-                            showMessage(`Table freed. ${deletedCount} assignment(s) deleted.`, 'success');
-                            await loadAdminReservations();
-                        } else {
-                            showMessage(`Error: ${data.error || 'Failed to free table'}`, 'error');
-                        }
-                    } catch (error) {
-                        showMessage(`Error: ${error.message}`, 'error');
-                    }
-                }
-            });
+            // Try to find table info
+            const table = adminAllTables.find(t => t.id === tableId) || allTables.find(t => t.id === tableId);
+            if (table) {
+                currentTimelineTableId = tableId;
+                currentTimelineTable = table;
+                currentTimelineDate = document.getElementById('adminReservationDate')?.value || new Date().toISOString().split('T')[0];
+                forceReleaseFromTimeline();
+            } else {
+                // If table not found, still allow force release with minimal info
+                currentTimelineTableId = tableId;
+                currentTimelineTable = { id: tableId, name: 'Unknown', table_number: '?', area: 'Main Floor' };
+                currentTimelineDate = document.getElementById('adminReservationDate')?.value || new Date().toISOString().split('T')[0];
+                forceReleaseFromTimeline();
+            }
         }
         
         async function adminCreateBlock() {
