@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hostess Dashboard - Solomon's Landing</title>
+    <link rel="stylesheet" href="assets/css/reservations-app.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -776,18 +777,23 @@
     </style>
 </head>
 <body>
-    <nav class="top-nav">
-        <div class="top-nav-content">
-            <div class="logo-section">
-                <img src="https://res.cloudinary.com/dpmozdkfh/image/upload/v1765665392/logo_qykwcx.jpg" alt="Solomon's Landing" onerror="this.src='solomons-logo.png'; this.onerror=null;">
-                <span class="app-title">Reservations — Hostess</span>
+    <div class="app-bar">
+        <div class="app-bar-content">
+            <div class="app-bar-left">
+                <img src="https://res.cloudinary.com/dpmozdkfh/image/upload/v1765665392/logo_qykwcx.jpg" alt="Solomon's Landing" class="app-bar-logo" onerror="this.src='solomons-logo.png'; this.onerror=null;">
+                <h1 class="app-bar-title">Reservations</h1>
             </div>
-            <button class="btn-logout" onclick="logout()">Logout</button>
+            <div class="app-bar-actions">
+                <button class="btn btn-secondary btn-small" onclick="loadFloorPlan()" title="Refresh">
+                    <span>↻</span> Refresh
+                </button>
+                <button class="btn btn-danger btn-small" onclick="logout()">Logout</button>
+            </div>
         </div>
-    </nav>
+    </div>
 
-    <div class="dashboard-container">
-        <div class="controls-section">
+    <div class="app-container">
+        <div class="controls-bar">
             <div class="controls-row">
                 <label>Date:</label>
                 <input type="date" id="selectedDate" onchange="loadFloorPlan()">
@@ -804,9 +810,6 @@
                     <option value="21:30">9:30 PM</option>
                 </select>
                 <button class="btn-today" onclick="setToday()">Today</button>
-                <button class="btn-refresh" onclick="loadFloorPlan()" title="Refresh">
-                    <span>↻</span> Refresh
-                </button>
             </div>
             <div class="area-tabs">
                 <button class="area-tab active" onclick="switchArea('Main Floor')">Main Floor</button>
@@ -888,26 +891,32 @@
     </div>
 
     <!-- Table Action Modal (for assign/block actions) -->
-    <div id="tableModal" class="modal">
-        <div class="modal-content">
-            <h3 id="modalTitle">Table Actions</h3>
-            <div id="modalBody"></div>
-            <div class="modal-actions">
-                <button class="btn-secondary" onclick="closeModal()">Cancel</button>
-                <button class="btn-primary" id="tableModalActionBtn" onclick="executeTableModalAction()" style="display: none;">Confirm</button>
+    <div id="tableModal" class="modal-backdrop" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Table Actions</h3>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" id="tableModalActionBtn" onclick="executeTableModalAction()" style="display: none;">Confirm</button>
             </div>
         </div>
     </div>
 
     <!-- Reservation Details Modal -->
-    <div id="reservationModal" class="modal">
-        <div class="modal-content" style="max-width: 600px;">
-            <h3 id="reservationModalTitle">Reservation Details</h3>
-            <div id="reservationModalBody"></div>
-            <div class="modal-actions">
-                <button class="btn-danger" onclick="cancelReservation()" style="margin-right: auto;">Cancel Reservation</button>
-                <button class="btn-secondary" onclick="closeReservationModal()">Close</button>
-                <button class="btn-primary" onclick="saveReservation()">Save Changes</button>
+    <div id="reservationModal" class="modal-backdrop" style="display: none;">
+        <div class="modal" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="reservationModalTitle">Reservation Details</h3>
+                <button class="modal-close" onclick="closeReservationModal()">×</button>
+            </div>
+            <div class="modal-body" id="reservationModalBody"></div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" onclick="cancelReservation()" style="margin-right: auto;">Cancel Reservation</button>
+                <button class="btn btn-secondary" onclick="closeReservationModal()">Close</button>
+                <button class="btn btn-primary" onclick="saveReservation()">Save Changes</button>
             </div>
         </div>
     </div>
@@ -928,9 +937,13 @@
     </div>
 
     <!-- Quick Add Reservation Modal -->
-    <div id="quickAddModal" class="modal">
-        <div class="modal-content" style="max-width: 550px;">
-            <h3 style="margin-bottom: 1.5rem; color: #004A9F;">Quick Add Reservation</h3>
+    <div id="quickAddModal" class="modal-backdrop" style="display: none;">
+        <div class="modal" style="max-width: 550px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Quick Add Reservation</h3>
+                <button class="modal-close" onclick="closeQuickAddModal()">×</button>
+            </div>
+            <div class="modal-body">
             <div id="quickAddModalBody">
                 <div class="form-group">
                     <label>Name *</label>
@@ -980,9 +993,9 @@
                     <textarea id="quickAddNotes" rows="3"></textarea>
                 </div>
             </div>
-            <div class="modal-actions" style="margin-top: 1.5rem;">
-                <button class="btn-secondary" onclick="closeQuickAddModal()">Cancel</button>
-                <button class="btn-primary" onclick="saveQuickAddReservation()">Save Reservation</button>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeQuickAddModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveQuickAddReservation()">Save Reservation</button>
             </div>
         </div>
     </div>
@@ -1057,7 +1070,15 @@
         function showToast(type, message) {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
+            
+            // Map type to CSS class
+            const typeMap = {
+                success: 'toast-success',
+                error: 'toast-error',
+                info: 'toast-info'
+            };
+            
+            toast.className = `toast ${typeMap[type] || 'toast-info'}`;
             
             const icons = {
                 success: '✓',
@@ -1073,11 +1094,10 @@
             
             container.appendChild(toast);
             
-            // Auto-remove after 4 seconds
+            // Auto-remove after 4 seconds (handled by CSS animation)
             setTimeout(() => {
                 if (toast.parentElement) {
-                    toast.style.animation = 'slideInRight 0.3s ease reverse';
-                    setTimeout(() => toast.remove(), 300);
+                    toast.remove();
                 }
             }, 4000);
         }
@@ -1344,7 +1364,7 @@
             `;
             document.getElementById('tableModalActionBtn').style.display = 'block';
             document.getElementById('tableModalActionBtn').textContent = 'Assign';
-            modal.classList.add('active');
+            openModal('tableModal');
             
             // Store action handler
             window.executeAssignAction = async () => {
@@ -1418,7 +1438,7 @@
             `;
             document.getElementById('tableModalActionBtn').style.display = 'block';
             document.getElementById('tableModalActionBtn').textContent = 'Block Table';
-            modal.classList.add('active');
+            openModal('tableModal');
             
             window.executeBlockAction = async () => {
                 const reason = document.getElementById('blockReason').value || 'OpenTable';
@@ -1925,7 +1945,7 @@
             
             modalBody.innerHTML = html;
             updateActionForm();
-            modal.classList.add('active');
+            openModal('tableModal');
         }
 
         function updateActionForm() {
@@ -2134,12 +2154,16 @@
         }
 
         function closeModal() {
-            document.getElementById('tableModal').classList.remove('active');
+            document.getElementById('tableModal').style.display = 'none';
             document.getElementById('tableModalActionBtn').style.display = 'none';
             selectedTableId = null;
             // Clear action handlers
             window.executeAssignAction = null;
             window.executeBlockAction = null;
+        }
+        
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
         }
 
         // Close modal on outside click
@@ -2246,7 +2270,7 @@
             `;
 
             modalBody.innerHTML = html;
-            modal.classList.add('active');
+            openModal('reservationModal');
             
             // Store reservation ID for save
             modal.dataset.reservationId = reservationId;
@@ -2333,7 +2357,7 @@
         }
 
         function closeReservationModal() {
-            document.getElementById('reservationModal').classList.remove('active');
+            document.getElementById('reservationModal').style.display = 'none';
         }
 
         // Quick Add Functions
