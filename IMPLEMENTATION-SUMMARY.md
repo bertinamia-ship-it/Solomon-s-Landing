@@ -206,6 +206,31 @@ const SLOTS_PER_RESERVATION = 3; // 90 / 30
 ### Error Messages
 If functions return `{"ok":false,"error":"Missing SUPABASE_URL"}` or `{"success":false,"error":"Server configuration error"}`, check that all required env vars are set in Netlify Dashboard and redeploy.
 
+## Hostess Dashboard Hotfixes
+
+### Issues Fixed (Commit: `49c3af5`)
+**Problem**: Hostess dashboard had multiple runtime errors preventing core functionality:
+- `ReferenceError: selectedTableId is not defined` in `handleFreeTable`
+- Modal not opening properly (only overlay visible)
+- Duplicate code in `closeQuickAddModal` causing variable redeclaration errors
+- Missing null checks in `openModal`
+
+**Solutions Applied**:
+1. **Fixed `handleFreeTable`**: Changed all 7 occurrences of `selectedTableId` to `state.selectedTableId` to use centralized state object
+2. **Fixed `openModal`**: Added null check for modal element before setting display
+3. **Fixed `closeQuickAddModal`**: Removed duplicate code, properly clears all form fields and validation error classes
+4. **State Management**: All undefined variable references now use the centralized `state` object with defensive guards
+
+**Testing**:
+- ✅ Zero console errors on page load
+- ✅ Create Reservation modal opens and closes properly
+- ✅ Free Table action works and releases all 3-slot assignments
+- ✅ Form validation errors clear when modal closes
+- ✅ All table actions use `state.selectedTableId` correctly
+
+**Files Modified**:
+- `website/hostess-dashboard.html` - Fixed state variable references, modal functions, form reset logic
+
 ## Next Steps (Optional)
 - Add table rotation in hostess view (currently admin-only)
 - Add bulk operations (assign multiple reservations)
