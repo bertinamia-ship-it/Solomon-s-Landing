@@ -459,13 +459,14 @@
         }
         .table-shape {
             position: relative;
-            border: 1.5px solid;
+            border: 2px solid;
             background: linear-gradient(180deg, #f3f8ff 0%, #e8f1ff 100%);
-            border-radius: 8px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.5);
+            transition: all 0.2s ease;
         }
         .table-shape.available {
             border-color: #10b981;
@@ -486,14 +487,28 @@
         .table-number {
             font-weight: 700;
             color: #1d4ed8;
-            font-size: 11px;
+            font-size: 12px;
             line-height: 1;
             pointer-events: none;
+            text-align: center;
+            letter-spacing: -0.02em;
         }
         .table-shape.available .table-number { color: #065f46; }
         .table-shape.reserved .table-number { color: #1e40af; }
         .table-shape.blocked .table-number { color: #92400e; }
         .table-shape.unavailable .table-number { color: #991b1b; }
+        .table-label {
+            position: absolute;
+            bottom: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            font-weight: 600;
+            color: #374151;
+            white-space: nowrap;
+            pointer-events: none;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+        }
         .seat {
             position: absolute;
             width: 6px;
@@ -591,20 +606,126 @@
             max-height: 500px;
             overflow-y: auto;
         }
-        .reservation-item,
-        .block-item {
-            padding: 1.25rem;
+        /* Premium Reservation Cards */
+        .reservation-card {
+            padding: clamp(0.75rem, 1.5vw, 1rem);
             border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            margin-bottom: 1rem;
+            border-radius: 10px;
+            margin-bottom: 0.75rem;
             background: white;
             transition: all 0.2s ease;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
-        .reservation-item:hover {
+        .reservation-card:hover {
             border-color: #004A9F;
-            box-shadow: 0 4px 12px rgba(0,74,159,0.1);
+            box-shadow: 0 2px 8px rgba(0,74,159,0.1);
             transform: translateY(-1px);
+        }
+        .reservation-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .reservation-card-name {
+            font-weight: 700;
+            color: #1e293b;
+            font-size: clamp(0.95rem, 2vw, 1.05rem);
+        }
+        .reservation-card-actions {
+            display: flex;
+            gap: 0.25rem;
+        }
+        .icon-btn {
+            background: none;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+            opacity: 0.7;
+        }
+        .icon-btn:hover {
+            opacity: 1;
+            background: #f3f4f6;
+        }
+        .reservation-card-body {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .reservation-card-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+        .meta-item {
+            font-weight: 500;
+        }
+        .meta-sep {
+            color: #d1d5db;
+        }
+        .reservation-card-table {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            padding: 0.5rem;
+            background: #f9fafb;
+            border-radius: 6px;
+        }
+        .reservation-card-table.no-table {
+            background: #fef2f2;
+            color: #991b1b;
+        }
+        .table-label {
+            font-weight: 600;
+            color: #374151;
+        }
+        .table-value {
+            color: #004A9F;
+            font-weight: 600;
+        }
+        .no-table-text {
+            flex: 1;
+        }
+        .btn-assign-inline {
+            background: #004A9F;
+            color: white;
+            border: none;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-assign-inline:hover {
+            background: #003d82;
+        }
+        .reservation-card-code {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+        .reservation-card-code code {
+            font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+            background: #f3f4f6;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: #374151;
+        }
+        .block-item {
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            margin-bottom: 0.75rem;
+            background: white;
         }
         .reservation-name {
             font-weight: 700;
@@ -963,6 +1084,221 @@
             padding: 0.5rem 1rem;
             font-size: 0.9rem;
         }
+        
+        /* Premium Form Styles */
+        .segmented-control {
+            display: flex;
+            gap: 0.25rem;
+            background: #f3f4f6;
+            padding: 0.25rem;
+            border-radius: 8px;
+        }
+        .segmented-btn {
+            flex: 1;
+            padding: 0.5rem 0.75rem;
+            border: none;
+            background: transparent;
+            color: #6b7280;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .segmented-btn.active {
+            background: white;
+            color: #004A9F;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .notes-toggle-btn {
+            background: none;
+            border: none;
+            color: #004A9F;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0.5rem 0;
+            transition: color 0.2s;
+        }
+        .notes-toggle-btn:hover {
+            color: #003d82;
+        }
+        .form-group input.error,
+        .form-group select.error {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+        
+        /* App Layout - 2 Column, No Scroll on iPad */
+        :root {
+            --header-height: 64px;
+            --controls-height: 80px;
+            --app-padding: clamp(0.75rem, 2vw, 1.5rem);
+        }
+        
+        body {
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        .app-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            background: white;
+            border-bottom: 1px solid rgba(0,74,159,0.1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            padding: 0 var(--app-padding);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .app-bar-content {
+            width: 100%;
+            max-width: 1800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .app-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .app-bar-logo {
+            height: 32px;
+            width: auto;
+        }
+        
+        .app-bar-title {
+            color: #004A9F;
+            font-size: clamp(1rem, 2.5vw, 1.1rem);
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        .role-badge {
+            background: #e0f2fe;
+            color: #004A9F;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .app-container {
+            margin-top: var(--header-height);
+            height: calc(100vh - var(--header-height));
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .controls-bar {
+            background: white;
+            padding: clamp(0.5rem, 1.5vw, 0.75rem) var(--app-padding);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            flex-shrink: 0;
+            z-index: 999;
+        }
+        
+        .controls-row {
+            display: flex;
+            gap: clamp(0.5rem, 1vw, 0.75rem);
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .main-content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: clamp(0.75rem, 2vw, 1rem);
+            padding: var(--app-padding);
+            overflow: hidden;
+            min-height: 0;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: clamp(1rem, 2vw, 1.5rem);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            min-height: 0;
+        }
+        
+        .section h2 {
+            margin: 0 0 clamp(0.75rem, 1.5vw, 1rem) 0;
+            color: #1e293b;
+            font-size: clamp(1.1rem, 2.5vw, 1.25rem);
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: clamp(0.5rem, 1vw, 0.75rem);
+            flex-shrink: 0;
+        }
+        
+        .floor-plan-container {
+            flex: 1;
+            min-height: 0;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            background: #f9fafb;
+            overflow: auto;
+        }
+        
+        .reservations-list {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+        
+        /* iPad: Single column, still no scroll */
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            .floor-plan-container {
+                height: clamp(300px, 40vh, 400px);
+            }
+            .reservations-list {
+                max-height: clamp(300px, 50vh, 500px);
+            }
+        }
+        
+        /* Mobile: Stack vertically */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                padding: clamp(0.5rem, 2vw, 1rem);
+            }
+            .floor-plan-container {
+                height: clamp(250px, 35vh, 350px);
+            }
+            .reservations-list {
+                max-height: clamp(250px, 45vh, 400px);
+            }
+            .controls-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .controls-row input,
+            .controls-row select,
+            .btn-today {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1165,108 +1501,105 @@
         </div>
     </div>
 
-    <!-- Quick Add Reservation Modal (Stepper) -->
-    <div id="quickAddModal" class="modal-backdrop" style="display: none;">
-        <div class="modal" style="max-width: 600px;">
+    <!-- Create Reservation Modal (Premium Single Form) -->
+    <div id="quickAddModal" class="modal-backdrop" style="display: none;" aria-hidden="true">
+        <div class="modal" style="max-width: 600px;" role="dialog" aria-labelledby="createReservationTitle">
             <div class="modal-header">
-                <h3 class="modal-title">Create Reservation</h3>
-                <button class="modal-close" onclick="closeQuickAddModal()">×</button>
+                <h3 class="modal-title" id="createReservationTitle">Create Reservation</h3>
+                <button class="modal-close" onclick="closeQuickAddModal()" aria-label="Close">×</button>
             </div>
             <div class="modal-body">
-                <div class="stepper-container">
-                    <div class="stepper-steps">
-                        <div class="stepper-step active" id="step1">
-                            <div class="step-circle">1</div>
-                            <div class="step-label">Guest Info</div>
+                <form id="createReservationForm" onsubmit="event.preventDefault(); saveQuickAddReservation();">
+                    <!-- Row A: Name, Phone -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Name *</label>
+                            <input type="text" id="quickAddName" required autocomplete="name">
                         </div>
-                        <div class="stepper-step" id="step2">
-                            <div class="step-circle">2</div>
-                            <div class="step-label">Time & Party</div>
-                        </div>
-                        <div class="stepper-step" id="step3">
-                            <div class="step-circle">3</div>
-                            <div class="step-label">Notes</div>
-                        </div>
-                        <div class="stepper-step" id="step4">
-                            <div class="step-circle">4</div>
-                            <div class="step-label">Confirm</div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Phone *</label>
+                            <input type="tel" id="quickAddPhone" required autocomplete="tel">
                         </div>
                     </div>
                     
-                    <div class="stepper-content">
-                        <!-- Step 1: Guest Details -->
-                        <div id="stepperStep1" class="stepper-step-content">
-                            <div class="form-group">
-                                <label>Name *</label>
-                                <input type="text" id="quickAddName" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Phone *</label>
-                                <input type="tel" id="quickAddPhone" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input type="email" id="quickAddEmail">
-                            </div>
-                            <div class="form-group">
-                                <label>Source</label>
-                                <select id="quickAddSource">
-                                    <option value="phone">Phone</option>
-                                    <option value="opentable">OpenTable</option>
-                                    <option value="manual">Manual</option>
-                                    <option value="website">Website</option>
-                                </select>
-                            </div>
+                    <!-- Row B: Party Size, Time, Duration -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Party Size *</label>
+                            <input type="number" id="quickAddPartySize" min="1" max="20" required onchange="loadAvailableTimes()">
                         </div>
-                        
-                        <!-- Step 2: Time & Party -->
-                        <div id="stepperStep2" class="stepper-step-content" style="display: none;">
-                            <div class="form-group">
-                                <label>Date *</label>
-                                <input type="date" id="quickAddDate" required onchange="loadAvailableTimes()">
-                            </div>
-                            <div class="form-group">
-                                <label>Party Size *</label>
-                                <input type="number" id="quickAddPartySize" min="1" max="20" required onchange="loadAvailableTimes()">
-                            </div>
-                            <div class="form-group">
-                                <label>Time *</label>
-                                <select id="quickAddTime" required>
-                                    <option value="">Select a time...</option>
-                                </select>
-                                <div id="availableTimesSuggestions" class="available-times-suggestions" style="display: none; margin-top: 0.75rem;">
-                                    <!-- Auto-suggested times will appear here -->
-                                </div>
-                            </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Time *</label>
+                            <select id="quickAddTime" required>
+                                <option value="">Select time...</option>
+                            </select>
                         </div>
-                        
-                        <!-- Step 3: Notes -->
-                        <div id="stepperStep3" class="stepper-step-content" style="display: none;">
-                            <div class="form-group">
-                                <label>Notes</label>
-                                <textarea id="quickAddNotes" rows="5" placeholder="Special requests, dietary restrictions, etc."></textarea>
-                            </div>
-                        </div>
-                        
-                        <!-- Step 4: Confirm -->
-                        <div id="stepperStep4" class="stepper-step-content" style="display: none;">
-                            <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: 12px;">
-                                <h4 style="margin: 0 0 1rem 0; color: var(--text-primary);">Review Reservation</h4>
-                                <div id="quickAddReview" style="line-height: 1.8;">
-                                    <!-- Review content will be inserted here -->
-                                </div>
-                            </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Duration</label>
+                            <select id="quickAddDuration">
+                                <option value="90" selected>90 min</option>
+                                <option value="60">60 min</option>
+                                <option value="120">120 min</option>
+                            </select>
                         </div>
                     </div>
                     
-                    <div class="stepper-actions">
-                        <button class="btn btn-secondary" id="stepperBackBtn" onclick="stepperPrevious()" style="display: none;">← Back</button>
-                        <div style="flex: 1;"></div>
-                        <button class="btn btn-secondary" onclick="closeQuickAddModal()">Cancel</button>
-                        <button class="btn btn-primary" id="stepperNextBtn" onclick="stepperNext()">Next →</button>
-                        <button class="btn btn-primary" id="stepperSaveBtn" onclick="saveQuickAddReservation()" style="display: none;">Save Reservation</button>
+                    <!-- Row C: Date, Area, Status -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Date *</label>
+                            <input type="date" id="quickAddDate" required onchange="loadAvailableTimes()">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Area *</label>
+                            <select id="quickAddArea" required>
+                                <option value="Main Floor" selected>Main Floor</option>
+                                <option value="Sushi Bar">Sushi Bar</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Status</label>
+                            <div class="segmented-control" style="display: flex; gap: 0.25rem; background: #f3f4f6; padding: 0.25rem; border-radius: 8px;">
+                                <button type="button" class="segmented-btn active" data-status="pending" onclick="setQuickAddStatus('pending', this)">Pending</button>
+                                <button type="button" class="segmented-btn" data-status="confirmed" onclick="setQuickAddStatus('confirmed', this)">Confirmed</button>
+                            </div>
+                            <input type="hidden" id="quickAddStatus" value="pending">
+                        </div>
                     </div>
-                </div>
+                    
+                    <!-- Row D: Email, Source -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Email</label>
+                            <input type="email" id="quickAddEmail" autocomplete="email">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Source</label>
+                            <select id="quickAddSource">
+                                <option value="phone" selected>Phone</option>
+                                <option value="opentable">OpenTable</option>
+                                <option value="manual">Manual</option>
+                                <option value="website">Website</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Notes Toggle -->
+                    <div style="margin-bottom: 1rem;">
+                        <button type="button" class="notes-toggle-btn" onclick="toggleNotesSection()" style="background: none; border: none; color: #004A9F; font-size: 0.9rem; font-weight: 600; cursor: pointer; padding: 0.5rem 0;">
+                            <span id="notesToggleText">+ Add notes</span>
+                        </button>
+                        <div id="notesSection" style="display: none; margin-top: 0.75rem;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <textarea id="quickAddNotes" rows="3" placeholder="Special requests, dietary restrictions, etc."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeQuickAddModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveQuickAddReservation()">Create Reservation</button>
             </div>
         </div>
     </div>
@@ -1694,6 +2027,62 @@
             }
         }
 
+        async function handleQuickAssign(reservationId) {
+            if (!reservationId) {
+                showToast('error', 'Reservation ID missing');
+                return;
+            }
+            // Open reservation modal with assign focus
+            openReservationModal(reservationId);
+            // Scroll to table assignment section
+            setTimeout(() => {
+                const tablesSelect = document.getElementById('editTables');
+                if (tablesSelect) {
+                    tablesSelect.focus();
+                    tablesSelect.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 300);
+        }
+        
+        async function handleQuickCancel(reservationId) {
+            if (!reservationId) {
+                showToast('error', 'Reservation ID missing');
+                return;
+            }
+            const reservation = (state.reservations || []).find(r => r.id === reservationId);
+            if (!reservation) {
+                showToast('error', 'Reservation not found');
+                return;
+            }
+            openConfirm({
+                title: 'Cancel Reservation',
+                body: `Cancel reservation for ${reservation.name || reservation.full_name || 'Guest'}? This will release table assignments.`,
+                confirmText: 'Cancel Reservation',
+                onConfirm: async () => {
+                    try {
+                        const res = await api('/.netlify/functions/cancel-reservation', {
+                            method: 'POST',
+                            body: JSON.stringify({ id: reservationId })
+                        });
+                        if (!res) {
+                            showToast('error', 'Failed to connect to server');
+                            return;
+                        }
+                        const data = await res.json();
+                        if (data.success) {
+                            showToast('success', 'Reservation cancelled');
+                            await refreshAfterAction();
+                        } else {
+                            showToast('error', data.error || 'Failed to cancel reservation');
+                        }
+                    } catch (error) {
+                        console.error('Cancel reservation error:', error);
+                        showToast('error', `Error: ${error.message || 'Unknown error'}`);
+                    }
+                }
+            });
+        }
+        
         async function handleAssignReservation() {
             if (!state.selectedTableId) {
                 showToast('error', 'Please select a table first');
@@ -2397,21 +2786,35 @@
                         const resTime = res.time || "";
                         const resCode = res.confirmation_code || "";
                         
+                    const assignedTables = resAssignments.map(a => {
+                        const table = allTablesList.find(t => t.id === a.table_id);
+                        return table ? (table.name || `Table ${table.table_number}`) : null;
+                    }).filter(t => t !== null);
+                    const hasTable = assignedTables.length > 0;
+                    const tableDisplay = hasTable ? assignedTables.join(', ') : 'No table assigned';
+                    
                     html += `
-                            <div class="reservation-item ${statusClass}" style="cursor: pointer;" onclick="openReservationModal('${res.id || ""}')">
-                                <div style="display: flex; justify-content: space-between; align-items: start;">
-                                    <div style="flex: 1;">
-                                        <div class="reservation-name">${resName}</div>
-                                        <div class="reservation-details">
-                                            <span>${resPartySize} guests</span>
-                                            <span>•</span>
-                                            <span>${resTime}</span>
-                                            <span class="status-pill ${statusClass}">${statusText}</span>
-                                        </div>
-                                        ${resAssignments.length > 0 ? `<div class="reservation-table">Tables: ${resAssignments.map(a => a.table_name || a.table_number || 'N/A').join(', ')}</div>` : '<div class="reservation-table" style="color: #dc2626;">No table assigned</div>'}
-                                        ${resCode ? `<div style="font-size: 0.85rem; color: #6b7280; margin-top: 0.5rem; font-weight: 500;">Code: <span style="font-family: monospace; background: #f3f4f6; padding: 0.15rem 0.5rem; border-radius: 4px;">${resCode}</span></div>` : ''}
-                                    </div>
+                        <div class="reservation-card ${statusClass}">
+                            <div class="reservation-card-header">
+                                <div class="reservation-card-name">${resName}</div>
+                                <div class="reservation-card-actions">
+                                    ${!hasTable ? `<button class="icon-btn assign-btn" onclick="event.stopPropagation(); handleQuickAssign('${res.id || ""}')" title="Assign Table">📋</button>` : ''}
+                                    <button class="icon-btn edit-btn" onclick="event.stopPropagation(); openReservationModal('${res.id || ""}')" title="Edit">✏️</button>
+                                    <button class="icon-btn cancel-btn" onclick="event.stopPropagation(); handleQuickCancel('${res.id || ""}')" title="Cancel">✕</button>
                                 </div>
+                            </div>
+                            <div class="reservation-card-body">
+                                <div class="reservation-card-meta">
+                                    <span class="meta-item">${resPartySize} guests</span>
+                                    <span class="meta-sep">•</span>
+                                    <span class="meta-item">${formatTimeDisplay(resTime)}</span>
+                                    <span class="status-pill ${statusClass}">${statusText}</span>
+                                </div>
+                                <div class="reservation-card-table ${hasTable ? '' : 'no-table'}">
+                                    ${hasTable ? `<span class="table-label">Table:</span> <span class="table-value">${tableDisplay}</span>` : `<span class="no-table-text">No table assigned</span> <button class="btn-assign-inline" onclick="event.stopPropagation(); handleQuickAssign('${res.id || ""}')">Assign</button>`}
+                                </div>
+                                ${resCode ? `<div class="reservation-card-code">Code: <code>${resCode}</code></div>` : ''}
+                            </div>
                         </div>
                     `;
                 });
@@ -3014,281 +3417,142 @@
             }
         }
 
-        // Quick Add Functions
-        // Stepper state
-        let currentStepperStep = 1;
-        const totalStepperSteps = 4;
-        
+        // Create Reservation Functions (Premium Single Form)
         function openQuickAddModal() {
             try {
                 const dateEl = document.getElementById('selectedDate');
-                const quickAddDateEl = document.getElementById('quickAddDate');
+                const timeEl = document.getElementById('selectedTime');
                 const modal = document.getElementById('quickAddModal');
                 
                 if (!modal) {
-                    console.error('Quick Add modal not found in DOM');
-                    showToast('error', 'Quick Add form not available. Please refresh the page.');
+                    showToast('error', 'Form not available. Please refresh the page.');
                     return;
                 }
                 
-                if (!dateEl || !quickAddDateEl) {
-                    console.error('Quick Add form elements not found');
-                    showToast('error', 'Quick Add form elements missing. Please refresh the page.');
-                    // Failsafe: ensure modal is hidden
-                    modal.style.display = 'none';
-                    modal.classList.remove('active');
-                    document.body.style.overflow = '';
-                    return;
+                // Set default date from selected date or today
+                const date = dateEl ? (dateEl.value || new Date().toISOString().split('T')[0]) : new Date().toISOString().split('T')[0];
+                const quickAddDateEl = document.getElementById('quickAddDate');
+                if (quickAddDateEl) quickAddDateEl.value = date;
+                
+                // Set default time from selected time
+                const selectedTime = timeEl ? timeEl.value : '';
+                const quickAddTimeEl = document.getElementById('quickAddTime');
+                if (quickAddTimeEl && selectedTime) {
+                    quickAddTimeEl.innerHTML = `<option value="${selectedTime}" selected>${formatTimeDisplay(selectedTime)}</option>`;
                 }
-                
-                // Reset stepper
-                currentStepperStep = 1;
-                updateStepperUI();
-                
-                const date = dateEl.value || new Date().toISOString().split('T')[0];
-                quickAddDateEl.value = date;
                 
                 // Clear form
                 const nameEl = document.getElementById('quickAddName');
                 const phoneEl = document.getElementById('quickAddPhone');
                 const emailEl = document.getElementById('quickAddEmail');
                 const partySizeEl = document.getElementById('quickAddPartySize');
-                const timeEl = document.getElementById('quickAddTime');
                 const notesEl = document.getElementById('quickAddNotes');
                 const sourceEl = document.getElementById('quickAddSource');
+                const areaEl = document.getElementById('quickAddArea');
                 
                 if (nameEl) nameEl.value = '';
                 if (phoneEl) phoneEl.value = '';
                 if (emailEl) emailEl.value = '';
                 if (partySizeEl) partySizeEl.value = '';
-                if (timeEl) timeEl.innerHTML = '<option value="">Select a time...</option>';
                 if (notesEl) notesEl.value = '';
                 if (sourceEl) sourceEl.value = 'phone';
+                if (areaEl) areaEl.value = state.selectedArea || 'Main Floor';
                 
-                // Clear any error classes
-                [nameEl, phoneEl, emailEl, partySizeEl, timeEl, notesEl].forEach(el => {
+                // Reset notes section
+                const notesSection = document.getElementById('notesSection');
+                if (notesSection) notesSection.style.display = 'none';
+                const notesToggle = document.getElementById('notesToggleText');
+                if (notesToggle) notesToggle.textContent = '+ Add notes';
+                
+                // Reset status
+                setQuickAddStatus('pending', document.querySelector('.segmented-btn[data-status="pending"]'));
+                
+                // Clear error classes
+                [nameEl, phoneEl, emailEl, partySizeEl, quickAddTimeEl, notesEl].forEach(el => {
                     if (el) el.classList.remove('error');
                 });
                 
-                // Open modal using the openModal function
-                openModal('quickAddModal');
+                // Open modal
+                modal.style.display = 'flex';
+                modal.classList.add('active');
+                modal.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
                 
-                // Verify modal is visible
-                if (modal.style.display !== 'flex' && !modal.classList.contains('active')) {
-                    // Force show if openModal didn't work
-                    modal.style.display = 'flex';
-                    modal.classList.add('active');
-                    document.body.style.overflow = 'hidden';
-                }
-                
-                // Load available times if date and party size are set
+                // Load available times
                 setTimeout(() => {
-                    try {
+                    if (partySizeEl && quickAddDateEl) {
                         loadAvailableTimes();
-                    } catch (e) {
-                        console.error('Error loading available times:', e);
                     }
                 }, 100);
                 
-                // Focus first input and add keyboard listeners
+                // Focus first input
                 setTimeout(() => {
-                    try {
-                        const nameInput = document.getElementById('quickAddName');
-                        if (nameInput) {
-                            nameInput.focus();
-                        }
-                    } catch (e) {
-                        console.error('Error focusing input:', e);
-                    }
+                    if (nameEl) nameEl.focus();
                 }, 200);
             } catch (error) {
-                console.error('Error opening Quick Add modal:', error);
+                console.error('Error opening modal:', error);
                 showToast('error', 'Failed to open form. Please try again.');
-                // Failsafe: ensure overlay is removed on error
-                const modal = document.getElementById('quickAddModal');
-                if (modal) {
-                    modal.style.display = 'none';
-                    modal.classList.remove('active');
-                    document.body.style.overflow = '';
-                }
             }
         }
         
-        function updateStepperUI() {
-            // Look up button elements once (safe, null-checked)
-            const backBtn = document.getElementById('stepperBackBtn');
-            const nextBtn = document.getElementById('stepperNextBtn');
-            const saveBtn = document.getElementById('stepperSaveBtn');
-            
-            // Update step indicators
-            for (let i = 1; i <= totalStepperSteps; i++) {
-                const stepEl = document.getElementById(`step${i}`);
-                const contentEl = document.getElementById(`stepperStep${i}`);
-                
-                if (!stepEl) continue; // Skip if step element missing
-                
-                if (i < currentStepperStep) {
-                    stepEl.classList.add('completed');
-                    stepEl.classList.remove('active');
-                    if (contentEl) contentEl.style.display = 'none';
-                } else if (i === currentStepperStep) {
-                    stepEl.classList.add('active');
-                    stepEl.classList.remove('completed');
-                    if (contentEl) contentEl.style.display = 'block';
-                } else {
-                    stepEl.classList.remove('active', 'completed');
-                    if (contentEl) contentEl.style.display = 'none';
-                }
-            }
-            
-            // Update buttons (null-safe)
-            if (backBtn) {
-                backBtn.style.display = currentStepperStep > 1 ? 'block' : 'none';
-            }
-            if (nextBtn) {
-                nextBtn.style.display = currentStepperStep < totalStepperSteps ? 'block' : 'none';
-            }
-            if (saveBtn) {
-                saveBtn.style.display = currentStepperStep === totalStepperSteps ? 'block' : 'none';
-            }
-            
-            // Update review on step 4
-            if (currentStepperStep === 4) {
-                updateQuickAddReview();
+        function setQuickAddStatus(status, btn) {
+            document.querySelectorAll('.segmented-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            const statusInput = document.getElementById('quickAddStatus');
+            if (statusInput) statusInput.value = status;
+        }
+        
+        function toggleNotesSection() {
+            const notesSection = document.getElementById('notesSection');
+            const notesToggle = document.getElementById('notesToggleText');
+            if (notesSection && notesToggle) {
+                const isVisible = notesSection.style.display !== 'none';
+                notesSection.style.display = isVisible ? 'none' : 'block';
+                notesToggle.textContent = isVisible ? '+ Add notes' : '− Hide notes';
             }
         }
         
-        function stepperNext() {
-            // Validate current step
-            if (currentStepperStep === 1) {
-                const name = document.getElementById('quickAddName').value.trim();
-                const phone = document.getElementById('quickAddPhone').value.trim();
-                if (!name || !phone) {
-                    showToast('error', 'Please fill in name and phone');
-                    return;
-                }
-            } else if (currentStepperStep === 2) {
-                const date = document.getElementById('quickAddDate').value;
-                const time = document.getElementById('quickAddTime').value;
-                const partySize = document.getElementById('quickAddPartySize').value;
-                if (!date || !time || !partySize) {
-                    showToast('error', 'Please select date, time, and party size');
-                    return;
-                }
-            }
-            
-            if (currentStepperStep < totalStepperSteps) {
-                currentStepperStep++;
-                updateStepperUI();
-                if (currentStepperStep === 2) {
-                    loadAvailableTimes();
-                }
-            }
+        function formatTimeDisplay(time) {
+            if (!time) return '';
+            const [h, m] = time.split(':');
+            const hour = parseInt(h);
+            const period = hour >= 12 ? 'PM' : 'AM';
+            const hour12 = hour > 12 ? hour - 12 : (hour === 0 ? 12 : hour);
+            return `${hour12}:${m} ${period}`;
         }
         
-        function stepperPrevious() {
-            if (currentStepperStep > 1) {
-                currentStepperStep--;
-                updateStepperUI();
-            }
-        }
         
         async function loadAvailableTimes() {
             const date = document.getElementById('quickAddDate')?.value;
             const partySize = document.getElementById('quickAddPartySize')?.value;
-            const suggestionsEl = document.getElementById('availableTimesSuggestions');
+            const area = document.getElementById('quickAddArea')?.value || 'Main Floor';
             const timeSelect = document.getElementById('quickAddTime');
             
-            if (!date || !partySize || !suggestionsEl || !timeSelect) return;
+            if (!date || !partySize || !timeSelect) return;
             
             try {
-                const res = await fetch(`/.netlify/functions/get-available-times?date=${date}&party_size=${partySize}&area=Main%20Floor`);
+                const res = await fetch(`/.netlify/functions/get-available-times?date=${date}&party_size=${partySize}&area=${encodeURIComponent(area)}`);
                 const data = await res.json();
                 
                 if (data.ok && data.times && data.times.length > 0) {
-                    // Update select dropdown
-                    timeSelect.innerHTML = '<option value="">Select a time...</option>';
+                    // Preserve current selection if it's still available
+                    const currentValue = timeSelect.value;
+                    timeSelect.innerHTML = '<option value="">Select time...</option>';
                     data.times.forEach(time => {
-                        const [h, m] = time.split(':');
-                        const hour = parseInt(h);
-                        const period = hour >= 12 ? 'PM' : 'AM';
-                        const hour12 = hour > 12 ? hour - 12 : (hour === 0 ? 12 : hour);
-                        const displayTime = `${hour12}:${m} ${period}`;
-                        timeSelect.innerHTML += `<option value="${time}">${displayTime}</option>`;
+                        const displayTime = formatTimeDisplay(time);
+                        const selected = time === currentValue ? ' selected' : '';
+                        timeSelect.innerHTML += `<option value="${time}"${selected}>${displayTime}</option>`;
                     });
-                    
-                    // Show suggestions
-                    suggestionsEl.innerHTML = data.times.map(time => {
-                        const [h, m] = time.split(':');
-                        const hour = parseInt(h);
-                        const period = hour >= 12 ? 'PM' : 'AM';
-                        const hour12 = hour > 12 ? hour - 12 : (hour === 0 ? 12 : hour);
-                        const displayTime = `${hour12}:${m} ${period}`;
-                        return `<button type="button" class="time-suggestion-btn" onclick="selectQuickAddTime('${time}')">${displayTime}</button>`;
-                    }).join('');
-                    suggestionsEl.style.display = 'grid';
                 } else {
-                    suggestionsEl.style.display = 'none';
                     timeSelect.innerHTML = '<option value="">No available times</option>';
+                    showToast('info', 'No available times for this party size and date');
                 }
             } catch (error) {
                 console.error('Error loading available times:', error);
+                showToast('error', 'Failed to load available times');
             }
         }
         
-        function selectQuickAddTime(time) {
-            document.getElementById('quickAddTime').value = time;
-            document.querySelectorAll('.time-suggestion-btn').forEach(btn => {
-                btn.classList.remove('selected');
-                if (btn.textContent.includes(time.split(':')[0])) {
-                    btn.classList.add('selected');
-                }
-            });
-        }
-        
-        function updateQuickAddReview() {
-            const reviewEl = document.getElementById('quickAddReview');
-            if (!reviewEl) return;
-            
-            const name = document.getElementById('quickAddName').value;
-            const phone = document.getElementById('quickAddPhone').value;
-            const email = document.getElementById('quickAddEmail').value;
-            const date = document.getElementById('quickAddDate').value;
-            const time = document.getElementById('quickAddTime').value;
-            const partySize = document.getElementById('quickAddPartySize').value;
-            const source = document.getElementById('quickAddSource').value;
-            const notes = document.getElementById('quickAddNotes').value;
-            
-            const formatTime = (t) => {
-                if (!t) return '—';
-                const [h, m] = t.split(':');
-                const hour = parseInt(h);
-                const period = hour >= 12 ? 'PM' : 'AM';
-                const hour12 = hour > 12 ? hour - 12 : (hour === 0 ? 12 : hour);
-                return `${hour12}:${m} ${period}`;
-            };
-            
-            reviewEl.innerHTML = `
-                <div><strong>Name:</strong> ${name || '—'}</div>
-                <div><strong>Phone:</strong> ${phone || '—'}</div>
-                ${email ? `<div><strong>Email:</strong> ${email}</div>` : ''}
-                <div><strong>Date:</strong> ${date || '—'}</div>
-                <div><strong>Time:</strong> ${formatTime(time)}</div>
-                <div><strong>Party Size:</strong> ${partySize || '—'}</div>
-                <div><strong>Source:</strong> ${source || '—'}</div>
-                ${notes ? `<div><strong>Notes:</strong> ${notes}</div>` : ''}
-            `;
-        }
-        
-        function handleQuickAddKeydown(e) {
-            if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
-                e.preventDefault();
-                saveQuickAddReservation();
-            } else if (e.key === 'Escape') {
-                e.preventDefault();
-                closeQuickAddModal();
-            }
-        }
 
         function closeQuickAddModal() {
             try {
@@ -3296,76 +3560,35 @@
                 if (modal) {
                     modal.style.display = 'none';
                     modal.classList.remove('active');
+                    modal.setAttribute('aria-hidden', 'true');
                     document.body.style.overflow = '';
                 }
-                
-                // Reset stepper
-                currentStepperStep = 1;
-                updateStepperUI();
-                
-                // Reset form and clear validation errors
-                const nameEl = document.getElementById('quickAddName');
-                const phoneEl = document.getElementById('quickAddPhone');
-                const emailEl = document.getElementById('quickAddEmail');
-                const notesEl = document.getElementById('quickAddNotes');
-                const dateEl = document.getElementById('quickAddDate');
-                const timeEl = document.getElementById('quickAddTime');
-                const partySizeEl = document.getElementById('quickAddPartySize');
-                const sourceEl = document.getElementById('quickAddSource');
-                
-                if (nameEl) {
-                    nameEl.value = '';
-                    nameEl.classList.remove('error');
-                }
-                if (phoneEl) {
-                    phoneEl.value = '';
-                    phoneEl.classList.remove('error');
-                }
-                if (emailEl) {
-                    emailEl.value = '';
-                    emailEl.classList.remove('error');
-                }
-                if (notesEl) {
-                    notesEl.value = '';
-                    notesEl.classList.remove('error');
-                }
-                if (dateEl) {
-                    dateEl.value = '';
-                    dateEl.classList.remove('error');
-                }
-                if (timeEl) {
-                    timeEl.innerHTML = '<option value="">Select a time...</option>';
-                    timeEl.classList.remove('error');
-                }
-                if (partySizeEl) {
-                    partySizeEl.value = '';
-                    partySizeEl.classList.remove('error');
-                }
-                if (sourceEl) {
-                    sourceEl.value = 'phone';
-                }
-                const suggestionsEl = document.getElementById('availableTimesSuggestions');
-                if (suggestionsEl) {
-                    suggestionsEl.innerHTML = '';
-                    suggestionsEl.style.display = 'none';
-                }
             } catch (error) {
-                console.error('Error resetting Quick Add form:', error);
+                console.error('Error closing modal:', error);
             }
         }
 
         async function saveQuickAddReservation() {
-            const name = document.getElementById('quickAddName').value.trim();
-            const phone = document.getElementById('quickAddPhone').value.trim();
-            const email = document.getElementById('quickAddEmail').value.trim();
-            const date = document.getElementById('quickAddDate').value;
-            const time = document.getElementById('quickAddTime').value;
-            const partySize = parseInt(document.getElementById('quickAddPartySize').value);
-            const source = document.getElementById('quickAddSource').value;
-            const notes = document.getElementById('quickAddNotes').value.trim();
+            const name = document.getElementById('quickAddName')?.value.trim();
+            const phone = document.getElementById('quickAddPhone')?.value.trim();
+            const email = document.getElementById('quickAddEmail')?.value.trim();
+            const date = document.getElementById('quickAddDate')?.value;
+            const time = document.getElementById('quickAddTime')?.value;
+            const partySize = parseInt(document.getElementById('quickAddPartySize')?.value || '0');
+            const source = document.getElementById('quickAddSource')?.value || 'manual';
+            const notes = document.getElementById('quickAddNotes')?.value.trim() || '';
+            const area = document.getElementById('quickAddArea')?.value || 'Main Floor';
+            const status = document.getElementById('quickAddStatus')?.value || 'pending';
 
+            // Validate required fields
             if (!name || !phone || !date || !time || !partySize) {
-                showToast('error', 'Please fill in all required fields');
+                showToast('error', 'Please fill in all required fields (Name, Phone, Date, Time, Party Size)');
+                // Highlight missing fields
+                if (!name) document.getElementById('quickAddName')?.classList.add('error');
+                if (!phone) document.getElementById('quickAddPhone')?.classList.add('error');
+                if (!date) document.getElementById('quickAddDate')?.classList.add('error');
+                if (!time) document.getElementById('quickAddTime')?.classList.add('error');
+                if (!partySize) document.getElementById('quickAddPartySize')?.classList.add('error');
                 return;
             }
 
@@ -3381,7 +3604,9 @@
                         time: time,
                         party_size: partySize,
                         source: source,
-                        notes: notes
+                        notes: notes,
+                        area: area,
+                        status: status
                     })
                 });
 
@@ -3392,7 +3617,7 @@
 
                 const data = await res.json();
                 if (data.success) {
-                    showToast('success', 'Reservation created successfully ✅');
+                    showToast('success', 'Reservation created successfully');
                     closeQuickAddModal();
                     await refreshAfterAction();
                 } else {
