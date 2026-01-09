@@ -88,13 +88,11 @@
         }
         .controls-row input,
         .controls-row select {
-            height: var(--btn-h-sm);
-            padding: 0 var(--gap);
-            border: 1px solid #e2e8f0;
-            border-radius: var(--radius);
-            font-size: var(--fs-1);
+            padding: 0.6rem 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95rem;
             transition: border-color 0.2s;
-            background: white;
         }
         .controls-row input:focus,
         .controls-row select:focus {
@@ -103,17 +101,16 @@
         }
         .btn-today,
         .btn-refresh {
-            height: var(--btn-h-sm);
-            padding: 0 var(--gap);
+            padding: 0.6rem 1rem;
             border: none;
-            border-radius: var(--radius);
+            border-radius: 8px;
             font-weight: 600;
-            font-size: var(--fs-1);
+            font-size: 0.9rem;
             cursor: pointer;
             transition: all 0.2s;
-            display: inline-flex;
+            display: flex;
             align-items: center;
-            gap: 0.375rem;
+            gap: 0.5rem;
         }
         .btn-today {
             background: #004A9F;
@@ -132,20 +129,18 @@
         }
         .area-tabs {
             display: flex;
-            gap: var(--gap-sm);
-            margin-top: var(--gap-sm);
+            gap: 0.5rem;
+            margin-top: 1rem;
         }
         .area-tab {
-            height: var(--chip-h);
-            padding: 0 var(--gap);
+            padding: 0.75rem 1.5rem;
             background: #e2e8f0;
             border: none;
-            border-radius: var(--radius);
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            font-size: var(--fs-0);
+            font-size: 1rem;
             color: #6b7280;
-            transition: all 0.2s;
         }
         .area-tab.active {
             background: #004A9F;
@@ -166,79 +161,12 @@
                 margin-top: 1rem;
             }
         }
-        /* Responsive: iPad and Mobile */
-        @media (max-width: 1024px) {
-            /* iPad Portrait */
-            .dashboard-container {
-                padding: clamp(0.75rem, 2vw, 1.5rem);
-            }
-            .app-container {
-                padding: clamp(0.5rem, 1.5vw, 1rem);
-            }
-            .section {
-                padding: clamp(1rem, 2vw, 1.5rem);
-                border-radius: 12px;
-            }
-            .section h2 {
-                font-size: clamp(1.1rem, 2.5vw, 1.25rem);
-                margin-bottom: clamp(0.75rem, 1.5vw, 1rem);
-                padding-bottom: clamp(0.5rem, 1vw, 0.75rem);
-            }
-            .controls-bar {
-                padding: clamp(0.75rem, 1.5vw, 1rem);
-            }
-            .controls-row {
-                gap: clamp(0.5rem, 1vw, 0.75rem);
-            }
-            .controls-row input,
-            .controls-row select {
-                padding: clamp(0.5rem, 1vw, 0.6rem) clamp(0.5rem, 1vw, 0.75rem);
-                font-size: clamp(0.85rem, 1.8vw, 0.95rem);
-            }
-            .floor-plan-container {
-                height: clamp(300px, 50vh, 500px);
-                max-height: 500px;
-                min-height: 300px;
-            }
-            .reservations-list {
-                max-height: clamp(300px, 40vh, 400px);
-                overflow-y: auto;
-            }
-            .reservation-item,
-            .block-item {
-                padding: clamp(0.75rem, 1.5vw, 1rem);
-                margin-bottom: clamp(0.5rem, 1vw, 0.75rem);
-            }
-            .app-bar {
-                padding: clamp(0.75rem, 1.5vw, 1rem);
-            }
-            .app-bar-title {
-                font-size: clamp(1rem, 2.5vw, 1.1rem);
-            }
-            .btn {
-                padding: clamp(0.5rem, 1vw, 0.75rem) clamp(0.75rem, 1.5vw, 1.25rem);
-                font-size: clamp(0.85rem, 1.8vw, 1rem);
-            }
-            .modal {
-                max-width: 95%;
-                max-height: 95vh;
-                margin: 1rem;
-            }
-            .modal-body {
-                padding: clamp(1rem, 2vw, 1.5rem);
-            }
-            .modal-header,
-            .modal-footer {
-                padding: clamp(1rem, 2vw, 1.5rem);
-            }
-        }
         @media (max-width: 768px) {
-            /* Mobile */
             .dashboard-container {
-                padding: clamp(0.5rem, 2vw, 1rem);
+                padding: 1rem;
             }
             .top-nav {
-                padding: clamp(0.5rem, 1.5vw, 0.75rem) clamp(0.75rem, 2vw, 1rem);
+                padding: 0.75rem 1rem;
             }
             .top-nav .app-title {
                 font-size: 0.95rem;
@@ -267,56 +195,11 @@
                 width: 100%;
             }
             .section {
-                padding: clamp(0.75rem, 2vw, 1.25rem);
-            }
-            .section h2 {
-                font-size: clamp(1rem, 2.5vw, 1.15rem);
-                margin-bottom: clamp(0.75rem, 1.5vw, 1rem);
+                padding: 1.5rem;
             }
             .btn-logout {
-                padding: clamp(0.5rem, 1.5vw, 0.75rem) clamp(0.75rem, 2vw, 1rem);
-                font-size: clamp(0.85rem, 2vw, 0.95rem);
-            }
-            .floor-plan-container {
-                height: clamp(250px, 45vh, 400px);
-                max-height: 400px;
-                min-height: 250px;
-            }
-            .reservations-list {
-                max-height: clamp(250px, 35vh, 350px);
-            }
-            .reservation-item,
-            .block-item {
-                padding: clamp(0.75rem, 2vw, 1rem);
-                margin-bottom: clamp(0.5rem, 1.5vw, 0.75rem);
-            }
-            .main-content {
-                gap: clamp(0.75rem, 2vw, 1rem);
-            }
-            .btn {
-                padding: clamp(0.5rem, 1.5vw, 0.75rem) clamp(0.75rem, 2vw, 1rem);
-                font-size: clamp(0.8rem, 2vw, 0.95rem);
-            }
-            .modal {
-                max-width: 98%;
-                margin: 0.5rem;
-                max-height: 98vh;
-            }
-            .modal-body {
-                padding: clamp(0.75rem, 2vw, 1.25rem);
-            }
-            .modal-header,
-            .modal-footer {
-                padding: clamp(0.75rem, 2vw, 1.25rem);
-            }
-            .app-bar-title {
-                font-size: clamp(0.9rem, 2.5vw, 1rem);
-            }
-            .btn-text {
-                display: none;
-            }
-            .btn span:first-child {
-                margin-right: 0;
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
             }
         }
         .section {
@@ -347,47 +230,14 @@
             position: relative;
             width: 100%;
             height: 100%;
-            background: #ffffff;
+            background: #fafafa;
             border: 1px solid #e5e7eb;
-            border-radius: var(--radius-lg);
+            border-radius: 12px;
             overflow: auto;
-            /* Grid for alignment */
             background-image: 
                 linear-gradient(rgba(0,0,0,0.02) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px);
             background-size: 20px 20px;
-        }
-        
-        /* Floor Plan Walkways/Aisles */
-        .floor-plan-canvas::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            background: 
-                /* Central walkway (vertical) */
-                linear-gradient(to right, transparent 40%, rgba(248,250,252,0.6) 40%, rgba(248,250,252,0.6) 60%, transparent 60%),
-                /* Side aisles (horizontal) */
-                linear-gradient(to bottom, transparent 30%, rgba(248,250,252,0.4) 30%, rgba(248,250,252,0.4) 35%, transparent 35%),
-                linear-gradient(to bottom, transparent 65%, rgba(248,250,252,0.4) 65%, rgba(248,250,252,0.4) 70%, transparent 70%);
-            z-index: 1;
-        }
-        
-        /* Bar Zone - Larger, visually anchored */
-        .bar-zone {
-            position: absolute;
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-            border: 2px solid #0f172a;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-md);
-            z-index: 5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-            font-size: var(--fs-2);
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
         .table-node {
             position: absolute;
@@ -497,16 +347,13 @@
         }
         .table-shape {
             position: relative;
-            border: 2px solid;
-            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-            border-radius: var(--radius);
+            border: 1.5px solid;
+            background: linear-gradient(180deg, #f3f8ff 0%, #e8f1ff 100%);
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: var(--shadow-sm), inset 0 1px 2px rgba(255, 255, 255, 0.8);
-            transition: all 0.2s ease;
-            /* Square/rounded rectangle - not oval */
-            aspect-ratio: 1;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
         }
         .table-shape.available {
             border-color: #10b981;
@@ -527,55 +374,40 @@
         .table-number {
             font-weight: 700;
             color: #1d4ed8;
-            font-size: 12px;
+            font-size: 11px;
             line-height: 1;
             pointer-events: none;
-            text-align: center;
-            letter-spacing: -0.02em;
         }
         .table-shape.available .table-number { color: #065f46; }
         .table-shape.reserved .table-number { color: #1e40af; }
         .table-shape.blocked .table-number { color: #92400e; }
         .table-shape.unavailable .table-number { color: #991b1b; }
-        .table-label {
-            position: absolute;
-            bottom: -18px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 10px;
-            font-weight: 600;
-            color: #374151;
-            white-space: nowrap;
-            pointer-events: none;
-            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
-        }
         .seat {
             position: absolute;
-            width: 4px;
-            height: 4px;
+            width: 6px;
+            height: 6px;
             border-radius: 999px;
-            background: rgba(29, 78, 216, 0.6);
-            pointer-events: none;
+            background: #1d4ed8;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
             transform: translate(-50%, -50%);
             opacity: 0.85;
         }
-        .table-shape.available .seat { background: rgba(16, 185, 129, 0.6); }
-        .table-shape.reserved .seat { background: rgba(59, 130, 246, 0.6); }
-        .table-shape.blocked .seat { background: rgba(245, 158, 11, 0.6); }
-        .table-shape.unavailable .seat { background: rgba(239, 68, 68, 0.6); }
+        .table-shape.available .seat { background: #10b981; }
+        .table-shape.reserved .seat { background: #3b82f6; }
+        .table-shape.blocked .seat { background: #f59e0b; }
+        .table-shape.unavailable .seat { background: #ef4444; }
         .status-legend {
             display: flex;
-            gap: var(--gap-sm);
-            margin-bottom: var(--gap);
+            gap: 0.75rem;
+            margin-bottom: 1rem;
             flex-wrap: wrap;
         }
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 0.375rem;
-            font-size: var(--fs-0);
-            padding: 0.25rem var(--gap-sm);
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            padding: 0.4rem 0.75rem;
             background: white;
             border-radius: 999px;
             border: 1px solid #e2e8f0;
@@ -629,29 +461,6 @@
             background: #8b5cf6;
             border-color: #7c3aed;
         }
-        /* Bar zone uses bar-zone class, not floor-object */
-        .bar-zone {
-            position: absolute;
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-            border: 3px solid #0f172a;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-md), inset 0 2px 4px rgba(0,0,0,0.2);
-            z-index: 5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-            font-size: var(--fs-2);
-            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
-            pointer-events: none;
-        }
-        .bar-zone .object-label {
-            color: white;
-            font-size: var(--fs-2);
-            font-weight: 700;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
-        }
         .object-label {
             color: white;
             font-weight: 600;
@@ -659,138 +468,31 @@
             text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
         .table-label {
-            font-size: var(--fs-0);
+            font-size: 11px;
             margin-top: 4px;
             text-align: center;
-            color: #374151;
-            font-weight: 600;
+            color: #111827;
+            font-weight: 700;
             pointer-events: none;
-            line-height: 1.2;
         }
         .reservations-list {
             max-height: 500px;
             overflow-y: auto;
         }
-        /* Premium Reservation Cards */
-        .reservation-card {
-            padding: var(--panel-p-sm);
+        .reservation-item,
+        .block-item {
+            padding: 1.25rem;
             border: 1px solid #e2e8f0;
-            border-radius: var(--radius);
-            margin-bottom: var(--gap-sm);
+            border-radius: 12px;
+            margin-bottom: 1rem;
             background: white;
             transition: all 0.2s ease;
-            box-shadow: var(--shadow-sm);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
-        .reservation-card:hover {
+        .reservation-item:hover {
             border-color: #004A9F;
-            box-shadow: var(--shadow);
+            box-shadow: 0 4px 12px rgba(0,74,159,0.1);
             transform: translateY(-1px);
-        }
-        .reservation-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
-        .reservation-card-name {
-            font-weight: 700;
-            color: #1e293b;
-            font-size: clamp(0.95rem, 2vw, 1.05rem);
-        }
-        .reservation-card-actions {
-            display: flex;
-            gap: 0.25rem;
-        }
-        .icon-btn {
-            background: none;
-            border: none;
-            font-size: 1rem;
-            cursor: pointer;
-            padding: 0.25rem 0.5rem;
-            border-radius: 6px;
-            transition: all 0.2s;
-            opacity: 0.7;
-        }
-        .icon-btn:hover {
-            opacity: 1;
-            background: #f3f4f6;
-        }
-        .reservation-card-body {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-        .reservation-card-meta {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            font-size: 0.85rem;
-            color: #6b7280;
-        }
-        .meta-item {
-            font-weight: 500;
-        }
-        .meta-sep {
-            color: #d1d5db;
-        }
-        .reservation-card-table {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.85rem;
-            padding: 0.5rem;
-            background: #f9fafb;
-            border-radius: 6px;
-        }
-        .reservation-card-table.no-table {
-            background: #fef2f2;
-            color: #991b1b;
-        }
-        .table-label {
-            font-weight: 600;
-            color: #374151;
-        }
-        .table-value {
-            color: #004A9F;
-            font-weight: 600;
-        }
-        .no-table-text {
-            flex: 1;
-        }
-        .btn-assign-inline {
-            background: #004A9F;
-            color: white;
-            border: none;
-            padding: 0.25rem 0.75rem;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .btn-assign-inline:hover {
-            background: #003d82;
-        }
-        .reservation-card-code {
-            font-size: 0.75rem;
-            color: #6b7280;
-            margin-top: 0.25rem;
-        }
-        .reservation-card-code code {
-            font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
-            background: #f3f4f6;
-            padding: 0.15rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            color: #374151;
-        }
-        .block-item {
-            padding: 0.75rem;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            margin-bottom: 0.75rem;
-            background: white;
         }
         .reservation-name {
             font-weight: 700;
@@ -810,10 +512,9 @@
         .status-pill {
             display: inline-flex;
             align-items: center;
-            height: var(--chip-h);
-            padding: 0 var(--gap-sm);
+            padding: 0.25rem 0.75rem;
             border-radius: 999px;
-            font-size: var(--fs-0);
+            font-size: 0.8rem;
             font-weight: 600;
             text-transform: capitalize;
         }
@@ -854,7 +555,7 @@
             inset: 0;
             background: rgba(0,0,0,0.45);
             backdrop-filter: blur(4px);
-            z-index: 10001;
+            z-index: 1000;
             align-items: center;
             justify-content: center;
             animation: fadeIn 0.2s ease;
@@ -979,139 +680,28 @@
             gap: 1rem;
             justify-content: flex-end;
         }
-        /* Compact Button System */
-        .btn {
-            height: var(--btn-h);
-            padding: 0 var(--gap-lg);
-            border: none;
-            border-radius: var(--radius);
-            cursor: pointer;
-            font-weight: 600;
-            font-size: var(--fs-1);
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--gap-sm);
-            max-width: 240px;
-            white-space: nowrap;
-        }
         .btn-primary {
+            padding: 0.75rem 1.5rem;
             background: #004A9F;
             color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
         }
-        .btn-primary:hover { 
-            background: #003d82;
-            box-shadow: var(--shadow-sm);
-        }
+        .btn-primary:hover { background: #003d82; }
         .btn-secondary {
-            background: #f3f4f6;
-            color: #374151;
-            border: 1px solid #e2e8f0;
-        }
-        .btn-secondary:hover { 
-            background: #e5e7eb;
-            border-color: #d1d5db;
-        }
-        .btn-small {
-            height: var(--btn-h-sm);
-            padding: 0 var(--gap);
-            font-size: var(--fs-0);
-        }
-        .btn-compact {
-            height: var(--btn-h-sm);
-            padding: 0 var(--gap);
-            font-size: var(--fs-0);
-            max-width: 120px;
-        }
-        /* Action Grid for Table Drawer */
-        .action-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: var(--gap-sm);
-        }
-        @media (max-width: 480px) {
-            .action-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        /* Table Drawer - Compact with Sticky Actions */
-        .drawer-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.4);
-            z-index: 9998;
-            display: none;
-        }
-        .drawer-overlay.active {
-            display: block;
-        }
-        .table-drawer {
-            position: fixed;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            width: clamp(280px, 35vw, 360px);
-            background: white;
-            box-shadow: -4px 0 16px rgba(0,0,0,0.15);
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-        }
-        .table-drawer.open {
-            transform: translateX(0);
-        }
-        .table-drawer-header {
-            background: linear-gradient(135deg, #004A9F 0%, #003d82 100%);
+            padding: 0.75rem 1.5rem;
+            background: #6b7280;
             color: white;
-            padding: var(--panel-p);
-            flex-shrink: 0;
-            position: relative;
-        }
-        .table-drawer-header h3 {
-            margin: 0;
-            font-size: var(--fs-2);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
             font-weight: 600;
+            font-size: 1rem;
         }
-        .table-drawer-body {
-            flex: 1;
-            overflow-y: auto;
-            padding: var(--panel-p);
-            display: flex;
-            flex-direction: column;
-            min-height: 0;
-        }
-        .table-drawer-actions {
-            padding: var(--panel-p);
-            border-top: 1px solid #e2e8f0;
-            background: white;
-            flex-shrink: 0;
-        }
-        .table-info-item {
-            margin-bottom: var(--gap);
-            padding-bottom: var(--gap);
-            border-bottom: 1px solid #f3f4f6;
-        }
-        .table-info-item:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-        }
-        .table-info-label {
-            font-size: var(--fs-0);
-            color: #6b7280;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.25rem;
-        }
-        .table-info-value {
-            font-size: var(--fs-1);
-            color: #1e293b;
-            font-weight: 600;
-        }
+        .btn-secondary:hover { background: #4b5563; }
         .loading {
             text-align: center;
             padding: 2rem;
@@ -1213,7 +803,7 @@
             height: 100%;
             background: rgba(0,0,0,0.5);
             backdrop-filter: blur(4px);
-            z-index: 10002;
+            z-index: 2000;
             align-items: center;
             justify-content: center;
             animation: fadeIn 0.2s ease;
@@ -1260,249 +850,6 @@
         .btn-small {
             padding: 0.5rem 1rem;
             font-size: 0.9rem;
-        }
-        
-        /* Premium Form Styles */
-        .segmented-control {
-            display: flex;
-            gap: 0.25rem;
-            background: #f3f4f6;
-            padding: 0.25rem;
-            border-radius: 8px;
-        }
-        .segmented-btn {
-            flex: 1;
-            padding: 0.5rem 0.75rem;
-            border: none;
-            background: transparent;
-            color: #6b7280;
-            font-weight: 600;
-            font-size: 0.9rem;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .segmented-btn.active {
-            background: white;
-            color: #004A9F;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .notes-toggle-btn {
-            background: none;
-            border: none;
-            color: #004A9F;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            padding: 0.5rem 0;
-            transition: color 0.2s;
-        }
-        .notes-toggle-btn:hover {
-            color: #003d82;
-        }
-        .form-group input.error,
-        .form-group select.error {
-            border-color: #ef4444;
-            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
-        }
-        
-        /* App Layout - 2 Column, No Scroll on iPad */
-        :root {
-            /* Sizing System - Proportional, iPad/Mobile First */
-            --fs-0: clamp(0.75rem, 1.5vw, 0.875rem);  /* 12-14px */
-            --fs-1: clamp(0.875rem, 2vw, 1rem);      /* 14-16px */
-            --fs-2: clamp(1rem, 2.5vw, 1.125rem);     /* 16-18px */
-            --fs-3: clamp(1.125rem, 3vw, 1.25rem);    /* 18-20px */
-            --fs-4: clamp(1.25rem, 3.5vw, 1.5rem);    /* 20-24px */
-            
-            --radius: clamp(6px, 1vw, 8px);
-            --radius-lg: clamp(8px, 1.5vw, 12px);
-            --gap: clamp(0.5rem, 1.5vw, 0.75rem);
-            --gap-sm: clamp(0.25rem, 1vw, 0.5rem);
-            --gap-lg: clamp(0.75rem, 2vw, 1rem);
-            
-            --btn-h: clamp(36px, 5vw, 40px);          /* Button height: 36-40px */
-            --btn-h-sm: clamp(28px, 4vw, 32px);       /* Small button: 28-32px */
-            --chip-h: clamp(26px, 4vw, 28px);         /* Chip height: 26-28px */
-            
-            --panel-p: clamp(12px, 2vw, 16px);        /* Panel padding: 12-16px */
-            --panel-p-sm: clamp(8px, 1.5vw, 12px);    /* Small panel padding */
-            
-            --header-height: clamp(56px, 7vw, 64px);
-            --controls-height: clamp(64px, 8vw, 80px);
-            --app-padding: clamp(0.75rem, 2vw, 1.5rem);
-            
-            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-            --shadow: 0 2px 4px rgba(0,0,0,0.08);
-            --shadow-md: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        
-        body {
-            overflow: hidden;
-            height: 100dvh;
-            margin: 0;
-            padding: 0;
-        }
-        
-        .app-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: var(--header-height);
-            background: white;
-            border-bottom: 1px solid rgba(0,74,159,0.1);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            padding: 0 var(--app-padding);
-            box-shadow: var(--shadow-sm);
-        }
-        
-        .app-bar-content {
-            width: 100%;
-            max-width: 1800px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .app-bar-left {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-        
-        .app-bar-logo {
-            height: 32px;
-            width: auto;
-        }
-        
-        .app-bar-title {
-            color: #004A9F;
-            font-size: clamp(1rem, 2.5vw, 1.1rem);
-            font-weight: 700;
-            margin: 0;
-        }
-        
-        .role-badge {
-            background: #e0f2fe;
-            color: #004A9F;
-            padding: 0.25rem 0.75rem;
-            border-radius: 999px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .app-container {
-            margin-top: var(--header-height);
-            height: calc(100dvh - var(--header-height));
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .controls-bar {
-            background: white;
-            padding: var(--panel-p-sm) var(--app-padding);
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-            flex-shrink: 0;
-            z-index: 999;
-            box-shadow: var(--shadow-sm);
-        }
-        
-        .controls-row {
-            display: flex;
-            gap: clamp(0.5rem, 1vw, 0.75rem);
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        
-        .main-content {
-            flex: 1;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: clamp(0.75rem, 2vw, 1rem);
-            padding: var(--app-padding);
-            overflow: hidden;
-            min-height: 0;
-        }
-        
-        .section {
-            background: white;
-            border-radius: var(--radius-lg);
-            padding: var(--panel-p);
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            min-height: 0;
-        }
-        
-        .section h2 {
-            margin: 0 0 var(--gap) 0;
-            color: #1e293b;
-            font-size: var(--fs-3);
-            font-weight: 600;
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: var(--gap-sm);
-            flex-shrink: 0;
-        }
-        
-        .floor-plan-container {
-            flex: 1;
-            min-height: 0;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            background: #f9fafb;
-            overflow: auto;
-        }
-        
-        .reservations-list {
-            flex: 1;
-            min-height: 0;
-            overflow-y: auto;
-            padding-right: 0.5rem;
-        }
-        
-        /* iPad: Single column, still no scroll */
-        @media (max-width: 1024px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-            .floor-plan-container {
-                height: clamp(300px, 40vh, 400px);
-            }
-            .reservations-list {
-                max-height: clamp(300px, 50vh, 500px);
-            }
-        }
-        
-        /* Mobile: Stack vertically */
-        @media (max-width: 768px) {
-            .main-content {
-                grid-template-columns: 1fr;
-                padding: clamp(0.5rem, 2vw, 1rem);
-            }
-            .floor-plan-container {
-                height: clamp(250px, 35vh, 350px);
-            }
-            .reservations-list {
-                max-height: clamp(250px, 45vh, 400px);
-            }
-            .controls-row {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .controls-row input,
-            .controls-row select,
-            .btn-today {
-                width: 100%;
-            }
         }
     </style>
 </head>
@@ -1615,11 +962,11 @@
                             <div class="table-info-value" id="tableDrawerCode" style="font-family: monospace; font-size: 0.9rem;">—</div>
                         </div>
                         
-                    </div>
-                    <div class="table-drawer-actions">
-                        <div style="font-weight: 600; color: #1e293b; margin-bottom: var(--gap-sm); font-size: var(--fs-1);">Actions</div>
-                        <div id="tableDrawerActions">
+                        <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 2px solid var(--border-light);">
+                            <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 1rem; font-size: 0.95rem;">Actions</div>
+                            <div id="tableDrawerActions" style="display: flex; flex-direction: column; gap: 0.75rem;">
                                 <!-- Action buttons will be inserted here -->
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1629,8 +976,8 @@
             <div class="section">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
                     <h2 style="margin: 0;">Reservations</h2>
-                    <button class="btn btn-primary" onclick="openQuickAddModal()">
-                        <span>+</span> <span>Create</span>
+                    <button class="btn btn-primary" onclick="openQuickAddModal()" style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600; padding: 0.75rem 1.25rem; box-shadow: 0 2px 8px rgba(0,74,159,0.2);">
+                        <span style="font-size: 1.2rem; line-height: 1;">+</span> <span>Create Reservation</span>
                     </button>
                 </div>
                 
@@ -1706,105 +1053,108 @@
         </div>
     </div>
 
-    <!-- Create Reservation Modal (Premium Single Form) -->
-    <div id="quickAddModal" class="modal-backdrop" style="display: none;" aria-hidden="true">
-        <div class="modal" style="max-width: 600px;" role="dialog" aria-labelledby="createReservationTitle">
+    <!-- Quick Add Reservation Modal (Stepper) -->
+    <div id="quickAddModal" class="modal-backdrop" style="display: none;">
+        <div class="modal" style="max-width: 600px;">
             <div class="modal-header">
-                <h3 class="modal-title" id="createReservationTitle">Create Reservation</h3>
-                <button class="modal-close" onclick="closeQuickAddModal()" aria-label="Close">×</button>
+                <h3 class="modal-title">Create Reservation</h3>
+                <button class="modal-close" onclick="closeQuickAddModal()">×</button>
             </div>
             <div class="modal-body">
-                <form id="createReservationForm" onsubmit="event.preventDefault(); saveQuickAddReservation();">
-                    <!-- Row A: Name, Phone -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label>Name *</label>
-                            <input type="text" id="quickAddName" required autocomplete="name">
+                <div class="stepper-container">
+                    <div class="stepper-steps">
+                        <div class="stepper-step active" id="step1">
+                            <div class="step-circle">1</div>
+                            <div class="step-label">Guest Info</div>
                         </div>
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label>Phone *</label>
-                            <input type="tel" id="quickAddPhone" required autocomplete="tel">
+                        <div class="stepper-step" id="step2">
+                            <div class="step-circle">2</div>
+                            <div class="step-label">Time & Party</div>
+                        </div>
+                        <div class="stepper-step" id="step3">
+                            <div class="step-circle">3</div>
+                            <div class="step-label">Notes</div>
+                        </div>
+                        <div class="stepper-step" id="step4">
+                            <div class="step-circle">4</div>
+                            <div class="step-label">Confirm</div>
                         </div>
                     </div>
                     
-                    <!-- Row B: Party Size, Time, Duration -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label>Party Size *</label>
-                            <input type="number" id="quickAddPartySize" min="1" max="20" required onchange="loadAvailableTimes()">
+                    <div class="stepper-content">
+                        <!-- Step 1: Guest Details -->
+                        <div id="stepperStep1" class="stepper-step-content">
+                            <div class="form-group">
+                                <label>Name *</label>
+                                <input type="text" id="quickAddName" required>
                             </div>
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label>Time *</label>
-                            <select id="quickAddTime" required>
-                                <option value="">Select time...</option>
-                            </select>
+                            <div class="form-group">
+                                <label>Phone *</label>
+                                <input type="tel" id="quickAddPhone" required>
                             </div>
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label>Duration</label>
-                            <select id="quickAddDuration">
-                                <option value="90" selected>90 min</option>
-                                <option value="60">60 min</option>
-                                <option value="120">120 min</option>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="quickAddEmail">
+                            </div>
+                            <div class="form-group">
+                                <label>Source</label>
+                                <select id="quickAddSource">
+                                    <option value="phone">Phone</option>
+                                    <option value="opentable">OpenTable</option>
+                                    <option value="manual">Manual</option>
+                                    <option value="website">Website</option>
                                 </select>
                             </div>
                         </div>
                         
-                    <!-- Row C: Date, Area, Status -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-                        <div class="form-group" style="margin-bottom: 0;">
+                        <!-- Step 2: Time & Party -->
+                        <div id="stepperStep2" class="stepper-step-content" style="display: none;">
+                            <div class="form-group">
                                 <label>Date *</label>
                                 <input type="date" id="quickAddDate" required onchange="loadAvailableTimes()">
                             </div>
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label>Area *</label>
-                            <select id="quickAddArea" required>
-                                <option value="Main Floor" selected>Main Floor</option>
-                                <option value="Sushi Bar">Sushi Bar</option>
+                            <div class="form-group">
+                                <label>Party Size *</label>
+                                <input type="number" id="quickAddPartySize" min="1" max="20" required onchange="loadAvailableTimes()">
+                            </div>
+                            <div class="form-group">
+                                <label>Time *</label>
+                                <select id="quickAddTime" required>
+                                    <option value="">Select a time...</option>
                                 </select>
-                                </div>
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label>Status</label>
-                            <div class="segmented-control" style="display: flex; gap: 0.25rem; background: #f3f4f6; padding: 0.25rem; border-radius: 8px;">
-                                <button type="button" class="segmented-btn active" data-status="pending" onclick="setQuickAddStatus('pending', this)">Pending</button>
-                                <button type="button" class="segmented-btn" data-status="confirmed" onclick="setQuickAddStatus('confirmed', this)">Confirmed</button>
-                            </div>
-                            <input type="hidden" id="quickAddStatus" value="pending">
-                            </div>
-                        </div>
-                        
-                    <!-- Row D: Email, Source -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label>Email</label>
-                            <input type="email" id="quickAddEmail" autocomplete="email">
-                        </div>
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label>Source</label>
-                            <select id="quickAddSource">
-                                <option value="phone" selected>Phone</option>
-                                <option value="opentable">OpenTable</option>
-                                <option value="manual">Manual</option>
-                                <option value="website">Website</option>
-                            </select>
-                            </div>
-                        </div>
-                        
-                    <!-- Notes Toggle -->
-                    <div style="margin-bottom: 1rem;">
-                        <button type="button" class="notes-toggle-btn" onclick="toggleNotesSection()" style="background: none; border: none; color: #004A9F; font-size: 0.9rem; font-weight: 600; cursor: pointer; padding: 0.5rem 0;">
-                            <span id="notesToggleText">+ Add notes</span>
-                        </button>
-                        <div id="notesSection" style="display: none; margin-top: 0.75rem;">
-                            <div class="form-group" style="margin-bottom: 0;">
-                                <textarea id="quickAddNotes" rows="3" placeholder="Special requests, dietary restrictions, etc."></textarea>
+                                <div id="availableTimesSuggestions" class="available-times-suggestions" style="display: none; margin-top: 0.75rem;">
+                                    <!-- Auto-suggested times will appear here -->
                                 </div>
                             </div>
                         </div>
-                </form>
+                        
+                        <!-- Step 3: Notes -->
+                        <div id="stepperStep3" class="stepper-step-content" style="display: none;">
+                            <div class="form-group">
+                                <label>Notes</label>
+                                <textarea id="quickAddNotes" rows="5" placeholder="Special requests, dietary restrictions, etc."></textarea>
+                            </div>
+                        </div>
+                        
+                        <!-- Step 4: Confirm -->
+                        <div id="stepperStep4" class="stepper-step-content" style="display: none;">
+                            <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: 12px;">
+                                <h4 style="margin: 0 0 1rem 0; color: var(--text-primary);">Review Reservation</h4>
+                                <div id="quickAddReview" style="line-height: 1.8;">
+                                    <!-- Review content will be inserted here -->
+                                </div>
+                            </div>
+                        </div>
                     </div>
-            <div class="modal-footer">
+                    
+                    <div class="stepper-actions">
+                        <button class="btn btn-secondary" id="stepperBackBtn" onclick="stepperPrevious()" style="display: none;">← Back</button>
+                        <div style="flex: 1;"></div>
                         <button class="btn btn-secondary" onclick="closeQuickAddModal()">Cancel</button>
-                <button class="btn btn-primary" onclick="saveQuickAddReservation()">Create Reservation</button>
+                        <button class="btn btn-primary" id="stepperNextBtn" onclick="stepperNext()">Next →</button>
+                        <button class="btn btn-primary" id="stepperSaveBtn" onclick="saveQuickAddReservation()" style="display: none;">Save Reservation</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -2089,36 +1439,30 @@
             
             if (status === 'reserved') {
                 actionButtonsHtml = `
-                    <div class="action-grid">
-                        <button class="btn btn-primary btn-compact" onclick="handleFreeTable()">
-                            🔓 Free
+                    <button class="btn btn-primary" onclick="handleFreeTable()" style="width: 100%; padding: 0.75rem; font-weight: 600;">
+                        🔓 Free Table
                     </button>
-                        <button class="btn btn-secondary btn-compact" onclick="handleAssignReservation()">
+                    <button class="btn btn-secondary" onclick="handleAssignReservation()" style="width: 100%; padding: 0.75rem; font-weight: 600;">
                         🔄 Reassign
                     </button>
-                    </div>
                 `;
             } else if (status === 'available') {
                 actionButtonsHtml = `
-                    <div class="action-grid">
-                        <button class="btn btn-primary btn-compact" onclick="handleAssignReservation()">
-                            📋 Assign
+                    <button class="btn btn-primary" onclick="handleAssignReservation()" style="width: 100%; padding: 0.75rem; font-weight: 600;">
+                        ✅ Assign Reservation
                     </button>
-                        <button class="btn btn-secondary btn-compact" onclick="handleBlockTable()">
-                            🚫 Block 90
+                    <button class="btn btn-secondary" onclick="handleBlockTable()" style="width: 100%; padding: 0.75rem; font-weight: 600;">
+                        🚫 Block 90 min
                     </button>
-                        <button class="btn btn-secondary btn-compact" onclick="handleMarkUnavailable()">
-                            ⛔ Unavailable
+                    <button class="btn btn-secondary" onclick="handleMarkUnavailable()" style="width: 100%; padding: 0.75rem; font-weight: 600;">
+                        ⛔ Mark Unavailable
                     </button>
-                    </div>
                 `;
             } else if (status === 'blocked' || status === 'unavailable') {
                 actionButtonsHtml = `
-                    <div class="action-grid">
-                        <button class="btn btn-primary btn-compact" onclick="handleSetAvailable()">
-                            ✅ Available
+                    <button class="btn btn-primary" onclick="handleSetAvailable()" style="width: 100%; padding: 0.75rem; font-weight: 600;">
+                        ✅ Set Available
                     </button>
-                    </div>
                 `;
             }
             
@@ -2149,9 +1493,8 @@
 
         // Table Action Handlers (called from side panel buttons)
         async function handleFreeTable() {
-            try {
             // Validate state - use in-memory state, not fragile DOM reads
-                if (!state || !state.selectedTableId) {
+            if (!state.selectedTableId) {
                 showToast('error', 'Please select a table first');
                 return;
             }
@@ -2173,28 +1516,14 @@
             }
             
             // Use state.selectedArea (in-memory state), not DOM
-                const area = (state && state.selectedArea) ? state.selectedArea : 'Main Floor';
-                
-                // Validate helper functions exist
-                if (typeof add30Minutes !== 'function' || typeof add60Minutes !== 'function') {
-                    showToast('error', 'System error: Helper functions not available. Please refresh the page.');
-                    return;
-                }
-                
-                const time30 = add30Minutes(time);
-                const time60 = add60Minutes(time);
+            const area = state.selectedArea || 'Main Floor';
             
             openConfirm({
                 title: 'Free Table',
-                    body: `Free this table? This will release all 3 time slots (${time}, ${time30}, ${time60}).`,
+                body: `Free this table? This will release all 3 time slots (${time}, ${add30Minutes(time)}, ${add60Minutes(time)}).`,
                 confirmText: 'Free Table',
                 onConfirm: async () => {
                     try {
-                            if (!state || !state.selectedTableId) {
-                                showToast('error', 'Table selection lost. Please select a table again.');
-                                return;
-                            }
-                            
                         const res = await api('/.netlify/functions/release-table', {
                             method: 'POST',
                             body: JSON.stringify({
@@ -2210,84 +1539,15 @@
                             return;
                         }
                         
-                            const data = await res.json().catch(() => {
-                                showToast('error', 'Invalid response from server');
-                                return null;
-                            });
-                            
-                            if (!data) return;
-                            
+                        const data = await res.json();
                         if (data.ok || data.success) {
-                                const deletedCount = (data.deletedCount !== undefined) ? data.deletedCount : 0;
-                                showToast('success', `Table freed ✅ ${deletedCount} assignment(s) released`);
-                                // Clear selection after successful free
-                                state.selectedTableId = null;
+                            showToast('success', `Table freed ✅ ${data.deletedCount || 0} assignment(s) released`);
                             await refreshAfterAction();
                         } else {
                             showToast('error', data.error || 'Failed to free table');
                         }
                     } catch (error) {
                         console.error('Free table error:', error);
-                            showToast('error', `Error: ${error && error.message ? error.message : 'Unknown error'}`);
-                        }
-                    }
-                });
-            } catch (error) {
-                console.error('Error in handleFreeTable:', error);
-                showToast('error', `Error: ${error && error.message ? error.message : 'Unknown error'}`);
-            }
-        }
-
-        async function handleQuickAssign(reservationId) {
-            if (!reservationId) {
-                showToast('error', 'Reservation ID missing');
-                return;
-            }
-            // Open reservation modal with assign focus
-            openReservationModal(reservationId);
-            // Scroll to table assignment section
-            setTimeout(() => {
-                const tablesSelect = document.getElementById('editTables');
-                if (tablesSelect) {
-                    tablesSelect.focus();
-                    tablesSelect.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            }, 300);
-        }
-        
-        async function handleQuickCancel(reservationId) {
-            if (!reservationId) {
-                showToast('error', 'Reservation ID missing');
-                return;
-            }
-            const reservation = (state.reservations || []).find(r => r.id === reservationId);
-            if (!reservation) {
-                showToast('error', 'Reservation not found');
-                return;
-            }
-            openConfirm({
-                title: 'Cancel Reservation',
-                body: `Cancel reservation for ${reservation.name || reservation.full_name || 'Guest'}? This will release table assignments.`,
-                confirmText: 'Cancel Reservation',
-                onConfirm: async () => {
-                    try {
-                        const res = await api('/.netlify/functions/cancel-reservation', {
-                            method: 'POST',
-                            body: JSON.stringify({ id: reservationId })
-                        });
-                        if (!res) {
-                            showToast('error', 'Failed to connect to server');
-                            return;
-                        }
-                        const data = await res.json();
-                        if (data.success) {
-                            showToast('success', 'Reservation cancelled');
-                            await refreshAfterAction();
-                        } else {
-                            showToast('error', data.error || 'Failed to cancel reservation');
-                        }
-                    } catch (error) {
-                        console.error('Cancel reservation error:', error);
                         showToast('error', `Error: ${error.message || 'Unknown error'}`);
                     }
                 }
@@ -2717,17 +1977,12 @@
             }
         }
 
-        // Snap to grid helper (10px increments)
-        function snapToGrid(value) {
-            return Math.round(value / 10) * 10;
-        }
-
         function getTableDimensions(seats) {
-            // Square tables - proportional to seats
-            if (seats === 2) return { w: 40, h: 40 };
-            if (seats === 4) return { w: 50, h: 50 };
-            if (seats === 6) return { w: 60, h: 60 };
-            return { w: 50, h: 50 }; // Default square
+            // OpenTable-scale: much smaller tables
+            if (seats === 2) return { w: 36, h: 28 };
+            if (seats === 4) return { w: 48, h: 32 };
+            if (seats === 6) return { w: 56, h: 36 };
+            return { w: 48, h: 32 }; // Default
         }
 
         function getSeatPositions(seats, w, h) {
@@ -2822,27 +2077,17 @@
                 return 'available';
             }
             
-            // Iterate through layout
+            // Iterate through layout (same as admin)
             layout.forEach((layoutItem, index) => {
                 // Handle non-table objects (Entrance, Bar)
                 if (layoutItem.type && (layoutItem.type === 'entrance' || layoutItem.type === 'bar')) {
-                    const x = snapToGrid(layoutItem.x || 50);
-                    const y = snapToGrid(layoutItem.y || 50);
-                    let w = layoutItem.w || (layoutItem.type === 'entrance' ? 120 : 300);
-                    let h = layoutItem.h || (layoutItem.type === 'entrance' ? 40 : 80);
-                    
-                    // Make bar larger and more prominent
-                    if (layoutItem.type === 'bar') {
-                        w = Math.max(w, 300);
-                        h = Math.max(h, 80);
-                    }
+                    const x = layoutItem.x || 50;
+                    const y = layoutItem.y || 50;
+                    const w = layoutItem.w || (layoutItem.type === 'entrance' ? 120 : 200);
+                    const h = layoutItem.h || (layoutItem.type === 'entrance' ? 40 : 60);
                     
                     const node = document.createElement('div');
-                    if (layoutItem.type === 'bar') {
-                        node.className = 'bar-zone';
-                    } else {
                     node.className = 'floor-object';
-                    }
                     node.dataset.objectType = layoutItem.type;
                     node.dataset.layoutIndex = index;
                     node.style.left = `${x}px`;
@@ -2852,7 +2097,7 @@
                     
                     const label = document.createElement('div');
                     label.className = 'object-label';
-                    label.textContent = layoutItem.type === 'bar' ? 'BAR' : 'Entrance';
+                    label.textContent = layoutItem.type.charAt(0).toUpperCase() + layoutItem.type.slice(1);
                     node.appendChild(label);
                     
                     canvas.appendChild(node);
@@ -2863,15 +2108,20 @@
                 const table = tables.find(t => t.id === layoutItem.table_id);
                 if (!table) return;
                 
-                // Snap positions to grid for visual alignment
-                const x = snapToGrid(layoutItem.x || 50);
-                const y = snapToGrid(layoutItem.y || 50);
+                const x = layoutItem.x || 50;
+                const y = layoutItem.y || 50;
                 const rotation = layoutItem.rotation || 0;
                 
-                // Get square dimensions
+                // Get base dimensions
                 const baseDims = getTableDimensions(table.seats);
-                const renderW = baseDims.w;
-                const renderH = baseDims.h;
+                let renderW = baseDims.w;
+                let renderH = baseDims.h;
+                
+                // Swap dimensions if rotated 90 degrees
+                if (rotation === 90) {
+                    renderW = baseDims.h;
+                    renderH = baseDims.w;
+                }
                 
                 // Determine status using 3-slot system
                 const status = getTableStatus(table.id);
@@ -2888,16 +2138,12 @@
                 node.dataset.layoutIndex = index;
                 node.style.left = `${x}px`;
                 node.style.top = `${y}px`;
-                node.style.zIndex = '10';
                 
-                // Table shape - square
+                // Table shape
                 const shape = document.createElement('div');
                 shape.className = `table-shape ${status}`;
                 shape.style.width = `${renderW}px`;
                 shape.style.height = `${renderH}px`;
-                if (rotation !== 0) {
-                    shape.style.transform = `rotate(${rotation}deg)`;
-                }
                 
                 // Table number (centered)
                 const tableNumber = document.createElement('div');
@@ -2908,7 +2154,7 @@
                 // Calculate seat positions using render dimensions
                 const seats = getSeatPositions(table.seats, renderW, renderH);
                 
-                // Create seats (minimal dots)
+                // Create seats
                 seats.forEach(pos => {
                     const seat = document.createElement('div');
                     seat.className = 'seat';
@@ -2919,11 +2165,13 @@
                 
                 node.appendChild(shape);
                 
-                // Label below table (centered, no overlap)
+                // Label (optional, shows name if different from number)
+                if (table.name && table.name !== `Table ${table.table_number}`) {
                     const label = document.createElement('div');
                     label.className = 'table-label';
-                label.textContent = table.name || `Main ${table.table_number}`;
+                    label.textContent = table.name;
                     node.appendChild(label);
+                }
                 
                 node.title = `${table.name || `Table ${table.table_number}`} (${table.seats} seats) - ${status}`;
                 node.addEventListener('click', (e) => {
@@ -3009,34 +2257,20 @@
                         const resTime = res.time || "";
                         const resCode = res.confirmation_code || "";
                         
-                    const assignedTables = resAssignments.map(a => {
-                        const table = allTablesList.find(t => t.id === a.table_id);
-                        return table ? (table.name || `Table ${table.table_number}`) : null;
-                    }).filter(t => t !== null);
-                    const hasTable = assignedTables.length > 0;
-                    const tableDisplay = hasTable ? assignedTables.join(', ') : 'No table assigned';
-                        
                     html += `
-                        <div class="reservation-card ${statusClass}">
-                            <div class="reservation-card-header">
-                                <div class="reservation-card-name">${resName}</div>
-                                <div class="reservation-card-actions">
-                                    ${!hasTable ? `<button class="icon-btn assign-btn" onclick="event.stopPropagation(); handleQuickAssign('${res.id || ""}')" title="Assign Table">📋</button>` : ''}
-                                    <button class="icon-btn edit-btn" onclick="event.stopPropagation(); openReservationModal('${res.id || ""}')" title="Edit">✏️</button>
-                                    <button class="icon-btn cancel-btn" onclick="event.stopPropagation(); handleQuickCancel('${res.id || ""}')" title="Cancel">✕</button>
-                                </div>
-                            </div>
-                            <div class="reservation-card-body">
-                                <div class="reservation-card-meta">
-                                    <span class="meta-item">${resPartySize} guests</span>
-                                    <span class="meta-sep">•</span>
-                                    <span class="meta-item">${formatTimeDisplay(resTime)}</span>
+                            <div class="reservation-item ${statusClass}" style="cursor: pointer;" onclick="openReservationModal('${res.id || ""}')">
+                                <div style="display: flex; justify-content: space-between; align-items: start;">
+                                    <div style="flex: 1;">
+                                        <div class="reservation-name">${resName}</div>
+                                        <div class="reservation-details">
+                                            <span>${resPartySize} guests</span>
+                                            <span>•</span>
+                                            <span>${resTime}</span>
                                             <span class="status-pill ${statusClass}">${statusText}</span>
                                         </div>
-                                <div class="reservation-card-table ${hasTable ? '' : 'no-table'}">
-                                    ${hasTable ? `<span class="table-label">Table:</span> <span class="table-value">${tableDisplay}</span>` : `<span class="no-table-text">No table assigned</span> <button class="btn-assign-inline" onclick="event.stopPropagation(); handleQuickAssign('${res.id || ""}')">Assign</button>`}
+                                        ${resAssignments.length > 0 ? `<div class="reservation-table">Tables: ${resAssignments.map(a => a.table_name || a.table_number || 'N/A').join(', ')}</div>` : '<div class="reservation-table" style="color: #dc2626;">No table assigned</div>'}
+                                        ${resCode ? `<div style="font-size: 0.85rem; color: #6b7280; margin-top: 0.5rem; font-weight: 500;">Code: <span style="font-family: monospace; background: #f3f4f6; padding: 0.15rem 0.5rem; border-radius: 4px;">${resCode}</span></div>` : ''}
                                     </div>
-                                ${resCode ? `<div class="reservation-card-code">Code: <code>${resCode}</code></div>` : ''}
                                 </div>
                         </div>
                     `;
@@ -3168,7 +2402,7 @@
                                 ${unassigned.map(r => `<option value="${r.id}">${r.name || r.full_name || 'Guest'} - ${r.party_size} guests</option>`).join('')}
                             </select>
                         </div>
-                        <button class="btn btn-primary" onclick="executeTableAction()">Assign</button>
+                        <button class="btn-primary" onclick="executeTableAction()" style="width: 100%;">Assign</button>
                     `;
                 }
             } else if (action === 'block') {
@@ -3177,22 +2411,22 @@
                         <label>Reason (default: OpenTable):</label>
                         <input type="text" id="blockReason" value="OpenTable" placeholder="OpenTable">
                     </div>
-                    <button class="btn btn-primary" onclick="executeTableAction()">Block Table</button>
+                    <button class="btn-primary" onclick="executeTableAction()" style="width: 100%;">Block Table</button>
                 `;
             } else if (action === 'unavailable') {
                 html = `
                     <div class="message">Mark this table as unavailable for this time slot?</div>
-                    <button class="btn btn-primary" onclick="executeTableAction()">Mark Unavailable</button>
+                    <button class="btn-primary" onclick="executeTableAction()" style="width: 100%;">Mark Unavailable</button>
                 `;
             } else if (action === 'free') {
                 html = `
                     <div class="message">Free this table? This will release all 3 time slots (${time}, ${add30Minutes(time)}, ${add60Minutes(time)}).</div>
-                    <button class="btn btn-primary" onclick="executeTableAction()">Free Table</button>
+                    <button class="btn-primary" onclick="executeTableAction()" style="width: 100%;">Free Table</button>
                 `;
             } else if (action === 'release') {
                 html = `
                     <div class="message">Release this single assignment?</div>
-                    <button class="btn btn-primary" onclick="executeTableAction()">Release</button>
+                    <button class="btn-primary" onclick="executeTableAction()" style="width: 100%;">Release</button>
                 `;
             }
             
@@ -3640,142 +2874,281 @@
             }
         }
 
-        // Create Reservation Functions (Premium Single Form)
+        // Quick Add Functions
+        // Stepper state
+        let currentStepperStep = 1;
+        const totalStepperSteps = 4;
+        
         function openQuickAddModal() {
             try {
                 const dateEl = document.getElementById('selectedDate');
-                const timeEl = document.getElementById('selectedTime');
+                const quickAddDateEl = document.getElementById('quickAddDate');
                 const modal = document.getElementById('quickAddModal');
                 
                 if (!modal) {
-                    showToast('error', 'Form not available. Please refresh the page.');
+                    console.error('Quick Add modal not found in DOM');
+                    showToast('error', 'Quick Add form not available. Please refresh the page.');
                     return;
                 }
                 
-                // Set default date from selected date or today
-                const date = dateEl ? (dateEl.value || new Date().toISOString().split('T')[0]) : new Date().toISOString().split('T')[0];
-                const quickAddDateEl = document.getElementById('quickAddDate');
-                if (quickAddDateEl) quickAddDateEl.value = date;
-                
-                // Set default time from selected time
-                const selectedTime = timeEl ? timeEl.value : '';
-                const quickAddTimeEl = document.getElementById('quickAddTime');
-                if (quickAddTimeEl && selectedTime) {
-                    quickAddTimeEl.innerHTML = `<option value="${selectedTime}" selected>${formatTimeDisplay(selectedTime)}</option>`;
+                if (!dateEl || !quickAddDateEl) {
+                    console.error('Quick Add form elements not found');
+                    showToast('error', 'Quick Add form elements missing. Please refresh the page.');
+                    // Failsafe: ensure modal is hidden
+                    modal.style.display = 'none';
+                    modal.classList.remove('active');
+                    document.body.style.overflow = '';
+                    return;
                 }
+                
+                // Reset stepper
+                currentStepperStep = 1;
+                updateStepperUI();
+                
+                const date = dateEl.value || new Date().toISOString().split('T')[0];
+                quickAddDateEl.value = date;
                 
                 // Clear form
                 const nameEl = document.getElementById('quickAddName');
                 const phoneEl = document.getElementById('quickAddPhone');
                 const emailEl = document.getElementById('quickAddEmail');
                 const partySizeEl = document.getElementById('quickAddPartySize');
+                const timeEl = document.getElementById('quickAddTime');
                 const notesEl = document.getElementById('quickAddNotes');
                 const sourceEl = document.getElementById('quickAddSource');
-                const areaEl = document.getElementById('quickAddArea');
                 
                 if (nameEl) nameEl.value = '';
                 if (phoneEl) phoneEl.value = '';
                 if (emailEl) emailEl.value = '';
                 if (partySizeEl) partySizeEl.value = '';
+                if (timeEl) timeEl.innerHTML = '<option value="">Select a time...</option>';
                 if (notesEl) notesEl.value = '';
                 if (sourceEl) sourceEl.value = 'phone';
-                if (areaEl) areaEl.value = state.selectedArea || 'Main Floor';
                 
-                // Reset notes section
-                const notesSection = document.getElementById('notesSection');
-                if (notesSection) notesSection.style.display = 'none';
-                const notesToggle = document.getElementById('notesToggleText');
-                if (notesToggle) notesToggle.textContent = '+ Add notes';
-                
-                // Reset status
-                setQuickAddStatus('pending', document.querySelector('.segmented-btn[data-status="pending"]'));
-                
-                // Clear error classes
-                [nameEl, phoneEl, emailEl, partySizeEl, quickAddTimeEl, notesEl].forEach(el => {
+                // Clear any error classes
+                [nameEl, phoneEl, emailEl, partySizeEl, timeEl, notesEl].forEach(el => {
                     if (el) el.classList.remove('error');
                 });
                 
-                // Open modal
+                // Open modal using the openModal function
+                openModal('quickAddModal');
+                
+                // Verify modal is visible
+                if (modal.style.display !== 'flex' && !modal.classList.contains('active')) {
+                    // Force show if openModal didn't work
                     modal.style.display = 'flex';
                     modal.classList.add('active');
-                modal.setAttribute('aria-hidden', 'false');
                     document.body.style.overflow = 'hidden';
+                }
                 
-                // Load available times
+                // Load available times if date and party size are set
                 setTimeout(() => {
-                    if (partySizeEl && quickAddDateEl) {
+                    try {
                         loadAvailableTimes();
+                    } catch (e) {
+                        console.error('Error loading available times:', e);
                     }
                 }, 100);
                 
-                // Focus first input
+                // Focus first input and add keyboard listeners
                 setTimeout(() => {
-                    if (nameEl) nameEl.focus();
+                    try {
+                        const nameInput = document.getElementById('quickAddName');
+                        if (nameInput) {
+                            nameInput.focus();
+                        }
+                    } catch (e) {
+                        console.error('Error focusing input:', e);
+                    }
                 }, 200);
             } catch (error) {
-                console.error('Error opening modal:', error);
+                console.error('Error opening Quick Add modal:', error);
                 showToast('error', 'Failed to open form. Please try again.');
+                // Failsafe: ensure overlay is removed on error
+                const modal = document.getElementById('quickAddModal');
+                if (modal) {
+                    modal.style.display = 'none';
+                    modal.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
             }
         }
         
-        function setQuickAddStatus(status, btn) {
-            document.querySelectorAll('.segmented-btn').forEach(b => b.classList.remove('active'));
-            if (btn) btn.classList.add('active');
-            const statusInput = document.getElementById('quickAddStatus');
-            if (statusInput) statusInput.value = status;
-        }
-        
-        function toggleNotesSection() {
-            const notesSection = document.getElementById('notesSection');
-            const notesToggle = document.getElementById('notesToggleText');
-            if (notesSection && notesToggle) {
-                const isVisible = notesSection.style.display !== 'none';
-                notesSection.style.display = isVisible ? 'none' : 'block';
-                notesToggle.textContent = isVisible ? '+ Add notes' : '− Hide notes';
+        function updateStepperUI() {
+            // Look up button elements once (safe, null-checked)
+            const backBtn = document.getElementById('stepperBackBtn');
+            const nextBtn = document.getElementById('stepperNextBtn');
+            const saveBtn = document.getElementById('stepperSaveBtn');
+            
+            // Update step indicators
+            for (let i = 1; i <= totalStepperSteps; i++) {
+                const stepEl = document.getElementById(`step${i}`);
+                const contentEl = document.getElementById(`stepperStep${i}`);
+                
+                if (!stepEl) continue; // Skip if step element missing
+                
+                if (i < currentStepperStep) {
+                    stepEl.classList.add('completed');
+                    stepEl.classList.remove('active');
+                    if (contentEl) contentEl.style.display = 'none';
+                } else if (i === currentStepperStep) {
+                    stepEl.classList.add('active');
+                    stepEl.classList.remove('completed');
+                    if (contentEl) contentEl.style.display = 'block';
+                } else {
+                    stepEl.classList.remove('active', 'completed');
+                    if (contentEl) contentEl.style.display = 'none';
+                }
+            }
+            
+            // Update buttons (null-safe)
+            if (backBtn) {
+                backBtn.style.display = currentStepperStep > 1 ? 'block' : 'none';
+            }
+            if (nextBtn) {
+                nextBtn.style.display = currentStepperStep < totalStepperSteps ? 'block' : 'none';
+            }
+            if (saveBtn) {
+                saveBtn.style.display = currentStepperStep === totalStepperSteps ? 'block' : 'none';
+            }
+            
+            // Update review on step 4
+            if (currentStepperStep === 4) {
+                updateQuickAddReview();
             }
         }
         
-        function formatTimeDisplay(time) {
-            if (!time) return '';
-            const [h, m] = time.split(':');
-            const hour = parseInt(h);
-            const period = hour >= 12 ? 'PM' : 'AM';
-            const hour12 = hour > 12 ? hour - 12 : (hour === 0 ? 12 : hour);
-            return `${hour12}:${m} ${period}`;
+        function stepperNext() {
+            // Validate current step
+            if (currentStepperStep === 1) {
+                const name = document.getElementById('quickAddName').value.trim();
+                const phone = document.getElementById('quickAddPhone').value.trim();
+                if (!name || !phone) {
+                    showToast('error', 'Please fill in name and phone');
+                    return;
+                }
+            } else if (currentStepperStep === 2) {
+                const date = document.getElementById('quickAddDate').value;
+                const time = document.getElementById('quickAddTime').value;
+                const partySize = document.getElementById('quickAddPartySize').value;
+                if (!date || !time || !partySize) {
+                    showToast('error', 'Please select date, time, and party size');
+                    return;
+                }
+            }
+            
+            if (currentStepperStep < totalStepperSteps) {
+                currentStepperStep++;
+                updateStepperUI();
+                if (currentStepperStep === 2) {
+                    loadAvailableTimes();
+                }
+            }
         }
         
+        function stepperPrevious() {
+            if (currentStepperStep > 1) {
+                currentStepperStep--;
+                updateStepperUI();
+            }
+        }
         
         async function loadAvailableTimes() {
             const date = document.getElementById('quickAddDate')?.value;
             const partySize = document.getElementById('quickAddPartySize')?.value;
-            const area = document.getElementById('quickAddArea')?.value || 'Main Floor';
+            const suggestionsEl = document.getElementById('availableTimesSuggestions');
             const timeSelect = document.getElementById('quickAddTime');
             
-            if (!date || !partySize || !timeSelect) return;
+            if (!date || !partySize || !suggestionsEl || !timeSelect) return;
             
             try {
-                const res = await fetch(`/.netlify/functions/get-available-times?date=${date}&party_size=${partySize}&area=${encodeURIComponent(area)}`);
+                const res = await fetch(`/.netlify/functions/get-available-times?date=${date}&party_size=${partySize}&area=Main%20Floor`);
                 const data = await res.json();
                 
                 if (data.ok && data.times && data.times.length > 0) {
-                    // Preserve current selection if it's still available
-                    const currentValue = timeSelect.value;
-                    timeSelect.innerHTML = '<option value="">Select time...</option>';
+                    // Update select dropdown
+                    timeSelect.innerHTML = '<option value="">Select a time...</option>';
                     data.times.forEach(time => {
-                        const displayTime = formatTimeDisplay(time);
-                        const selected = time === currentValue ? ' selected' : '';
-                        timeSelect.innerHTML += `<option value="${time}"${selected}>${displayTime}</option>`;
+                        const [h, m] = time.split(':');
+                        const hour = parseInt(h);
+                        const period = hour >= 12 ? 'PM' : 'AM';
+                        const hour12 = hour > 12 ? hour - 12 : (hour === 0 ? 12 : hour);
+                        const displayTime = `${hour12}:${m} ${period}`;
+                        timeSelect.innerHTML += `<option value="${time}">${displayTime}</option>`;
                     });
+                    
+                    // Show suggestions
+                    suggestionsEl.innerHTML = data.times.map(time => {
+                        const [h, m] = time.split(':');
+                        const hour = parseInt(h);
+                        const period = hour >= 12 ? 'PM' : 'AM';
+                        const hour12 = hour > 12 ? hour - 12 : (hour === 0 ? 12 : hour);
+                        const displayTime = `${hour12}:${m} ${period}`;
+                        return `<button type="button" class="time-suggestion-btn" onclick="selectQuickAddTime('${time}')">${displayTime}</button>`;
+                    }).join('');
+                    suggestionsEl.style.display = 'grid';
                 } else {
+                    suggestionsEl.style.display = 'none';
                     timeSelect.innerHTML = '<option value="">No available times</option>';
-                    showToast('info', 'No available times for this party size and date');
                 }
             } catch (error) {
                 console.error('Error loading available times:', error);
-                showToast('error', 'Failed to load available times');
             }
         }
         
+        function selectQuickAddTime(time) {
+            document.getElementById('quickAddTime').value = time;
+            document.querySelectorAll('.time-suggestion-btn').forEach(btn => {
+                btn.classList.remove('selected');
+                if (btn.textContent.includes(time.split(':')[0])) {
+                    btn.classList.add('selected');
+                }
+            });
+        }
+        
+        function updateQuickAddReview() {
+            const reviewEl = document.getElementById('quickAddReview');
+            if (!reviewEl) return;
+            
+            const name = document.getElementById('quickAddName').value;
+            const phone = document.getElementById('quickAddPhone').value;
+            const email = document.getElementById('quickAddEmail').value;
+            const date = document.getElementById('quickAddDate').value;
+            const time = document.getElementById('quickAddTime').value;
+            const partySize = document.getElementById('quickAddPartySize').value;
+            const source = document.getElementById('quickAddSource').value;
+            const notes = document.getElementById('quickAddNotes').value;
+            
+            const formatTime = (t) => {
+                if (!t) return '—';
+                const [h, m] = t.split(':');
+                const hour = parseInt(h);
+                const period = hour >= 12 ? 'PM' : 'AM';
+                const hour12 = hour > 12 ? hour - 12 : (hour === 0 ? 12 : hour);
+                return `${hour12}:${m} ${period}`;
+            };
+            
+            reviewEl.innerHTML = `
+                <div><strong>Name:</strong> ${name || '—'}</div>
+                <div><strong>Phone:</strong> ${phone || '—'}</div>
+                ${email ? `<div><strong>Email:</strong> ${email}</div>` : ''}
+                <div><strong>Date:</strong> ${date || '—'}</div>
+                <div><strong>Time:</strong> ${formatTime(time)}</div>
+                <div><strong>Party Size:</strong> ${partySize || '—'}</div>
+                <div><strong>Source:</strong> ${source || '—'}</div>
+                ${notes ? `<div><strong>Notes:</strong> ${notes}</div>` : ''}
+            `;
+        }
+        
+        function handleQuickAddKeydown(e) {
+            if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+                saveQuickAddReservation();
+            } else if (e.key === 'Escape') {
+                e.preventDefault();
+                closeQuickAddModal();
+            }
+        }
 
         function closeQuickAddModal() {
             try {
@@ -3783,35 +3156,76 @@
                 if (modal) {
                     modal.style.display = 'none';
                     modal.classList.remove('active');
-                    modal.setAttribute('aria-hidden', 'true');
                     document.body.style.overflow = '';
                 }
+                
+                // Reset stepper
+                currentStepperStep = 1;
+                updateStepperUI();
+                
+                // Reset form and clear validation errors
+                const nameEl = document.getElementById('quickAddName');
+                const phoneEl = document.getElementById('quickAddPhone');
+                const emailEl = document.getElementById('quickAddEmail');
+                const notesEl = document.getElementById('quickAddNotes');
+                const dateEl = document.getElementById('quickAddDate');
+                const timeEl = document.getElementById('quickAddTime');
+                const partySizeEl = document.getElementById('quickAddPartySize');
+                const sourceEl = document.getElementById('quickAddSource');
+                
+                if (nameEl) {
+                    nameEl.value = '';
+                    nameEl.classList.remove('error');
+                }
+                if (phoneEl) {
+                    phoneEl.value = '';
+                    phoneEl.classList.remove('error');
+                }
+                if (emailEl) {
+                    emailEl.value = '';
+                    emailEl.classList.remove('error');
+                }
+                if (notesEl) {
+                    notesEl.value = '';
+                    notesEl.classList.remove('error');
+                }
+                if (dateEl) {
+                    dateEl.value = '';
+                    dateEl.classList.remove('error');
+                }
+                if (timeEl) {
+                    timeEl.innerHTML = '<option value="">Select a time...</option>';
+                    timeEl.classList.remove('error');
+                }
+                if (partySizeEl) {
+                    partySizeEl.value = '';
+                    partySizeEl.classList.remove('error');
+                }
+                if (sourceEl) {
+                    sourceEl.value = 'phone';
+                }
+                const suggestionsEl = document.getElementById('availableTimesSuggestions');
+                if (suggestionsEl) {
+                    suggestionsEl.innerHTML = '';
+                    suggestionsEl.style.display = 'none';
+                }
             } catch (error) {
-                console.error('Error closing modal:', error);
+                console.error('Error resetting Quick Add form:', error);
             }
         }
 
         async function saveQuickAddReservation() {
-            const name = document.getElementById('quickAddName')?.value.trim();
-            const phone = document.getElementById('quickAddPhone')?.value.trim();
-            const email = document.getElementById('quickAddEmail')?.value.trim();
-            const date = document.getElementById('quickAddDate')?.value;
-            const time = document.getElementById('quickAddTime')?.value;
-            const partySize = parseInt(document.getElementById('quickAddPartySize')?.value || '0');
-            const source = document.getElementById('quickAddSource')?.value || 'manual';
-            const notes = document.getElementById('quickAddNotes')?.value.trim() || '';
-            const area = document.getElementById('quickAddArea')?.value || 'Main Floor';
-            const status = document.getElementById('quickAddStatus')?.value || 'pending';
+            const name = document.getElementById('quickAddName').value.trim();
+            const phone = document.getElementById('quickAddPhone').value.trim();
+            const email = document.getElementById('quickAddEmail').value.trim();
+            const date = document.getElementById('quickAddDate').value;
+            const time = document.getElementById('quickAddTime').value;
+            const partySize = parseInt(document.getElementById('quickAddPartySize').value);
+            const source = document.getElementById('quickAddSource').value;
+            const notes = document.getElementById('quickAddNotes').value.trim();
 
-            // Validate required fields
             if (!name || !phone || !date || !time || !partySize) {
-                showToast('error', 'Please fill in all required fields (Name, Phone, Date, Time, Party Size)');
-                // Highlight missing fields
-                if (!name) document.getElementById('quickAddName')?.classList.add('error');
-                if (!phone) document.getElementById('quickAddPhone')?.classList.add('error');
-                if (!date) document.getElementById('quickAddDate')?.classList.add('error');
-                if (!time) document.getElementById('quickAddTime')?.classList.add('error');
-                if (!partySize) document.getElementById('quickAddPartySize')?.classList.add('error');
+                showToast('error', 'Please fill in all required fields');
                 return;
             }
 
@@ -3827,9 +3241,7 @@
                         time: time,
                         party_size: partySize,
                         source: source,
-                        notes: notes,
-                        area: area,
-                        status: status
+                        notes: notes
                     })
                 });
 
@@ -3840,7 +3252,7 @@
 
                 const data = await res.json();
                 if (data.success) {
-                    showToast('success', 'Reservation created successfully');
+                    showToast('success', 'Reservation created successfully ✅');
                     closeQuickAddModal();
                     await refreshAfterAction();
                 } else {
