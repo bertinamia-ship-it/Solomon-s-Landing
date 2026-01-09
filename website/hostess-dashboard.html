@@ -161,12 +161,79 @@
                 margin-top: 1rem;
             }
         }
-        @media (max-width: 768px) {
+        /* Responsive: iPad and Mobile */
+        @media (max-width: 1024px) {
+            /* iPad Portrait */
             .dashboard-container {
-                padding: 1rem;
+                padding: clamp(0.75rem, 2vw, 1.5rem);
+            }
+            .app-container {
+                padding: clamp(0.5rem, 1.5vw, 1rem);
+            }
+            .section {
+                padding: clamp(1rem, 2vw, 1.5rem);
+                border-radius: 12px;
+            }
+            .section h2 {
+                font-size: clamp(1.1rem, 2.5vw, 1.25rem);
+                margin-bottom: clamp(0.75rem, 1.5vw, 1rem);
+                padding-bottom: clamp(0.5rem, 1vw, 0.75rem);
+            }
+            .controls-bar {
+                padding: clamp(0.75rem, 1.5vw, 1rem);
+            }
+            .controls-row {
+                gap: clamp(0.5rem, 1vw, 0.75rem);
+            }
+            .controls-row input,
+            .controls-row select {
+                padding: clamp(0.5rem, 1vw, 0.6rem) clamp(0.5rem, 1vw, 0.75rem);
+                font-size: clamp(0.85rem, 1.8vw, 0.95rem);
+            }
+            .floor-plan-container {
+                height: clamp(300px, 50vh, 500px);
+                max-height: 500px;
+                min-height: 300px;
+            }
+            .reservations-list {
+                max-height: clamp(300px, 40vh, 400px);
+                overflow-y: auto;
+            }
+            .reservation-item,
+            .block-item {
+                padding: clamp(0.75rem, 1.5vw, 1rem);
+                margin-bottom: clamp(0.5rem, 1vw, 0.75rem);
+            }
+            .app-bar {
+                padding: clamp(0.75rem, 1.5vw, 1rem);
+            }
+            .app-bar-title {
+                font-size: clamp(1rem, 2.5vw, 1.1rem);
+            }
+            .btn {
+                padding: clamp(0.5rem, 1vw, 0.75rem) clamp(0.75rem, 1.5vw, 1.25rem);
+                font-size: clamp(0.85rem, 1.8vw, 1rem);
+            }
+            .modal {
+                max-width: 95%;
+                max-height: 95vh;
+                margin: 1rem;
+            }
+            .modal-body {
+                padding: clamp(1rem, 2vw, 1.5rem);
+            }
+            .modal-header,
+            .modal-footer {
+                padding: clamp(1rem, 2vw, 1.5rem);
+            }
+        }
+        @media (max-width: 768px) {
+            /* Mobile */
+            .dashboard-container {
+                padding: clamp(0.5rem, 2vw, 1rem);
             }
             .top-nav {
-                padding: 0.75rem 1rem;
+                padding: clamp(0.5rem, 1.5vw, 0.75rem) clamp(0.75rem, 2vw, 1rem);
             }
             .top-nav .app-title {
                 font-size: 0.95rem;
@@ -195,11 +262,56 @@
                 width: 100%;
             }
             .section {
-                padding: 1.5rem;
+                padding: clamp(0.75rem, 2vw, 1.25rem);
+            }
+            .section h2 {
+                font-size: clamp(1rem, 2.5vw, 1.15rem);
+                margin-bottom: clamp(0.75rem, 1.5vw, 1rem);
             }
             .btn-logout {
-                padding: 0.5rem 1rem;
-                font-size: 0.9rem;
+                padding: clamp(0.5rem, 1.5vw, 0.75rem) clamp(0.75rem, 2vw, 1rem);
+                font-size: clamp(0.85rem, 2vw, 0.95rem);
+            }
+            .floor-plan-container {
+                height: clamp(250px, 45vh, 400px);
+                max-height: 400px;
+                min-height: 250px;
+            }
+            .reservations-list {
+                max-height: clamp(250px, 35vh, 350px);
+            }
+            .reservation-item,
+            .block-item {
+                padding: clamp(0.75rem, 2vw, 1rem);
+                margin-bottom: clamp(0.5rem, 1.5vw, 0.75rem);
+            }
+            .main-content {
+                gap: clamp(0.75rem, 2vw, 1rem);
+            }
+            .btn {
+                padding: clamp(0.5rem, 1.5vw, 0.75rem) clamp(0.75rem, 2vw, 1rem);
+                font-size: clamp(0.8rem, 2vw, 0.95rem);
+            }
+            .modal {
+                max-width: 98%;
+                margin: 0.5rem;
+                max-height: 98vh;
+            }
+            .modal-body {
+                padding: clamp(0.75rem, 2vw, 1.25rem);
+            }
+            .modal-header,
+            .modal-footer {
+                padding: clamp(0.75rem, 2vw, 1.25rem);
+            }
+            .app-bar-title {
+                font-size: clamp(0.9rem, 2.5vw, 1rem);
+            }
+            .btn-text {
+                display: none;
+            }
+            .btn span:first-child {
+                margin-right: 0;
             }
         }
         .section {
@@ -555,7 +667,7 @@
             inset: 0;
             background: rgba(0,0,0,0.45);
             backdrop-filter: blur(4px);
-            z-index: 1000;
+            z-index: 10001;
             align-items: center;
             justify-content: center;
             animation: fadeIn 0.2s ease;
@@ -803,7 +915,7 @@
             height: 100%;
             background: rgba(0,0,0,0.5);
             backdrop-filter: blur(4px);
-            z-index: 2000;
+            z-index: 10002;
             align-items: center;
             justify-content: center;
             animation: fadeIn 0.2s ease;
@@ -1493,65 +1605,93 @@
 
         // Table Action Handlers (called from side panel buttons)
         async function handleFreeTable() {
-            // Validate state - use in-memory state, not fragile DOM reads
-            if (!state.selectedTableId) {
-                showToast('error', 'Please select a table first');
-                return;
-            }
-            
-            const dateEl = document.getElementById('selectedDate');
-            const timeEl = document.getElementById('selectedTime');
-            
-            if (!dateEl || !timeEl) {
-                showToast('error', 'Date or time selector not found. Please refresh the page.');
-                return;
-            }
-            
-            const date = dateEl.value;
-            const time = timeEl.value;
-            
-            if (!date || !time) {
-                showToast('error', 'Please select a date and time first');
-                return;
-            }
-            
-            // Use state.selectedArea (in-memory state), not DOM
-            const area = state.selectedArea || 'Main Floor';
-            
-            openConfirm({
-                title: 'Free Table',
-                body: `Free this table? This will release all 3 time slots (${time}, ${add30Minutes(time)}, ${add60Minutes(time)}).`,
-                confirmText: 'Free Table',
-                onConfirm: async () => {
-                    try {
-                        const res = await api('/.netlify/functions/release-table', {
-                            method: 'POST',
-                            body: JSON.stringify({
-                                date: date,
-                                time: time,
-                                table_id: state.selectedTableId,
-                                area: area
-                            })
-                        });
-                        
-                        if (!res) {
-                            showToast('error', 'Failed to connect to server');
-                            return;
-                        }
-                        
-                        const data = await res.json();
-                        if (data.ok || data.success) {
-                            showToast('success', `Table freed ✅ ${data.deletedCount || 0} assignment(s) released`);
-                            await refreshAfterAction();
-                        } else {
-                            showToast('error', data.error || 'Failed to free table');
-                        }
-                    } catch (error) {
-                        console.error('Free table error:', error);
-                        showToast('error', `Error: ${error.message || 'Unknown error'}`);
-                    }
+            try {
+                // Validate state - use in-memory state, not fragile DOM reads
+                if (!state || !state.selectedTableId) {
+                    showToast('error', 'Please select a table first');
+                    return;
                 }
-            });
+                
+                const dateEl = document.getElementById('selectedDate');
+                const timeEl = document.getElementById('selectedTime');
+                
+                if (!dateEl || !timeEl) {
+                    showToast('error', 'Date or time selector not found. Please refresh the page.');
+                    return;
+                }
+                
+                const date = dateEl.value;
+                const time = timeEl.value;
+                
+                if (!date || !time) {
+                    showToast('error', 'Please select a date and time first');
+                    return;
+                }
+                
+                // Use state.selectedArea (in-memory state), not DOM
+                const area = (state && state.selectedArea) ? state.selectedArea : 'Main Floor';
+                
+                // Validate helper functions exist
+                if (typeof add30Minutes !== 'function' || typeof add60Minutes !== 'function') {
+                    showToast('error', 'System error: Helper functions not available. Please refresh the page.');
+                    return;
+                }
+                
+                const time30 = add30Minutes(time);
+                const time60 = add60Minutes(time);
+                
+                openConfirm({
+                    title: 'Free Table',
+                    body: `Free this table? This will release all 3 time slots (${time}, ${time30}, ${time60}).`,
+                    confirmText: 'Free Table',
+                    onConfirm: async () => {
+                        try {
+                            if (!state || !state.selectedTableId) {
+                                showToast('error', 'Table selection lost. Please select a table again.');
+                                return;
+                            }
+                            
+                            const res = await api('/.netlify/functions/release-table', {
+                                method: 'POST',
+                                body: JSON.stringify({
+                                    date: date,
+                                    time: time,
+                                    table_id: state.selectedTableId,
+                                    area: area
+                                })
+                            });
+                            
+                            if (!res) {
+                                showToast('error', 'Failed to connect to server');
+                                return;
+                            }
+                            
+                            const data = await res.json().catch(() => {
+                                showToast('error', 'Invalid response from server');
+                                return null;
+                            });
+                            
+                            if (!data) return;
+                            
+                            if (data.ok || data.success) {
+                                const deletedCount = (data.deletedCount !== undefined) ? data.deletedCount : 0;
+                                showToast('success', `Table freed ✅ ${deletedCount} assignment(s) released`);
+                                // Clear selection after successful free
+                                state.selectedTableId = null;
+                                await refreshAfterAction();
+                            } else {
+                                showToast('error', data.error || 'Failed to free table');
+                            }
+                        } catch (error) {
+                            console.error('Free table error:', error);
+                            showToast('error', `Error: ${error && error.message ? error.message : 'Unknown error'}`);
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error in handleFreeTable:', error);
+                showToast('error', `Error: ${error && error.message ? error.message : 'Unknown error'}`);
+            }
         }
 
         async function handleAssignReservation() {
