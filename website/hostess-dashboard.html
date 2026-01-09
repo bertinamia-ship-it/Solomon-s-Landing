@@ -148,7 +148,8 @@
         }
         /* Main content grid - handled by CSS file */
         .main-content {
-            /* Styles in reservations-app.css */
+            display: grid;
+            gap: 1rem;
         }
         @media (max-width: 1200px) {
             .main-content { grid-template-columns: 1fr; }
@@ -547,26 +548,84 @@
             color: #004A9F;
             font-weight: 600;
         }
-        .modal {
+        /* Modal Overlay (backdrop) */
+        .modal-backdrop {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
+            inset: 0;
+            background: rgba(0,0,0,0.45);
             backdrop-filter: blur(4px);
             z-index: 1000;
             align-items: center;
             justify-content: center;
             animation: fadeIn 0.2s ease;
         }
+        .modal-backdrop.active,
+        .modal-backdrop[style*="flex"],
+        .modal-backdrop[style*="block"] {
+            display: flex !important;
+        }
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
-        .modal.active {
+        /* Modal Content Box (inner) */
+        .modal {
+            background: white;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 92vh;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s ease;
+            position: relative;
+            margin: auto;
             display: flex;
+            flex-direction: column;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            flex-shrink: 0;
+        }
+        .modal-title {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            line-height: 1;
+            border-radius: 4px;
+            transition: background 0.2s ease;
+        }
+        .modal-close:hover {
+            background: #f3f4f6;
+            color: #1e293b;
+        }
+        .modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+            flex: 1;
+            min-height: 0;
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            padding: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+            flex-shrink: 0;
         }
         .modal-content {
             background: white;
@@ -953,11 +1012,11 @@
         <div class="modal">
             <div class="modal-header">
                 <h3 class="modal-title" id="modalTitle">Table Actions</h3>
-                <button class="modal-close" onclick="closeModal()">×</button>
+                    <button class="modal-close" onclick="closeTableModal()">×</button>
             </div>
             <div class="modal-body" id="modalBody"></div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-secondary" onclick="closeTableModal()">Cancel</button>
                 <button class="btn btn-primary" id="tableModalActionBtn" onclick="executeTableModalAction()" style="display: none;">Confirm</button>
             </div>
         </div>
@@ -1570,7 +1629,7 @@
                     const data = await res.json();
                     if (data.success) {
                         showToast('success', 'Reservation assigned successfully');
-                        closeModal();
+                        closeTableModal();
                         await refreshAfterAction();
                     } else {
                         showToast('error', data.error || 'Failed to assign reservation');
@@ -1640,7 +1699,7 @@
                     const data = await res.json();
                     if (data.success) {
                         showToast('success', 'Table blocked successfully');
-                        closeModal();
+                        closeTableModal();
                         await refreshAfterAction();
                     } else {
                         showToast('error', data.error || 'Failed to block table');
@@ -2446,7 +2505,7 @@
                     const data = await res.json();
                     if (data.ok || data.success) {
                         showToast('success', `Table freed ✅ ${data.deletedCount || 0} assignment(s) released`);
-                        closeModal();
+                        closeTableModal();
                         await refreshAfterAction();
                     } else {
                         showToast('error', data.error || 'Failed to free table');
@@ -2472,7 +2531,7 @@
                     const data = await res.json();
                     if (data.success) {
                         showToast('success', 'Table released successfully');
-                        closeModal();
+                        closeTableModal();
                         await refreshAfterAction();
                     } else {
                         showToast('error', data.error || 'Failed to release table');
@@ -2512,7 +2571,7 @@
                     const data = await res.json();
                     if (data.success) {
                         showToast('success', 'Action completed successfully');
-                        closeModal();
+                        closeTableModal();
                         await refreshAfterAction();
                     } else {
                         showToast('error', data.error || 'Failed to complete action');
@@ -2524,9 +2583,15 @@
             }
         }
 
-        function closeModal() {
-            document.getElementById('tableModal').style.display = 'none';
-            document.getElementById('tableModalActionBtn').style.display = 'none';
+        function closeTableModal() {
+            const modal = document.getElementById('tableModal');
+            if (modal) {
+                modal.style.display = 'none';
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+            const actionBtn = document.getElementById('tableModalActionBtn');
+            if (actionBtn) actionBtn.style.display = 'none';
             state.selectedTableId = null;
             // Clear action handlers
             window.executeAssignAction = null;
@@ -2534,15 +2599,84 @@
         }
         
         function openModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
+            try {
+                const modal = document.getElementById(modalId);
+                if (!modal) {
+                    console.error(`Modal not found: ${modalId}`);
+                    showToast('error', 'Failed to open form. Please refresh the page.');
+                    return;
+                }
+                // Set display flex and add active class for CSS
                 modal.style.display = 'flex';
+                modal.classList.add('active');
+                // Prevent body scroll when modal is open
+                document.body.style.overflow = 'hidden';
+            } catch (error) {
+                console.error('Error opening modal:', error);
+                showToast('error', 'Failed to open form');
+                // Failsafe: ensure overlay is removed on error
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.style.display = 'none';
+                    modal.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            }
+        }
+        
+        function closeModal(modalId) {
+            try {
+                const modal = modalId ? document.getElementById(modalId) : document.querySelector('.modal-backdrop.active');
+                if (modal) {
+                    modal.style.display = 'none';
+                    modal.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            } catch (error) {
+                console.error('Error closing modal:', error);
+                // Failsafe: remove all modals
+                document.querySelectorAll('.modal-backdrop').forEach(m => {
+                    m.style.display = 'none';
+                    m.classList.remove('active');
+                });
+                document.body.style.overflow = '';
             }
         }
 
-        // Close modal on outside click
-        document.getElementById('tableModal').addEventListener('click', (e) => {
-            if (e.target.id === 'tableModal') closeModal();
+        // Close modals on overlay click (delegated event listener)
+        // Only close if clicking the backdrop itself, not the inner modal content
+        document.addEventListener('click', (e) => {
+            // Check if clicked element is the backdrop itself (not a child)
+            if (e.target.classList.contains('modal-backdrop')) {
+                const modalId = e.target.id;
+                if (modalId === 'quickAddModal') {
+                    closeQuickAddModal();
+                } else if (modalId === 'reservationModal') {
+                    closeReservationModal();
+                } else if (modalId === 'tableModal') {
+                    closeTableModal();
+                } else if (modalId) {
+                    closeModal(modalId);
+                }
+            }
+        });
+        
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const openModalEl = document.querySelector('.modal-backdrop.active, .modal-backdrop[style*="flex"]:not([style*="none"])');
+                if (openModalEl) {
+                    if (openModalEl.id === 'quickAddModal') {
+                        closeQuickAddModal();
+                    } else if (openModalEl.id === 'reservationModal') {
+                        closeReservationModal();
+                    } else if (openModalEl.id === 'tableModal') {
+                        closeTableModal();
+                    } else {
+                        closeModal(openModalEl.id);
+                    }
+                }
+            }
         });
         
         function executeTableModalAction() {
@@ -2552,12 +2686,7 @@
                 window.executeBlockAction();
             }
         }
-        document.getElementById('reservationModal').addEventListener('click', (e) => {
-            if (e.target.id === 'reservationModal') closeReservationModal();
-        });
-        document.getElementById('quickAddModal').addEventListener('click', (e) => {
-            if (e.target.id === 'quickAddModal') closeQuickAddModal();
-        });
+        // Modal overlay click handlers are now handled by the delegated event listener above
 
         // Reservation Modal Functions
         async function openReservationModal(reservationId) {
@@ -2737,7 +2866,12 @@
         }
 
         function closeReservationModal() {
-            document.getElementById('reservationModal').style.display = 'none';
+            const modal = document.getElementById('reservationModal');
+            if (modal) {
+                modal.style.display = 'none';
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
         }
 
         // Quick Add Functions
@@ -2751,9 +2885,19 @@
                 const quickAddDateEl = document.getElementById('quickAddDate');
                 const modal = document.getElementById('quickAddModal');
                 
-                if (!dateEl || !quickAddDateEl || !modal) {
-                    console.error('Quick Add modal elements not found');
+                if (!modal) {
+                    console.error('Quick Add modal not found in DOM');
                     showToast('error', 'Quick Add form not available. Please refresh the page.');
+                    return;
+                }
+                
+                if (!dateEl || !quickAddDateEl) {
+                    console.error('Quick Add form elements not found');
+                    showToast('error', 'Quick Add form elements missing. Please refresh the page.');
+                    // Failsafe: ensure modal is hidden
+                    modal.style.display = 'none';
+                    modal.classList.remove('active');
+                    document.body.style.overflow = '';
                     return;
                 }
                 
@@ -2765,36 +2909,68 @@
                 quickAddDateEl.value = date;
                 
                 // Clear form
-                document.getElementById('quickAddName').value = '';
-                document.getElementById('quickAddPhone').value = '';
-                document.getElementById('quickAddEmail').value = '';
-                document.getElementById('quickAddPartySize').value = '';
-                document.getElementById('quickAddTime').innerHTML = '<option value="">Select a time...</option>';
-                document.getElementById('quickAddNotes').value = '';
-                document.getElementById('quickAddSource').value = 'phone';
+                const nameEl = document.getElementById('quickAddName');
+                const phoneEl = document.getElementById('quickAddPhone');
+                const emailEl = document.getElementById('quickAddEmail');
+                const partySizeEl = document.getElementById('quickAddPartySize');
+                const timeEl = document.getElementById('quickAddTime');
+                const notesEl = document.getElementById('quickAddNotes');
+                const sourceEl = document.getElementById('quickAddSource');
                 
+                if (nameEl) nameEl.value = '';
+                if (phoneEl) phoneEl.value = '';
+                if (emailEl) emailEl.value = '';
+                if (partySizeEl) partySizeEl.value = '';
+                if (timeEl) timeEl.innerHTML = '<option value="">Select a time...</option>';
+                if (notesEl) notesEl.value = '';
+                if (sourceEl) sourceEl.value = 'phone';
+                
+                // Clear any error classes
+                [nameEl, phoneEl, emailEl, partySizeEl, timeEl, notesEl].forEach(el => {
+                    if (el) el.classList.remove('error');
+                });
+                
+                // Open modal using the openModal function
                 openModal('quickAddModal');
                 
+                // Verify modal is visible
+                if (modal.style.display !== 'flex' && !modal.classList.contains('active')) {
+                    // Force show if openModal didn't work
+                    modal.style.display = 'flex';
+                    modal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+                
                 // Load available times if date and party size are set
-                setTimeout(() => loadAvailableTimes(), 100);
+                setTimeout(() => {
+                    try {
+                        loadAvailableTimes();
+                    } catch (e) {
+                        console.error('Error loading available times:', e);
+                    }
+                }, 100);
                 
                 // Focus first input and add keyboard listeners
                 setTimeout(() => {
-                    const nameInput = document.getElementById('quickAddName');
-                    if (nameInput && modal) {
-                        nameInput.focus();
-                        
-                        // Add Enter key support for form submission
-                        const formInputs = modal.querySelectorAll('input, select, textarea');
-                        formInputs.forEach(input => {
-                            input.removeEventListener('keydown', handleQuickAddKeydown);
-                            input.addEventListener('keydown', handleQuickAddKeydown);
-                        });
+                    try {
+                        const nameInput = document.getElementById('quickAddName');
+                        if (nameInput) {
+                            nameInput.focus();
+                        }
+                    } catch (e) {
+                        console.error('Error focusing input:', e);
                     }
                 }, 200);
             } catch (error) {
                 console.error('Error opening Quick Add modal:', error);
-                showToast('error', 'Failed to open form');
+                showToast('error', 'Failed to open form. Please try again.');
+                // Failsafe: ensure overlay is removed on error
+                const modal = document.getElementById('quickAddModal');
+                if (modal) {
+                    modal.style.display = 'none';
+                    modal.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
             }
         }
         
@@ -2975,17 +3151,19 @@
         }
 
         function closeQuickAddModal() {
-            const modal = document.getElementById('quickAddModal');
-            if (modal) {
-                modal.style.display = 'none';
-            }
-            
-            // Reset stepper
-            currentStepperStep = 1;
-            updateStepperUI();
-            
-            // Reset form and clear validation errors
             try {
+                const modal = document.getElementById('quickAddModal');
+                if (modal) {
+                    modal.style.display = 'none';
+                    modal.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+                
+                // Reset stepper
+                currentStepperStep = 1;
+                updateStepperUI();
+                
+                // Reset form and clear validation errors
                 const nameEl = document.getElementById('quickAddName');
                 const phoneEl = document.getElementById('quickAddPhone');
                 const emailEl = document.getElementById('quickAddEmail');
