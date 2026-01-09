@@ -6,238 +6,154 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hostess Dashboard - Solomon's Landing</title>
     <link rel="stylesheet" href="assets/css/reservations-app.css">
+    <link rel="stylesheet" href="assets/css/app-dashboard.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            color: #1e293b;
-            min-height: 100vh;
-        }
-        .dashboard-container {
-            max-width: 1800px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        .top-nav {
-            background: white;
-            padding: 1rem 2rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-bottom: 1px solid rgba(0,74,159,0.1);
-        }
-        .top-nav-content {
-            max-width: 1800px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .top-nav .logo-section {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-        .top-nav .logo-section img {
-            height: 32px;
-            width: auto;
-        }
-        .top-nav .app-title {
-            color: #004A9F;
-            font-size: 1.1rem;
-            margin: 0;
-            font-weight: 700;
-            letter-spacing: -0.01em;
-        }
-        .dashboard-header {
-            display: none;
-        }
-        .btn-logout {
-            padding: 0.75rem 1.5rem;
-            background: #dc2626;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 1rem;
-        }
-        .btn-logout:hover { background: #b91c1c; }
-        .controls-section {
-            background: white;
-            padding: 1rem 2rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            position: sticky;
-            top: 65px;
-            z-index: 99;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-            margin-bottom: 2rem;
-        }
-        .controls-row {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .controls-row label {
-            font-weight: 600;
-            color: #374151;
-            font-size: 0.9rem;
-        }
-        .controls-row input,
-        .controls-row select {
-            padding: 0.6rem 0.75rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            transition: border-color 0.2s;
-        }
-        .controls-row input:focus,
-        .controls-row select:focus {
-            outline: none;
-            border-color: #004A9F;
-        }
-        .btn-today,
-        .btn-refresh {
-            padding: 0.6rem 1rem;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .btn-today {
-            background: #004A9F;
-            color: white;
-        }
-        .btn-today:hover {
-            background: #003d82;
-        }
-        .btn-refresh {
-            background: #f3f4f6;
-            color: #374151;
-            border: 1px solid #e2e8f0;
-        }
-        .btn-refresh:hover {
-            background: #e5e7eb;
-        }
-        .area-tabs {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
+        /* Dashboard-specific overrides and extensions */
+        
+        /* Area Tabs */
         .area-tab {
-            padding: 0.75rem 1.5rem;
-            background: #e2e8f0;
-            border: none;
-            border-radius: 8px;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            background: var(--bg-hover);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
             cursor: pointer;
-            font-weight: 600;
-            font-size: 1rem;
-            color: #6b7280;
+            font-weight: var(--font-weight-semibold);
+            font-size: var(--font-size-xs);
+            color: var(--text-secondary);
+            transition: all var(--transition-base);
+        }
+        .area-tab:hover {
+            background: var(--border-light);
         }
         .area-tab.active {
-            background: #004A9F;
+            background: var(--color-primary);
             color: white;
+            border-color: var(--color-primary);
         }
-        /* Main content grid - handled by CSS file */
-        .main-content {
-            display: grid;
-            gap: 1rem;
-        }
-        @media (max-width: 1200px) {
-            .main-content { grid-template-columns: 1fr; }
-            .table-info-panel {
-                position: relative;
-                right: auto;
-                top: auto;
-                width: 100%;
-                margin-top: 1rem;
-            }
-        }
-        @media (max-width: 768px) {
-            .dashboard-container {
-                padding: 1rem;
-            }
-            .top-nav {
-                padding: 0.75rem 1rem;
-            }
-            .top-nav .app-title {
-                font-size: 0.95rem;
-            }
-            .top-nav .logo-section img {
-                height: 28px;
-            }
-            .controls-section {
-                padding: 1rem;
-                top: 60px;
-            }
-            .controls-row {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .controls-row input,
-            .controls-row select,
-            .btn-today,
-            .btn-refresh {
-                width: 100%;
-            }
-            .area-tabs {
-                flex-direction: column;
-            }
-            .area-tab {
-                width: 100%;
-            }
-            .section {
-                padding: 1.5rem;
-            }
-            .btn-logout {
-                padding: 0.5rem 1rem;
-                font-size: 0.9rem;
-            }
-        }
-        .section {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05);
-            border: 1px solid rgba(0,0,0,0.05);
-        }
-        .section h2 {
-            margin-top: 0;
-            margin-bottom: 1.5rem;
-            color: #1e293b;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 0.75rem;
-        }
+        
+        /* Floor Plan Container (inside card) */
         .floor-plan-container {
             position: relative;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            background: #f9fafb;
+            background: var(--bg-secondary);
             overflow: auto;
-            height: calc(100vh - var(--header-height, 64px) - var(--controls-height, 120px) - 4rem);
-            max-height: 800px;
             min-height: 400px;
         }
         .floor-plan-canvas {
             position: relative;
             width: 100%;
-            height: 100%;
-            background: #fafafa;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            overflow: auto;
+            min-height: 100%;
+            background: var(--bg-primary);
             background-image: 
                 linear-gradient(rgba(0,0,0,0.02) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px);
             background-size: 20px 20px;
+        }
+        
+        /* Table Info Items (in drawer) */
+        .table-info-item {
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--border-light);
+        }
+        .table-info-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .table-info-label {
+            font-size: var(--font-size-xs);
+            color: var(--text-muted);
+            font-weight: var(--font-weight-semibold);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: var(--spacing-xs);
+        }
+        .table-info-value {
+            font-size: var(--font-size-base);
+            color: var(--text-primary);
+            font-weight: var(--font-weight-semibold);
+        }
+        
+        /* Status Pills */
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-semibold);
+            text-transform: capitalize;
+        }
+        .status-pill.available {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .status-pill.reserved {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        .status-pill.blocked {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .status-pill.unavailable {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        /* Status Filter Buttons */
+        .status-filter-btn {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border: 1px solid var(--border-light);
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-semibold);
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+        .status-filter-btn:hover {
+            background: var(--bg-hover);
+        }
+        .status-filter-btn.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+        
+        /* Legend Dots */
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .legend-dot.available {
+            background: #10b981;
+        }
+        .legend-dot.reserved {
+            background: #3b82f6;
+        }
+        .legend-dot.blocked {
+            background: #f59e0b;
+        }
+        .legend-dot.unavailable {
+            background: #ef4444;
+        }
+        
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: var(--spacing-xl);
+            color: var(--text-muted);
+        }
+        
+        /* Reservations List */
+        .reservations-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
         }
         .table-node {
             position: absolute;
@@ -854,29 +770,21 @@
     </style>
 </head>
 <body>
+    <!-- App Bar (Fixed Top) -->
     <div class="app-bar">
-        <div class="app-bar-content">
-            <div class="app-bar-left">
-                <img src="https://res.cloudinary.com/dpmozdkfh/image/upload/v1765665392/logo_qykwcx.jpg" alt="Solomon's Landing" class="app-bar-logo" onerror="this.src='solomons-logo.png'; this.onerror=null;">
-                <h1 class="app-bar-title">Reservations</h1>
-                <span class="role-badge" id="roleBadge">Hostess</span>
-            </div>
-            <div class="app-bar-actions">
-                <button class="btn btn-secondary btn-small" onclick="handleRefresh()" title="Refresh">
-                    <span>↻</span> <span class="btn-text">Refresh</span>
-                </button>
-                <button class="btn btn-danger btn-small" onclick="logout()"><span class="btn-text">Logout</span></button>
-            </div>
+        <div class="app-bar-left">
+            <img src="https://res.cloudinary.com/dpmozdkfh/image/upload/v1765665392/logo_qykwcx.jpg" alt="Solomon's Landing" class="app-logo" onerror="this.src='solomons-logo.png'; this.onerror=null;">
+            <h1 class="app-title">Reservations</h1>
+            <span class="role-chip" id="roleBadge">Hostess</span>
         </div>
-        </div>
-
-    <div class="app-container">
-        <div class="controls-bar">
-            <div class="controls-row">
+        <div class="app-bar-center">
+            <div class="controls-group">
                 <label>Date:</label>
-                <input type="date" id="selectedDate" onchange="loadFloorPlan()">
+                <input type="date" id="selectedDate" class="input input-sm" onchange="loadFloorPlan()">
+            </div>
+            <div class="controls-group">
                 <label>Time:</label>
-                <select id="selectedTime" onchange="loadFloorPlan()">
+                <select id="selectedTime" class="input input-sm" onchange="loadFloorPlan()">
                     <option value="17:30">5:30 PM</option>
                     <option value="18:00">6:00 PM</option>
                     <option value="18:30">6:30 PM</option>
@@ -887,49 +795,60 @@
                     <option value="21:00">9:00 PM</option>
                     <option value="21:30">9:30 PM</option>
                 </select>
-                <button class="btn-today" onclick="setToday()">Today</button>
             </div>
-            <div class="area-tabs">
+            <button class="btn btn-primary btn-sm" onclick="setToday()">Today</button>
+        </div>
+        <div class="app-bar-right">
+            <button class="btn btn-secondary btn-sm" onclick="handleRefresh()" title="Refresh">
+                <span>↻</span> <span class="btn-text">Refresh</span>
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="logout()"><span class="btn-text">Logout</span></button>
+        </div>
+    </div>
+
+    <!-- Controls Bar (Below App Bar) -->
+    <div class="controls-bar">
+        <div class="controls-group">
+            <label>Area:</label>
+            <div style="display: flex; gap: var(--spacing-xs);">
                 <button class="area-tab active" onclick="switchArea('Main Floor')">Main Floor</button>
                 <button class="area-tab" onclick="switchArea('Sushi Bar')">Sushi Bar</button>
             </div>
         </div>
+    </div>
 
-        <div class="main-content">
-            <!-- LEFT: Floor Plan -->
-            <div class="section">
-                <h2>Floor Plan</h2>
-                <div class="status-legend">
-                    <div class="legend-item">
+    <!-- Main Content (Fixed Height, No Scroll) -->
+    <div class="dashboard-main">
+        <!-- LEFT: Floor Plan Card -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Floor Plan</h2>
+                <div class="status-legend" style="display: flex; gap: var(--spacing-sm); flex-wrap: wrap;">
+                    <div class="legend-item" style="display: flex; align-items: center; gap: var(--spacing-xs); font-size: var(--font-size-xs);">
                         <div class="legend-dot available"></div>
                         <span>Available</span>
                     </div>
-                    <div class="legend-item">
+                    <div class="legend-item" style="display: flex; align-items: center; gap: var(--spacing-xs); font-size: var(--font-size-xs);">
                         <div class="legend-dot reserved"></div>
                         <span>Reserved</span>
                     </div>
-                    <div class="legend-item">
+                    <div class="legend-item" style="display: flex; align-items: center; gap: var(--spacing-xs); font-size: var(--font-size-xs);">
                         <div class="legend-dot blocked"></div>
                         <span>Blocked</span>
                     </div>
-                    <div class="legend-item">
+                    <div class="legend-item" style="display: flex; align-items: center; gap: var(--spacing-xs); font-size: var(--font-size-xs);">
                         <div class="legend-dot unavailable"></div>
                         <span>Unavailable</span>
                     </div>
                 </div>
-                <div class="floor-plan-container">
+            </div>
+            <div class="card-body" style="padding: 0; display: flex; flex-direction: column; overflow: hidden;">
+                <div class="floor-plan-container" style="flex: 1 1 auto; overflow: auto; position: relative;">
                     <div id="floorPlanCanvas" class="floor-plan-canvas">
                         <div class="loading">Loading floor plan...</div>
                     </div>
                 </div>
-                <!-- Table Drawer (Slide-in Panel) -->
-                <div class="drawer-overlay" id="tableDrawerOverlay" onclick="closeTableDrawer()"></div>
-                <div id="tableDrawer" class="table-drawer">
-                    <div class="table-drawer-header">
-                        <h3 id="tableDrawerTitle">Table Details</h3>
-                        <button onclick="closeTableDrawer()" style="position: absolute; top: 1rem; right: 1rem; background: rgba(255,255,255,0.2); border: none; color: white; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 1.25rem; display: flex; align-items: center; justify-content: center;">×</button>
-                    </div>
-                    <div class="table-drawer-body">
+                <!-- Table Drawer will be rendered here via JS -->
                         <div class="table-info-item">
                             <div class="table-info-label">Table</div>
                             <div class="table-info-value" id="tableDrawerName">—</div>
@@ -972,37 +891,84 @@
                 </div>
             </div>
 
-            <!-- RIGHT: Reservations & Blocks -->
-            <div class="section">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
-                    <h2 style="margin: 0;">Reservations</h2>
-                    <button class="btn btn-primary" onclick="openQuickAddModal()" style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600; padding: 0.75rem 1.25rem; box-shadow: 0 2px 8px rgba(0,74,159,0.2);">
-                        <span style="font-size: 1.2rem; line-height: 1;">+</span> <span>Create Reservation</span>
-                    </button>
-                </div>
-                
+        <!-- RIGHT: Reservations Card -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Reservations</h2>
+                <button class="btn btn-primary btn-sm" onclick="openQuickAddModal()">
+                    <span>+</span> <span class="btn-text">Create</span>
+                </button>
+            </div>
+            <div class="card-body" style="display: flex; flex-direction: column; gap: var(--spacing-md);">
                 <!-- Search & Filters -->
-                <div style="margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem;">
+                <div style="display: flex; flex-direction: column; gap: var(--spacing-sm); flex-shrink: 0;">
                     <div style="position: relative;">
-                        <input type="text" id="reservationSearch" placeholder="Search by name, phone, or code..." 
-                               style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 2px solid var(--border); border-radius: 10px; font-size: 0.95rem;"
+                        <input type="text" id="reservationSearch" class="input" placeholder="Search by name, phone, or code..." 
+                               style="padding-left: 2.5rem;"
                                oninput="filterReservations()">
-                        <span style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);">🔍</span>
+                        <span style="position: absolute; left: var(--spacing-md); top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none;">🔍</span>
                     </div>
-                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                        <button class="status-filter-btn active" data-filter="all" onclick="setStatusFilter('all')">All</button>
-                        <button class="status-filter-btn" data-filter="pending" onclick="setStatusFilter('pending')">Pending</button>
-                        <button class="status-filter-btn" data-filter="confirmed" onclick="setStatusFilter('confirmed')">Confirmed</button>
-                        <button class="status-filter-btn" data-filter="seated" onclick="setStatusFilter('seated')">Seated</button>
-                        <button class="status-filter-btn" data-filter="completed" onclick="setStatusFilter('completed')">Completed</button>
-                        <button class="status-filter-btn" data-filter="no_show" onclick="setStatusFilter('no_show')">No Show</button>
-                        <button class="status-filter-btn" data-filter="cancelled" onclick="setStatusFilter('cancelled')">Cancelled</button>
+                    <div style="display: flex; gap: var(--spacing-xs); flex-wrap: wrap;">
+                        <button class="status-filter-btn active pill" data-filter="all" onclick="setStatusFilter('all')">All</button>
+                        <button class="status-filter-btn pill" data-filter="pending" onclick="setStatusFilter('pending')">Pending</button>
+                        <button class="status-filter-btn pill" data-filter="confirmed" onclick="setStatusFilter('confirmed')">Confirmed</button>
+                        <button class="status-filter-btn pill" data-filter="seated" onclick="setStatusFilter('seated')">Seated</button>
+                        <button class="status-filter-btn pill" data-filter="completed" onclick="setStatusFilter('completed')">Completed</button>
+                        <button class="status-filter-btn pill" data-filter="no_show" onclick="setStatusFilter('no_show')">No Show</button>
+                        <button class="status-filter-btn pill" data-filter="cancelled" onclick="setStatusFilter('cancelled')">Cancelled</button>
                     </div>
                 </div>
                 
-                <div id="reservationsList" class="reservations-list">
+                <div id="reservationsList" class="reservations-list" style="flex: 1 1 auto; overflow-y: auto;">
                     <div class="loading">Loading...</div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table Drawer (Right Side Panel) -->
+    <div id="tableDrawer" class="drawer">
+        <div class="drawer-header">
+            <h3 class="drawer-title" id="tableDrawerTitle">Table Details</h3>
+            <button class="modal-close" onclick="closeTableDrawer()">×</button>
+        </div>
+        <div class="drawer-body">
+            <div class="table-info-item">
+                <div class="table-info-label">Table</div>
+                <div class="table-info-value" id="tableDrawerName">—</div>
+            </div>
+            <div class="table-info-item">
+                <div class="table-info-label">Seats</div>
+                <div class="table-info-value" id="tableDrawerSeats">—</div>
+            </div>
+            <div class="table-info-item">
+                <div class="table-info-label">Status</div>
+                <div class="table-info-value">
+                    <span class="status-pill" id="tableDrawerStatus">—</span>
+                </div>
+            </div>
+            
+            <!-- Occupancy Timeline -->
+            <div class="occupancy-timeline" id="tableDrawerTimeline" style="display: none;">
+                <div class="timeline-label">Next 90 Minutes</div>
+                <div class="timeline-slots" id="timelineSlots">
+                    <!-- T, T+30, T+60 badges will be inserted here -->
+                </div>
+            </div>
+            
+            <div class="table-info-item">
+                <div class="table-info-label">Reservation</div>
+                <div class="table-info-value" id="tableDrawerReservation">—</div>
+            </div>
+            <div class="table-info-item">
+                <div class="table-info-label">Code</div>
+                <div class="table-info-value" id="tableDrawerCode" style="font-family: monospace; font-size: 0.9rem;">—</div>
+            </div>
+        </div>
+        <div class="drawer-footer">
+            <div style="font-weight: var(--font-weight-semibold); color: var(--text-primary); margin-bottom: var(--spacing-sm); font-size: var(--font-size-sm);">Actions</div>
+            <div id="tableDrawerActions" style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
+                <!-- Action buttons will be inserted here -->
             </div>
         </div>
     </div>
@@ -1474,16 +1440,12 @@
         
         function openTableDrawer() {
             const drawer = document.getElementById('tableDrawer');
-            const overlay = document.getElementById('tableDrawerOverlay');
-            if (drawer) drawer.classList.add('open');
-            if (overlay) overlay.classList.add('active');
+            if (drawer) drawer.classList.add('active');
         }
         
         function closeTableDrawer() {
             const drawer = document.getElementById('tableDrawer');
-            const overlay = document.getElementById('tableDrawerOverlay');
-            if (drawer) drawer.classList.remove('open');
-            if (overlay) overlay.classList.remove('active');
+            if (drawer) drawer.classList.remove('active');
             // Clear selection
             document.querySelectorAll('.table-node').forEach(node => {
                 node.classList.remove('selected');
