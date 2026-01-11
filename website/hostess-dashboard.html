@@ -8,45 +8,214 @@
     <link rel="stylesheet" href="assets/css/reservations-app.css">
     <link rel="stylesheet" href="assets/css/app-dashboard.css">
     <style>
-        /* Dashboard-specific overrides and extensions */
+        /* ============================================
+           MOBILE-FIRST APP UI REDESIGN
+           ============================================ */
         
-        /* Area Tabs */
+        /* Compact App Shell */
+        .app-bar {
+            height: 56px;
+            padding: 0 var(--spacing-sm);
+        }
+        .app-title {
+            font-size: var(--font-size-base);
+        }
+        .app-logo {
+            height: 28px;
+        }
+        .role-chip {
+            padding: 2px var(--spacing-xs);
+            font-size: 10px;
+        }
+        
+        /* Segmented Control for Area Tabs (iOS-style) */
+        .segmented-control {
+            display: inline-flex;
+            background: var(--bg-hover);
+            border-radius: var(--radius-md);
+            padding: 2px;
+            gap: 2px;
+        }
         .area-tab {
             padding: var(--spacing-xs) var(--spacing-sm);
-            background: var(--bg-hover);
-            border: 1px solid var(--border-light);
-            border-radius: var(--radius-md);
+            background: transparent;
+            border: none;
+            border-radius: calc(var(--radius-md) - 2px);
             cursor: pointer;
             font-weight: var(--font-weight-semibold);
             font-size: var(--font-size-xs);
             color: var(--text-secondary);
-            transition: all var(--transition-base);
+            transition: all var(--transition-fast);
+            white-space: nowrap;
         }
         .area-tab:hover {
-            background: var(--border-light);
+            background: rgba(0, 0, 0, 0.05);
         }
         .area-tab.active {
-            background: var(--color-primary);
-            color: white;
-            border-color: var(--color-primary);
+            background: var(--bg-primary);
+            color: var(--color-primary);
+            box-shadow: var(--shadow-sm);
         }
         
-        /* Floor Plan Container (inside card) */
+        /* Compact Status Legend */
+        .status-legend {
+            display: flex;
+            gap: var(--spacing-xs);
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        
+        /* Floor Plan Container - AUTO-SCALE TO FIT */
         .floor-plan-container {
             position: relative;
             background: var(--bg-secondary);
-            overflow: auto;
-            min-height: 400px;
+            overflow: hidden;
+            height: 100%;
+            flex: 1 1 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-md);
         }
         .floor-plan-canvas {
             position: relative;
             width: 100%;
-            min-height: 100%;
+            height: 100%;
             background: var(--bg-primary);
             background-image: 
-                linear-gradient(rgba(0,0,0,0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px);
-            background-size: 20px 20px;
+                /* Walkways - lighter lanes */
+                linear-gradient(to right, transparent 0%, rgba(0,0,0,0.02) 45%, rgba(0,0,0,0.02) 55%, transparent 100%),
+                linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.02) 45%, rgba(0,0,0,0.02) 55%, transparent 100%),
+                /* Grid overlay */
+                linear-gradient(rgba(0,0,0,0.008) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,0,0,0.008) 1px, transparent 1px);
+            background-size: 
+                100% 100%,
+                100% 100%,
+                20px 20px,
+                20px 20px;
+            overflow: auto;
+            min-width: 400px;
+            min-height: 300px;
+        }
+        
+        /* Auto-fit floor plan content */
+        .floor-plan-canvas-content {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Professional Table Design - Uniform, Aligned */
+        .table-node {
+            position: absolute;
+            user-select: none;
+            cursor: pointer;
+            z-index: 10;
+            transition: transform var(--transition-fast), filter var(--transition-fast);
+        }
+        .table-node:hover {
+            transform: scale(1.08) translateY(-2px);
+            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
+            z-index: 100;
+        }
+        .table-node:active {
+            transform: scale(1.0);
+        }
+        .table-node.selected {
+            z-index: 200;
+        }
+        .table-node.selected .table-shape {
+            outline: 3px solid var(--color-primary);
+            outline-offset: 4px;
+            box-shadow: 0 0 0 8px rgba(0, 74, 159, 0.15);
+        }
+        
+        .table-shape {
+            position: relative;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 2px solid;
+            transition: all var(--transition-fast);
+        }
+        .table-shape.available {
+            background: #f0fdf4;
+            border-color: #10b981;
+        }
+        .table-shape.reserved {
+            background: #eff6ff;
+            border-color: #3b82f6;
+        }
+        .table-shape.blocked {
+            background: #fffbeb;
+            border-color: #f59e0b;
+        }
+        .table-shape.unavailable {
+            background: #fef2f2;
+            border-color: #ef4444;
+        }
+        
+        .table-number {
+            font-weight: var(--font-weight-bold);
+            font-size: var(--font-size-sm);
+            color: var(--text-primary);
+            text-align: center;
+            line-height: 1;
+        }
+        
+        .seat {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: var(--text-muted);
+            border-radius: 50%;
+            opacity: 0.4;
+        }
+        
+        /* Floor Objects (Bar, Entrance) */
+        .floor-object {
+            position: absolute;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border: 2px solid var(--border-medium);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+        }
+        .floor-object[data-object-type="bar"] {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border-color: #475569;
+            min-width: 300px;
+            min-height: 80px;
+        }
+        .object-label {
+            font-weight: var(--font-weight-bold);
+            font-size: var(--font-size-sm);
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .floor-object[data-object-type="bar"] .object-label {
+            color: white;
         }
         
         /* Table Info Items (in drawer) */
@@ -391,52 +560,34 @@
             font-weight: 700;
             pointer-events: none;
         }
-        .reservations-list {
-            max-height: 500px;
-            overflow-y: auto;
+        /* Clean Reservation Cards */
+        .reservation-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            box-shadow: var(--shadow-sm);
         }
-        .reservation-item,
-        .block-item {
-            padding: 1.25rem;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            margin-bottom: 1rem;
-            background: white;
-            transition: all 0.2s ease;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-        .reservation-item:hover {
-            border-color: #004A9F;
-            box-shadow: 0 4px 12px rgba(0,74,159,0.1);
+        .reservation-card:hover {
+            border-color: var(--color-primary);
+            box-shadow: var(--shadow);
             transform: translateY(-1px);
         }
-        .reservation-name {
-            font-weight: 700;
-            color: #1e293b;
-            margin-bottom: 0.5rem;
-            font-size: 1.05rem;
+        .reservation-card:active {
+            transform: translateY(0);
         }
-        .reservation-details {
-            font-size: 0.9rem;
-            color: #6b7280;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-        }
-        .status-pill {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.25rem 0.75rem;
-            border-radius: 999px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: capitalize;
-        }
-        .status-pill.pending {
-            background: rgba(245, 158, 11, 0.1);
-            color: #92400e;
+        
+        /* Remove old reservation-item styles - keep for blocks */
+        .block-item {
+            padding: var(--spacing-md);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-sm);
+            background: var(--bg-primary);
+            transition: all var(--transition-base);
+            box-shadow: var(--shadow-sm);
         }
         .status-pill.confirmed {
             background: rgba(16, 185, 129, 0.1);
@@ -806,13 +957,12 @@
         </div>
     </div>
 
-    <!-- Controls Bar (Below App Bar) -->
+    <!-- Controls Bar (Below App Bar) - Compact Segmented Control -->
     <div class="controls-bar">
-        <div class="controls-group">
-            <label>Area:</label>
-            <div style="display: flex; gap: var(--spacing-xs);">
-                <button class="area-tab active" onclick="switchArea('Main Floor')">Main Floor</button>
-                <button class="area-tab" onclick="switchArea('Sushi Bar')">Sushi Bar</button>
+        <div class="controls-group" style="flex: 1;">
+            <div class="segmented-control">
+                <button class="area-tab active" id="areaMainFloor" onclick="switchArea('Main Floor')">Main Floor</button>
+                <button class="area-tab" id="areaSushiBar" onclick="switchArea('Sushi Bar')">Sushi Bar</button>
             </div>
         </div>
     </div>
@@ -821,56 +971,22 @@
     <div class="dashboard-main">
         <!-- LEFT: Floor Plan Card -->
         <div class="card">
-            <div class="card-header">
-                <h2 class="card-title">Floor Plan</h2>
-                <div class="status-legend" style="display: flex; gap: var(--spacing-sm); flex-wrap: wrap;">
-                    <div class="legend-item" style="display: flex; align-items: center; gap: var(--spacing-xs); font-size: var(--font-size-xs);">
-                        <div class="legend-dot available"></div>
-                        <span>Available</span>
-                    </div>
-                    <div class="legend-item" style="display: flex; align-items: center; gap: var(--spacing-xs); font-size: var(--font-size-xs);">
-                        <div class="legend-dot reserved"></div>
-                        <span>Reserved</span>
-                    </div>
-                    <div class="legend-item" style="display: flex; align-items: center; gap: var(--spacing-xs); font-size: var(--font-size-xs);">
-                        <div class="legend-dot blocked"></div>
-                        <span>Blocked</span>
-                    </div>
-                    <div class="legend-item" style="display: flex; align-items: center; gap: var(--spacing-xs); font-size: var(--font-size-xs);">
-                        <div class="legend-dot unavailable"></div>
-                        <span>Unavailable</span>
-                    </div>
+            <div class="card-header" style="padding: var(--spacing-sm) var(--spacing-md);">
+                <h2 class="card-title" style="font-size: var(--font-size-base); margin: 0;">Floor Plan</h2>
+                <div class="status-legend">
+                    <div class="legend-item"><div class="legend-dot available"></div><span>Available</span></div>
+                    <div class="legend-item"><div class="legend-dot reserved"></div><span>Reserved</span></div>
+                    <div class="legend-item"><div class="legend-dot blocked"></div><span>Blocked</span></div>
+                    <div class="legend-item"><div class="legend-dot unavailable"></div><span>Unavailable</span></div>
                 </div>
             </div>
-            <div class="card-body" style="padding: 0; display: flex; flex-direction: column; overflow: hidden;">
-                <div class="floor-plan-container" style="flex: 1 1 auto; overflow: auto; position: relative;">
+            <div class="card-body" style="padding: 0; display: flex; flex-direction: column; overflow: hidden; flex: 1 1 auto; min-height: 0;">
+                <div class="floor-plan-container">
                     <div id="floorPlanCanvas" class="floor-plan-canvas">
                         <div class="loading">Loading floor plan...</div>
                     </div>
                 </div>
-                <!-- Table Drawer will be rendered here via JS -->
-                        <div class="table-info-item">
-                            <div class="table-info-label">Table</div>
-                            <div class="table-info-value" id="tableDrawerName">—</div>
-                        </div>
-                        <div class="table-info-item">
-                            <div class="table-info-label">Seats</div>
-                            <div class="table-info-value" id="tableDrawerSeats">—</div>
-                        </div>
-                        <div class="table-info-item">
-                            <div class="table-info-label">Status</div>
-                            <div class="table-info-value">
-                                <span class="status-pill" id="tableDrawerStatus">—</span>
-                            </div>
-                        </div>
-                        
-                        <!-- Occupancy Timeline -->
-                        <div class="occupancy-timeline" id="tableDrawerTimeline" style="display: none;">
-                            <div class="timeline-label">Next 90 Minutes</div>
-                            <div class="timeline-slots" id="timelineSlots">
-                                <!-- T, T+30, T+60 badges will be inserted here -->
-                            </div>
-                        </div>
+            </div>
                         
                         <div class="table-info-item">
                             <div class="table-info-label">Reservation</div>
@@ -893,9 +1009,9 @@
 
         <!-- RIGHT: Reservations Card -->
         <div class="card">
-            <div class="card-header">
-                <h2 class="card-title">Reservations</h2>
-                <button class="btn btn-primary btn-sm" onclick="openQuickAddModal()">
+            <div class="card-header" style="padding: var(--spacing-sm) var(--spacing-md);">
+                <h2 class="card-title" style="font-size: var(--font-size-base); margin: 0;">Reservations</h2>
+                <button class="btn btn-primary btn-sm" onclick="openQuickAddModal()" style="padding: var(--spacing-xs) var(--spacing-sm);">
                     <span>+</span> <span class="btn-text">Create</span>
                 </button>
             </div>
@@ -925,6 +1041,21 @@
             </div>
         </div>
     </div>
+
+    <!-- Mobile Bottom Tab Navigation -->
+    <div class="mobile-tab-bar">
+        <button class="mobile-tab active" onclick="showMobileTab('floor-plan')" data-tab="floor-plan">
+            <span class="mobile-tab-icon">🗺️</span>
+            <span>Floor Plan</span>
+        </button>
+        <button class="mobile-tab" onclick="showMobileTab('reservations')" data-tab="reservations">
+            <span class="mobile-tab-icon">📋</span>
+            <span>Reservations</span>
+        </button>
+    </div>
+
+    <!-- Mobile Floating Action Button -->
+    <button class="mobile-fab" onclick="openQuickAddModal()" aria-label="Create Reservation">+</button>
 
     <!-- Table Drawer (Right Side Panel) -->
     <div id="tableDrawer" class="drawer">
@@ -1019,108 +1150,57 @@
         </div>
     </div>
 
-    <!-- Quick Add Reservation Modal (Stepper) -->
-    <div id="quickAddModal" class="modal-backdrop" style="display: none;">
-        <div class="modal" style="max-width: 600px;">
+    <!-- Create Reservation Modal (Clean Single-Page Form) -->
+    <div id="quickAddModal" class="modal-backdrop" style="display: none;" aria-hidden="true">
+        <div class="modal" style="max-width: 500px;" role="dialog" aria-labelledby="createReservationTitle">
             <div class="modal-header">
-                <h3 class="modal-title">Create Reservation</h3>
-                <button class="modal-close" onclick="closeQuickAddModal()">×</button>
+                <h3 class="modal-title" id="createReservationTitle">Create Reservation</h3>
+                <button class="modal-close" onclick="closeQuickAddModal()" aria-label="Close">×</button>
             </div>
             <div class="modal-body">
-                <div class="stepper-container">
-                    <div class="stepper-steps">
-                        <div class="stepper-step active" id="step1">
-                            <div class="step-circle">1</div>
-                            <div class="step-label">Guest Info</div>
+                <form id="quickAddForm" onsubmit="event.preventDefault(); saveQuickAddReservation();">
+                    <div style="display: grid; gap: var(--spacing-md);">
+                        <div>
+                            <label style="display: block; font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); color: var(--text-secondary); margin-bottom: var(--spacing-xs);">Name *</label>
+                            <input type="text" id="quickAddName" class="input" required style="width: 100%;" placeholder="Guest name">
                         </div>
-                        <div class="stepper-step" id="step2">
-                            <div class="step-circle">2</div>
-                            <div class="step-label">Time & Party</div>
+                        <div>
+                            <label style="display: block; font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); color: var(--text-secondary); margin-bottom: var(--spacing-xs);">Phone *</label>
+                            <input type="tel" id="quickAddPhone" class="input" required style="width: 100%;" placeholder="Phone number">
                         </div>
-                        <div class="stepper-step" id="step3">
-                            <div class="step-circle">3</div>
-                            <div class="step-label">Notes</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md);">
+                            <div>
+                                <label style="display: block; font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); color: var(--text-secondary); margin-bottom: var(--spacing-xs);">Date *</label>
+                                <input type="date" id="quickAddDate" class="input" required style="width: 100%;" onchange="loadAvailableTimes()">
+                            </div>
+                            <div>
+                                <label style="display: block; font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); color: var(--text-secondary); margin-bottom: var(--spacing-xs);">Guests *</label>
+                                <input type="number" id="quickAddPartySize" class="input" min="1" max="20" required style="width: 100%;" onchange="loadAvailableTimes()">
+                            </div>
                         </div>
-                        <div class="stepper-step" id="step4">
-                            <div class="step-circle">4</div>
-                            <div class="step-label">Confirm</div>
+                        <div>
+                            <label style="display: block; font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); color: var(--text-secondary); margin-bottom: var(--spacing-xs);">Time *</label>
+                            <select id="quickAddTime" class="input" required style="width: 100%;">
+                                <option value="">Select a time...</option>
+                            </select>
+                            <div id="availableTimesSuggestions" style="display: none; margin-top: var(--spacing-sm); display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: var(--spacing-xs);">
+                                <!-- Auto-suggested times will appear here -->
+                            </div>
                         </div>
+                        <div>
+                            <label style="display: block; font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); color: var(--text-secondary); margin-bottom: var(--spacing-xs);">Email (optional)</label>
+                            <input type="email" id="quickAddEmail" class="input" style="width: 100%;" placeholder="email@example.com">
+                        </div>
+                        <details style="margin-top: var(--spacing-sm);">
+                            <summary style="font-size: var(--font-size-sm); font-weight: var(--font-weight-medium); color: var(--text-secondary); cursor: pointer; user-select: none;">Add notes (optional)</summary>
+                            <textarea id="quickAddNotes" class="input" rows="3" style="width: 100%; margin-top: var(--spacing-sm);" placeholder="Special requests, dietary restrictions, etc."></textarea>
+                        </details>
                     </div>
-                    
-                    <div class="stepper-content">
-                        <!-- Step 1: Guest Details -->
-                        <div id="stepperStep1" class="stepper-step-content">
-                            <div class="form-group">
-                                <label>Name *</label>
-                                <input type="text" id="quickAddName" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Phone *</label>
-                                <input type="tel" id="quickAddPhone" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input type="email" id="quickAddEmail">
-                            </div>
-                            <div class="form-group">
-                                <label>Source</label>
-                                <select id="quickAddSource">
-                                    <option value="phone">Phone</option>
-                                    <option value="opentable">OpenTable</option>
-                                    <option value="manual">Manual</option>
-                                    <option value="website">Website</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <!-- Step 2: Time & Party -->
-                        <div id="stepperStep2" class="stepper-step-content" style="display: none;">
-                            <div class="form-group">
-                                <label>Date *</label>
-                                <input type="date" id="quickAddDate" required onchange="loadAvailableTimes()">
-                            </div>
-                            <div class="form-group">
-                                <label>Party Size *</label>
-                                <input type="number" id="quickAddPartySize" min="1" max="20" required onchange="loadAvailableTimes()">
-                            </div>
-                            <div class="form-group">
-                                <label>Time *</label>
-                                <select id="quickAddTime" required>
-                                    <option value="">Select a time...</option>
-                                </select>
-                                <div id="availableTimesSuggestions" class="available-times-suggestions" style="display: none; margin-top: 0.75rem;">
-                                    <!-- Auto-suggested times will appear here -->
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Step 3: Notes -->
-                        <div id="stepperStep3" class="stepper-step-content" style="display: none;">
-                            <div class="form-group">
-                                <label>Notes</label>
-                                <textarea id="quickAddNotes" rows="5" placeholder="Special requests, dietary restrictions, etc."></textarea>
-                            </div>
-                        </div>
-                        
-                        <!-- Step 4: Confirm -->
-                        <div id="stepperStep4" class="stepper-step-content" style="display: none;">
-                            <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: 12px;">
-                                <h4 style="margin: 0 0 1rem 0; color: var(--text-primary);">Review Reservation</h4>
-                                <div id="quickAddReview" style="line-height: 1.8;">
-                                    <!-- Review content will be inserted here -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="stepper-actions">
-                        <button class="btn btn-secondary" id="stepperBackBtn" onclick="stepperPrevious()" style="display: none;">← Back</button>
-                        <div style="flex: 1;"></div>
-                        <button class="btn btn-secondary" onclick="closeQuickAddModal()">Cancel</button>
-                        <button class="btn btn-primary" id="stepperNextBtn" onclick="stepperNext()">Next →</button>
-                        <button class="btn btn-primary" id="stepperSaveBtn" onclick="saveQuickAddReservation()" style="display: none;">Save Reservation</button>
-                    </div>
-                </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeQuickAddModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveQuickAddReservation()">Create Reservation</button>
             </div>
         </div>
     </div>
@@ -1311,7 +1391,40 @@
                 tab.classList.remove('active');
                 if (tab.textContent === area) tab.classList.add('active');
             });
+            // Update mobile tab bar if exists
+            const areaMainFloor = document.getElementById('areaMainFloor');
+            const areaSushiBar = document.getElementById('areaSushiBar');
+            if (areaMainFloor && area === 'Main Floor') {
+                areaMainFloor.classList.add('active');
+                if (areaSushiBar) areaSushiBar.classList.remove('active');
+            } else if (areaSushiBar && area === 'Sushi Bar') {
+                areaSushiBar.classList.add('active');
+                if (areaMainFloor) areaMainFloor.classList.remove('active');
+            }
             loadFloorPlan();
+        }
+        
+        // Mobile Tab Navigation
+        function showMobileTab(tabName) {
+            const floorPlanCard = document.querySelector('.dashboard-main .card:first-child');
+            const reservationsCard = document.querySelector('.dashboard-main .card:last-child');
+            const tabs = document.querySelectorAll('.mobile-tab');
+            
+            tabs.forEach(tab => {
+                if (tab.dataset.tab === tabName) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+            
+            if (tabName === 'floor-plan') {
+                if (floorPlanCard) floorPlanCard.style.display = 'flex';
+                if (reservationsCard) reservationsCard.style.display = 'none';
+            } else if (tabName === 'reservations') {
+                if (floorPlanCard) floorPlanCard.style.display = 'none';
+                if (reservationsCard) reservationsCard.style.display = 'flex';
+            }
         }
 
         function selectTable(table, assignment, status) {
@@ -1940,11 +2053,12 @@
         }
 
         function getTableDimensions(seats) {
-            // OpenTable-scale: much smaller tables
-            if (seats === 2) return { w: 36, h: 28 };
-            if (seats === 4) return { w: 48, h: 32 };
-            if (seats === 6) return { w: 56, h: 36 };
-            return { w: 48, h: 32 }; // Default
+            // Uniform square tables - professional, aligned
+            const baseSize = 56; // Base size for 4-seater
+            if (seats <= 2) return { w: baseSize * 0.75, h: baseSize * 0.75 }; // 42x42
+            if (seats <= 4) return { w: baseSize, h: baseSize }; // 56x56
+            if (seats <= 6) return { w: baseSize * 1.25, h: baseSize * 1.25 }; // 70x70
+            return { w: baseSize, h: baseSize }; // Default 56x56
         }
 
         function getSeatPositions(seats, w, h) {
@@ -2220,20 +2334,24 @@
                         const resCode = res.confirmation_code || "";
                         
                     html += `
-                            <div class="reservation-item ${statusClass}" style="cursor: pointer;" onclick="openReservationModal('${res.id || ""}')">
-                                <div style="display: flex; justify-content: space-between; align-items: start;">
-                                    <div style="flex: 1;">
-                                        <div class="reservation-name">${resName}</div>
-                                        <div class="reservation-details">
-                                            <span>${resPartySize} guests</span>
-                                            <span>•</span>
-                                            <span>${resTime}</span>
-                                            <span class="status-pill ${statusClass}">${statusText}</span>
-                                        </div>
-                                        ${resAssignments.length > 0 ? `<div class="reservation-table">Tables: ${resAssignments.map(a => a.table_name || a.table_number || 'N/A').join(', ')}</div>` : '<div class="reservation-table" style="color: #dc2626;">No table assigned</div>'}
-                                        ${resCode ? `<div style="font-size: 0.85rem; color: #6b7280; margin-top: 0.5rem; font-weight: 500;">Code: <span style="font-family: monospace; background: #f3f4f6; padding: 0.15rem 0.5rem; border-radius: 4px;">${resCode}</span></div>` : ''}
+                        <div class="reservation-card" onclick="openReservationModal('${res.id || ""}')">
+                            <div style="display: flex; justify-content: space-between; align-items: start; gap: var(--spacing-sm);">
+                                <div style="flex: 1; min-width: 0;">
+                                    <div style="display: flex; align-items: center; gap: var(--spacing-sm); margin-bottom: var(--spacing-xs);">
+                                        <div class="reservation-name" style="font-weight: var(--font-weight-semibold); font-size: var(--font-size-base); color: var(--text-primary);">${resName}</div>
+                                        <span class="pill pill-${statusClass === 'confirmed' ? 'info' : statusClass === 'seated' ? 'success' : statusClass === 'completed' ? 'neutral' : statusClass === 'cancelled' || statusClass === 'no_show' ? 'danger' : 'warning'}">${statusText}</span>
                                     </div>
+                                    <div style="display: flex; align-items: center; gap: var(--spacing-xs); font-size: var(--font-size-sm); color: var(--text-secondary); margin-bottom: var(--spacing-xs);">
+                                        <span>${resPartySize} guests</span>
+                                        <span>•</span>
+                                        <span>${resTime}</span>
+                                    </div>
+                                    ${resAssignments.length > 0 ? 
+                                        `<div style="font-size: var(--font-size-xs); color: var(--text-muted);">Table: ${resAssignments.map(a => a.table_name || `Main ${a.table_number || 'N/A'}`).join(', ')}</div>` : 
+                                        `<div style="font-size: var(--font-size-xs); color: var(--color-warning);">No table assigned</div>`
+                                    }
                                 </div>
+                            </div>
                         </div>
                     `;
                 });
@@ -2863,10 +2981,7 @@
                     return;
                 }
                 
-                // Reset stepper
-                currentStepperStep = 1;
-                updateStepperUI();
-                
+                // Set date from selected date
                 const date = dateEl.value || new Date().toISOString().split('T')[0];
                 quickAddDateEl.value = date;
                 
@@ -3121,10 +3236,6 @@
                     document.body.style.overflow = '';
                 }
                 
-                // Reset stepper
-                currentStepperStep = 1;
-                updateStepperUI();
-                
                 // Reset form and clear validation errors
                 const nameEl = document.getElementById('quickAddName');
                 const phoneEl = document.getElementById('quickAddPhone');
@@ -3228,6 +3339,32 @@
 
         // Initialize
         loadFloorPlan();
+        
+        // Initialize mobile tab navigation (default to floor plan on mobile)
+        if (window.innerWidth <= 768) {
+            showMobileTab('floor-plan');
+        }
+        
+        // Handle window resize for mobile/desktop switch
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                if (window.innerWidth <= 768) {
+                    // Mobile: ensure one tab is visible
+                    const activeTab = document.querySelector('.mobile-tab.active');
+                    if (activeTab) {
+                        showMobileTab(activeTab.dataset.tab);
+                    } else {
+                        showMobileTab('floor-plan');
+                    }
+                } else {
+                    // Desktop: show both cards
+                    const cards = document.querySelectorAll('.dashboard-main .card');
+                    cards.forEach(card => card.style.display = 'flex');
+                }
+            }, 150);
+        });
     </script>
 </body>
 </html>
