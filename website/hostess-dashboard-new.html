@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Hostess Dashboard - Solomon's Landing</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+        }
+
+        /* APP SHELL */
+        .app {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        /* TOP APP BAR */
+        .app-bar {
+            height: 52px;
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            flex-shrink: 0;
+            z-index: 1000;
+            gap: 12px;
+        }
+
+        .app-bar-logo {
+            height: 32px;
+            width: auto;
+        }
+
+        .app-bar-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #004A9F;
+            margin: 0;
+            flex: 1;
+        }
+
+        .app-bar-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        /* CONTROLS BAR */
+        .controls-bar {
+            height: auto;
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 12px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex-shrink: 0;
+            overflow-y: auto;
+            max-height: 140px;
+        }
+
+        .controls-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .controls-row label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            white-space: nowrap;
+        }
+
+        .controls-row input,
+        .controls-row select {
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+            flex: 1;
+            min-width: 80px;
+        }
+
+        .controls-row input:focus,
+        .controls-row select:focus {
+            outline: none;
+            border-color: #004A9F;
+            box-shadow: 0 0 0 2px rgba(0,74,159,0.1);
+        }
+
+        /* TABS */
+        .tab-nav {
+            display: flex;
+            gap: 4px;
+            padding: 0 16px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            overflow-x: auto;
+            flex-shrink: 0;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .tab-nav::-webkit-scrollbar {
+            height: 2px;
+        }
+
+        .tab-nav::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 1px;
+        }
+
+        .tab-button {
+            padding: 12px 16px;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: #666;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .tab-button.active {
+            color: #004A9F;
+            border-bottom-color: #004A9F;
+        }
+
+        .tab-button:active {
+            opacity: 0.7;
+        }
+
+        /* MAIN CONTENT */
+        .app-container {
+            flex: 1;
+            display: flex;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .tab-content {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .tab-content.active {
+            display: flex;
+        }
+
+        /* FLOOR PLAN */
+        .floor-plan-view {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .floor-plan-legend {
+            display: flex;
+            gap: 16px;
+            padding: 12px 16px;
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 12px;
+            flex-wrap: wrap;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.available {
+            background: #10b981;
+        }
+
+        .legend-dot.reserved {
+            background: #f59e0b;
+        }
+
+        .legend-dot.blocked {
+            background: #ef4444;
+        }
+
+        .legend-dot.unavailable {
+            background: #9ca3af;
+        }
+
+        .floor-plan-container {
+            flex: 1;
+            position: relative;
+            overflow: auto;
+            background: #fafafa;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .floor-plan-canvas {
+            position: relative;
+            width: 100%;
+            min-height: 100%;
+            padding: 16px;
+            background-image:
+                linear-gradient(rgba(0,0,0,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 0;
+        }
+
+        /* TABLES */
+        .table-node {
+            position: absolute;
+            user-select: none;
+            cursor: pointer;
+            transition: all 120ms ease;
+            transform: scale(var(--table-scale, 1));
+        }
+
+        .table-node:active {
+            transform: scale(calc(var(--table-scale, 1) * 0.95));
+        }
+
+        .table-node.selected .table-shape {
+            outline: 3px solid #004A9F;
+            outline-offset: 2px;
+            box-shadow: 0 0 0 6px rgba(0,74,159,0.15);
+        }
+
+        .table-shape {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 120ms ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            color: white;
+        }
+
+        .table-shape.available {
+            background: #10b981;
+        }
+
+        .table-shape.reserved {
+            background: #f59e0b;
+        }
+
+        .table-shape.blocked {
+            background: #ef4444;
+        }
+
+        .table-shape.unavailable {
+            background: #9ca3af;
+        }
+
+        .table-number {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .table-seats {
+            font-size: 10px;
+            opacity: 0.9;
+        }
+
+        /* RESERVATIONS LIST */
+        .reservations-view {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .reservations-header {
+            padding: 12px 16px;
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            gap: 8px;
+        }
+
+        .filter-chips {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .filter-chip {
+            padding: 6px 12px;
+            background: #e2e8f0;
+            border: none;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .filter-chip.active {
+            background: #004A9F;
+            color: white;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .reservations-list {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .reservation-card {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .reservation-card:active {
+            background: #f8fafc;
+        }
+
+        .reservation-info {
+            flex: 1;
+        }
+
+        .reservation-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .reservation-meta {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .reservation-badge {
+            padding: 4px 8px;
+            background: #f59e0b;
+            color: white;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        /* BOTTOM SHEET */
+        .bottom-sheet-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 2000;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .bottom-sheet-overlay.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .bottom-sheet {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 16px 16px 0 0;
+            z-index: 2001;
+            max-height: 90vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            animation: slideUp 0.3s ease;
+        }
+
+        .bottom-sheet.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .bottom-sheet-header {
+            padding: 16px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .bottom-sheet-title {
+            font-weight: 700;
+            font-size: 16px;
+            color: #1e293b;
+        }
+
+        .bottom-sheet-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .bottom-sheet-content {
+            padding: 16px;
+            flex: 1;
+        }
+
+        /* BUTTONS */
+        .btn {
+            padding: 12px 16px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: #004A9F;
+            color: white;
+        }
+
+        .btn-primary:active {
+            opacity: 0.85;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #333;
+        }
+
+        .btn-secondary:active {
+            background: #cbd5e1;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:active {
+            opacity: 0.85;
+        }
+
+        .btn-small {
+            padding: 8px 12px;
+            font-size: 12px;
+        }
+
+        .btn-text {
+            display: none;
+        }
+
+        /* ACTION BUTTONS GRID */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .action-buttons .btn {
+            padding: 10px 12px;
+            font-size: 13px;
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 3000;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px 16px 0 0;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            animation: slideUp 0.3s ease;
+            padding: 0;
+        }
+
+        .modal-header {
+            padding: 16px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .modal-title {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .modal-body {
+            padding: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 6px;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #004A9F;
+            box-shadow: 0 0 0 2px rgba(0,74,159,0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .form-actions .btn {
+            width: 100%;
+        }
+
+        /* TOAST */
+        .toast {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            max-width: 400px;
+            background: #1e293b;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 5000;
+            animation: slideUp 0.3s ease;
+        }
+
+        .toast.active {
+            display: block;
+        }
+
+        .toast.success {
+            background: #10b981;
+        }
+
+        .toast.error {
+            background: #ef4444;
+        }
+
+        /* IPAD LANDSCAPE */
+        @media (min-width: 1024px) and (orientation: landscape) {
+            .app-bar {
+                height: 60px;
+                padding: 0 24px;
+            }
+
+            .app-bar-title {
+                font-size: 20px;
+            }
+
+            .app-bar-logo {
+                height: 36px;
+            }
+
+            .controls-bar {
+                flex-direction: row;
+                padding: 16px 24px;
+                align-items: center;
+                max-height: none;
+            }
+
+            .controls-row {
+                flex: 1;
+            }
+
+            .controls-row input,
+            .controls-row select {
+                min-width: 120px;
+            }
+
+            .tab-nav {
+                padding: 0 24px;
+                gap: 8px;
+            }
+
+            .tab-button {
+                padding: 12px 20px;
+                font-size: 15px;
+            }
+
+            .btn-text {
+                display: inline;
+            }
+
+            .app-container {
+                display: grid;
+                grid-template-columns: 1fr 320px;
+                gap: 0;
+            }
+
+            .tab-content {
+                border-right: 1px solid #e2e8f0;
+            }
+
+            .bottom-sheet {
+                position: relative;
+                bottom: auto;
+                border-radius: 0;
+                max-height: 100%;
+                animation: none;
+                border-left: 1px solid #e2e8f0;
+            }
+
+            .bottom-sheet.active {
+                display: flex;
+            }
+
+            .bottom-sheet-overlay {
+                display: none !important;
+            }
+
+            .modal-overlay.active {
+                align-items: center;
+                justify-content: center;
+            }
+
+            .modal {
+                width: 90%;
+                max-width: 500px;
+                border-radius: 12px;
+                max-height: 80vh;
+            }
+
+            .floor-plan-legend {
+                flex-wrap: nowrap;
+            }
+
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .floor-plan-container {
+                padding: 24px;
+            }
+        }
+
+        /* MOBILE */
+        @media (max-width: 768px) {
+            .app-bar {
+                height: 48px;
+                padding: 0 12px;
+            }
+
+            .app-bar-title {
+                font-size: 16px;
+            }
+
+            .app-bar-logo {
+                height: 28px;
+            }
+
+            .controls-bar {
+                padding: 10px 12px;
+                gap: 10px;
+            }
+
+            .controls-row {
+                gap: 6px;
+            }
+
+            .controls-row input,
+            .controls-row select {
+                padding: 6px 10px;
+                font-size: 13px;
+            }
+
+            .tab-nav {
+                padding: 0 12px;
+                gap: 2px;
+            }
+
+            .tab-button {
+                padding: 10px 12px;
+                font-size: 13px;
+            }
+
+            .floor-plan-legend {
+                padding: 10px 12px;
+                gap: 10px;
+                font-size: 11px;
+            }
+
+            .floor-plan-container {
+                padding: 12px;
+            }
+
+            .legend-dot {
+                width: 6px;
+                height: 6px;
+            }
+
+            .table-shape {
+                width: 44px;
+                height: 44px;
+            }
+
+            .table-number {
+                font-size: 14px;
+            }
+
+            .table-seats {
+                font-size: 8px;
+            }
+
+            .reservations-header {
+                padding: 10px 12px;
+                gap: 6px;
+            }
+
+            .filter-chip {
+                padding: 5px 10px;
+                font-size: 11px;
+            }
+
+            .search-box input {
+                padding: 6px 10px;
+                font-size: 13px;
+            }
+
+            .reservation-card {
+                padding: 10px 12px;
+            }
+
+            .reservation-name {
+                font-size: 13px;
+            }
+
+            .reservation-meta {
+                font-size: 11px;
+            }
+
+            .btn {
+                padding: 10px 12px;
+                font-size: 13px;
+            }
+
+            .btn-small {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+
+            .action-buttons {
+                gap: 6px;
+            }
+
+            .action-buttons .btn {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                padding: 10px;
+                font-size: 13px;
+            }
+
+            .modal-body {
+                padding: 12px;
+            }
+
+            .form-group {
+                margin-bottom: 12px;
+            }
+
+            .modal {
+                max-height: 85vh;
+            }
+
+            .toast {
+                left: 12px;
+                right: 12px;
+                bottom: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- TOP APP BAR -->
+        <div class="app-bar">
+            <img src="https://res.cloudinary.com/dpmozdkfh/image/upload/v1765665392/logo_qykwcx.jpg" alt="Logo" class="app-bar-logo" onerror="this.src='solomons-logo.png'">
+            <h1 class="app-bar-title">Reservations</h1>
+            <div class="app-bar-actions">
+                <button class="btn btn-secondary btn-small" onclick="handleRefresh()" title="Refresh">↻</button>
+                <button class="btn btn-danger btn-small" onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <!-- CONTROLS BAR -->
+        <div class="controls-bar">
+            <div class="controls-row">
+                <label for="dateInput">Date:</label>
+                <input type="date" id="dateInput" onchange="handleDateChange()">
+                <label for="timeInput">Time:</label>
+                <input type="time" id="timeInput" onchange="handleTimeChange()">
+                <button class="btn btn-primary btn-small" onclick="setToday()">Today</button>
+                <button class="btn btn-primary btn-small" onclick="openCreateReservation()">+ New</button>
+            </div>
+
+            <div class="controls-row">
+                <label>Area:</label>
+                <div style="display: flex; gap: 6px; flex: 1;">
+                    <button class="tab-button active" onclick="switchArea('Main Floor')">Main Floor</button>
+                    <button class="tab-button" onclick="switchArea('Sushi Bar')">Sushi Bar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB NAVIGATION -->
+        <div class="tab-nav">
+            <button class="tab-button active" onclick="switchTab('floor')">Floor</button>
+            <button class="tab-button" onclick="switchTab('reservations')">Reservations</button>
+            <button class="tab-button" onclick="switchTab('blocks')">Blocks</button>
+        </div>
+
+        <!-- MAIN CONTAINER -->
+        <div class="app-container">
+            <!-- FLOOR TAB -->
+            <div class="tab-content active" id="floorTab">
+                <div class="floor-plan-view">
+                    <div class="floor-plan-legend">
+                        <div class="legend-item">
+                            <div class="legend-dot available"></div>
+                            <span>Available</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot reserved"></div>
+                            <span>Reserved</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot blocked"></div>
+                            <span>Blocked</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot unavailable"></div>
+                            <span>Unavailable</span>
+                        </div>
+                    </div>
+                    <div class="floor-plan-container">
+                        <div id="floorPlanCanvas" class="floor-plan-canvas"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RESERVATIONS TAB -->
+            <div class="tab-content" id="reservationsTab">
+                <div class="reservations-view">
+                    <div class="reservations-header">
+                        <div class="filter-chips">
+                            <button class="filter-chip active" onclick="filterReservations('all')">All</button>
+                            <button class="filter-chip" onclick="filterReservations('pending')">Pending</button>
+                            <button class="filter-chip" onclick="filterReservations('seated')">Seated</button>
+                        </div>
+                        <div class="search-box">
+                            <input type="text" placeholder="Search..." id="searchInput" onkeyup="searchReservations()">
+                        </div>
+                    </div>
+                    <div class="reservations-list" id="reservationsList"></div>
+                </div>
+            </div>
+
+            <!-- BLOCKS TAB -->
+            <div class="tab-content" id="blocksTab">
+                <div style="padding: 16px;">
+                    <p style="text-align: center; color: #999; margin-top: 20px;">No blocks configured</p>
+                </div>
+            </div>
+
+            <!-- TABLE DETAIL BOTTOM SHEET (iPad Landscape) -->
+            <div class="bottom-sheet" id="detailSheet">
+                <div class="bottom-sheet-header">
+                    <h2 class="bottom-sheet-title" id="sheetTitle">Table 1</h2>
+                    <button class="bottom-sheet-close" onclick="closeDetailSheet()">×</button>
+                </div>
+                <div class="bottom-sheet-content" id="sheetContent">
+                    <p id="sheetInfo">No table selected</p>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="assignReservation()">Assign</button>
+                        <button class="btn btn-secondary" onclick="freeTable()">Free</button>
+                        <button class="btn btn-secondary" onclick="blockTable()">Block 90m</button>
+                        <button class="btn btn-danger" onclick="markUnavailable()">Unavailable</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM SHEET OVERLAY (MOBILE) -->
+    <div class="bottom-sheet-overlay" id="sheetOverlay" onclick="closeDetailSheet()"></div>
+
+    <!-- CREATE RESERVATION MODAL -->
+    <div class="modal-overlay" id="createModal" onclick="if(event.target.id === 'createModal') closeCreateReservation()">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">New Reservation</h2>
+                <button class="modal-close" onclick="closeCreateReservation()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="formName">Name *</label>
+                    <input type="text" id="formName" placeholder="Guest name" required>
+                </div>
+                <div class="form-group">
+                    <label for="formPhone">Phone *</label>
+                    <input type="tel" id="formPhone" placeholder="(555) 123-4567" required>
+                </div>
+                <div class="form-group">
+                    <label for="formGuests">Guests *</label>
+                    <select id="formGuests" required>
+                        <option value="">Select party size</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="4">4</option>
+                        <option value="6">6</option>
+                        <option value="8">8</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="formTime">Time *</label>
+                    <input type="time" id="formTime" required>
+                </div>
+                <div class="form-group">
+                    <label for="formNotes">Notes</label>
+                    <textarea id="formNotes" placeholder="Special requests..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-secondary" onclick="closeCreateReservation()">Cancel</button>
+                    <button class="btn btn-primary" onclick="submitReservation()">Create</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // STATE
+        let currentArea = 'Main Floor';
+        let currentTab = 'floor';
+        let selectedTable = null;
+        let reservations = [];
+        let tableData = {};
+
+        // INITIALIZE
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeDateAndTime();
+            loadReservations();
+            renderFloorPlan();
+        });
+
+        function initializeDateAndTime() {
+            const today = new Date().toISOString().split('T')[0];
+            const now = new Date().toTimeString().slice(0,5);
+            document.getElementById('dateInput').value = today;
+            document.getElementById('timeInput').value = now;
+        }
+
+        // TABS
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(tab + 'Tab').classList.add('active');
+            document.querySelectorAll('.tab-nav .tab-button').forEach((el, i) => {
+                el.classList.toggle('active', ['floor', 'reservations', 'blocks'][i] === tab);
+            });
+        }
+
+        // AREA SWITCH
+        function switchArea(area) {
+            currentArea = area;
+            document.querySelectorAll('.controls-row .tab-button').forEach(el => {
+                el.classList.toggle('active', el.textContent.trim() === area);
+            });
+            renderFloorPlan();
+        }
+
+        // DATE/TIME HANDLING
+        function handleDateChange() {}
+        function handleTimeChange() {}
+        function setToday() {
+            initializeDateAndTime();
+        }
+
+        // FLOOR PLAN
+        function renderFloorPlan() {
+            const canvas = document.getElementById('floorPlanCanvas');
+            canvas.innerHTML = '';
+
+            const tables = [
+                { id: 1, x: 20, y: 20, seats: 2, status: 'available' },
+                { id: 2, x: 100, y: 20, seats: 2, status: 'reserved' },
+                { id: 3, x: 180, y: 20, seats: 4, status: 'available' },
+                { id: 4, x: 20, y: 100, seats: 4, status: 'blocked' },
+                { id: 5, x: 100, y: 100, seats: 6, status: 'reserved' },
+                { id: 6, x: 180, y: 100, seats: 6, status: 'available' },
+            ];
+
+            tables.forEach(table => {
+                const node = document.createElement('div');
+                node.className = 'table-node';
+                node.style.left = table.x + 'px';
+                node.style.top = table.y + 'px';
+                node.onclick = (e) => selectTable(table, e);
+
+                const shape = document.createElement('div');
+                shape.className = `table-shape ${table.status}`;
+                shape.innerHTML = `<div class="table-number">${table.id}</div><div class="table-seats">${table.seats}p</div>`;
+
+                node.appendChild(shape);
+                canvas.appendChild(node);
+                tableData[table.id] = table;
+            });
+        }
+
+        function selectTable(table, event) {
+            event.stopPropagation();
+            selectedTable = table;
+            document.querySelectorAll('.table-node').forEach(el => el.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            showTableDetails(table);
+        }
+
+        function showTableDetails(table) {
+            const isLandscape = window.innerWidth >= 1024 && window.innerHeight < window.innerWidth;
+            document.getElementById('sheetTitle').textContent = `Table ${table.id}`;
+            document.getElementById('sheetInfo').innerHTML = `
+                <strong>Seats:</strong> ${table.seats}<br>
+                <strong>Status:</strong> ${table.status}<br>
+            `;
+
+            if (!isLandscape) {
+                document.getElementById('sheetOverlay').classList.add('active');
+                document.getElementById('detailSheet').classList.add('active');
+            }
+        }
+
+        function closeDetailSheet() {
+            document.getElementById('sheetOverlay').classList.remove('active');
+            document.getElementById('detailSheet').classList.remove('active');
+            selectedTable = null;
+        }
+
+        // RESERVATIONS
+        function loadReservations() {
+            reservations = [
+                { id: 1, name: 'Smith', phone: '555-0001', guests: 4, time: '19:00', status: 'pending', table: 5 },
+                { id: 2, name: 'Johnson', phone: '555-0002', guests: 2, time: '19:30', status: 'pending', table: null },
+                { id: 3, name: 'Williams', phone: '555-0003', guests: 6, time: '20:00', status: 'seated', table: 6 },
+            ];
+            renderReservationsList();
+        }
+
+        function renderReservationsList() {
+            const list = document.getElementById('reservationsList');
+            list.innerHTML = reservations.map(r => `
+                <div class="reservation-card" onclick="selectReservation(${r.id})">
+                    <div class="reservation-info">
+                        <div class="reservation-name">${r.name}</div>
+                        <div class="reservation-meta">${r.guests} guests • ${r.time}</div>
+                    </div>
+                    <div class="reservation-badge">${r.status}</div>
+                </div>
+            `).join('');
+        }
+
+        function selectReservation(id) {
+            const res = reservations.find(r => r.id === id);
+            if (res) {
+                switchTab('floor');
+                if (res.table) {
+                    const tableEl = document.querySelector(`[data-table="${res.table}"]`);
+                    if (tableEl) tableEl.click();
+                }
+            }
+        }
+
+        function searchReservations() {}
+        function filterReservations(filter) {}
+
+        // ACTIONS
+        function assignReservation() {
+            if (selectedTable) {
+                showToast('Reservation assigned', 'success');
+                closeDetailSheet();
+            }
+        }
+
+        function freeTable() {
+            if (selectedTable) {
+                showToast('Table freed', 'success');
+                closeDetailSheet();
+            }
+        }
+
+        function blockTable() {
+            if (selectedTable) {
+                showToast('Table blocked for 90 minutes', 'success');
+                closeDetailSheet();
+            }
+        }
+
+        function markUnavailable() {
+            if (selectedTable) {
+                showToast('Table marked unavailable', 'success');
+                closeDetailSheet();
+            }
+        }
+
+        // CREATE RESERVATION MODAL
+        function openCreateReservation() {
+            document.getElementById('createModal').classList.add('active');
+        }
+
+        function closeCreateReservation() {
+            document.getElementById('createModal').classList.remove('active');
+        }
+
+        function submitReservation() {
+            const name = document.getElementById('formName').value.trim();
+            const phone = document.getElementById('formPhone').value.trim();
+            const guests = document.getElementById('formGuests').value;
+            const time = document.getElementById('formTime').value;
+
+            if (!name || !phone || !guests || !time) {
+                showToast('Please fill all required fields', 'error');
+                return;
+            }
+
+            reservations.push({
+                id: reservations.length + 1,
+                name,
+                phone,
+                guests: parseInt(guests),
+                time,
+                status: 'pending',
+                table: null,
+            });
+
+            showToast(`Reservation created for ${name}`, 'success');
+            closeCreateReservation();
+            renderReservationsList();
+            document.getElementById('formName').value = '';
+            document.getElementById('formPhone').value = '';
+            document.getElementById('formGuests').value = '';
+            document.getElementById('formTime').value = '';
+        }
+
+        // UTILITIES
+        function handleRefresh() {
+            loadReservations();
+            renderFloorPlan();
+            showToast('Refreshed', 'success');
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = 'index.html';
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast active ${type}`;
+            setTimeout(() => toast.classList.remove('active'), 3000);
+        }
+
+        // KEYBOARD SHORTCUTS
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeDetailSheet();
+                closeCreateReservation();
+            }
+        });
+
+        // TAP OUTSIDE HANDLING
+        document.getElementById('sheetOverlay').addEventListener('click', closeDetailSheet);
+    </script>
+</body>
+</html>
