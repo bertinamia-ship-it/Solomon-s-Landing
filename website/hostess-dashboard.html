@@ -908,43 +908,47 @@
 </head>
 <body>
     <div class="app-container">
-    <!-- App Bar (Sticky Top) -->
+    <!-- App Bar (Compact Top) -->
     <div class="app-bar">
         <div class="app-bar-left">
             <img src="https://res.cloudinary.com/dpmozdkfh/image/upload/v1765665392/logo_qykwcx.jpg" alt="Solomon's Landing" class="app-logo" onerror="this.src='solomons-logo.png'; this.onerror=null;">
             <h1 class="app-title">Reservations</h1>
-            <span class="role-chip" id="roleBadge">Hostess</span>
-        </div>
-        <div class="app-bar-center">
-            <div class="controls-group">
-                <label>Date:</label>
-                <input type="date" id="selectedDate" class="input input-sm" onchange="loadFloorPlan()">
-            </div>
-            <div class="controls-group">
-                <label>Time:</label>
-                <select id="selectedTime" class="input input-sm" onchange="loadFloorPlan()">
-                    <option value="17:30">5:30 PM</option>
-                    <option value="18:00">6:00 PM</option>
-                    <option value="18:30">6:30 PM</option>
-                    <option value="19:00">7:00 PM</option>
-                    <option value="19:30">7:30 PM</option>
-                    <option value="20:00">8:00 PM</option>
-                    <option value="20:30">8:30 PM</option>
-                    <option value="21:00">9:00 PM</option>
-                    <option value="21:30">9:30 PM</option>
-                </select>
-            </div>
-            <button class="btn btn-primary btn-sm" onclick="setToday()">Today</button>
+            <span class="role-chip" id="roleBadge">HOSTESS</span>
         </div>
         <div class="app-bar-right">
-            <button class="btn btn-secondary btn-sm" onclick="handleRefresh()" title="Refresh">
-                <span>↻</span> <span class="btn-text">Refresh</span>
+            <button class="btn btn-icon btn-sm" onclick="handleRefresh()" title="Refresh" aria-label="Refresh">
+                <span>↻</span>
             </button>
-            <button class="btn btn-danger btn-sm" onclick="logout()"><span class="btn-text">Logout</span></button>
+            <button class="btn btn-icon btn-sm btn-danger" onclick="logout()" title="Logout" aria-label="Logout">
+                <span>⏻</span>
+            </button>
         </div>
     </div>
 
-    <!-- Controls Bar (Below App Bar) - Compact Segmented Control -->
+    <!-- Secondary Controls Row (Date/Time/Today) -->
+    <div class="controls-bar-secondary">
+        <div class="controls-group">
+            <label>Date:</label>
+            <input type="date" id="selectedDate" class="input input-sm" onchange="loadFloorPlan()">
+        </div>
+        <div class="controls-group">
+            <label>Time:</label>
+            <select id="selectedTime" class="input input-sm" onchange="loadFloorPlan()">
+                <option value="17:30">5:30 PM</option>
+                <option value="18:00">6:00 PM</option>
+                <option value="18:30">6:30 PM</option>
+                <option value="19:00">7:00 PM</option>
+                <option value="19:30">7:30 PM</option>
+                <option value="20:00">8:00 PM</option>
+                <option value="20:30">8:30 PM</option>
+                <option value="21:00">9:00 PM</option>
+                <option value="21:30">9:30 PM</option>
+            </select>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="setToday()">Today</button>
+    </div>
+
+    <!-- Area Tabs Bar -->
     <div class="controls-bar">
         <div class="controls-group" style="flex: 1;">
             <div class="segmented-control">
@@ -3256,14 +3260,28 @@
         }
 
         async function saveQuickAddReservation() {
-            const name = document.getElementById('quickAddName').value.trim();
-            const phone = document.getElementById('quickAddPhone').value.trim();
-            const email = document.getElementById('quickAddEmail').value.trim();
-            const date = document.getElementById('quickAddDate').value;
-            const time = document.getElementById('quickAddTime').value;
-            const partySize = parseInt(document.getElementById('quickAddPartySize').value);
-            const source = document.getElementById('quickAddSource').value;
-            const notes = document.getElementById('quickAddNotes').value.trim();
+            const nameEl = document.getElementById('quickAddName');
+            const phoneEl = document.getElementById('quickAddPhone');
+            const emailEl = document.getElementById('quickAddEmail');
+            const dateEl = document.getElementById('quickAddDate');
+            const timeEl = document.getElementById('quickAddTime');
+            const partySizeEl = document.getElementById('quickAddPartySize');
+            const sourceEl = document.getElementById('quickAddSource');
+            const notesEl = document.getElementById('quickAddNotes');
+            
+            if (!nameEl || !phoneEl || !dateEl || !timeEl || !partySizeEl) {
+                showToast('error', 'Form fields not found. Please refresh the page.');
+                return;
+            }
+            
+            const name = nameEl.value.trim();
+            const phone = phoneEl.value.trim();
+            const email = emailEl ? emailEl.value.trim() : '';
+            const date = dateEl.value;
+            const time = timeEl.value;
+            const partySize = parseInt(partySizeEl.value);
+            const source = sourceEl ? sourceEl.value : 'hostess';
+            const notes = notesEl ? notesEl.value.trim() : '';
 
             if (!name || !phone || !date || !time || !partySize) {
                 showToast('error', 'Please fill in all required fields');

@@ -150,13 +150,24 @@ body {
     letter-spacing: 0.5px;
 }
 
-/* Controls Bar (Below App Bar) - Sticky in flex container */
-.controls-bar {
+/* Secondary Controls Bar (Date/Time/Today) */
+.controls-bar-secondary {
     flex-shrink: 0;
-    height: var(--controls-height);
+    height: 44px;
     background: var(--bg-primary);
     border-bottom: 1px solid var(--border-light);
-    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    padding: 0 var(--spacing-sm);
+    gap: var(--spacing-sm);
+}
+
+/* Controls Bar (Area Tabs) */
+.controls-bar {
+    flex-shrink: 0;
+    height: 40px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-light);
     display: flex;
     align-items: center;
     padding: 0 var(--spacing-sm);
@@ -189,7 +200,7 @@ body {
     flex: 1;
     min-height: 0;
     display: grid;
-    grid-template-columns: 70% 30%;
+    grid-template-columns: 65% 35%;
     gap: var(--spacing-sm);
     padding: var(--spacing-sm);
     overflow: hidden;
@@ -235,6 +246,7 @@ body {
 .btn {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     justify-content: center;
     gap: var(--spacing-xs);
     padding: var(--spacing-sm) var(--spacing-md);
@@ -598,20 +610,28 @@ body {
     }
 }
 
-/* Responsive: Tablet (iPad Portrait) */
+/* Responsive: Tablet (iPad Portrait/Landscape) */
 @media (max-width: 1024px) and (min-width: 769px) {
     .dashboard-main {
-        grid-template-columns: 65% 35%;
+        grid-template-columns: 60% 40%;
         gap: var(--spacing-sm);
         padding: var(--spacing-sm);
+    }
+    
+    .controls-bar-secondary {
+        height: 42px;
+        padding: 0 var(--spacing-sm);
+    }
+    
+    .controls-bar {
+        height: 38px;
     }
 }
 
 /* Responsive: Mobile */
 @media (max-width: 768px) {
     :root {
-        --app-bar-height: 48px;
-        --controls-height: 44px;
+        --app-bar-height: 52px;
         --drawer-width: 100%;
     }
     
@@ -623,12 +643,21 @@ body {
         font-size: var(--font-size-sm);
     }
     
-    .app-bar-center {
+    .controls-bar-secondary {
+        height: 40px;
+        padding: 0 var(--spacing-xs);
+        gap: var(--spacing-xs);
+        flex-wrap: wrap;
+        min-height: 40px;
+    }
+    
+    .controls-group label {
         display: none;
     }
     
     .controls-bar {
-        padding: 0 var(--spacing-sm);
+        height: 36px;
+        padding: 0 var(--spacing-xs);
     }
     
     .dashboard-main {
