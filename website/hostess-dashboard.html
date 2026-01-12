@@ -1946,7 +1946,8 @@
                         return;
                     }
                     
-                    if (data.success) {
+                    // Check for success (2xx status codes)
+                    if (res.ok && (data.success || data.ok)) {
                         showToast('success', 'Reservation assigned successfully');
                         closeTableModal();
                         await refreshAfterAction();
@@ -2515,10 +2516,13 @@
                 const allAssignments = Array.isArray(state.assignments) ? state.assignments : [];
                 const allTablesList = Array.isArray(state.allTables) ? state.allTables : [];
                 
-                // Filter reservations by date (include all statuses, filter by statusFilter below)
+                // Filter reservations by date (exclude cancelled/deleted by default)
                 let dateReservations = allReservations.filter(r => {
                     if (!r) return false;
                     const rDate = r.date || "";
+                    const rStatus = (r.status || "").toLowerCase();
+                    // Exclude cancelled reservations from default view (they're effectively deleted)
+                    if (rStatus === 'cancelled') return false;
                     return rDate === date;
                 });
                 
