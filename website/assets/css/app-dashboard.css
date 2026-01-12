@@ -90,20 +90,16 @@ body {
     height: 100vh;
 }
 
-/* App Bar (Fixed Top) */
+/* App Bar - Sticky in flex container */
 .app-bar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+    flex-shrink: 0;
     height: var(--app-bar-height);
     background: var(--bg-primary);
     border-bottom: 1px solid var(--border-light);
     box-shadow: var(--shadow);
-    z-index: 1000;
     display: flex;
     align-items: center;
-    padding: 0 var(--spacing-md);
+    padding: 0 var(--spacing-sm);
 }
 
 .app-bar-left {
@@ -154,17 +150,13 @@ body {
     letter-spacing: 0.5px;
 }
 
-/* Controls Bar (Below App Bar) */
+/* Controls Bar (Below App Bar) - Sticky in flex container */
 .controls-bar {
-    position: fixed;
-    top: var(--app-bar-height);
-    left: 0;
-    right: 0;
+    flex-shrink: 0;
     height: var(--controls-height);
     background: var(--bg-primary);
     border-bottom: 1px solid var(--border-light);
     box-shadow: var(--shadow-sm);
-    z-index: 999;
     display: flex;
     align-items: center;
     padding: 0 var(--spacing-sm);
@@ -184,20 +176,23 @@ body {
     white-space: nowrap;
 }
 
-/* Main Content Area (No Scroll Container) - CRITICAL: NO BODY SCROLL */
-.dashboard-main {
-    position: fixed;
-    top: calc(var(--app-bar-height) + var(--controls-height));
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: grid;
-    grid-template-columns: 65% 35%;
-    gap: var(--spacing-md);
-    padding: var(--spacing-md);
+/* App Container - Flex-based layout model */
+.app-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
-    height: calc(100vh - var(--app-bar-height) - var(--controls-height));
-    max-height: calc(100vh - var(--app-bar-height) - var(--controls-height));
+}
+
+/* Main Content Area - Flex model */
+.dashboard-main {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 70% 30%;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    overflow: hidden;
 }
 
 /* Cards */
@@ -230,7 +225,8 @@ body {
 }
 
 .card-body {
-    flex: 1 1 auto;
+    flex: 1;
+    min-height: 0;
     overflow: auto;
     padding: var(--spacing-md);
 }
@@ -602,11 +598,20 @@ body {
     }
 }
 
+/* Responsive: Tablet (iPad Portrait) */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .dashboard-main {
+        grid-template-columns: 65% 35%;
+        gap: var(--spacing-sm);
+        padding: var(--spacing-sm);
+    }
+}
+
 /* Responsive: Mobile */
 @media (max-width: 768px) {
     :root {
-        --app-bar-height: 52px;
-        --controls-height: 56px;
+        --app-bar-height: 48px;
+        --controls-height: 44px;
         --drawer-width: 100%;
     }
     
@@ -615,25 +620,22 @@ body {
     }
     
     .app-title {
-        font-size: var(--font-size-base);
+        font-size: var(--font-size-sm);
     }
     
     .app-bar-center {
-        display: none; /* Hide date/time pickers on mobile - move to controls bar */
+        display: none;
     }
     
     .controls-bar {
         padding: 0 var(--spacing-sm);
-        flex-wrap: wrap;
-        height: auto;
-        min-height: var(--controls-height);
     }
     
     .dashboard-main {
         grid-template-columns: 1fr;
-        grid-template-rows: auto;
-        padding: var(--spacing-sm);
-        gap: var(--spacing-sm);
+        padding: var(--spacing-xs);
+        gap: var(--spacing-xs);
+        padding-bottom: 70px; /* Space for mobile tab bar */
     }
     
     .card-body {
@@ -650,13 +652,16 @@ body {
         max-width: 320px;
     }
     
-    /* Hide button text on mobile, show only icons */
     .btn-text {
         display: none;
     }
     
-    .btn-icon .btn-text {
-        display: none;
+    .mobile-tab-bar {
+        display: flex !important;
+    }
+    
+    .mobile-fab {
+        display: flex !important;
     }
 }
 
