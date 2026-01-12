@@ -1516,12 +1516,8 @@
                     return null;
                 }
                 
-                if (!response.ok) {
-                    const text = await response.text();
-                    console.error(`API error ${response.status} for ${path}:`, text.substring(0, 200));
-                    return null;
-                }
-                
+                // Return response object so caller can check status codes
+                // Don't throw on non-ok, let caller handle it
                 const contentType = response.headers.get('content-type');
                 if (!contentType || !contentType.includes('application/json')) {
                     const text = await response.text();
@@ -1934,7 +1930,18 @@
             
             // Store action handler
             window.executeAssignAction = async () => {
-                const reservationId = document.getElementById('reservationSelect').value;
+                const reservationId = document.getElementById('reservationSelect')?.value;
+                
+                if (!reservationId) {
+                    showToast('error', 'Please select a reservation');
+                    return;
+                }
+                
+                // Ensure all required fields are present
+                if (!state.selectedTableId || !date || !time) {
+                    showToast('error', 'Missing required fields: table, date, or time');
+                    return;
+                }
                 
                 try {
                     const res = await api('/.netlify/functions/set-assignment', {
@@ -1954,24 +1961,30 @@
                     }
                     
                     const data = await res.json();
+                    
+                    // Handle 409 conflict gracefully
+                    if (res.status === 409) {
+                        const errorMsg = data.error || `Table is already reserved for ${time}`;
+                        showToast('error', errorMsg);
+                        return;
+                    }
+                    
+                    // Handle 400 bad request
+                    if (res.status === 400) {
+                        showToast('error', data.error || 'Invalid request. Missing required fields.');
+                        return;
+                    }
+                    
                     if (data.success) {
-                        showToast('success', 'Reservation assigned successfully ✅');
+                        showToast('success', 'Reservation assigned successfully');
                         closeTableModal();
                         await refreshAfterAction();
                     } else {
-                        // Handle 409 conflicts gracefully
-                        if (res.status === 409) {
-                            const errorMsg = data.error || 'Table is already reserved for this time slot';
-                            showToast('error', errorMsg);
-                        } else if (res.status === 400) {
-                            showToast('error', data.error || 'Invalid request. Missing required fields.');
-                        } else {
-                            showToast('error', data.error || 'Failed to assign reservation');
-                        }
+                        showToast('error', data.error || 'Failed to assign reservation');
                     }
                 } catch (error) {
                     console.error('Assign reservation error:', error);
-                    showToast('error', `Error: ${error.message || 'Failed to connect to server'}`);
+                    showToast('error', `Error: ${error.message || 'Unknown error'}`);
                 }
             };
         }
@@ -2594,9 +2607,9 @@
                         const resCode = res.confirmation_code || "";
                         
                     html += `
-                        <div class="reservation-card">
+                        <div class="reservation-card" onclick="openReservationModal('${res.id || ""}')">
                             <div style="display: flex; justify-content: space-between; align-items: start; gap: var(--spacing-sm);">
-                                <div style="flex: 1; min-width: 0; cursor: pointer;" onclick="openReservationModal('${res.id || ""}')">
+                                <div style="flex: 1; min-width: 0;">
                                     <div style="display: flex; align-items: center; gap: var(--spacing-sm); margin-bottom: var(--spacing-xs);">
                                         <div class="reservation-name" style="font-weight: var(--font-weight-semibold); font-size: var(--font-size-base); color: var(--text-primary);">${resName}</div>
                                         <span class="pill pill-${statusClass === 'confirmed' ? 'info' : statusClass === 'seated' ? 'success' : statusClass === 'completed' ? 'neutral' : statusClass === 'cancelled' || statusClass === 'no_show' ? 'danger' : 'warning'}">${statusText}</span>
@@ -2611,14 +2624,14 @@
                                         `<div style="font-size: var(--font-size-xs); color: var(--color-warning);">No table assigned</div>`
                                     }
                                 </div>
-                                <div style="display: flex; gap: var(--spacing-xs); flex-shrink: 0;">
-                                    <button class="btn btn-icon btn-sm" onclick="event.stopPropagation(); openReservationModal('${res.id || ""}')" title="Edit" aria-label="Edit">
-                                        <span>✏️</span>
-                                    </button>
-                                    <button class="btn btn-icon btn-sm btn-danger" onclick="event.stopPropagation(); deleteReservation('${res.id || ""}')" title="Delete" aria-label="Delete">
-                                        <span>🗑️</span>
-                                    </button>
-                                </div>
+                            </div>
+                            <div style="display: flex; gap: var(--spacing-xs); flex-shrink: 0;">
+                                <button class="btn btn-icon btn-sm" onclick="event.stopPropagation(); openReservationModal('${res.id || ""}')" title="Edit" aria-label="Edit">
+                                    <span>✏️</span>
+                                </button>
+                                <button class="btn btn-icon btn-sm btn-danger" onclick="event.stopPropagation(); deleteReservation('${res.id || ""}')" title="Delete" aria-label="Delete">
+                                    <span>🗑️</span>
+                                </button>
                             </div>
                         </div>
                     `;
@@ -2917,6 +2930,20 @@
                     }
                     
                     const data = await res.json();
+                    
+                    // Handle 409 conflict gracefully
+                    if (res.status === 409) {
+                        const errorMsg = data.error || `Table is already ${payload.status} for ${time}`;
+                        showToast('error', errorMsg);
+                        return;
+                    }
+                    
+                    // Handle 400 bad request
+                    if (res.status === 400) {
+                        showToast('error', data.error || 'Invalid request. Missing required fields.');
+                        return;
+                    }
+                    
                     if (data.success) {
                         showToast('success', 'Action completed successfully');
                         closeTableModal();
