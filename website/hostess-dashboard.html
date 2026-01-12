@@ -14,14 +14,15 @@
         
         /* Premium Color Palette - PHASE 3: Branded Premium Theme */
         :root {
-            --color-primary: #0B5FFF;
-            --color-primary-dark: #0043CC;
-            --color-accent-gold: #D9AE5F;
-            --color-deep-navy: #0B1220;
-            --color-success: #16A34A;
-            --color-warning: #F59E0B;
-            --color-danger: #DC2626;
-            --bg-app: linear-gradient(135deg, #F7F9FC 0%, #EEF4FF 50%, #F7F9FC 100%);
+            /* Premium Muted Color Palette - High-End Restaurant App */
+            --color-primary: #1E40AF; /* Muted navy blue */
+            --color-primary-dark: #1E3A8A;
+            --color-accent-gold: #D9AE5F; /* Warm gold accent */
+            --color-deep-navy: #0F172A; /* Charcoal base */
+            --color-success: #059669; /* Muted green */
+            --color-warning: #D97706; /* Muted amber */
+            --color-danger: #DC2626; /* Soft red */
+            --bg-app: #F8FAFC; /* Clean neutral */
             --bg-card: #FFFFFF;
             --text-primary: #0F172A;
             --text-secondary: #475569;
@@ -32,13 +33,15 @@
             --spacing-sm: 8px;
             --spacing-md: 12px;
             --spacing-lg: 16px;
-            --radius-sm: 8px;
-            --radius-md: 12px;
-            --radius-lg: 16px;
-            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-            --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+            --shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
+            --transition-fast: 150ms ease;
+            --transition-base: 200ms ease;
         }
         
         /* Premium App Shell - Elegant, Professional */
@@ -194,10 +197,10 @@
             border-radius: 50%;
             flex-shrink: 0;
         }
-        .legend-dot.available { background: var(--color-success); }
-        .legend-dot.reserved { background: var(--color-primary); }
-        .legend-dot.blocked { background: var(--color-warning); }
-        .legend-dot.unavailable { background: var(--color-danger); }
+        .legend-dot.available { background: #059669; }
+        .legend-dot.reserved { background: #1E40AF; }
+        .legend-dot.blocked { background: #D97706; }
+        .legend-dot.unavailable { background: #DC2626; }
         
         /* Architectural Croquis - Professional Blueprint */
         .floor-plan-container {
@@ -370,33 +373,7 @@
             display: none;
         }
         
-        /* Floor Objects (Bar, Entrance) */
-        .floor-object {
-            position: absolute;
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            border: 2px solid var(--border-medium);
-            border-radius: var(--radius-lg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: var(--shadow);
-        }
-        .floor-object[data-object-type="bar"] {
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-            border-color: #475569;
-            min-width: 300px;
-            min-height: 80px;
-        }
-        .object-label {
-            font-weight: var(--font-weight-bold);
-            font-size: var(--font-size-sm);
-            color: var(--text-primary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .floor-object[data-object-type="bar"] .object-label {
-            color: white;
-        }
+        /* Floor Objects removed - using architectural style from above */
         
         /* Table Info Items (in drawer) */
         .table-info-item {
@@ -545,6 +522,17 @@
             }
         }
         
+        /* Dashboard Main Layout - Compact, Professional */
+        .dashboard-main {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+        }
+        
         @media (min-width: 769px) {
             .mobile-tab-bar,
             .mobile-fab {
@@ -553,6 +541,7 @@
             .dashboard-main {
                 grid-template-columns: 65% 35%;
                 gap: var(--spacing-md);
+                padding: var(--spacing-md);
             }
         }
         
@@ -631,31 +620,7 @@
             flex-direction: column;
             gap: var(--spacing-sm);
         }
-        .table-node {
-            position: absolute;
-            user-select: none;
-            cursor: pointer;
-            z-index: 10;
-            transform: scale(var(--table-scale, 1));
-            transition: transform 150ms ease, filter 150ms ease, box-shadow 150ms ease;
-        }
-        .table-node:hover {
-            transform: scale(calc(var(--table-scale, 1) * 1.05)) translateY(-2px);
-            filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.10));
-            z-index: 100;
-        }
-        .table-node:active {
-            transform: scale(calc(var(--table-scale, 1) * 0.98));
-            transition: transform 80ms ease;
-        }
-        .table-node.selected {
-            z-index: 200;
-        }
-        .table-node.selected .table-shape {
-            outline: 3px solid var(--color-primary);
-            outline-offset: 3px;
-            box-shadow: 0 0 0 6px rgba(11, 95, 255, 0.15);
-        }
+        /* Duplicate removed - using architectural style from above */
         .table-info-panel {
             position: fixed;
             right: 2rem;
@@ -737,56 +702,7 @@
             background: #fee2e2;
             color: #991b1b;
         }
-        .table-shape {
-            position: relative;
-            border: 1.5px solid;
-            background: linear-gradient(180deg, #f3f8ff 0%, #e8f1ff 100%);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-        }
-        .table-shape.available {
-            border-color: #10b981;
-            background: linear-gradient(180deg, #d1fae5 0%, #ecfdf5 100%);
-        }
-        .table-shape.reserved {
-            border-color: #3b82f6;
-            background: linear-gradient(180deg, #dbeafe 0%, #eff6ff 100%);
-        }
-        .table-shape.blocked {
-            border-color: #f59e0b;
-            background: linear-gradient(180deg, #fef3c7 0%, #fffbeb 100%);
-        }
-        .table-shape.unavailable {
-            border-color: #ef4444;
-            background: linear-gradient(180deg, #fee2e2 0%, #fef2f2 100%);
-        }
-        .table-number {
-            font-weight: 700;
-            color: #1d4ed8;
-            font-size: 11px;
-            line-height: 1;
-            pointer-events: none;
-        }
-        .table-shape.available .table-number { color: var(--color-success); font-weight: 700; }
-        .table-shape.reserved .table-number { color: var(--color-primary); font-weight: 700; }
-        .table-shape.blocked .table-number { color: var(--color-warning); font-weight: 700; }
-        .table-shape.unavailable .table-number { color: var(--color-danger); font-weight: 700; }
-        .seat {
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            border-radius: 999px;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-            transform: translate(-50%, -50%);
-            opacity: 0.9;
-        }
-        .table-shape.available .seat { background: var(--color-success); }
-        .table-shape.reserved .seat { background: var(--color-primary); }
-        .table-shape.blocked .seat { background: var(--color-warning); }
-        .table-shape.unavailable .seat { background: var(--color-danger); }
+        /* Duplicate removed - using architectural style from above */
         .status-legend {
             display: flex;
             gap: 0.75rem;
@@ -810,10 +726,7 @@
             border-radius: 999px;
             flex-shrink: 0;
         }
-        .legend-dot.available { background: #10b981; }
-        .legend-dot.reserved { background: #3b82f6; }
-        .legend-dot.blocked { background: #f59e0b; }
-        .legend-dot.unavailable { background: #ef4444; }
+        /* Duplicate removed - using muted colors from above */
         .legend-color {
             display: none;
         }
@@ -833,48 +746,17 @@
             background: linear-gradient(180deg, #fee2e2 0%, #fef2f2 100%);
             border-color: #ef4444;
         }
-        .floor-object {
-            position: absolute;
-            background: #6b7280;
-            border: 2px solid #4b5563;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            pointer-events: none;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-        }
-        .floor-object[data-object-type="entrance"] {
-            background: #10b981;
-            border-color: #059669;
-        }
-        .floor-object[data-object-type="bar"] {
-            background: #8b5cf6;
-            border-color: #7c3aed;
-        }
-        .object-label {
-            color: white;
-            font-weight: 600;
-            font-size: 14px;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-        }
-        .table-label {
-            font-size: 11px;
-            margin-top: 4px;
-            text-align: center;
-            color: #111827;
-            font-weight: 700;
-            pointer-events: none;
-        }
-        /* Clean Reservation Cards */
+        /* Duplicate removed - using architectural style from above */
+        /* Premium Reservation Cards - Elegant, Compact */
         .reservation-card {
-            background: var(--bg-primary);
+            background: var(--bg-card);
             border: 1px solid var(--border-light);
             border-radius: var(--radius-md);
             padding: var(--spacing-md);
             cursor: pointer;
-            transition: all var(--transition-base);
+            transition: all var(--transition-fast);
             box-shadow: var(--shadow-sm);
+            margin-bottom: var(--spacing-sm);
         }
         .reservation-card:hover {
             border-color: var(--color-primary);
@@ -1053,28 +935,41 @@
             gap: 1rem;
             justify-content: flex-end;
         }
+        /* iOS-Style Compact Buttons */
         .btn-primary {
-            padding: 0.75rem 1.5rem;
-            background: #004A9F;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            background: var(--color-primary);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: var(--radius-md);
             cursor: pointer;
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 14px;
+            transition: all var(--transition-fast);
         }
-        .btn-primary:hover { background: #003d82; }
+        .btn-primary:hover { 
+            background: var(--color-primary-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+        .btn-primary:active {
+            transform: translateY(0);
+        }
         .btn-secondary {
-            padding: 0.75rem 1.5rem;
-            background: #6b7280;
-            color: white;
-            border: none;
-            border-radius: 8px;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
             cursor: pointer;
-            font-weight: 600;
-            font-size: 1rem;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all var(--transition-fast);
         }
-        .btn-secondary:hover { background: #4b5563; }
+        .btn-secondary:hover { 
+            background: rgba(15, 23, 42, 0.03);
+            border-color: var(--text-secondary);
+        }
         .loading {
             text-align: center;
             padding: 2rem;
@@ -1210,19 +1105,41 @@
             justify-content: flex-end;
         }
         .btn-danger {
-            padding: 0.75rem 1.5rem;
-            background: #dc2626;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            background: var(--color-danger);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: var(--radius-md);
             cursor: pointer;
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 14px;
+            transition: all var(--transition-fast);
         }
-        .btn-danger:hover { background: #b91c1c; }
-        .btn-small {
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
+        .btn-danger:hover { 
+            background: #B91C1C;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+        .btn-danger:active {
+            transform: translateY(0);
+        }
+        .btn-sm {
+            padding: var(--spacing-xs) var(--spacing-md);
+            font-size: 13px;
+        }
+        .btn-icon {
+            padding: var(--spacing-xs);
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+        }
+        .btn-icon:hover {
+            background: rgba(15, 23, 42, 0.05);
         }
     </style>
 </head>
