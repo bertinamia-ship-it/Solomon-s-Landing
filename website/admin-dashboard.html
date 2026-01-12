@@ -9,6 +9,11 @@
     <link rel="stylesheet" href="assets/css/app-dashboard.css">
     <style>
         /* Admin Dashboard Specific Styles - Premium Mobile-First */
+        /* Scoped to prevent CSS leaking to other pages */
+        
+        .admin-dashboard-wrapper {
+            /* Root wrapper - all admin styles are scoped here */
+        }
         
         /* Override for admin-specific layouts */
         .admin-main-grid {
@@ -54,100 +59,120 @@
         .form-group input,
         .form-group select {
             width: 100%;
-            padding: 0.75rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 1rem;
+            padding: var(--spacing-sm);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-base);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: all var(--transition-base);
         }
         .form-group input:focus,
         .form-group select:focus {
             outline: none;
-            border-color: #004A9F;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(10, 37, 64, 0.1);
         }
-        .btn-primary {
-            padding: 0.75rem 1.5rem;
-            background: #004A9F;
+        /* Admin-specific button overrides - scoped to prevent conflicts */
+        .admin-dashboard-wrapper .btn-primary {
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--color-primary);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: var(--radius-md);
             cursor: pointer;
-            font-weight: 600;
-            font-size: 1rem;
+            font-weight: var(--font-weight-semibold);
+            font-size: var(--font-size-sm);
+            transition: all var(--transition-base);
         }
-        .btn-primary:hover { background: #003d82; }
-        .btn-secondary {
-            padding: 0.5rem 1rem;
-            background: #6b7280;
+        .admin-dashboard-wrapper .btn-primary:hover:not(:disabled) {
+            background: var(--color-primary-dark);
+        }
+        .admin-dashboard-wrapper .btn-secondary {
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--text-muted);
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: var(--radius-md);
             cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9rem;
+            font-weight: var(--font-weight-semibold);
+            font-size: var(--font-size-sm);
+            transition: all var(--transition-base);
         }
-        .btn-secondary:hover { background: #4b5563; }
-        .btn-danger {
-            padding: 0.5rem 1rem;
-            background: #dc2626;
+        .admin-dashboard-wrapper .btn-secondary:hover:not(:disabled) {
+            background: var(--text-secondary);
+        }
+        .admin-dashboard-wrapper .btn-danger {
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--color-danger);
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: var(--radius-md);
             cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9rem;
+            font-weight: var(--font-weight-semibold);
+            font-size: var(--font-size-sm);
+            transition: all var(--transition-base);
         }
-        .btn-danger:hover { background: #b91c1c; }
-        .btn-small {
-            padding: 0.4rem 0.8rem;
-            font-size: 0.85rem;
+        .admin-dashboard-wrapper .btn-danger:hover:not(:disabled) {
+            background: var(--color-danger-dark);
         }
-        .tables-list {
+        .admin-dashboard-wrapper .btn-small {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            font-size: var(--font-size-xs);
+        }
+        .admin-dashboard-wrapper .tables-list {
             max-height: 600px;
             overflow-y: auto;
         }
-        .table-item {
-            padding: 1rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            margin-bottom: 1rem;
+        .admin-dashboard-wrapper .table-item {
+            padding: var(--spacing-md);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-sm);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: var(--bg-primary);
+            transition: all var(--transition-base);
         }
-        .table-item.inactive {
+        .admin-dashboard-wrapper .table-item:hover {
+            box-shadow: var(--shadow-sm);
+        }
+        .admin-dashboard-wrapper .table-item.inactive {
             opacity: 0.6;
-            background: #f9fafb;
+            background: var(--bg-secondary);
         }
-        .table-info {
+        .admin-dashboard-wrapper .table-info {
             flex: 1;
         }
-        .table-name {
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 0.25rem;
+        .admin-dashboard-wrapper .table-name {
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+            font-size: var(--font-size-base);
         }
-        .table-details {
-            font-size: 0.9rem;
-            color: #6b7280;
+        .admin-dashboard-wrapper .table-details {
+            font-size: var(--font-size-sm);
+            color: var(--text-muted);
         }
-        .table-actions {
+        .admin-dashboard-wrapper .table-actions {
             display: flex;
-            gap: 0.5rem;
+            gap: var(--spacing-xs);
         }
-        .area-group {
-            margin-bottom: 2rem;
+        .admin-dashboard-wrapper .area-group {
+            margin-bottom: var(--spacing-lg);
         }
-        .area-group h3 {
-            color: #004A9F;
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
+        .admin-dashboard-wrapper .area-group h3 {
+            color: var(--color-primary);
+            margin-bottom: var(--spacing-md);
+            font-size: var(--font-size-lg);
         }
-        .floor-plan-container {
+        .admin-dashboard-wrapper .floor-plan-container {
             position: relative;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            background: #f9fafb;
-            min-height: 520px;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            background: var(--bg-secondary);
+            min-height: 500px;
             overflow: auto;
         }
         .floor-plan-canvas {
@@ -408,19 +433,29 @@
             align-items: center;
             gap: 0.25rem;
         }
+        /* Scoped admin styles - prevent CSS leaking */
+        .admin-dashboard-wrapper {
+            /* Isolated wrapper */
+        }
     </style>
 </head>
-<body>
-    <div class="dashboard-container">
-        <div class="dashboard-header">
-            <div class="logo-section">
-                <img src="solomons-logo.png" alt="Solomon's Landing" onerror="this.style.display='none'">
-                <h1>Admin Dashboard</h1>
+<body class="admin-dashboard-wrapper">
+    <div class="app-container">
+        <div class="app-bar">
+            <div class="app-bar-left">
+                <img src="solomons-logo.png" alt="Solomon's Landing" class="app-logo" onerror="this.style.display='none'">
+                <h1 class="app-title">Admin Dashboard</h1>
+                <span class="role-chip">ADMIN</span>
             </div>
-            <button class="btn-logout" onclick="logout()">Logout</button>
+            <div class="app-bar-right">
+                <button class="btn btn-icon btn-sm btn-danger" onclick="logout()" title="Logout" aria-label="Logout">
+                    <span>⏻</span>
+                </button>
+            </div>
         </div>
 
-        <div class="two-column">
+        <div style="flex: 1; min-height: 0; overflow-y: auto; padding: var(--spacing-md);">
+            <div class="admin-main-grid">
                 <!-- LEFT: Tables Management -->
                 <div class="admin-section">
                 <h2>Tables</h2>
@@ -440,7 +475,7 @@
                             <option value="Main Floor">
                             <option value="Sushi Bar">
                         </datalist>
-                        <button class="btn-primary btn-small" onclick="addTable()">Add</button>
+                        <button class="btn btn-primary btn-sm" onclick="addTable()">Add</button>
                     </div>
                     <input type="text" id="newTableName" placeholder="Name (optional)" style="margin-top: 0.5rem;">
                 </div>
@@ -458,21 +493,21 @@
                         <option value="Main Floor">Main Floor</option>
                         <option value="Sushi Bar">Sushi Bar</option>
                     </select>
-                    <button class="btn-primary" onclick="saveFloorPlan()">Save Layout</button>
-                    <button class="btn-secondary" onclick="resetFloorPlan()">Reset</button>
+                    <button class="btn btn-primary btn-sm" onclick="saveFloorPlan()">Save Layout</button>
+                    <button class="btn btn-secondary btn-sm" onclick="resetFloorPlan()">Reset</button>
                 </div>
                 <div class="layout-controls" style="margin-bottom: 1rem;">
                     <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
                         <span style="font-weight: 600; color: #374151;">Add Table:</span>
-                        <button class="btn-primary btn-small" onclick="startPlacingTableFromPalette(2)" style="padding: 0.5rem 1rem;">+ 2-top</button>
-                        <button class="btn-primary btn-small" onclick="startPlacingTableFromPalette(4)" style="padding: 0.5rem 1rem;">+ 4-top</button>
-                        <button class="btn-primary btn-small" onclick="startPlacingTableFromPalette(6)" style="padding: 0.5rem 1rem;">+ 6-top</button>
-                        <span style="margin-left: 1rem; font-weight: 600; color: #374151;">Existing:</span>
-                        <select id="layoutTableSelect" style="min-width: 180px;"></select>
-                        <button id="btnAddToLayout" class="btn-primary btn-small" onclick="startPlacingTable()">Add Selected</button>
-                        <span style="margin-left: 1rem; font-weight: 600; color: #374151;">Objects:</span>
-                        <button class="btn-secondary btn-small" onclick="startPlacingObject('entrance')" style="padding: 0.5rem 1rem;">+ Entrance</button>
-                        <button class="btn-secondary btn-small" onclick="startPlacingObject('bar')" style="padding: 0.5rem 1rem;">+ Bar</button>
+                        <button class="btn btn-primary btn-sm" onclick="startPlacingTableFromPalette(2)">+ 2-top</button>
+                        <button class="btn btn-primary btn-sm" onclick="startPlacingTableFromPalette(4)">+ 4-top</button>
+                        <button class="btn btn-primary btn-sm" onclick="startPlacingTableFromPalette(6)">+ 6-top</button>
+                        <span style="margin-left: var(--spacing-sm); font-weight: var(--font-weight-semibold); color: var(--text-secondary); font-size: var(--font-size-sm);">Existing:</span>
+                        <select id="layoutTableSelect" class="input input-sm" style="min-width: 150px;"></select>
+                        <button id="btnAddToLayout" class="btn btn-primary btn-sm" onclick="startPlacingTable()">Add Selected</button>
+                        <span style="margin-left: var(--spacing-sm); font-weight: var(--font-weight-semibold); color: var(--text-secondary); font-size: var(--font-size-sm);">Objects:</span>
+                        <button class="btn btn-secondary btn-sm" onclick="startPlacingObject('entrance')">+ Entrance</button>
+                        <button class="btn btn-secondary btn-sm" onclick="startPlacingObject('bar')">+ Bar</button>
                     </div>
                 </div>
                 <div class="layout-controls" style="margin-bottom: var(--spacing-md);">
@@ -489,8 +524,8 @@
             </div>
             </div>
 
-            <!-- Reservations Management Section -->
-            <div class="admin-section" style="margin-top: var(--spacing-md);">
+                <!-- Reservations Management Section -->
+                <div class="admin-section" style="margin-top: var(--spacing-md); grid-column: 1 / -1;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
                 <h2 style="margin: 0;">Reservations Management</h2>
                 <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
@@ -516,7 +551,7 @@
                         <option value="no_show">No Show</option>
                         <option value="cancelled">Cancelled</option>
                     </select>
-                    <button class="btn-primary" onclick="openAdminQuickAddModal()">+ Quick Add</button>
+                    <button class="btn btn-primary btn-sm" onclick="openAdminQuickAddModal()">+ Quick Add</button>
                 </div>
             </div>
             <div id="adminReservationsList" style="max-height: 600px; overflow-y: auto;">
@@ -551,9 +586,9 @@
             <h3 id="adminReservationModalTitle">Reservation Details</h3>
             <div id="adminReservationModalBody"></div>
             <div class="modal-actions">
-                <button class="btn-danger" onclick="adminCancelReservation()" style="margin-right: auto;">Cancel Reservation</button>
-                <button class="btn-secondary" onclick="closeAdminReservationModal()">Close</button>
-                <button class="btn-primary" onclick="adminSaveReservation()">Save Changes</button>
+                <button class="btn btn-danger btn-sm" onclick="adminCancelReservation()" style="margin-right: auto;">Cancel Reservation</button>
+                <button class="btn btn-secondary btn-sm" onclick="closeAdminReservationModal()">Close</button>
+                <button class="btn btn-primary btn-sm" onclick="adminSaveReservation()">Save Changes</button>
             </div>
         </div>
     </div>
@@ -612,8 +647,8 @@
                 </div>
             </div>
             <div class="modal-actions" style="margin-top: 1.5rem;">
-                <button class="btn-secondary" onclick="closeAdminQuickAddModal()">Cancel</button>
-                <button class="btn-primary" onclick="adminSaveQuickAddReservation()">Save Reservation</button>
+                <button class="btn btn-secondary btn-sm" onclick="closeAdminQuickAddModal()">Cancel</button>
+                <button class="btn btn-primary btn-sm" onclick="adminSaveQuickAddReservation()">Save Reservation</button>
             </div>
         </div>
     </div>
