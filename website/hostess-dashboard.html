@@ -2152,6 +2152,11 @@
 
         async function refreshAfterAction() {
             try {
+                // CRITICAL: Force reload all data to ensure table status is recomputed from current state
+                // Clear cached assignments/reservations to force fresh load
+                state.assignments = [];
+                state.reservations = [];
+                
                 // Refresh everything after an action
                 await loadFloorPlan();
                 // Also refresh reservations list to show updated table assignments
@@ -2270,6 +2275,39 @@
                     }
                 }
                 
+                // CRITICAL: Filter out orphaned assignments (assignments for cancelled/deleted reservations)
+                // Build set of active reservation IDs
+                const activeReservationIds = new Set();
+                const activeStatuses = ['pending', 'confirmed', 'seated'];
+                (state.reservations || []).forEach(r => {
+                    if (r && r.id && activeStatuses.includes((r.status || '').toLowerCase())) {
+                        activeReservationIds.add(r.id);
+                    }
+                });
+                
+                // Remove assignments with 'reserved' status that don't have an active reservation
+                state.assignments = (state.assignments || []).filter(a => {
+                    if (!a) return false;
+                    const status = (a.status || '').toLowerCase();
+                    
+                    // Blocked/unavailable: keep (manual blocks, no reservation needed)
+                    if (status === 'blocked' || status === 'unavailable') {
+                        return true;
+                    }
+                    
+                    // Reserved: only keep if reservation exists and is active
+                    if (status === 'reserved') {
+                        if (a.reservation_id) {
+                            return activeReservationIds.has(a.reservation_id);
+                        }
+                        // Orphaned: no reservation_id, remove it
+                        return false;
+                    }
+                    
+                    // Unknown status: keep for safety
+                    return true;
+                });
+                
                 // Update blocks in state
                 const timeAssignments = time ? (state.assignments || []).filter(a => (a.time || "") === time) : [];
                 state.blocks = timeAssignments.filter(a => {
@@ -2357,6 +2395,7 @@
             const layout = Array.isArray(state.layout) ? state.layout : [];
             
             // Helper to determine table status based on 3-slot system
+            // CRITICAL: Only count assignments with ACTIVE reservations (not cancelled/deleted/completed)
             function getTableStatus(tableId) {
                 // Check assignments for this table at selected time and its 3 slots (T, T+30, T+60)
                 if (!selectedTime) return 'available';
@@ -2383,12 +2422,42 @@
                 }
                 timeSlots.push(`${String(nextHours).padStart(2, '0')}:${String(nextMinutes).padStart(2, '0')}`);
                 
+                // Build set of active reservation IDs (pending, confirmed, seated only)
+                const activeReservationIds = new Set();
+                const activeStatuses = ['pending', 'confirmed', 'seated'];
+                (state.reservations || []).forEach(r => {
+                    if (r && r.id && activeStatuses.includes((r.status || '').toLowerCase())) {
+                        activeReservationIds.add(r.id);
+                    }
+                });
+                
                 // Find any assignment for this table at any of the 3 slots
-                const relevantAssignments = assignments.filter(a => 
-                    a.table_id === tableId && 
-                    timeSlots.includes(a.time) &&
-                    ['reserved', 'blocked', 'unavailable'].includes(a.status)
-                );
+                // For 'reserved' status: MUST have reservation_id AND reservation must be active
+                // For 'blocked'/'unavailable': no reservation check needed (manual blocks)
+                const relevantAssignments = assignments.filter(a => {
+                    if (!a || a.table_id !== tableId || !timeSlots.includes(a.time)) {
+                        return false;
+                    }
+                    
+                    const status = (a.status || '').toLowerCase();
+                    
+                    // Blocked/unavailable: always valid (manual blocks)
+                    if (status === 'blocked' || status === 'unavailable') {
+                        return true;
+                    }
+                    
+                    // Reserved: must have active reservation
+                    if (status === 'reserved') {
+                        // If assignment has reservation_id, verify reservation exists and is active
+                        if (a.reservation_id) {
+                            return activeReservationIds.has(a.reservation_id);
+                        }
+                        // If no reservation_id, it's an orphaned assignment (shouldn't happen, but ignore it)
+                        return false;
+                    }
+                    
+                    return false;
+                });
                 
                 if (relevantAssignments.length === 0) return 'available';
                 
@@ -2446,14 +2515,24 @@
                     renderH = baseDims.w;
                 }
                 
-                // Determine status using 3-slot system
+                // Determine status using 3-slot system (recomputed from current data, no cache)
                 const status = getTableStatus(table.id);
                 
-                // Find assignment for modal (use first relevant one)
-                const assignment = assignments.find(a => 
-                    a.table_id === table.id && 
-                    ['reserved', 'blocked', 'unavailable'].includes(a.status)
-                );
+                // Find assignment for modal (use first relevant one, but validate it's still valid)
+                const assignment = assignments.find(a => {
+                    if (!a || a.table_id !== table.id) return false;
+                    const aStatus = (a.status || '').toLowerCase();
+                    if (aStatus === 'blocked' || aStatus === 'unavailable') return true;
+                    if (aStatus === 'reserved' && a.reservation_id) {
+                        // Verify reservation exists and is active
+                        const res = (state.reservations || []).find(r => r.id === a.reservation_id);
+                        if (res && ['pending', 'confirmed', 'seated'].includes((res.status || '').toLowerCase())) {
+                            return true;
+                        }
+                        return false;
+                    }
+                    return false;
+                });
                 
                 const node = document.createElement('div');
                 node.className = 'table-node';
