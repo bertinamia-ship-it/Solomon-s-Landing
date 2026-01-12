@@ -3248,6 +3248,45 @@
                 document.body.style.overflow = '';
             }
         }
+        
+        // Delete Reservation Function
+        async function deleteReservation(reservationId) {
+            if (!reservationId) {
+                showToast('error', 'Reservation ID not provided');
+                return;
+            }
+            
+            openConfirm({
+                title: 'Delete Reservation',
+                body: 'Are you sure you want to permanently delete this reservation? This action cannot be undone.',
+                confirmText: 'Delete',
+                onConfirm: async () => {
+                    try {
+                        const res = await api('/.netlify/functions/cancel-reservation', {
+                            method: 'POST',
+                            body: JSON.stringify({ id: reservationId })
+                        });
+
+                        if (!res) {
+                            showToast('error', 'Failed to connect to server');
+                            return;
+                        }
+
+                        const data = await res.json();
+                        if (data.success || data.ok) {
+                            showToast('success', 'Reservation deleted successfully');
+                            // Refresh everything
+                            await refreshAfterAction();
+                        } else {
+                            showToast('error', data.error || 'Failed to delete reservation');
+                        }
+                    } catch (error) {
+                        console.error('Delete reservation error:', error);
+                        showToast('error', `Error: ${error.message || 'Unknown error'}`);
+                    }
+                }
+            });
+        }
 
         // Quick Add Functions
         // Stepper state
