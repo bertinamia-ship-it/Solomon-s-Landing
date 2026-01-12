@@ -198,7 +198,7 @@
         .legend-dot.blocked { background: var(--color-warning); }
         .legend-dot.unavailable { background: var(--color-danger); }
         
-        /* Architect-Style Floor Plan - Blueprint Card */
+        /* Architect-Style Floor Plan - Professional Schematic */
         .floor-plan-container {
             flex: 1;
             min-height: 0;
@@ -211,18 +211,50 @@
             position: relative;
             width: 100%;
             min-height: 100%;
-            background: #F8FAFC;
+            background: #FAFBFC;
             background-image: 
-                /* Blueprint grid - subtle */
-                linear-gradient(rgba(11, 18, 32, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(11, 18, 32, 0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
+                /* Professional blueprint grid */
+                linear-gradient(rgba(11, 18, 32, 0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(11, 18, 32, 0.025) 1px, transparent 1px);
+            background-size: 50px 50px;
             border-radius: var(--radius-lg);
-            border: 2px solid rgba(11, 18, 32, 0.08);
-            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05), 0 4px 16px rgba(0, 0, 0, 0.1);
-            min-width: 400px;
-            min-height: 400px;
+            border: 2px solid rgba(11, 18, 32, 0.1);
+            box-shadow: 
+                inset 0 2px 8px rgba(0, 0, 0, 0.04),
+                0 4px 20px rgba(0, 0, 0, 0.08);
+            min-width: 500px;
+            min-height: 500px;
             position: relative;
+        }
+        
+        /* Professional Floor Objects - Bar, Entrance */
+        .floor-object {
+            position: absolute;
+            pointer-events: none;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .floor-object[data-object-type="entrance"] {
+            background: linear-gradient(135deg, rgba(22, 163, 74, 0.15) 0%, rgba(22, 163, 74, 0.08) 100%);
+            border: 2px solid rgba(22, 163, 74, 0.4);
+            border-radius: var(--radius-md);
+        }
+        .floor-object[data-object-type="bar"] {
+            background: linear-gradient(135deg, rgba(217, 174, 95, 0.2) 0%, rgba(217, 174, 95, 0.1) 100%);
+            border: 3px solid rgba(217, 174, 95, 0.5);
+            border-radius: var(--radius-md);
+            box-shadow: 0 4px 12px rgba(217, 174, 95, 0.2);
+        }
+        .object-label {
+            color: var(--color-deep-navy);
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
         }
         
         /* Blueprint Zones: Walls, Entrance, Bar */
@@ -500,7 +532,7 @@
                 right: var(--spacing-lg);
                 width: 56px;
                 height: 56px;
-                border-radius: 50%;
+            border-radius: 50%;
                 background: var(--color-primary);
                 color: white;
                 border: none;
@@ -541,29 +573,57 @@
             }
         }
         
-        /* Premium Card Styling */
+        /* Premium Card Styling - Compact, Modern */
         .card {
             background: var(--bg-card);
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow);
             border: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
         .card-header {
-            padding: var(--spacing-md);
+            padding: var(--spacing-md) var(--spacing-lg);
             border-bottom: 1px solid var(--border-light);
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: var(--spacing-md);
+            flex-shrink: 0;
+            background: var(--bg-card);
         }
         .card-title {
-            font-size: 15px;
-            font-weight: 600;
+            font-size: 16px;
+            font-weight: 700;
             color: var(--text-primary);
             margin: 0;
         }
         .card-body {
+            padding: var(--spacing-lg);
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+        }
+        
+        /* Premium Reservation Cards - Compact, Touch-Friendly */
+        .reservation-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
             padding: var(--spacing-md);
+            cursor: pointer;
+            transition: all 150ms ease;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--spacing-sm);
+        }
+        .reservation-card:hover {
+            border-color: var(--color-primary);
+            box-shadow: var(--shadow);
+            transform: translateY(-1px);
+        }
+        .reservation-card:active {
+            transform: translateY(0);
         }
         
         /* Loading State */
@@ -1258,42 +1318,42 @@
                 </select>
             </div>
             <button class="btn btn-primary btn-sm" onclick="setToday()">Today</button>
-        </div>
+    </div>
 
         <!-- Area Tabs Bar -->
-        <div class="controls-bar">
+    <div class="controls-bar">
             <div class="controls-group" style="flex: 1;">
                 <div class="segmented-control">
                     <button class="area-tab active" id="areaMainFloor" onclick="switchArea('Main Floor')">Main Floor</button>
                     <button class="area-tab" id="areaSushiBar" onclick="switchArea('Sushi Bar')">Sushi Bar</button>
-                </div>
             </div>
         </div>
+    </div>
 
-        <!-- Main Content (Fixed Height, No Scroll) -->
-        <div class="dashboard-main">
-            <!-- LEFT: Floor Plan Card -->
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">Floor Plan</h2>
+    <!-- Main Content (Fixed Height, No Scroll) -->
+    <div class="dashboard-main">
+        <!-- LEFT: Floor Plan Card -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Floor Plan</h2>
                     <div class="status-legend">
                         <div class="legend-item"><div class="legend-dot available"></div><span>Available</span></div>
                         <div class="legend-item"><div class="legend-dot reserved"></div><span>Reserved</span></div>
                         <div class="legend-item"><div class="legend-dot blocked"></div><span>Blocked</span></div>
                         <div class="legend-item"><div class="legend-dot unavailable"></div><span>Unavailable</span></div>
                     </div>
-                </div>
+                    </div>
                 <div class="card-body" style="padding: 0; display: flex; flex-direction: column; flex: 1; min-height: 0;">
-                    <div class="floor-plan-container">
-                        <div id="floorPlanCanvas" class="floor-plan-canvas">
-                            <div class="loading">Loading floor plan...</div>
-                        </div>
+                <div class="floor-plan-container">
+                    <div id="floorPlanCanvas" class="floor-plan-canvas">
+                        <div class="loading">Loading floor plan...</div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
+                        </div>
+                        </div>
+                            </div>
+                        </div>
+                        
     <!-- Mobile Bottom Tab Navigation -->
     <div class="mobile-tab-bar">
         <button class="mobile-tab active" onclick="showMobileTab('floor-plan')" data-tab="floor-plan">
@@ -1303,9 +1363,9 @@
         <button class="mobile-tab" onclick="showMobileTab('reservations')" data-tab="reservations">
             <span class="mobile-tab-icon">📋</span>
             <span>Reservations</span>
-        </button>
-    </div>
-
+                </button>
+                </div>
+                
     <!-- Mobile Floating Action Button -->
     <button class="mobile-fab" onclick="openQuickAddModal()" aria-label="Create Reservation">+</button>
 
@@ -2182,6 +2242,8 @@
             try {
                 // Refresh everything after an action
                 await loadFloorPlan();
+                // Also refresh reservations list to show updated table assignments
+                renderReservationsList();
                 
                 // Close table info panel
                 const panel = document.getElementById('tableInfoPanel');
