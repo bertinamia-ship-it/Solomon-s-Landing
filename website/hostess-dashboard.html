@@ -14,15 +14,14 @@
         
         /* Premium Color Palette - PHASE 3: Branded Premium Theme */
         :root {
-            /* Premium Muted Color Palette - High-End Restaurant App */
-            --color-primary: #1E40AF; /* Muted navy blue */
-            --color-primary-dark: #1E3A8A;
-            --color-accent-gold: #D9AE5F; /* Warm gold accent */
-            --color-deep-navy: #0F172A; /* Charcoal base */
-            --color-success: #059669; /* Muted green */
-            --color-warning: #D97706; /* Muted amber */
-            --color-danger: #DC2626; /* Soft red */
-            --bg-app: #F8FAFC; /* Clean neutral */
+            --color-primary: #0B5FFF;
+            --color-primary-dark: #0043CC;
+            --color-accent-gold: #D9AE5F;
+            --color-deep-navy: #0B1220;
+            --color-success: #16A34A;
+            --color-warning: #F59E0B;
+            --color-danger: #DC2626;
+            --bg-app: linear-gradient(135deg, #F7F9FC 0%, #EEF4FF 50%, #F7F9FC 100%);
             --bg-card: #FFFFFF;
             --text-primary: #0F172A;
             --text-secondary: #475569;
@@ -33,28 +32,25 @@
             --spacing-sm: 8px;
             --spacing-md: 12px;
             --spacing-lg: 16px;
-            --radius-sm: 6px;
-            --radius-md: 8px;
-            --radius-lg: 12px;
-            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
-            --shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
-            --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
-            --transition-fast: 150ms ease;
-            --transition-base: 200ms ease;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
         }
         
-        /* Premium App Shell - Elegant, Professional */
+        /* Premium App Shell - Deep Navy with Gold Accent */
         body {
             background: var(--bg-app);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         }
         .app-bar {
-            height: 52px;
+            height: 56px;
             padding: 0 var(--spacing-lg);
             background: var(--color-deep-navy);
-            border-bottom: 2px solid var(--color-accent-gold);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-bottom: 3px solid var(--color-accent-gold);
+            box-shadow: var(--shadow-md);
         }
         .app-bar-left {
             display: flex;
@@ -197,16 +193,16 @@
             border-radius: 50%;
             flex-shrink: 0;
         }
-        .legend-dot.available { background: #059669; }
-        .legend-dot.reserved { background: #1E40AF; }
-        .legend-dot.blocked { background: #D97706; }
-        .legend-dot.unavailable { background: #DC2626; }
+        .legend-dot.available { background: var(--color-success); }
+        .legend-dot.reserved { background: var(--color-primary); }
+        .legend-dot.blocked { background: var(--color-warning); }
+        .legend-dot.unavailable { background: var(--color-danger); }
         
-        /* Architectural Croquis - Professional Blueprint */
+        /* Architectural Croquis - Professional Blueprint Style */
         .floor-plan-container {
             flex: 1;
             min-height: 0;
-            background: #F8FAFC;
+            background: #FAFAFA;
             overflow: auto;
             position: relative;
             padding: var(--spacing-md);
@@ -214,26 +210,19 @@
         .floor-plan-canvas {
             position: relative;
             width: 100%;
-            height: 100%;
-            min-height: 400px;
+            min-height: 100%;
             background: #FFFFFF;
             background-image: 
-                /* Subtle blueprint grid */
-                linear-gradient(rgba(15, 23, 42, 0.015) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(15, 23, 42, 0.015) 1px, transparent 1px);
-            background-size: 30px 30px;
-            border-radius: var(--radius-md);
-            border: 1px solid rgba(15, 23, 42, 0.08);
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.03);
+                /* Subtle blueprint grid - architectural feel */
+                linear-gradient(rgba(15, 23, 42, 0.012) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(15, 23, 42, 0.012) 1px, transparent 1px);
+            background-size: 20px 20px;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+            min-width: 400px;
+            min-height: 400px;
             position: relative;
-        }
-        
-        /* Ensure floor plan fits on iPad without scrolling */
-        @media (min-width: 768px) and (max-width: 1024px) {
-            .floor-plan-canvas {
-                min-height: 500px;
-                max-height: 600px;
-            }
         }
         
         /* Architectural Floor Objects - Minimal, Elegant */
@@ -244,20 +233,20 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 1px solid;
-            border-radius: 4px;
         }
         .floor-object[data-object-type="entrance"] {
-            background: rgba(241, 245, 249, 0.6);
-            border-color: rgba(15, 23, 42, 0.15);
+            background: rgba(241, 245, 249, 0.5);
+            border: 1px solid rgba(15, 23, 42, 0.12);
+            border-radius: 4px;
         }
         .floor-object[data-object-type="bar"] {
-            background: rgba(254, 252, 232, 0.4);
-            border-color: rgba(217, 174, 95, 0.3);
+            background: rgba(254, 252, 232, 0.3);
+            border: 1px solid rgba(217, 174, 95, 0.25);
+            border-radius: 4px;
         }
         .object-label {
             color: #475569;
-            font-weight: 600;
+            font-weight: 500;
             font-size: 10px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -300,16 +289,16 @@
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
         
-        /* Architectural Croquis - Professional Blueprint Style */
+        /* Architectural Croquis - Small, Elegant Tables */
         .table-node {
             position: absolute;
             user-select: none;
             cursor: pointer;
             z-index: 10;
-            transition: all 200ms ease;
+            transition: transform 150ms ease, opacity 150ms ease;
         }
         .table-node:hover {
-            transform: scale(1.15);
+            transform: scale(1.1);
             z-index: 100;
         }
         .table-node:active {
@@ -319,49 +308,53 @@
             z-index: 200;
         }
         .table-node.selected .table-shape {
-            outline: 2px solid rgba(217, 174, 95, 0.6);
+            outline: 1.5px solid rgba(217, 174, 95, 0.6);
             outline-offset: 2px;
         }
         
-        /* Elegant Table Shapes - Minimal, Architectural */
+        /* Architectural Table Shapes - Minimal, Elegant */
         .table-shape {
             position: relative;
-            border-radius: 6px;
+            border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
             border: 1px solid;
-            transition: all 200ms ease;
+            transition: all 150ms ease;
             background: #FFFFFF;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
         }
         
-        /* Muted, Elegant Status Colors */
+        /* Muted, Elegant Status Colors - Architectural Palette */
         .table-shape.available {
             background: #F7FDF9;
-            border-color: rgba(22, 163, 74, 0.3);
+            border-color: rgba(22, 163, 74, 0.25);
         }
         .table-shape.reserved {
             background: #F5F8FF;
-            border-color: rgba(11, 95, 255, 0.25);
+            border-color: rgba(30, 64, 175, 0.2);
         }
         .table-shape.blocked {
             background: #FFFBF5;
-            border-color: rgba(217, 174, 95, 0.35);
+            border-color: rgba(217, 174, 95, 0.3);
         }
         .table-shape.unavailable {
             background: #FDF5F5;
-            border-color: rgba(220, 38, 38, 0.25);
+            border-color: rgba(220, 38, 38, 0.2);
             opacity: 0.7;
+        }
+        .table-shape.selected {
+            outline: 1.5px solid rgba(217, 174, 95, 0.6);
+            outline-offset: 2px;
         }
         
         .table-number {
-            font-weight: 600;
-            font-size: 10px;
+            font-weight: 500;
+            font-size: 9px;
             color: #1E293B;
             text-align: center;
             line-height: 1.2;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.2px;
         }
         .table-shape.available .table-number { color: #065F46; }
         .table-shape.reserved .table-number { color: #1E40AF; }
@@ -373,7 +366,33 @@
             display: none;
         }
         
-        /* Floor Objects removed - using architectural style from above */
+        /* Floor Objects (Bar, Entrance) */
+        .floor-object {
+            position: absolute;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border: 2px solid var(--border-medium);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+        }
+        .floor-object[data-object-type="bar"] {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border-color: #475569;
+            min-width: 300px;
+            min-height: 80px;
+        }
+        .object-label {
+            font-weight: var(--font-weight-bold);
+            font-size: var(--font-size-sm);
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .floor-object[data-object-type="bar"] .object-label {
+            color: white;
+        }
         
         /* Table Info Items (in drawer) */
         .table-info-item {
@@ -539,25 +558,31 @@
                 display: none;
             }
             .dashboard-main {
-                grid-template-columns: 65% 35%;
+                grid-template-columns: 60% 40%;
                 gap: var(--spacing-md);
-                padding: var(--spacing-md);
             }
         }
         
         @media (min-width: 1024px) {
             .dashboard-main {
-                grid-template-columns: 65% 35%;
-                gap: var(--spacing-lg);
-                padding: var(--spacing-lg);
+                grid-template-columns: 60% 40%;
+                gap: var(--spacing-md);
             }
         }
         
-        /* Premium Card Styling - Elegant, Minimal */
+        /* Ensure floor plan fits on iPad without scrolling */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .floor-plan-canvas {
+                min-height: 500px;
+                max-height: 600px;
+            }
+        }
+        
+        /* Premium Card Styling - Compact, Modern */
         .card {
             background: var(--bg-card);
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-sm);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
             border: 1px solid var(--border-light);
             display: flex;
             flex-direction: column;
@@ -574,14 +599,13 @@
             background: var(--bg-card);
         }
         .card-title {
-            font-size: 15px;
-            font-weight: 600;
+            font-size: 16px;
+            font-weight: 700;
             color: var(--text-primary);
             margin: 0;
-            letter-spacing: -0.2px;
         }
         .card-body {
-            padding: var(--spacing-md);
+            padding: var(--spacing-lg);
             flex: 1;
             min-height: 0;
             overflow: hidden;
@@ -620,7 +644,31 @@
             flex-direction: column;
             gap: var(--spacing-sm);
         }
-        /* Duplicate removed - using architectural style from above */
+        .table-node {
+            position: absolute;
+            user-select: none;
+            cursor: pointer;
+            z-index: 10;
+            transform: scale(var(--table-scale, 1));
+            transition: transform 150ms ease, filter 150ms ease, box-shadow 150ms ease;
+        }
+        .table-node:hover {
+            transform: scale(calc(var(--table-scale, 1) * 1.05)) translateY(-2px);
+            filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.10));
+            z-index: 100;
+        }
+        .table-node:active {
+            transform: scale(calc(var(--table-scale, 1) * 0.98));
+            transition: transform 80ms ease;
+        }
+        .table-node.selected {
+            z-index: 200;
+        }
+        .table-node.selected .table-shape {
+            outline: 3px solid var(--color-primary);
+            outline-offset: 3px;
+            box-shadow: 0 0 0 6px rgba(11, 95, 255, 0.15);
+        }
         .table-info-panel {
             position: fixed;
             right: 2rem;
@@ -702,7 +750,56 @@
             background: #fee2e2;
             color: #991b1b;
         }
-        /* Duplicate removed - using architectural style from above */
+        .table-shape {
+            position: relative;
+            border: 1.5px solid;
+            background: linear-gradient(180deg, #f3f8ff 0%, #e8f1ff 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        }
+        .table-shape.available {
+            border-color: #10b981;
+            background: linear-gradient(180deg, #d1fae5 0%, #ecfdf5 100%);
+        }
+        .table-shape.reserved {
+            border-color: #3b82f6;
+            background: linear-gradient(180deg, #dbeafe 0%, #eff6ff 100%);
+        }
+        .table-shape.blocked {
+            border-color: #f59e0b;
+            background: linear-gradient(180deg, #fef3c7 0%, #fffbeb 100%);
+        }
+        .table-shape.unavailable {
+            border-color: #ef4444;
+            background: linear-gradient(180deg, #fee2e2 0%, #fef2f2 100%);
+        }
+        .table-number {
+            font-weight: 700;
+            color: #1d4ed8;
+            font-size: 11px;
+            line-height: 1;
+            pointer-events: none;
+        }
+        .table-shape.available .table-number { color: var(--color-success); font-weight: 700; }
+        .table-shape.reserved .table-number { color: var(--color-primary); font-weight: 700; }
+        .table-shape.blocked .table-number { color: var(--color-warning); font-weight: 700; }
+        .table-shape.unavailable .table-number { color: var(--color-danger); font-weight: 700; }
+        .seat {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            transform: translate(-50%, -50%);
+            opacity: 0.9;
+        }
+        .table-shape.available .seat { background: var(--color-success); }
+        .table-shape.reserved .seat { background: var(--color-primary); }
+        .table-shape.blocked .seat { background: var(--color-warning); }
+        .table-shape.unavailable .seat { background: var(--color-danger); }
         .status-legend {
             display: flex;
             gap: 0.75rem;
@@ -726,7 +823,10 @@
             border-radius: 999px;
             flex-shrink: 0;
         }
-        /* Duplicate removed - using muted colors from above */
+        .legend-dot.available { background: #10b981; }
+        .legend-dot.reserved { background: #3b82f6; }
+        .legend-dot.blocked { background: #f59e0b; }
+        .legend-dot.unavailable { background: #ef4444; }
         .legend-color {
             display: none;
         }
@@ -746,17 +846,48 @@
             background: linear-gradient(180deg, #fee2e2 0%, #fef2f2 100%);
             border-color: #ef4444;
         }
-        /* Duplicate removed - using architectural style from above */
-        /* Premium Reservation Cards - Elegant, Compact */
+        .floor-object {
+            position: absolute;
+            background: #6b7280;
+            border: 2px solid #4b5563;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+        .floor-object[data-object-type="entrance"] {
+            background: #10b981;
+            border-color: #059669;
+        }
+        .floor-object[data-object-type="bar"] {
+            background: #8b5cf6;
+            border-color: #7c3aed;
+        }
+        .object-label {
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        .table-label {
+            font-size: 11px;
+            margin-top: 4px;
+            text-align: center;
+            color: #111827;
+            font-weight: 700;
+            pointer-events: none;
+        }
+        /* Clean Reservation Cards */
         .reservation-card {
-            background: var(--bg-card);
+            background: var(--bg-primary);
             border: 1px solid var(--border-light);
             border-radius: var(--radius-md);
             padding: var(--spacing-md);
             cursor: pointer;
-            transition: all var(--transition-fast);
+            transition: all var(--transition-base);
             box-shadow: var(--shadow-sm);
-            margin-bottom: var(--spacing-sm);
         }
         .reservation-card:hover {
             border-color: var(--color-primary);
@@ -935,41 +1066,28 @@
             gap: 1rem;
             justify-content: flex-end;
         }
-        /* iOS-Style Compact Buttons */
         .btn-primary {
-            padding: var(--spacing-sm) var(--spacing-lg);
-            background: var(--color-primary);
+            padding: 0.75rem 1.5rem;
+            background: #004A9F;
             color: white;
             border: none;
-            border-radius: var(--radius-md);
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 14px;
-            transition: all var(--transition-fast);
+            font-size: 1rem;
         }
-        .btn-primary:hover { 
-            background: var(--color-primary-dark);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-sm);
-        }
-        .btn-primary:active {
-            transform: translateY(0);
-        }
+        .btn-primary:hover { background: #003d82; }
         .btn-secondary {
-            padding: var(--spacing-sm) var(--spacing-lg);
-            background: var(--bg-card);
-            color: var(--text-secondary);
-            border: 1px solid var(--border-light);
-            border-radius: var(--radius-md);
+            padding: 0.75rem 1.5rem;
+            background: #6b7280;
+            color: white;
+            border: none;
+            border-radius: 8px;
             cursor: pointer;
-            font-weight: 500;
-            font-size: 14px;
-            transition: all var(--transition-fast);
+            font-weight: 600;
+            font-size: 1rem;
         }
-        .btn-secondary:hover { 
-            background: rgba(15, 23, 42, 0.03);
-            border-color: var(--text-secondary);
-        }
+        .btn-secondary:hover { background: #4b5563; }
         .loading {
             text-align: center;
             padding: 2rem;
@@ -1105,41 +1223,19 @@
             justify-content: flex-end;
         }
         .btn-danger {
-            padding: var(--spacing-sm) var(--spacing-lg);
-            background: var(--color-danger);
+            padding: 0.75rem 1.5rem;
+            background: #dc2626;
             color: white;
             border: none;
-            border-radius: var(--radius-md);
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 14px;
-            transition: all var(--transition-fast);
+            font-size: 1rem;
         }
-        .btn-danger:hover { 
-            background: #B91C1C;
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-sm);
-        }
-        .btn-danger:active {
-            transform: translateY(0);
-        }
-        .btn-sm {
-            padding: var(--spacing-xs) var(--spacing-md);
-            font-size: 13px;
-        }
-        .btn-icon {
-            padding: var(--spacing-xs);
-            background: transparent;
-            border: none;
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: all var(--transition-fast);
-        }
-        .btn-icon:hover {
-            background: rgba(15, 23, 42, 0.05);
+        .btn-danger:hover { background: #b91c1c; }
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
         }
     </style>
 </head>
@@ -2465,30 +2561,21 @@
                 shape.style.width = `${renderW}px`;
                 shape.style.height = `${renderH}px`;
                 
-                // Table number (centered)
+                // Table number (centered) - architectural style
                 const tableNumber = document.createElement('div');
                 tableNumber.className = 'table-number';
                 tableNumber.textContent = table.table_number || table.name || '?';
                 shape.appendChild(tableNumber);
                 
-                // Calculate seat positions using render dimensions
-                const seats = getSeatPositions(table.seats, renderW, renderH);
-                
-                // Create seats
-                seats.forEach(pos => {
-                    const seat = document.createElement('div');
-                    seat.className = 'seat';
-                    seat.style.left = `${pos.x}px`;
-                    seat.style.top = `${pos.y}px`;
-                    shape.appendChild(seat);
-                });
+                // No seat dots for architectural croquis style
                 
                 node.appendChild(shape);
                 
-                // Label (optional, shows name if different from number)
+                // Label (optional, shows name if different from number) - architectural style
                 if (table.name && table.name !== `Table ${table.table_number}`) {
                     const label = document.createElement('div');
                     label.className = 'table-label';
+                    label.style.cssText = 'position: absolute; bottom: -14px; left: 50%; transform: translateX(-50%); font-size: 8px; color: #64748B; font-weight: 400; white-space: nowrap;';
                     label.textContent = table.name;
                     node.appendChild(label);
                 }
