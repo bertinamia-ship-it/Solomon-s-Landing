@@ -12,18 +12,21 @@
            PREMIUM MOBILE APP UI - PHASE 2 DESIGN
            ============================================ */
         
-        /* Premium Color Palette */
+        /* Premium Color Palette - PHASE 3: Branded Premium Theme */
         :root {
             --color-primary: #0B5FFF;
             --color-primary-dark: #0043CC;
+            --color-accent-gold: #D9AE5F;
+            --color-deep-navy: #0B1220;
             --color-success: #16A34A;
             --color-warning: #F59E0B;
             --color-danger: #DC2626;
-            --bg-app: #F7F9FC;
+            --bg-app: linear-gradient(135deg, #F7F9FC 0%, #EEF4FF 50%, #F7F9FC 100%);
             --bg-card: #FFFFFF;
             --text-primary: #0F172A;
             --text-secondary: #475569;
             --text-muted: #94A3B8;
+            --text-on-dark: #FFFFFF;
             --border-light: #E2E8F0;
             --spacing-xs: 4px;
             --spacing-sm: 8px;
@@ -35,30 +38,107 @@
             --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
             --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
             --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
         }
         
-        /* Compact App Shell */
+        /* Premium App Shell - Deep Navy with Gold Accent */
+        body {
+            background: var(--bg-app);
+        }
         .app-bar {
-            height: 48px;
-            padding: 0 var(--spacing-md);
-            background: var(--bg-card);
-            border-bottom: 1px solid var(--border-light);
+            height: 56px;
+            padding: 0 var(--spacing-lg);
+            background: var(--color-deep-navy);
+            border-bottom: 3px solid var(--color-accent-gold);
+            box-shadow: var(--shadow-md);
+        }
+        .app-bar-left {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
         }
         .app-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--text-primary);
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-on-dark);
+            margin: 0;
         }
         .app-logo {
-            height: 24px;
+            height: 28px;
+            filter: brightness(0) invert(1);
         }
         .role-chip {
-            padding: 2px var(--spacing-sm);
+            padding: 3px var(--spacing-sm);
             font-size: 10px;
-            font-weight: 600;
-            background: var(--color-primary);
-            color: white;
+            font-weight: 700;
+            background: var(--color-accent-gold);
+            color: var(--color-deep-navy);
             border-radius: var(--radius-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .app-bar-right {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+        .app-bar-right .btn {
+            color: var(--text-on-dark);
+        }
+        .app-bar-right .btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Premium Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            background: var(--bg-card);
+            border-bottom: 2px solid var(--border-light);
+            padding: 0 var(--spacing-lg);
+            gap: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+        }
+        .nav-tab {
+            padding: var(--spacing-md) var(--spacing-lg);
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-secondary);
+            transition: all 150ms ease;
+            position: relative;
+            margin-bottom: -2px;
+        }
+        .nav-tab:hover {
+            color: var(--color-primary);
+            background: rgba(11, 95, 255, 0.05);
+        }
+        .nav-tab.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+        }
+        .nav-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--color-primary);
+        }
+        
+        /* Tab Content Sections */
+        .tab-content {
+            display: none;
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+        }
+        .tab-content.active {
+            display: flex;
+            flex-direction: column;
         }
         
         /* Segmented Control for Area Tabs (iOS-style) */
@@ -118,28 +198,68 @@
         .legend-dot.blocked { background: var(--color-warning); }
         .legend-dot.unavailable { background: var(--color-danger); }
         
-        /* Floor Plan Container - Compact, Premium */
+        /* Architect-Style Floor Plan - Blueprint Card */
         .floor-plan-container {
             flex: 1;
             min-height: 0;
-            background: var(--bg-app);
+            background: linear-gradient(135deg, #E8F0FE 0%, #F0F7FF 100%);
             overflow: auto;
             position: relative;
-            padding: var(--spacing-md);
+            padding: var(--spacing-lg);
         }
         .floor-plan-canvas {
             position: relative;
             width: 100%;
             min-height: 100%;
-            background: var(--bg-card);
+            background: #F8FAFC;
             background-image: 
-                /* Subtle grid */
-                linear-gradient(rgba(0,0,0,0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px);
-            background-size: 20px 20px;
-            border-radius: var(--radius-md);
+                /* Blueprint grid - subtle */
+                linear-gradient(rgba(11, 18, 32, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(11, 18, 32, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            border-radius: var(--radius-lg);
+            border: 2px solid rgba(11, 18, 32, 0.08);
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05), 0 4px 16px rgba(0, 0, 0, 0.1);
             min-width: 400px;
             min-height: 400px;
+            position: relative;
+        }
+        
+        /* Blueprint Zones: Walls, Entrance, Bar */
+        .floor-zone {
+            position: absolute;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .zone-wall {
+            background: rgba(11, 18, 32, 0.15);
+            border: 2px dashed rgba(11, 18, 32, 0.3);
+        }
+        .zone-entrance {
+            background: rgba(22, 163, 74, 0.08);
+            border: 2px solid rgba(22, 163, 74, 0.3);
+            border-radius: var(--radius-md);
+        }
+        .zone-bar {
+            background: rgba(217, 174, 95, 0.12);
+            border: 3px solid rgba(217, 174, 95, 0.4);
+            border-radius: var(--radius-md);
+        }
+        .zone-aisle {
+            background: rgba(11, 18, 32, 0.02);
+            border: 1px dashed rgba(11, 18, 32, 0.15);
+        }
+        .zone-label {
+            position: absolute;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--color-deep-navy);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 2px 6px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
         
         /* Professional Table Design - Uniform, Aligned */
@@ -162,37 +282,52 @@
             z-index: 200;
         }
         .table-node.selected .table-shape {
-            outline: 3px solid var(--color-primary);
-            outline-offset: 4px;
-            box-shadow: 0 0 0 8px rgba(0, 74, 159, 0.15);
+            transform: scale(1.05);
+            box-shadow: 
+                inset 0 2px 4px rgba(0, 0, 0, 0.1),
+                0 0 0 4px rgba(11, 95, 255, 0.2),
+                0 4px 16px rgba(11, 95, 255, 0.3);
+            z-index: 200;
         }
         
+        /* Architect-Style Table Nodes - Furniture Blocks */
         .table-shape {
             position: relative;
-            border-radius: var(--radius-md);
+            border-radius: var(--radius-sm);
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            border: 2px solid;
-            transition: all var(--transition-fast);
+            box-shadow: 
+                inset 0 2px 4px rgba(0, 0, 0, 0.1),
+                0 2px 8px rgba(0, 0, 0, 0.15);
+            border: 2.5px solid;
+            transition: all 150ms ease;
+            background: white;
         }
         .table-shape.available {
-            background: #F0FDF4;
-            border: 2px solid var(--color-success);
+            background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%);
+            border-color: var(--color-success);
         }
         .table-shape.reserved {
-            background: #EFF6FF;
-            border: 2px solid var(--color-primary);
+            background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+            border-color: var(--color-primary);
         }
         .table-shape.blocked {
-            background: #FFFBEB;
-            border: 2px solid var(--color-warning);
+            background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+            border-color: var(--color-warning);
         }
         .table-shape.unavailable {
-            background: #FEF2F2;
-            border: 2px solid var(--color-danger);
-            opacity: 0.7;
+            background: linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 100%);
+            border-color: var(--color-danger);
+            opacity: 0.65;
+        }
+        .table-shape.selected {
+            transform: scale(1.05);
+            box-shadow: 
+                inset 0 2px 4px rgba(0, 0, 0, 0.1),
+                0 0 0 4px rgba(11, 95, 255, 0.2),
+                0 4px 16px rgba(11, 95, 255, 0.3);
+            z-index: 200;
         }
         
         .table-number {
@@ -315,6 +450,13 @@
         
         /* Responsive Layout - Mobile First */
         @media (max-width: 768px) {
+            .nav-tabs {
+                padding: 0 var(--spacing-md);
+            }
+            .nav-tab {
+                padding: var(--spacing-sm) var(--spacing-md);
+                font-size: 13px;
+            }
             .dashboard-main {
                 grid-template-columns: 1fr;
                 padding: var(--spacing-sm);
@@ -1051,69 +1193,22 @@
         </div>
     </div>
 
-    <!-- Secondary Controls Row (Date/Time/Today) -->
-    <div class="controls-bar-secondary">
-        <div class="controls-group">
-            <label>Date:</label>
-            <input type="date" id="selectedDate" class="input input-sm" onchange="loadFloorPlan()">
-        </div>
-        <div class="controls-group">
-            <label>Time:</label>
-            <select id="selectedTime" class="input input-sm" onchange="loadFloorPlan()">
-                <option value="17:30">5:30 PM</option>
-                <option value="18:00">6:00 PM</option>
-                <option value="18:30">6:30 PM</option>
-                <option value="19:00">7:00 PM</option>
-                <option value="19:30">7:30 PM</option>
-                <option value="20:00">8:00 PM</option>
-                <option value="20:30">8:30 PM</option>
-                <option value="21:00">9:00 PM</option>
-                <option value="21:30">9:30 PM</option>
-            </select>
-        </div>
-        <button class="btn btn-primary btn-sm" onclick="setToday()">Today</button>
+    <!-- Premium Navigation Tabs -->
+    <div class="nav-tabs">
+        <button class="nav-tab active" onclick="switchMainTab('reservations')" data-tab="reservations">Reservations</button>
+        <button class="nav-tab" onclick="switchMainTab('assignment')" data-tab="assignment">Assignment</button>
     </div>
 
-    <!-- Area Tabs Bar -->
-    <div class="controls-bar">
-        <div class="controls-group" style="flex: 1;">
-            <div class="segmented-control">
-                <button class="area-tab active" id="areaMainFloor" onclick="switchArea('Main Floor')">Main Floor</button>
-                <button class="area-tab" id="areaSushiBar" onclick="switchArea('Sushi Bar')">Sushi Bar</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Content (Fixed Height, No Scroll) -->
-    <div class="dashboard-main">
-        <!-- LEFT: Floor Plan Card -->
-        <div class="card">
-            <div class="card-header">
-                <h2 class="card-title">Floor Plan</h2>
-                <div class="status-legend">
-                    <div class="legend-item"><div class="legend-dot available"></div><span>Available</span></div>
-                    <div class="legend-item"><div class="legend-dot reserved"></div><span>Reserved</span></div>
-                    <div class="legend-item"><div class="legend-dot blocked"></div><span>Blocked</span></div>
-                    <div class="legend-item"><div class="legend-dot unavailable"></div><span>Unavailable</span></div>
-                </div>
-            </div>
-            <div class="card-body" style="padding: 0; display: flex; flex-direction: column; flex: 1; min-height: 0;">
-                <div class="floor-plan-container">
-                    <div id="floorPlanCanvas" class="floor-plan-canvas">
-                        <div class="loading">Loading floor plan...</div>
-                    </div>
-                </div>
-        </div>
-
-        <!-- RIGHT: Reservations Card -->
-        <div class="card">
+    <!-- Tab Content: Reservations -->
+    <div id="tabReservations" class="tab-content active">
+        <div class="card" style="flex: 1; min-height: 0; display: flex; flex-direction: column; margin: var(--spacing-lg);">
             <div class="card-header">
                 <h2 class="card-title">Reservations</h2>
-                <button class="btn btn-primary btn-sm" onclick="openQuickAddModal()" style="padding: var(--spacing-xs) var(--spacing-sm); font-size: var(--font-size-xs);">
+                <button class="btn btn-primary btn-sm" onclick="openQuickAddModal()">
                     <span>+</span> <span class="btn-text">Create</span>
                 </button>
             </div>
-            <div class="card-body" style="display: flex; flex-direction: column; gap: var(--spacing-md);">
+            <div class="card-body" style="display: flex; flex-direction: column; gap: var(--spacing-md); flex: 1; min-height: 0; overflow: hidden;">
                 <!-- Search & Filters -->
                 <div style="display: flex; flex-direction: column; gap: var(--spacing-sm); flex-shrink: 0;">
                     <div style="position: relative;">
@@ -1135,6 +1230,65 @@
                 
                 <div id="reservationsList" class="reservations-list" style="flex: 1 1 auto; overflow-y: auto;">
                     <div class="loading">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab Content: Assignment (Floor Plan) -->
+    <div id="tabAssignment" class="tab-content">
+        <!-- Secondary Controls Row (Date/Time/Today) -->
+        <div class="controls-bar-secondary">
+            <div class="controls-group">
+                <label>Date:</label>
+                <input type="date" id="selectedDate" class="input input-sm" onchange="loadFloorPlan()">
+            </div>
+            <div class="controls-group">
+                <label>Time:</label>
+                <select id="selectedTime" class="input input-sm" onchange="loadFloorPlan()">
+                    <option value="17:30">5:30 PM</option>
+                    <option value="18:00">6:00 PM</option>
+                    <option value="18:30">6:30 PM</option>
+                    <option value="19:00">7:00 PM</option>
+                    <option value="19:30">7:30 PM</option>
+                    <option value="20:00">8:00 PM</option>
+                    <option value="20:30">8:30 PM</option>
+                    <option value="21:00">9:00 PM</option>
+                    <option value="21:30">9:30 PM</option>
+                </select>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="setToday()">Today</button>
+        </div>
+
+        <!-- Area Tabs Bar -->
+        <div class="controls-bar">
+            <div class="controls-group" style="flex: 1;">
+                <div class="segmented-control">
+                    <button class="area-tab active" id="areaMainFloor" onclick="switchArea('Main Floor')">Main Floor</button>
+                    <button class="area-tab" id="areaSushiBar" onclick="switchArea('Sushi Bar')">Sushi Bar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content (Fixed Height, No Scroll) -->
+        <div class="dashboard-main">
+            <!-- LEFT: Floor Plan Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Floor Plan</h2>
+                    <div class="status-legend">
+                        <div class="legend-item"><div class="legend-dot available"></div><span>Available</span></div>
+                        <div class="legend-item"><div class="legend-dot reserved"></div><span>Reserved</span></div>
+                        <div class="legend-item"><div class="legend-dot blocked"></div><span>Blocked</span></div>
+                        <div class="legend-item"><div class="legend-dot unavailable"></div><span>Unavailable</span></div>
+                    </div>
+                </div>
+                <div class="card-body" style="padding: 0; display: flex; flex-direction: column; flex: 1; min-height: 0;">
+                    <div class="floor-plan-container">
+                        <div id="floorPlanCanvas" class="floor-plan-canvas">
+                            <div class="loading">Loading floor plan...</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -3457,6 +3611,29 @@
             showMobileTab('floor-plan');
         }
         
+        // Premium Navigation - Switch Main Tabs
+        function switchMainTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            // Remove active from all nav tabs
+            document.querySelectorAll('.nav-tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            // Show selected tab
+            const tabContent = document.getElementById(`tab${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`);
+            const navBtn = document.querySelector(`[data-tab="${tabName}"]`);
+            if (tabContent) tabContent.classList.add('active');
+            if (navBtn) navBtn.classList.add('active');
+            // Persist to localStorage (UI-only)
+            localStorage.setItem('hostessActiveTab', tabName);
+            // If switching to assignment, ensure floor plan loads
+            if (tabName === 'assignment') {
+                loadFloorPlan();
+            }
+        }
+        
         // Handle window resize for mobile/desktop switch
         let resizeTimer;
         window.addEventListener('resize', () => {
@@ -3476,6 +3653,14 @@
                     cards.forEach(card => card.style.display = 'flex');
                 }
             }, 150);
+        });
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDashboard();
+            // Restore active tab from localStorage
+            const savedTab = localStorage.getItem('hostessActiveTab') || 'reservations';
+            switchMainTab(savedTab);
         });
     </script>
     </div>
