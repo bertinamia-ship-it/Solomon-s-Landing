@@ -2508,7 +2508,7 @@
                     
                     const label = document.createElement('div');
                     label.className = 'object-label';
-                    label.textContent = layoutItem.type.charAt(0).toUpperCase() + layoutItem.type.slice(1);
+                    label.textContent = layoutItem.type === 'entrance' ? 'ENTRANCE' : layoutItem.type === 'bar' ? 'BAR' : layoutItem.type.toUpperCase();
                     node.appendChild(label);
                     
                     canvas.appendChild(node);
