@@ -644,31 +644,6 @@
             flex-direction: column;
             gap: var(--spacing-sm);
         }
-        .table-node {
-            position: absolute;
-            user-select: none;
-            cursor: pointer;
-            z-index: 10;
-            transform: scale(var(--table-scale, 1));
-            transition: transform 150ms ease, filter 150ms ease, box-shadow 150ms ease;
-        }
-        .table-node:hover {
-            transform: scale(calc(var(--table-scale, 1) * 1.05)) translateY(-2px);
-            filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.10));
-            z-index: 100;
-        }
-        .table-node:active {
-            transform: scale(calc(var(--table-scale, 1) * 0.98));
-            transition: transform 80ms ease;
-        }
-        .table-node.selected {
-            z-index: 200;
-        }
-        .table-node.selected .table-shape {
-            outline: 3px solid var(--color-primary);
-            outline-offset: 3px;
-            box-shadow: 0 0 0 6px rgba(11, 95, 255, 0.15);
-        }
         .table-info-panel {
             position: fixed;
             right: 2rem;
@@ -750,56 +725,7 @@
             background: #fee2e2;
             color: #991b1b;
         }
-        .table-shape {
-            position: relative;
-            border: 1.5px solid;
-            background: linear-gradient(180deg, #f3f8ff 0%, #e8f1ff 100%);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-        }
-        .table-shape.available {
-            border-color: #10b981;
-            background: linear-gradient(180deg, #d1fae5 0%, #ecfdf5 100%);
-        }
-        .table-shape.reserved {
-            border-color: #3b82f6;
-            background: linear-gradient(180deg, #dbeafe 0%, #eff6ff 100%);
-        }
-        .table-shape.blocked {
-            border-color: #f59e0b;
-            background: linear-gradient(180deg, #fef3c7 0%, #fffbeb 100%);
-        }
-        .table-shape.unavailable {
-            border-color: #ef4444;
-            background: linear-gradient(180deg, #fee2e2 0%, #fef2f2 100%);
-        }
-        .table-number {
-            font-weight: 700;
-            color: #1d4ed8;
-            font-size: 11px;
-            line-height: 1;
-            pointer-events: none;
-        }
-        .table-shape.available .table-number { color: var(--color-success); font-weight: 700; }
-        .table-shape.reserved .table-number { color: var(--color-primary); font-weight: 700; }
-        .table-shape.blocked .table-number { color: var(--color-warning); font-weight: 700; }
-        .table-shape.unavailable .table-number { color: var(--color-danger); font-weight: 700; }
-        .seat {
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            border-radius: 999px;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-            transform: translate(-50%, -50%);
-            opacity: 0.9;
-        }
-        .table-shape.available .seat { background: var(--color-success); }
-        .table-shape.reserved .seat { background: var(--color-primary); }
-        .table-shape.blocked .seat { background: var(--color-warning); }
-        .table-shape.unavailable .seat { background: var(--color-danger); }
+        /* Duplicate removed - using architectural style from above */
         .status-legend {
             display: flex;
             gap: 0.75rem;
@@ -846,39 +772,7 @@
             background: linear-gradient(180deg, #fee2e2 0%, #fef2f2 100%);
             border-color: #ef4444;
         }
-        .floor-object {
-            position: absolute;
-            background: #6b7280;
-            border: 2px solid #4b5563;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            pointer-events: none;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-        }
-        .floor-object[data-object-type="entrance"] {
-            background: #10b981;
-            border-color: #059669;
-        }
-        .floor-object[data-object-type="bar"] {
-            background: #8b5cf6;
-            border-color: #7c3aed;
-        }
-        .object-label {
-            color: white;
-            font-weight: 600;
-            font-size: 14px;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-        }
-        .table-label {
-            font-size: 11px;
-            margin-top: 4px;
-            text-align: center;
-            color: #111827;
-            font-weight: 700;
-            pointer-events: none;
-        }
+        /* Duplicate removed - using architectural style from above */
         /* Clean Reservation Cards */
         .reservation-card {
             background: var(--bg-primary);
