@@ -8,14 +8,81 @@
     <link rel="stylesheet" href="assets/css/reservations-app.css">
     <link rel="stylesheet" href="assets/css/app-dashboard.css">
     <style>
-        /* Admin Dashboard Specific Styles - Premium Mobile-First */
-        /* Scoped to prevent CSS leaking to other pages */
+        /* Admin Dashboard - Premium Mobile App Design */
+        /* Scoped to prevent CSS leaking */
         
-        .admin-dashboard-wrapper {
-            /* Root wrapper - all admin styles are scoped here */
+        :root {
+            --color-primary: #0B5FFF;
+            --color-primary-dark: #0043CC;
+            --color-success: #16A34A;
+            --color-warning: #F59E0B;
+            --color-danger: #DC2626;
+            --bg-app: #F7F9FC;
+            --bg-card: #FFFFFF;
+            --text-primary: #0F172A;
+            --text-secondary: #475569;
+            --text-muted: #94A3B8;
+            --border-light: #E2E8F0;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 12px;
+            --spacing-lg: 16px;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         
-        /* Override for admin-specific layouts */
+        .admin-dashboard-wrapper {
+            background: var(--bg-app);
+            min-height: 100vh;
+        }
+        
+        /* Admin App Shell */
+        .admin-dashboard-wrapper .app-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .admin-dashboard-wrapper .app-bar {
+            height: 48px;
+            padding: 0 var(--spacing-md);
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-light);
+            flex-shrink: 0;
+        }
+        .admin-dashboard-wrapper .app-bar-left {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        .admin-dashboard-wrapper .app-logo {
+            height: 24px;
+        }
+        .admin-dashboard-wrapper .app-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        .admin-dashboard-wrapper .role-chip {
+            padding: 2px var(--spacing-sm);
+            font-size: 10px;
+            font-weight: 600;
+            background: var(--color-primary);
+            color: white;
+            border-radius: var(--radius-sm);
+        }
+        .admin-dashboard-wrapper .app-bar-right {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+        
+        /* Admin Layout Grid */
         .admin-main-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -32,8 +99,8 @@
         .admin-section {
             background: var(--bg-card);
             border-radius: var(--radius-lg);
-            padding: var(--spacing-md);
-            box-shadow: var(--shadow-md);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow);
             border: 1px solid var(--border-light);
         }
         
@@ -41,8 +108,8 @@
             margin-top: 0;
             margin-bottom: var(--spacing-md);
             color: var(--text-primary);
-            font-size: var(--font-size-lg);
-            font-weight: var(--font-weight-semibold);
+            font-size: 18px;
+            font-weight: 600;
             border-bottom: 2px solid var(--border-light);
             padding-bottom: var(--spacing-sm);
         }
@@ -73,7 +140,7 @@
             border-color: var(--color-primary);
             box-shadow: 0 0 0 3px rgba(10, 37, 64, 0.1);
         }
-        /* Admin-specific button overrides - scoped to prevent conflicts */
+        /* Admin Button Styles - Compact, Premium */
         .admin-dashboard-wrapper .btn-primary {
             padding: var(--spacing-sm) var(--spacing-md);
             background: var(--color-primary);
@@ -81,9 +148,9 @@
             border: none;
             border-radius: var(--radius-md);
             cursor: pointer;
-            font-weight: var(--font-weight-semibold);
-            font-size: var(--font-size-sm);
-            transition: all var(--transition-base);
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 150ms ease;
         }
         .admin-dashboard-wrapper .btn-primary:hover:not(:disabled) {
             background: var(--color-primary-dark);
@@ -95,9 +162,9 @@
             border: none;
             border-radius: var(--radius-md);
             cursor: pointer;
-            font-weight: var(--font-weight-semibold);
-            font-size: var(--font-size-sm);
-            transition: all var(--transition-base);
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 150ms ease;
         }
         .admin-dashboard-wrapper .btn-secondary:hover:not(:disabled) {
             background: var(--text-secondary);
@@ -109,16 +176,16 @@
             border: none;
             border-radius: var(--radius-md);
             cursor: pointer;
-            font-weight: var(--font-weight-semibold);
-            font-size: var(--font-size-sm);
-            transition: all var(--transition-base);
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 150ms ease;
         }
         .admin-dashboard-wrapper .btn-danger:hover:not(:disabled) {
-            background: var(--color-danger-dark);
+            background: #B91C1C;
         }
-        .admin-dashboard-wrapper .btn-small {
+        .admin-dashboard-wrapper .btn-sm {
             padding: var(--spacing-xs) var(--spacing-sm);
-            font-size: var(--font-size-xs);
+            font-size: 11px;
         }
         .admin-dashboard-wrapper .tables-list {
             max-height: 600px;
@@ -146,13 +213,13 @@
             flex: 1;
         }
         .admin-dashboard-wrapper .table-name {
-            font-weight: var(--font-weight-semibold);
+            font-weight: 600;
             color: var(--text-primary);
             margin-bottom: var(--spacing-xs);
-            font-size: var(--font-size-base);
+            font-size: 15px;
         }
         .admin-dashboard-wrapper .table-details {
-            font-size: var(--font-size-sm);
+            font-size: 13px;
             color: var(--text-muted);
         }
         .admin-dashboard-wrapper .table-actions {
@@ -165,47 +232,56 @@
         .admin-dashboard-wrapper .area-group h3 {
             color: var(--color-primary);
             margin-bottom: var(--spacing-md);
-            font-size: var(--font-size-lg);
+            font-size: 16px;
+            font-weight: 600;
         }
         .admin-dashboard-wrapper .floor-plan-container {
             position: relative;
             border: 1px solid var(--border-light);
             border-radius: var(--radius-lg);
-            background: var(--bg-secondary);
+            background: var(--bg-app);
             min-height: 500px;
             overflow: auto;
         }
-        .floor-plan-canvas {
+        .admin-dashboard-wrapper .floor-plan-canvas {
             position: relative;
             width: 100%;
             height: 600px;
-            background: #fafafa;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
             overflow: auto;
             background-image: 
                 linear-gradient(rgba(0,0,0,0.02) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px);
             background-size: 20px 20px;
         }
-        .layout-controls {
+        .admin-dashboard-wrapper .layout-controls {
             display: flex;
-            gap: 1rem;
+            gap: var(--spacing-md);
             align-items: center;
-            margin-bottom: 1rem;
+            margin-bottom: var(--spacing-md);
             flex-wrap: wrap;
         }
-        .layout-controls select {
-            padding: 0.75rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 1rem;
-            min-width: 200px;
+        .admin-dashboard-wrapper .layout-controls select {
+            padding: var(--spacing-sm);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            min-width: 150px;
+            background: var(--bg-card);
         }
-        .hint {
-            color: #6b7280;
+        .admin-dashboard-wrapper .hint {
+            color: var(--text-muted);
             font-style: italic;
-            font-size: 0.9rem;
+            font-size: 12px;
+        }
+        .admin-dashboard-wrapper .floor-plan-controls {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+            align-items: center;
+            flex-wrap: wrap;
         }
         .table-node {
             position: absolute;
@@ -267,14 +343,14 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.15);
         }
         
-        .floor-object[data-object-type="entrance"] {
-            background: #10b981;
-            border-color: #059669;
+        .admin-dashboard-wrapper .floor-object[data-object-type="entrance"] {
+            background: var(--color-success);
+            border-color: #16A34A;
         }
         
-        .floor-object[data-object-type="bar"] {
-            background: #8b5cf6;
-            border-color: #7c3aed;
+        .admin-dashboard-wrapper .floor-object[data-object-type="bar"] {
+            background: var(--color-primary);
+            border-color: var(--color-primary-dark);
         }
         
         .floor-object.selected {
@@ -367,71 +443,73 @@
             from { transform: translateY(20px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
-        /* Reservation List Styles */
-        .reservation-item {
-            padding: 1rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            margin-bottom: 0.75rem;
+        /* Premium Reservation List Styles */
+        .admin-dashboard-wrapper .reservation-item {
+            padding: var(--spacing-md);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-sm);
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 150ms ease;
+            background: var(--bg-card);
         }
-        .reservation-item:hover {
-            border-color: #004A9F;
-            box-shadow: 0 2px 8px rgba(0,74,159,0.1);
+        .admin-dashboard-wrapper .reservation-item:hover {
+            border-color: var(--color-primary);
+            box-shadow: var(--shadow-sm);
+            transform: translateY(-1px);
         }
-        .reservation-header {
+        .admin-dashboard-wrapper .reservation-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 0.5rem;
+            margin-bottom: var(--spacing-xs);
         }
-        .reservation-name {
+        .admin-dashboard-wrapper .reservation-name {
             font-weight: 600;
-            color: #1e293b;
-            font-size: 1.1rem;
+            color: var(--text-primary);
+            font-size: 15px;
         }
-        .status-pill {
-            padding: 0.25rem 0.75rem;
-            border-radius: 999px;
-            font-size: 0.85rem;
+        .admin-dashboard-wrapper .status-pill {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            font-size: 11px;
             font-weight: 600;
         }
-        .status-pill.pending {
+        .admin-dashboard-wrapper .status-pill.pending {
             background: rgba(245, 158, 11, 0.1);
-            color: #92400e;
+            color: var(--color-warning);
         }
-        .status-pill.confirmed {
-            background: rgba(16, 185, 129, 0.1);
-            color: #065f46;
+        .admin-dashboard-wrapper .status-pill.confirmed {
+            background: rgba(22, 163, 74, 0.1);
+            color: var(--color-success);
         }
-        .status-pill.seated {
-            background: rgba(59, 130, 246, 0.1);
-            color: #1e40af;
+        .admin-dashboard-wrapper .status-pill.seated {
+            background: rgba(11, 95, 255, 0.1);
+            color: var(--color-primary);
         }
-        .status-pill.completed {
-            background: rgba(107, 114, 128, 0.1);
-            color: #374151;
+        .admin-dashboard-wrapper .status-pill.completed {
+            background: rgba(148, 163, 184, 0.1);
+            color: var(--text-secondary);
         }
-        .status-pill.no_show {
-            background: rgba(239, 68, 68, 0.1);
-            color: #991b1b;
+        .admin-dashboard-wrapper .status-pill.no_show {
+            background: rgba(220, 38, 38, 0.1);
+            color: var(--color-danger);
         }
-        .status-pill.cancelled {
-            background: rgba(107, 114, 128, 0.1);
-            color: #6b7280;
+        .admin-dashboard-wrapper .status-pill.cancelled {
+            background: rgba(148, 163, 184, 0.1);
+            color: var(--text-muted);
         }
-        .reservation-details {
-            font-size: 0.9rem;
-            color: #6b7280;
+        .admin-dashboard-wrapper .reservation-details {
+            font-size: 12px;
+            color: var(--text-muted);
             display: flex;
-            gap: 1rem;
+            gap: var(--spacing-sm);
             flex-wrap: wrap;
         }
-        .reservation-details span {
+        .admin-dashboard-wrapper .reservation-details span {
             display: flex;
             align-items: center;
-            gap: 0.25rem;
+            gap: var(--spacing-xs);
         }
         /* Scoped admin styles - prevent CSS leaking */
         .admin-dashboard-wrapper {
@@ -463,21 +541,21 @@
                 
                 <div class="form-group">
                     <label>Add New Table</label>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 0.5rem;">
-                        <input type="number" id="newTableNumber" placeholder="Table #" min="1">
-                        <select id="newTableSeats">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: var(--spacing-sm);">
+                        <input type="number" id="newTableNumber" placeholder="Table #" min="1" class="input input-sm">
+                        <select id="newTableSeats" class="input input-sm">
                             <option value="2">2 seats</option>
                             <option value="4" selected>4 seats</option>
                             <option value="6">6 seats</option>
                         </select>
-                        <input type="text" id="newTableArea" placeholder="Area" list="areaList">
+                        <input type="text" id="newTableArea" placeholder="Area" list="areaList" class="input input-sm">
                         <datalist id="areaList">
                             <option value="Main Floor">
                             <option value="Sushi Bar">
                         </datalist>
                         <button class="btn btn-primary btn-sm" onclick="addTable()">Add</button>
                     </div>
-                    <input type="text" id="newTableName" placeholder="Name (optional)" style="margin-top: 0.5rem;">
+                    <input type="text" id="newTableName" placeholder="Name (optional)" class="input input-sm" style="margin-top: var(--spacing-sm);">
                 </div>
 
                 <div id="tablesList" class="tables-list">

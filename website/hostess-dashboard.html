@@ -9,66 +9,103 @@
     <link rel="stylesheet" href="assets/css/app-dashboard.css">
     <style>
         /* ============================================
-           MOBILE-FIRST APP UI REDESIGN
+           PREMIUM MOBILE APP UI - PHASE 2 DESIGN
            ============================================ */
+        
+        /* Premium Color Palette */
+        :root {
+            --color-primary: #0B5FFF;
+            --color-primary-dark: #0043CC;
+            --color-success: #16A34A;
+            --color-warning: #F59E0B;
+            --color-danger: #DC2626;
+            --bg-app: #F7F9FC;
+            --bg-card: #FFFFFF;
+            --text-primary: #0F172A;
+            --text-secondary: #475569;
+            --text-muted: #94A3B8;
+            --border-light: #E2E8F0;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 12px;
+            --spacing-lg: 16px;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
         
         /* Compact App Shell */
         .app-bar {
-            height: 56px;
-            padding: 0 var(--spacing-sm);
+            height: 48px;
+            padding: 0 var(--spacing-md);
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-light);
         }
         .app-title {
-            font-size: var(--font-size-base);
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
         }
         .app-logo {
-            height: 28px;
+            height: 24px;
         }
         .role-chip {
-            padding: 2px var(--spacing-xs);
+            padding: 2px var(--spacing-sm);
             font-size: 10px;
+            font-weight: 600;
+            background: var(--color-primary);
+            color: white;
+            border-radius: var(--radius-sm);
         }
         
         /* Segmented Control for Area Tabs (iOS-style) */
         .segmented-control {
             display: inline-flex;
-            background: var(--bg-hover);
+            background: var(--bg-app);
             border-radius: var(--radius-md);
             padding: 2px;
             gap: 2px;
         }
         .area-tab {
-            padding: var(--spacing-xs) var(--spacing-sm);
+            padding: var(--spacing-xs) var(--spacing-md);
             background: transparent;
             border: none;
-            border-radius: calc(var(--radius-md) - 2px);
+            border-radius: var(--radius-sm);
             cursor: pointer;
-            font-weight: var(--font-weight-semibold);
-            font-size: var(--font-size-xs);
+            font-weight: 600;
+            font-size: 13px;
             color: var(--text-secondary);
-            transition: all var(--transition-fast);
+            transition: all 150ms ease;
             white-space: nowrap;
         }
         .area-tab:hover {
-            background: rgba(0, 0, 0, 0.05);
+            background: rgba(11, 95, 255, 0.08);
         }
         .area-tab.active {
-            background: var(--bg-primary);
+            background: var(--bg-card);
             color: var(--color-primary);
             box-shadow: var(--shadow-sm);
         }
         
-        /* Compact Status Legend */
+        /* Premium Status Legend (App Chips) */
         .status-legend {
             display: flex;
             gap: var(--spacing-xs);
             flex-wrap: wrap;
         }
         .legend-item {
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 4px;
-            font-size: 10px;
-            color: var(--text-muted);
+            gap: var(--spacing-xs);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            background: var(--bg-app);
+            border-radius: var(--radius-sm);
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-secondary);
         }
         .legend-dot {
             width: 8px;
@@ -76,33 +113,31 @@
             border-radius: 50%;
             flex-shrink: 0;
         }
+        .legend-dot.available { background: var(--color-success); }
+        .legend-dot.reserved { background: var(--color-primary); }
+        .legend-dot.blocked { background: var(--color-warning); }
+        .legend-dot.unavailable { background: var(--color-danger); }
         
-        /* Floor Plan Container - FLEX MODEL: overflow:auto NOT hidden */
+        /* Floor Plan Container - Compact, Premium */
         .floor-plan-container {
             flex: 1;
             min-height: 0;
-            background: var(--bg-secondary);
+            background: var(--bg-app);
             overflow: auto;
             position: relative;
-            padding: var(--spacing-sm);
+            padding: var(--spacing-md);
         }
         .floor-plan-canvas {
             position: relative;
             width: 100%;
             min-height: 100%;
-            background: var(--bg-primary);
+            background: var(--bg-card);
             background-image: 
-                /* Walkways - lighter lanes */
-                linear-gradient(to right, transparent 0%, rgba(0,0,0,0.02) 45%, rgba(0,0,0,0.02) 55%, transparent 100%),
-                linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.02) 45%, rgba(0,0,0,0.02) 55%, transparent 100%),
-                /* Grid overlay */
-                linear-gradient(rgba(0,0,0,0.008) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,0,0,0.008) 1px, transparent 1px);
-            background-size: 
-                100% 100%,
-                100% 100%,
-                20px 20px,
-                20px 20px;
+                /* Subtle grid */
+                linear-gradient(rgba(0,0,0,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px);
+            background-size: 20px 20px;
+            border-radius: var(--radius-md);
             min-width: 400px;
             min-height: 400px;
         }
@@ -143,20 +178,21 @@
             transition: all var(--transition-fast);
         }
         .table-shape.available {
-            background: #f0fdf4;
-            border-color: #10b981;
+            background: #F0FDF4;
+            border: 2px solid var(--color-success);
         }
         .table-shape.reserved {
-            background: #eff6ff;
-            border-color: #3b82f6;
+            background: #EFF6FF;
+            border: 2px solid var(--color-primary);
         }
         .table-shape.blocked {
-            background: #fffbeb;
-            border-color: #f59e0b;
+            background: #FFFBEB;
+            border: 2px solid var(--color-warning);
         }
         .table-shape.unavailable {
-            background: #fef2f2;
-            border-color: #ef4444;
+            background: #FEF2F2;
+            border: 2px solid var(--color-danger);
+            opacity: 0.7;
         }
         
         .table-number {
@@ -240,20 +276,20 @@
             text-transform: capitalize;
         }
         .status-pill.available {
-            background: #d1fae5;
-            color: #065f46;
+            background: rgba(22, 163, 74, 0.1);
+            color: var(--color-success);
         }
         .status-pill.reserved {
-            background: #dbeafe;
-            color: #1e40af;
+            background: rgba(11, 95, 255, 0.1);
+            color: var(--color-primary);
         }
         .status-pill.blocked {
-            background: #fef3c7;
-            color: #92400e;
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--color-warning);
         }
         .status-pill.unavailable {
-            background: #fee2e2;
-            color: #991b1b;
+            background: rgba(220, 38, 38, 0.1);
+            color: var(--color-danger);
         }
         
         /* Status Filter Buttons */
@@ -277,24 +313,115 @@
             border-color: var(--color-primary);
         }
         
-        /* Legend Dots */
-        .legend-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            display: inline-block;
+        /* Responsive Layout - Mobile First */
+        @media (max-width: 768px) {
+            .dashboard-main {
+                grid-template-columns: 1fr;
+                padding: var(--spacing-sm);
+                padding-bottom: 70px; /* Space for mobile tab bar */
+            }
+            .mobile-tab-bar {
+                display: flex;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: var(--bg-card);
+                border-top: 1px solid var(--border-light);
+                padding: var(--spacing-xs) 0;
+                z-index: 100;
+                box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+            }
+            .mobile-tab {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: var(--spacing-xs);
+                padding: var(--spacing-sm);
+                background: transparent;
+                border: none;
+                color: var(--text-muted);
+                font-size: 11px;
+                cursor: pointer;
+                transition: all 150ms ease;
+            }
+            .mobile-tab.active {
+                color: var(--color-primary);
+            }
+            .mobile-tab-icon {
+                font-size: 20px;
+            }
+            .mobile-fab {
+                position: fixed;
+                bottom: 80px;
+                right: var(--spacing-lg);
+                width: 56px;
+                height: 56px;
+                border-radius: 50%;
+                background: var(--color-primary);
+                color: white;
+                border: none;
+                font-size: 24px;
+                font-weight: 300;
+                box-shadow: var(--shadow-md);
+                cursor: pointer;
+                z-index: 99;
+                transition: all 150ms ease;
+            }
+            .mobile-fab:active {
+                transform: scale(0.95);
+            }
+            .card:not(.active) {
+                display: none;
+            }
+            .card.active {
+                display: flex;
+            }
         }
-        .legend-dot.available {
-            background: #10b981;
+        
+        @media (min-width: 769px) {
+            .mobile-tab-bar,
+            .mobile-fab {
+                display: none;
+            }
+            .dashboard-main {
+                grid-template-columns: 65% 35%;
+                gap: var(--spacing-md);
+            }
         }
-        .legend-dot.reserved {
-            background: #3b82f6;
+        
+        @media (min-width: 1024px) {
+            .dashboard-main {
+                grid-template-columns: 65% 35%;
+                gap: var(--spacing-lg);
+                padding: var(--spacing-lg);
+            }
         }
-        .legend-dot.blocked {
-            background: #f59e0b;
+        
+        /* Premium Card Styling */
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-light);
         }
-        .legend-dot.unavailable {
-            background: #ef4444;
+        .card-header {
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--spacing-md);
+        }
+        .card-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        .card-body {
+            padding: var(--spacing-md);
         }
         
         /* Loading State */
@@ -331,9 +458,9 @@
             z-index: 200;
         }
         .table-node.selected .table-shape {
-            outline: 3px solid #004A9F;
+            outline: 3px solid var(--color-primary);
             outline-offset: 3px;
-            box-shadow: 0 0 0 6px rgba(0,74,159,0.15);
+            box-shadow: 0 0 0 6px rgba(11, 95, 255, 0.15);
         }
         .table-info-panel {
             position: fixed;
@@ -449,24 +576,23 @@
             line-height: 1;
             pointer-events: none;
         }
-        .table-shape.available .table-number { color: #065f46; }
-        .table-shape.reserved .table-number { color: #1e40af; }
-        .table-shape.blocked .table-number { color: #92400e; }
-        .table-shape.unavailable .table-number { color: #991b1b; }
+        .table-shape.available .table-number { color: var(--color-success); font-weight: 700; }
+        .table-shape.reserved .table-number { color: var(--color-primary); font-weight: 700; }
+        .table-shape.blocked .table-number { color: var(--color-warning); font-weight: 700; }
+        .table-shape.unavailable .table-number { color: var(--color-danger); font-weight: 700; }
         .seat {
             position: absolute;
             width: 6px;
             height: 6px;
             border-radius: 999px;
-            background: #1d4ed8;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
             transform: translate(-50%, -50%);
-            opacity: 0.85;
+            opacity: 0.9;
         }
-        .table-shape.available .seat { background: #10b981; }
-        .table-shape.reserved .seat { background: #3b82f6; }
-        .table-shape.blocked .seat { background: #f59e0b; }
-        .table-shape.unavailable .seat { background: #ef4444; }
+        .table-shape.available .seat { background: var(--color-success); }
+        .table-shape.reserved .seat { background: var(--color-primary); }
+        .table-shape.blocked .seat { background: var(--color-warning); }
+        .table-shape.unavailable .seat { background: var(--color-danger); }
         .status-legend {
             display: flex;
             gap: 0.75rem;
@@ -598,7 +724,7 @@
         .reservation-table {
             margin-top: 0.5rem;
             font-size: 0.85rem;
-            color: #004A9F;
+            color: var(--color-primary);
             font-weight: 600;
         }
         /* Modal Overlay (backdrop) */
@@ -962,8 +1088,8 @@
     <div class="dashboard-main">
         <!-- LEFT: Floor Plan Card -->
         <div class="card">
-            <div class="card-header" style="padding: var(--spacing-sm) var(--spacing-md);">
-                <h2 class="card-title" style="font-size: var(--font-size-base); margin: 0;">Floor Plan</h2>
+            <div class="card-header">
+                <h2 class="card-title">Floor Plan</h2>
                 <div class="status-legend">
                     <div class="legend-item"><div class="legend-dot available"></div><span>Available</span></div>
                     <div class="legend-item"><div class="legend-dot reserved"></div><span>Reserved</span></div>
@@ -981,8 +1107,8 @@
 
         <!-- RIGHT: Reservations Card -->
         <div class="card">
-            <div class="card-header" style="padding: var(--spacing-xs) var(--spacing-sm);">
-                <h2 class="card-title" style="font-size: var(--font-size-sm); margin: 0; font-weight: var(--font-weight-semibold);">Reservations</h2>
+            <div class="card-header">
+                <h2 class="card-title">Reservations</h2>
                 <button class="btn btn-primary btn-sm" onclick="openQuickAddModal()" style="padding: var(--spacing-xs) var(--spacing-sm); font-size: var(--font-size-xs);">
                     <span>+</span> <span class="btn-text">Create</span>
                 </button>
