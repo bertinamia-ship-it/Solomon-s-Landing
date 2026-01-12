@@ -1955,15 +1955,23 @@
                     
                     const data = await res.json();
                     if (data.success) {
-                        showToast('success', 'Reservation assigned successfully');
+                        showToast('success', 'Reservation assigned successfully ✅');
                         closeTableModal();
                         await refreshAfterAction();
                     } else {
-                        showToast('error', data.error || 'Failed to assign reservation');
+                        // Handle 409 conflicts gracefully
+                        if (res.status === 409) {
+                            const errorMsg = data.error || 'Table is already reserved for this time slot';
+                            showToast('error', errorMsg);
+                        } else if (res.status === 400) {
+                            showToast('error', data.error || 'Invalid request. Missing required fields.');
+                        } else {
+                            showToast('error', data.error || 'Failed to assign reservation');
+                        }
                     }
                 } catch (error) {
                     console.error('Assign reservation error:', error);
-                    showToast('error', `Error: ${error.message || 'Unknown error'}`);
+                    showToast('error', `Error: ${error.message || 'Failed to connect to server'}`);
                 }
             };
         }
@@ -2586,9 +2594,9 @@
                         const resCode = res.confirmation_code || "";
                         
                     html += `
-                        <div class="reservation-card" onclick="openReservationModal('${res.id || ""}')">
+                        <div class="reservation-card">
                             <div style="display: flex; justify-content: space-between; align-items: start; gap: var(--spacing-sm);">
-                                <div style="flex: 1; min-width: 0;">
+                                <div style="flex: 1; min-width: 0; cursor: pointer;" onclick="openReservationModal('${res.id || ""}')">
                                     <div style="display: flex; align-items: center; gap: var(--spacing-sm); margin-bottom: var(--spacing-xs);">
                                         <div class="reservation-name" style="font-weight: var(--font-weight-semibold); font-size: var(--font-size-base); color: var(--text-primary);">${resName}</div>
                                         <span class="pill pill-${statusClass === 'confirmed' ? 'info' : statusClass === 'seated' ? 'success' : statusClass === 'completed' ? 'neutral' : statusClass === 'cancelled' || statusClass === 'no_show' ? 'danger' : 'warning'}">${statusText}</span>
@@ -2602,6 +2610,14 @@
                                         `<div style="font-size: var(--font-size-xs); color: var(--text-muted);">Table: ${resAssignments.map(a => a.table_name || `Main ${a.table_number || 'N/A'}`).join(', ')}</div>` : 
                                         `<div style="font-size: var(--font-size-xs); color: var(--color-warning);">No table assigned</div>`
                                     }
+                                </div>
+                                <div style="display: flex; gap: var(--spacing-xs); flex-shrink: 0;">
+                                    <button class="btn btn-icon btn-sm" onclick="event.stopPropagation(); openReservationModal('${res.id || ""}')" title="Edit" aria-label="Edit">
+                                        <span>✏️</span>
+                                    </button>
+                                    <button class="btn btn-icon btn-sm btn-danger" onclick="event.stopPropagation(); deleteReservation('${res.id || ""}')" title="Delete" aria-label="Delete">
+                                        <span>🗑️</span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -3654,6 +3670,28 @@
                 }
             }, 150);
         });
+        
+        // Initialize Dashboard Function
+        function initializeDashboard() {
+            try {
+                // Set default date to today if not set
+                const dateEl = document.getElementById('selectedDate');
+                const timeEl = document.getElementById('selectedTime');
+                if (dateEl && !dateEl.value) {
+                    dateEl.value = new Date().toISOString().split('T')[0];
+                }
+                if (timeEl && !timeEl.value) {
+                    timeEl.value = '19:00';
+                }
+                
+                // Load initial data
+                loadFloorPlan();
+                renderReservationsList();
+            } catch (error) {
+                console.error('Dashboard initialization error:', error);
+                showToast('error', 'Failed to initialize dashboard. Please refresh.');
+            }
+        }
         
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
