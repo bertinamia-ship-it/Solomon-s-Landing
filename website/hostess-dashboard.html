@@ -1896,6 +1896,18 @@
                     return;
                 }
                 
+                // Get date and time from DOM
+                const dateEl = document.getElementById('selectedDate');
+                const timeEl = document.getElementById('selectedTime');
+                
+                if (!dateEl || !timeEl) {
+                    showToast('error', 'Date or time selector not found. Please refresh the page.');
+                    return;
+                }
+                
+                const date = dateEl.value;
+                const time = timeEl.value;
+                
                 // Ensure all required fields are present
                 if (!state.selectedTableId || !date || !time) {
                     showToast('error', 'Missing required fields: table, date, or time');
@@ -2850,6 +2862,7 @@
                         showToast('error', data.error || 'Failed to release table');
                     }
                 } else {
+                    // Build payload with all required fields
                     let payload = {
                         table_id: state.selectedTableId,
                         date: date,
@@ -2859,8 +2872,8 @@
                     
                     if (action === 'assign') {
                         const reservationSelect = document.getElementById('reservationSelect');
-                        if (!reservationSelect) {
-                            showToast('error', 'Reservation selector not found');
+                        if (!reservationSelect || !reservationSelect.value) {
+                            showToast('error', 'Please select a reservation');
                             return;
                         }
                         payload.reservation_id = reservationSelect.value;
@@ -2869,6 +2882,12 @@
                     if (action === 'block') {
                         const blockReason = document.getElementById('blockReason');
                         payload.notes = blockReason ? blockReason.value || 'OpenTable' : 'OpenTable';
+                    }
+                    
+                    // Validate all required fields before sending
+                    if (!payload.table_id || !payload.date || !payload.time || !payload.status) {
+                        showToast('error', 'Missing required fields. Please ensure date, time, and table are selected.');
+                        return;
                     }
                     
                     const res = await api('/.netlify/functions/set-assignment', {
@@ -2883,20 +2902,22 @@
                     
                     const data = await res.json();
                     
-                    // Handle 409 conflict gracefully
+                    // Handle 409 conflict gracefully with user-friendly message
                     if (res.status === 409) {
                         const errorMsg = data.error || `Table is already ${payload.status} for ${time}`;
                         showToast('error', errorMsg);
                         return;
                     }
                     
-                    // Handle 400 bad request
+                    // Handle 400 bad request with specific error message
                     if (res.status === 400) {
-                        showToast('error', data.error || 'Invalid request. Missing required fields.');
+                        const errorMsg = data.error || 'Invalid request. Missing required fields.';
+                        showToast('error', errorMsg);
                         return;
                     }
                     
-                    if (data.success) {
+                    // Check for success (2xx status codes)
+                    if (res.ok && (data.success || data.ok)) {
                         showToast('success', 'Action completed successfully');
                         closeTableModal();
                         await refreshAfterAction();
@@ -3212,8 +3233,11 @@
                 title: 'Delete Reservation',
                 body: 'Are you sure you want to permanently delete this reservation? This action cannot be undone.',
                 confirmText: 'Delete',
+                confirmClass: 'btn-danger',
                 onConfirm: async () => {
                     try {
+                        // Use cancel-reservation which sets status to 'cancelled' and releases assignments
+                        // We filter out cancelled reservations from the default view
                         const res = await api('/.netlify/functions/cancel-reservation', {
                             method: 'POST',
                             body: JSON.stringify({ id: reservationId })
@@ -3227,7 +3251,11 @@
                         const data = await res.json();
                         if (data.success || data.ok) {
                             showToast('success', 'Reservation deleted successfully');
-                            // Refresh everything
+                            // Remove from state immediately for instant UI update
+                            if (state.reservations) {
+                                state.reservations = state.reservations.filter(r => r.id !== reservationId);
+                            }
+                            // Refresh everything to sync with server
                             await refreshAfterAction();
                         } else {
                             showToast('error', data.error || 'Failed to delete reservation');
