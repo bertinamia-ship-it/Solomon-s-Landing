@@ -331,8 +331,23 @@
             border-color: rgba(22, 163, 74, 0.25);
         }
         .table-shape.reserved {
-            background: #F5F8FF;
-            border-color: rgba(30, 64, 175, 0.2);
+            background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+            border-color: rgba(11, 95, 255, 0.5);
+            border-width: 2px;
+            box-shadow: 0 0 0 1px rgba(11, 95, 255, 0.15), inset 0 0 8px rgba(11, 95, 255, 0.1);
+        }
+        
+        /* Status indicator dot for reserved tables */
+        .table-shape.reserved::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 4px;
+            height: 4px;
+            background: #0B5FFF;
+            border-radius: 50%;
+            box-shadow: 0 0 2px rgba(11, 95, 255, 0.8);
         }
         .table-shape.blocked {
             background: #FFFBF5;
@@ -1913,10 +1928,11 @@
             
             // Store action handler
             window.executeAssignAction = async () => {
+                // STRICT CLIENT-SIDE VALIDATION BEFORE POST
                 const reservationId = document.getElementById('reservationSelect')?.value;
                 
-                if (!reservationId) {
-                    showToast('error', 'Please select a reservation');
+                if (!reservationId || !reservationId.trim()) {
+                    showToast('error', 'Please select a reservation to assign');
                     return;
                 }
                 
@@ -1932,12 +1948,23 @@
                 const date = dateEl.value;
                 const time = timeEl.value;
                 
-                // Ensure all required fields are present
-                if (!state.selectedTableId || !date || !time) {
-                    showToast('error', 'Missing required fields: table, date, or time');
+                // Validate all required fields with specific error messages
+                if (!state.selectedTableId) {
+                    showToast('error', 'Please select a table first');
                     return;
                 }
                 
+                if (!date || !date.trim()) {
+                    showToast('error', 'Please select a date');
+                    return;
+                }
+                
+                if (!time || !time.trim()) {
+                    showToast('error', 'Please select a time');
+                    return;
+                }
+                
+                // All validations passed, proceed with API call
                 try {
                     const res = await api('/.netlify/functions/set-assignment', {
                         method: 'POST',
@@ -1951,7 +1978,7 @@
                     });
                     
                     if (!res) {
-                        showToast('error', 'Failed to connect to server');
+                        showToast('error', 'Failed to connect to server. Please check your connection and try again.');
                         return;
                     }
                     
@@ -1966,7 +1993,7 @@
                     
                     // Handle 400 bad request
                     if (res.status === 400) {
-                        showToast('error', data.error || 'Invalid request. Missing required fields.');
+                        showToast('error', data.error || 'Invalid request. Please check all fields are correct.');
                         return;
                     }
                     
@@ -1980,7 +2007,7 @@
                     }
                 } catch (error) {
                     console.error('Assign reservation error:', error);
-                    showToast('error', `Error: ${error.message || 'Unknown error'}`);
+                    showToast('error', `Network error: ${error.message || 'Unknown error'}. Please try again.`);
                 }
             };
         }
@@ -2024,7 +2051,23 @@
             openModal('tableModal');
             
             window.executeBlockAction = async () => {
-                const reason = document.getElementById('blockReason').value || 'OpenTable';
+                // STRICT VALIDATION
+                if (!state.selectedTableId) {
+                    showToast('error', 'Please select a table first');
+                    return;
+                }
+                
+                if (!date || !date.trim()) {
+                    showToast('error', 'Please select a date');
+                    return;
+                }
+                
+                if (!time || !time.trim()) {
+                    showToast('error', 'Please select a time');
+                    return;
+                }
+                
+                const reason = document.getElementById('blockReason')?.value || 'OpenTable';
                 
                 try {
                     const res = await api('/.netlify/functions/set-assignment', {
