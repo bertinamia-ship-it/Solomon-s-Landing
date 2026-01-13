@@ -3388,33 +3388,47 @@
                 confirmClass: 'btn-danger',
                 onConfirm: async () => {
                     try {
-                        // Use cancel-reservation which sets status to 'cancelled' and releases assignments
-                        // We filter out cancelled reservations from the default view
-                        const res = await api('/.netlify/functions/cancel-reservation', {
+                        // Use delete-reservation for permanent deletion (not cancel)
+                        const res = await api('/.netlify/functions/delete-reservation', {
                             method: 'POST',
                             body: JSON.stringify({ id: reservationId })
                         });
 
                         if (!res) {
-                            showToast('error', 'Failed to connect to server');
+                            showToast('error', 'Failed to connect to server. Please check your connection and try again.');
                             return;
                         }
 
                         const data = await res.json();
-                        if (data.success || data.ok) {
-                            showToast('success', 'Reservation deleted successfully');
+                        
+                        if (res.status === 404) {
+                            showToast('error', 'Reservation not found. It may have already been deleted.');
+                            // Refresh anyway to sync UI
+                            await refreshAfterAction();
+                            return;
+                        }
+                        
+                        if (res.ok && (data.success || data.ok)) {
+                            const deletedCount = data.deletedAssignments || 0;
+                            showToast('success', `Reservation permanently deleted. ${deletedCount} table assignment(s) removed.`);
+                            
                             // Remove from state immediately for instant UI update
                             if (state.reservations) {
                                 state.reservations = state.reservations.filter(r => r.id !== reservationId);
                             }
-                            // Refresh everything to sync with server
+                            // Also remove from assignments state
+                            if (state.assignments) {
+                                state.assignments = state.assignments.filter(a => a.reservation_id !== reservationId);
+                            }
+                            
+                            // Refresh everything to sync with server and update floor plan
                             await refreshAfterAction();
                         } else {
                             showToast('error', data.error || 'Failed to delete reservation');
                         }
                     } catch (error) {
                         console.error('Delete reservation error:', error);
-                        showToast('error', `Error: ${error.message || 'Unknown error'}`);
+                        showToast('error', `Network error: ${error.message || 'Unknown error'}. Please try again.`);
                     }
                 }
             });
