@@ -2241,12 +2241,14 @@
                 state.allTables = Array.isArray(tablesData.all) ? tablesData.all : [];
                 state.tables = state.allTables.filter(t => (t.area || "") === state.selectedArea && t.is_active !== false);
                 
-                // Load assignments for this date/time
+                // Load assignments for this date/time (90-minute window: T, T+30, T+60)
+                // Backend now returns plain array (not wrapped in {assignments: ...})
                 const assignmentsRes = await api(`/.netlify/functions/get-table-assignments?date=${date}&time=${time}`);
                 if (!assignmentsRes) {
                     throw new Error('Failed to load assignments');
                 }
                 
+                // Backend returns plain array directly
                 state.assignments = await assignmentsRes.json().catch(() => []);
                 if (!Array.isArray(state.assignments)) {
                     state.assignments = [];
@@ -2263,17 +2265,8 @@
                     state.reservations = [];
                 }
                 
-                // Also load assignments for all times on this date to show table assignments
-                const allAssignmentsRes = await api(`/.netlify/functions/get-table-assignments?date=${date}`);
-                if (allAssignmentsRes) {
-                    const allAssignments = await allAssignmentsRes.json().catch(() => []);
-                    if (Array.isArray(allAssignments)) {
-                        // Merge with time-specific assignments
-                        const existingIds = new Set((state.assignments || []).map(a => a.id).filter(Boolean));
-                        const newAssignments = allAssignments.filter(a => a.id && !existingIds.has(a.id));
-                        state.assignments = [...(state.assignments || []), ...newAssignments];
-                    }
-                }
+                // REMOVED: Extra fetch that merged "all assignments" - this caused stale data
+                // Now we use single authoritative fetch for date+time window only
                 
                 // CRITICAL: Filter out orphaned assignments (assignments for cancelled/deleted reservations)
                 // Build set of active reservation IDs

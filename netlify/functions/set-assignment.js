@@ -73,6 +73,18 @@ exports.handler = async (event, context) => {
             };
         }
 
+        // CRITICAL: If status is 'reserved', reservation_id is REQUIRED
+        if (status === 'reserved' && !reservation_id) {
+            return {
+                statusCode: 400,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                body: JSON.stringify({ success: false, error: 'Missing required field: reservation_id (required for reserved status)' })
+            };
+        }
+
         const supabaseUrl = process.env.SUPABASE_URL;
         const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -148,6 +160,26 @@ exports.handler = async (event, context) => {
             }
         }
 
+        // CRITICAL: If status is 'reserved', validate reservation exists
+        if (status === 'reserved' && reservation_id) {
+            const { data: reservation, error: reservationError } = await supabase
+                .from('reservations')
+                .select('id, status')
+                .eq('id', reservation_id)
+                .single();
+
+            if (reservationError || !reservation) {
+                return {
+                    statusCode: 400,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    body: JSON.stringify({ success: false, error: 'Reservation not found' })
+                };
+            }
+        }
+
         // If force_override is true (admin), delete existing conflicting assignments first
         if (force_override && status === 'reserved') {
             // Calculate the 3 time slots
@@ -187,15 +219,20 @@ exports.handler = async (event, context) => {
             }
         }
 
-        // If reservation_id provided and status is 'reserved', delete existing assignments first
-        if (reservation_id && status === 'reserved') {
-            // Delete all existing assignments for this reservation and table
-            await supabase
+        // CRITICAL: If status is 'reserved', delete ALL existing assignments for this reservation for this date
+        // This prevents leaving the previous table reserved when reassigning
+        if (status === 'reserved' && reservation_id) {
+            const { error: deleteError } = await supabase
                 .from('table_assignments')
                 .delete()
                 .eq('reservation_id', reservation_id)
-                .eq('table_id', table_id)
                 .eq('date', date);
+
+            if (deleteError) {
+                console.error('Error deleting existing assignments for reservation:', deleteError);
+                throw deleteError; // Fail if we can't clean up old assignments
+            }
+            console.log(`✅ Deleted all existing assignments for reservation ${reservation_id} on ${date} before reassigning`);
         }
 
         // Create assignments for all 3 slots (T, T+30, T+60)

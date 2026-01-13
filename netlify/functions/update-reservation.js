@@ -137,7 +137,7 @@ exports.handler = async (event, context) => {
             }
             updateData.status = status;
             
-            // If status changes to completed/cancelled/no_show, release table assignments
+            // If status changes to completed/cancelled/no_show, release table assignments (REQUIRED)
             const releaseStatuses = ['completed', 'cancelled', 'no_show'];
             if (releaseStatuses.includes(status) && existingReservation.status !== status) {
                 const { error: deleteAssignmentsError } = await supabase
@@ -146,8 +146,9 @@ exports.handler = async (event, context) => {
                     .eq('reservation_id', id);
                 
                 if (deleteAssignmentsError) {
-                    console.error('Error releasing assignments on status change:', deleteAssignmentsError);
-                    // Don't fail the update, but log it
+                    console.error('❌ Error releasing assignments on status change:', deleteAssignmentsError);
+                    // CRITICAL: Throw and fail the request if assignment deletion fails
+                    throw deleteAssignmentsError;
                 } else {
                     console.log(`✅ Released table assignments for reservation ${id} (status: ${status})`);
                 }

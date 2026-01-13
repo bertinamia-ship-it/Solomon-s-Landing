@@ -59,7 +59,7 @@ exports.handler = async (event, context) => {
 
         const supabase = createClient(supabaseUrl, supabaseKey);
 
-        const time = event.queryStringParameters?.time; // Optional: filter by time slot
+        const time = event.queryStringParameters?.time; // Optional: filter by time slot (90-min window)
         const tableId = event.queryStringParameters?.table_id; // Optional: filter by table ID
 
         // Build query
@@ -74,8 +74,29 @@ exports.handler = async (event, context) => {
             .in('status', ['reserved', 'blocked', 'unavailable'])
             .order('time', { ascending: true });
 
+        // If time provided, compute 90-minute window (T, T+30, T+60) using VALID_TIMES
         if (time) {
-            query = query.eq('time', time);
+            const VALID_TIMES = ['17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30'];
+            const timeIndex = VALID_TIMES.indexOf(time);
+            
+            if (timeIndex === -1) {
+                return {
+                    statusCode: 400,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    body: JSON.stringify({ success: false, error: 'Invalid time slot' })
+                };
+            }
+            
+            // Calculate 3-slot window [time, time+30, time+60]
+            const timeSlots = [];
+            for (let i = 0; i < 3 && (timeIndex + i) < VALID_TIMES.length; i++) {
+                timeSlots.push(VALID_TIMES[timeIndex + i]);
+            }
+            
+            query = query.in('time', timeSlots);
         }
 
         if (tableId) {
@@ -101,13 +122,14 @@ exports.handler = async (event, context) => {
             reservation_code: a.reservations?.confirmation_code
         }));
 
+        // Return plain array (like get-reservations does)
         return {
             statusCode: 200,
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'
             },
-            body: JSON.stringify({ ok: true, success: true, assignments: formatted })
+            body: JSON.stringify(formatted || [])
         };
 
     } catch (error) {
