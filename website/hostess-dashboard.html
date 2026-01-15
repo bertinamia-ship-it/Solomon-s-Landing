@@ -2220,11 +2220,17 @@
         async function refreshAfterAction() {
             try {
                 // CRITICAL: Force reload all data to ensure table status is recomputed from current state
-                // Clear cached assignments/reservations to force fresh load
+                // Clear ALL cached data to force fresh load from server
                 state.assignments = [];
                 state.reservations = [];
+                state.allTables = [];
+                state.tables = [];
+                state.layout = [];
                 
-                // Refresh everything after an action
+                // Small delay to ensure backend has processed the change
+                await new Promise(resolve => setTimeout(resolve, 100));
+                
+                // Refresh everything after an action - this reloads from server
                 await loadFloorPlan();
                 // Also refresh reservations list to show updated table assignments
                 renderReservationsList();
@@ -2322,15 +2328,15 @@
                 }
                 
                 // Load reservations for this date (all times)
-                const reservationsRes = await api(`/.netlify/functions/get-reservations?date=${date}`);
+                // Add cache-busting timestamp to ensure fresh data after delete/update
+                const cacheBuster = `&_t=${Date.now()}`;
+                const reservationsRes = await api(`/.netlify/functions/get-reservations?date=${date}${cacheBuster}`);
                 if (!reservationsRes) {
                     throw new Error('Failed to load reservations');
                 }
                 
-                state.reservations = await reservationsRes.json().catch(() => []);
-                if (!Array.isArray(state.reservations)) {
-                    state.reservations = [];
-                }
+                const freshReservations = await reservationsRes.json().catch(() => []);
+                state.reservations = Array.isArray(freshReservations) ? freshReservations : [];
                 
                 // REMOVED: Extra fetch that merged "all assignments" - this caused stale data
                 // Now we use single authoritative fetch for date+time window only
